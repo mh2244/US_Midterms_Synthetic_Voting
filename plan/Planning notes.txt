@@ -3,6 +3,43 @@ To-Do List and Notes
 - Senate seems to have the most polling data?? Number of races will depend on number of seats up for election. 36 gubernatorial races, all 435 house seats. 
 - Will be using Python
 
+Notes from October. 18th Meeting
+- We are using CES data for both crosstab and the poststratification
+ -35 seats up for election - 33 + 2 special ones
+- From CES data: 2024 Presidential vote (who they voted for President), 2026 voting intentions, age, gender, education, state, party affiliation/ideology, race
+- CES data - weights for each group. Each observation in the data is given a weight -- probably adjusts for how subgroup is represented in the population?
+- Could compare different model types? What hap
+- Model types (4): GPT (version 2), Claude (expensive version), Deepseek (cheap), GPT (version 1) - GPT inclination to vote Republican
+- How many to draw from each state: 100 personas per state.
+- Candidate information - draw from Wikipedia? Dataset needs to include the state and both the Democrat + Republican candidate + candidates from other parties. Is it enough to only ask them to choose the party or candidates? Probably include all candidates, all parties from all senate races -- States in senate race, parties running within each state, and the candidates for each party
+- Real-time pulls: will also cost money to summarize the news --> will we do this as well? Include in the prompt? Yes, probably. Give the persona and the prompt to the model.
+- Create simulation and should be uploaded to the repo with a very clear commit
+- AFter getting the persona responses--could combine the real poll results with the AI responses. Weigh and add them together and then get a new kind of response distribution of the votes.
+- In exemplar, the news was summarized and then persona sent to AI model, so response already accounts for updated news.
+- One concern is that not every Senate race will have updated polling data -- Maybe more information will only be available for the swing states? Not sure how to handle situation where polling information for some states isn't available.
+- Simulation - Make sure you simulate the sample you expect to end up with, the frame you will weight it to (or other analysis approach), and the forecast, and develops some tests. Push this to GitHub first and include an informative commit message, so that I can find it!- - Become familiar with the 2025 CES data: https://tischcollege.tufts.edu/research-faculty/research-centers/cooperative-election-study/data-downloads
+- New York - gender- male/female, education - HS/college/phD..., ideology - republican/demo
+female, HS, democrat
+female, HS, republican
+female, college, demo
+female, phd, republican,
+- weights based on entire state? But CES data is weighted to reflect the US population?
+
+- Next steps: 
+- Meet up on Tuesday, finish tasks before Tuesday meeting (3:30 pm - 4:30 pm) and update Repo with your progress
+
+TASK 1: Maggie
+- Download the CES 2025 data: https://tischcollege.tufts.edu/research-faculty/research-centers/cooperative-election-study/data-downloads
+- Select the desired variables:  2024 Presidential vote (who they voted for President), 2026 voting intentions, age, gender, education, state, party affiliation/ideology, race, weights
+	- Each observation already weighted as a subgroup - Murray and Alexander paper - persona
+
+TASK 2: Coco
+- Figuring out weights should be another step -- states
+
+TASK 3: Amelia
+- Newspapers vs. real polling data to update the personas -- investigate availability within each state. If polling data isn't readily available for each state where the senate race is occurring, then probably will use news --> Github actions --> make sure it does NOT update on the election day - needs to run as early as possible so we have enough information to update personas
+
+
 Notes and Questions from meeting October.16th
 - TODO over the weekend: Download and look at datasets
 	- Crosstab data: look at Washinton Post + ANES --> decide on one tonight
