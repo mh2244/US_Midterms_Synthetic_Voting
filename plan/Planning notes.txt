@@ -35,6 +35,7 @@ TASK 1: Maggie
 
 TASK 2: Coco
 - Figuring out weights should be another step -- states
+- Script to get dataset on candidates and parties for each race.
 
 TASK 3: Amelia
 - Newspapers vs. real polling data to update the personas -- investigate availability within each state. If polling data isn't readily available for each state where the senate race is occurring, then probably will use news --> Github actions --> make sure it does NOT update on the election day - needs to run as early as possible so we have enough information to update personas
