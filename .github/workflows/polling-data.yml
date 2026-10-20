@@ -1,0 +1,32 @@
+name: Polling data
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  download-and-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download polling data
+        run: python scripts/polling_data/00-download_polling_data.py
+
+      - name: Clean polling data
+        run: python scripts/polling_data/01-clean_polling_data.py
+
+      - name: Upload polling data
+        uses: actions/upload-artifact@v4
+        with:
+          name: polling-data
+          path: data/polling_data/
+          if-no-files-found: error
