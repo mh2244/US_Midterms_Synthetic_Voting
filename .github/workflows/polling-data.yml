@@ -1,6 +1,8 @@
 name: Polling data
 
 on:
+  schedule:
+    - cron: "17 17 * * *"
   workflow_dispatch:
 
 permissions:

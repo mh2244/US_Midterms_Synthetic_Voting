@@ -1,0 +1,33 @@
+name: News data
+
+on:
+  schedule:
+    - cron: "43 17 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect-news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Collect news
+        run: python scripts/02-collect_news.py --new-run
+
+      - name: Upload news data
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-data
+          path: news_google/current/
+          if-no-files-found: warn
