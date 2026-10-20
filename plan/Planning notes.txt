@@ -3,6 +3,65 @@ To-Do List and Notes
 - Senate seems to have the most polling data?? Number of races will depend on number of seats up for election. 36 gubernatorial races, all 435 house seats. 
 - Will be using Python
 
+
+Notes from October. 20th Meeting
+- Use vvweights_post 
+- Still want to work out how to sample from each state.
+- Some subgroups might now have enough people, so impossible to sample enough people (i.e. 100) from each subgroup
+- We can set a restraint - i.e. we must sample x number of people from each demographic
+- Use-real time polling data instead of news or 2025 CES dataset
+- Still undecided about whether to use news AND real-time polling data, or just 1?
+	- Also, with news, do we include with the prompt?
+	- Lots of news come from polling data, so overlapping effect
+- Perhaps we can use polling data at post-stratification stage? If we include the news (which might be based on polling data) at the prompt stage, and then use polling data for poststratification.
+- News: perhaps better for news should be on current events rather than polling data.
+
+- Currently, we have the clean 2024 CES dataset
+	- Build crosstab and get the different cells/demographics for each state. 
+		- We want to take the demographic and ideology variables from each state and build crosstabs of them? Age X Gender X Education X Ideology X Race
+	- 100 respondents from each state
+	- 1 state doesn't even have 100 responses in total - 97
+- Put newspaper summaries first? (save tokens??)
+
+
+2024 CES data - How exactly are we building the crosstab? Are
+
+Questions - 
+1. Do we need to check our distribution of synthetic votes against real-world voting distributions, and how important is this to include in our project?
+2. Do we need distributions for each state where a senate race occurs?
+3. How are we building the crosstab? When we asked AI (Claude/Gemini), were told to use demographic variables only (race, education, gender, etc.) + common questions like who they voted for President, how they feel about the economy, and what ideology they follow.
+4. If we include information about who people voted for President, a problem from readings--> mostly white people vote in the Senate races, but Presidential voters tend to be more diverse.
+5. Is Presidential voting even important to include if we already have their ideology and party ID? To check the model, perhaps we can check who they voted for in 2024 presidential election? Could it influence the LLM which choice to pick? Also, another paper stated that more richer personas don't add more information/make predictions more accurate - the most important features ideology and party ID.
+6. Using polling data in our analysis or not? From research, one solution is that polling data is used to see how much averages differ from synthetic responses, and use the average difference to adjust for the states that don't have any polling data available. Any other ways? Is it incorporating polling data VS. post-stratification, or doing BOTH??
+7. If our samples are already weighted, do we even need poststratification?
+8. How/when are we incorporating news summaries when prompting our models?
+9. How will simulations (like the ones we did for Donaldson before data analysis) work? How are we generating this "fake" data?
+10. Ask about the simulation instructions for the assignment.
+
+- Semantic Similarity Rating (SSR) 
+
+Crosstabs
+- To build crosstab, use: race x age x gender x education x income and 2 political ones: Party ID and ideology 
+- Potentially add income into crosstab as well? Compare models
+- Use 2024 Presidential voting to test the forecasting
+
+Next steps:
+- Update clean dataset with income variable
+- After dataset is updated, then build crosstab
+- For each state, sample 100 responses with probabilities given by vvweights_post for each demographic
+- Write a prompt
+- Define 5 anchors for SSR
+- Which versions of AI models to use - cheapest Deepseek, cheap GPT, expensive GPT, expensive Claude
+- Tomorrow ask questions
+
+Tasks:
+- Amelia - Looking at current events - front pages of newspapers - use national papers
+- Maggie - add in the income variable to the clean variable and update scripts.
+- Coco - get an overview of how SSR and silicon sampling will work together
+
+- When submitting changes, make sure to do it ON A BRANCH AND MAKE A PULL REQUEST, AND SELECT REVIEWERS. Reviewers need to comment.
+
+
 Notes from October. 18th Meeting
 - We are using CES data for both crosstab and the poststratification
  -35 seats up for election - 33 + 2 special ones
