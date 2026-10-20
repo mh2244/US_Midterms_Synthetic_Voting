@@ -129,6 +129,8 @@ PID7 = {1: "Strong Dem", 2: "Weak Dem", 3: "Lean Dem", 4: "Independent",
         5: "Lean Rep", 6: "Weak Rep", 7: "Strong Rep", 8: "Not sure"}
 IDEO5 = {1: "Very liberal", 2: "Liberal", 3: "Moderate",
          4: "Conservative", 5: "Very conservative", 6: "Not sure"}
+PRES24 = {1: "Harris", 2: "Trump", 3: "Kennedy", 4: "Stein", 5: "West",
+          6: "Oliver", 8: "Other", 9: "Did not vote for President"}
 
 # Define functions
 
@@ -270,6 +272,16 @@ def main():
         src = src.mask(fill, name)
     out["senate_vote_best"] = best
     out["senate_vote_best_source"] = src
+
+     # ---------- 2024 presidential vote (post-election question) ----------
+    out["CC24_410"] = df["CC24_410"]                       # raw code, kept for reference
+    out["pres_vote_2024"] = decode(df["CC24_410"], PRES24)  # readable name
+    voted_pres = out["pres_vote_2024"].notna() & (out["pres_vote_2024"] != "Did not vote for President")
+    out["pres_vote_3way"] = (out["pres_vote_2024"]
+                             .map({"Harris": "Democratic", "Trump": "Republican"})
+                             .fillna("Other")
+                             .where(voted_pres))
+    
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(OUT_PATH, index=False)
