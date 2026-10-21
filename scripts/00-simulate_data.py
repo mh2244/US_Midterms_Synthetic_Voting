@@ -84,35 +84,64 @@ ideology_probs = {
     "middle": [0.05, 0.10, 0.45, 0.10, 0.05, 0.25],}
  
  
-#### Simulate personas ####
-# 100 people per state. Because we will sample the real CES in proportion
-# to vvweight, each persona already counts equally, so there is no weight column.
-n_per_state = 100
+#### Simulate a CES pool ####
+# A fake version of the cleaned CES: validated voters in each state, each
+# with a vvweight. Pool sizes differ by state, like in the real CES, and
+# some are small, so sampling 100 with replacement will repeat people.
 rows = []
 caseid = 1
- 
+
 for state in all_states:
     # Give each state its own partisan lean
     p_dem = np.random.uniform(0.30, 0.50)
     p_mid = 0.20
     p_rep = 1 - p_dem - p_mid
- 
-    for i in range(n_per_state):
+
+    pool_size = np.random.randint(50, 1000)
+
+    for i in range(pool_size):
         side = np.random.choice(["dem", "rep", "middle"], p=[p_dem, p_rep, p_mid])
- 
+
         rows.append({
             "caseid": caseid,
             "state": state,
+            "vvweight": np.random.uniform(0.1, 3),
             "age_group": np.random.choice(age_groups, p=[0.15, 0.25, 0.35, 0.25]),
             "family_income": np.random.choice(family_incomes),
             "education": np.random.choice(educations, p=[0.05, 0.25, 0.20, 0.10, 0.25, 0.15]),
             "gender": np.random.choice(genders, p=[0.48, 0.50, 0.01, 0.01]),
             "race_5": np.random.choice(race_groups, p=[0.65, 0.12, 0.12, 0.05, 0.06]),
             "party_id_7": np.random.choice(party_labels[side]),
-            "ideology": np.random.choice(ideologies, p=ideology_probs[side]),})
+            "ideology": np.random.choice(ideologies, p=ideology_probs[side]),
+        })
         caseid = caseid + 1
- 
-personas = pd.DataFrame(rows)
+
+ces_pool = pd.DataFrame(rows)
+
+
+#### Sample personas ####
+# In each state, draw 100 people WITH replacement, with probability
+# proportional to vvweight. The same CES respondent can be drawn more than
+# once, so caseid can repeat. persona_id gives every draw its own id.
+# Because people were drawn in proportion to vvweight, each persona already
+# counts equally, so we drop vvweight to avoid weighting twice.
+n_per_state = 100
+samples = []
+
+for state in all_states:
+    state_pool = ces_pool[ces_pool["state"] == state]
+    probs = state_pool["vvweight"] / state_pool["vvweight"].sum()
+
+    picked = np.random.choice(state_pool.index, size=n_per_state, replace=True, p=probs)
+    sample = state_pool.loc[picked].copy()
+
+    sample["persona_id"] = [state + "_" + str(i + 1) for i in range(n_per_state)]
+    samples.append(sample)
+
+personas = pd.concat(samples).drop(columns="vvweight")
+
+# Put persona_id first so the table is easy to read
+personas = personas[["persona_id"] + [c for c in personas.columns if c != "persona_id"]]
  
  
 #### Simulate LLM responses ####
@@ -166,6 +195,7 @@ for model in models:
             vote = "I'd rather not say"    # model gave an answer we can't use
  
         rows.append({
+            "persona_id": person["persona_id"], 
             "caseid": person["caseid"],
             "state": state,
             "model": model,
@@ -212,6 +242,7 @@ forecast = pd.DataFrame(rows)
  
  
 #### Quick summary ####
+
 # Seats not up in 2026 (check these before using real data)
 dem_not_up = 34
 rep_not_up = 31
