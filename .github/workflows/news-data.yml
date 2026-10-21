@@ -22,12 +22,12 @@ jobs:
           python-version: "3.12"
 
       - name: Collect news
-        run: python scripts/02-collect_news.py --new-run
+        run: python scripts/02-collect_news.py
 
       - name: Upload news data
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: news-data
-          path: news_google/current/
+          path: data/news_google/
           if-no-files-found: warn

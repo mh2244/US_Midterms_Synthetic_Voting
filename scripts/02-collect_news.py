@@ -1,251 +1,195 @@
-"""Collect Senate news metadata; save CSV only. Python 3.10+, no packages/key.
-Run: python3 scripts/02-collect_news_google.py
-Test: python3 scripts/02-collect_news_google.py --states AK
-Resume: repeat the same command. New window: add --new-run.
-Results: news_google/current/news_leads.csv and collection_status.csv.
-Saves at most 20 newest feed results per state; shortlists 5 by default.
-RSS search is not a guaranteed complete archive. Links may be Google redirects.
-Publication dates are feed-reported, not independently verified.
-Metadata are search leads, not verified summaries or full article text.
+#!/usr/bin/env python3
+"""Collect Google News RSS metadata for national/state public-policy news.
+
+Python 3.10+, standard library only. No API key or LLM calls.
+Run: python scripts/02-collect_news.py
+Test: python scripts/02-collect_news.py --states MI,PA
+Default output: data/news_google/news_google.csv and coverage.csv
+Saves CSV results only; raw RSS feeds and JSON metadata are not written.
+RSS descriptions are feed text, not full article text or verified summaries.
 """
 import argparse
 import csv
 import hashlib
-import xml.etree.ElementTree as ET
+import html
 import re
+import sys
 import time
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-STATES = dict(x.split(':') for x in (
-    'AL:Alabama|AK:Alaska|AR:Arkansas|CO:Colorado|DE:Delaware|FL:Florida|'
-    'GA:Georgia|ID:Idaho|IL:Illinois|IA:Iowa|KS:Kansas|KY:Kentucky|LA:Louisiana|'
-    'ME:Maine|MA:Massachusetts|MI:Michigan|MN:Minnesota|MS:Mississippi|MT:Montana|'
-    'NE:Nebraska|NH:New Hampshire|NJ:New Jersey|NM:New Mexico|NC:North Carolina|'
-    'OH:Ohio|OK:Oklahoma|OR:Oregon|RI:Rhode Island|SC:South Carolina|'
-    'SD:South Dakota|TN:Tennessee|TX:Texas|VA:Virginia|WV:West Virginia|WY:Wyoming'
-).split('|'))
-API = 'https://news.google.com/rss/search'
-ROOT = Path(__file__).resolve().parents[1] / 'news_google'
-FIELDS = ['article_id', 'state', 'title', 'source_domain', 'url', 'seen_at_utc',
-          'published_at', 'retrieved_at_utc', 'topic_hint', 'title_cluster_id',
-          'shortlisted', 'review_status', 'filter_notes', 'summary']
-STATUS_FIELDS = ['state', 'status', 'count', 'window_start_utc', 'window_end_utc',
-                 'sources', 'max_per_state_shortlisted', 'error']
+STATES = dict(zip(
+    'AL AK AR CO DE FL GA ID IL IA KS KY LA ME MA MI MN MS MT NE NH NJ NM NC OH OK OR RI SC SD TN TX VA WV WY'.split(),
+    ['Alabama', 'Alaska', 'Arkansas', 'Colorado', 'Delaware', 'Florida',
+     'Georgia', 'Idaho', 'Illinois', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+     'Maine', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Montana',
+     'Nebraska', 'New Hampshire', 'New Jersey', 'New Mexico', 'North Carolina',
+     'Ohio', 'Oklahoma', 'Oregon', 'Rhode Island', 'South Carolina',
+     'South Dakota', 'Tennessee', 'Texas', 'Virginia', 'West Virginia', 'Wyoming']))
+# One combined query per scope. No topic labels or per-topic quotas.
+ISSUES = '(economy OR inflation OR jobs OR healthcare OR housing OR immigration OR legislation OR "public services" OR energy OR "disaster relief")'
+EXCLUDE = re.compile(r'\b(opinion|editorial|endorsement|campaign|debate|polling|polls|senate race)\b', re.I)
+FIELDS = ['article_id', 'level', 'state', 'title', 'source', 'source_url',
+          'published_at_utc', 'google_news_url', 'feed_description', 'review_status']
 
-
-def parse_date(value):
-    result = datetime.fromisoformat(value.replace('Z', '+00:00'))
-    if result.tzinfo is None:
-        raise ValueError('Datetime must include timezone, e.g. +00:00.')
-    return result.astimezone(timezone.utc)
-
-
-def save_csv(path, rows, fields):
-    temp = path.with_suffix('.tmp')
-    with temp.open('w', encoding='utf-8-sig', newline='') as f:
+def write_csv(path, rows, fields):
+    with path.open('w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
-        f.flush()
-    temp.replace(path)
 
 
-def read_csv(path):
-    if not path.exists():
-        return []
-    with path.open(encoding='utf-8-sig', newline='') as f:
-        return list(csv.DictReader(f))
+def clean(value):
+    return re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', value or ''))).strip()
 
 
-def canonical_url(url):
-    p = urlsplit(url)
-    query = [(k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
-             if not k.lower().startswith('utm_') and k.lower() not in ('fbclid', 'gclid')]
-    return urlunsplit((p.scheme.lower(), p.netloc.lower(), p.path, urlencode(query), ''))
-
-
-def topic(title):
-    for label, pattern in {
-        'debate': r'debate', 'endorsement': r'endors|backing',
-        'policy': r'policy|health care|abortion|immigration|tax|economy|tariff',
-        'fundraising': r'fundrais|donor|spending',
-        'candidate_change': r'withdraw|drop.out',
-        'campaign_event': r'rally|campaign stop|town hall',
-    }.items():
-        if re.search(pattern, title, re.I):
-            return label
-    return 'other'
-
-
-def retry_after(value):
-    if not value:
-        return 0
-    try:
-        return max(0, float(value))
-    except ValueError:
+def fetch(url):
+    for attempt in range(3):
         try:
-            return max(0, (parsedate_to_datetime(value) - datetime.now(timezone.utc)).total_seconds())
-        except (ValueError, TypeError, OverflowError):
-            return 0
+            request = Request(url, headers={'User-Agent': 'AcademicNewsRSSCollector/1.0'})
+            with urlopen(request, timeout=30) as response:
+                return response.read()
+        except HTTPError as exc:
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == 2:
+                raise
+        except (URLError, TimeoutError):
+            if attempt == 2:
+                raise
+        time.sleep(3 * (attempt + 1))
 
 
-class Client:
-    def __init__(self, interval, retries):
-        self.interval, self.retries, self.last = interval, retries, None
-
-    def get(self, url):
-        for attempt in range(self.retries + 1):
-            if self.last is not None:
-                time.sleep(max(0, self.interval - (time.monotonic() - self.last)))
-            self.last = time.monotonic()
-            server_wait = 0
-            try:
-                request = Request(url, headers={'User-Agent': 'SenateNewsResearch/1.0'})
-                with urlopen(request, timeout=60) as response:
-                    body = response.read()
-                data = ET.fromstring(body)
-                if data.tag != 'rss' or data.find('channel') is None:
-                    raise ValueError('Unexpected RSS response; not counted as zero articles.')
-                return data.findall('./channel/item')
-            except HTTPError as e:
-                if e.code not in (429, 500, 502, 503, 504):
-                    raise RuntimeError(f'HTTP {e.code}: {e.reason}') from e
-                reason = f'HTTP {e.code}'
-                server_wait = retry_after(e.headers.get('Retry-After'))
-                e.close()
-            except (URLError, TimeoutError, OSError) as e:
-                reason = str(e)
-            except (ValueError, UnicodeError, ET.ParseError) as e:
-                reason = f'Invalid API response: {e}'
-            if attempt == self.retries:
-                raise RuntimeError(f'{reason}; retries exhausted.')
-            delay = max(server_wait, self.interval, 30 * 2 ** attempt)
-            print(f'{reason}; retry in {delay:.0f}s ({attempt + 1}/{self.retries}).', flush=True)
-            time.sleep(delay)
-
-
-def collect(code, start, end, sources, client):
-    # Date operators narrow the search; exact UTC filtering happens below.
-    query = (f'"{STATES[code]}" ("U.S. Senate" OR "US Senate" OR "Senate race") '
-             f'after:{(start - timedelta(days=1)).date()} before:{(end + timedelta(days=1)).date()}')
-    if sources:
-        query += ' (' + ' OR '.join('site:' + source for source in sources) + ')'
-    params = dict(q=query, hl='en-US', gl='US', ceid='US:en')
-    articles = client.get(API + '?' + urlencode(params))
-    rows, seen_urls = [], set()
-    retrieved = datetime.now(timezone.utc).isoformat()
-    for article in articles:
-        url = (article.findtext('link') or '').strip()
-        title = (article.findtext('title') or '').strip()
-        if not url.startswith(('http://', 'https://')) or not title or url in seen_urls:
-            continue
+def parse_feed(raw, level, state, start, cutoff):
+    root = ET.fromstring(raw)
+    channel = root.find('channel')
+    if root.tag != 'rss' or channel is None:
+        raise ValueError('Unexpected response: not a Google News RSS feed.')
+    rows, audit = [], []
+    for item in channel.findall('item'):
+        title = clean(item.findtext('title'))
+        url = (item.findtext('link') or '').strip()
+        source = item.find('source')
+        publisher = clean(source.text if source is not None else '')
+        # Drop the publisher suffix only when it matches the source element.
+        if publisher and title.endswith(' - ' + publisher):
+            title = title[:-len(' - ' + publisher)]
+        reason = ''
+        published = None
         try:
-            published = parsedate_to_datetime(article.findtext('pubDate') or '')
+            published = parsedate_to_datetime(item.findtext('pubDate') or '')
             if published.tzinfo is None:
-                continue
+                raise ValueError('Missing timezone')
             published = published.astimezone(timezone.utc)
         except (ValueError, TypeError, OverflowError):
+            reason = 'invalid_publication_time'
+        if not reason and not start <= published <= cutoff:
+            reason = 'outside_time_window'
+        if not title or not url:
+            reason = 'missing_title_or_url'
+        if not reason and EXCLUDE.search(title):
+            reason = 'excluded_title_keyword'
+        row = {'article_id': hashlib.sha256(url.encode()).hexdigest()[:20],
+               'level': level, 'state': state or '', 'title': title,
+               'source': publisher, 'source_url': source.get('url', '') if source is not None else '',
+               'published_at_utc': published.isoformat() if published else '',
+               'google_news_url': url, 'feed_description': clean(item.findtext('description')),
+               'review_status': 'needs_relevance_and_source_review'}
+        audit.append({**row, 'exclusion_reason': reason})
+        if not reason:
+            rows.append(row)
+    return rows, audit
+
+
+def select(rows, limit):
+    # Exact URL/title dedup within each scope. This is not event-level merging.
+    ordered = sorted(rows, key=lambda r: (r['published_at_utc'], r['article_id']), reverse=True)
+    chosen, urls, titles = [], set(), set()
+    for row in ordered:
+        key = re.sub(r'\W+', ' ', row['title'].lower()).strip()
+        if row['google_news_url'] in urls or key in titles:
             continue
-        if not start <= published <= end:
-            continue
-        seen_urls.add(url)
-        source = article.find('source')
-        source_url = source.get('url', '') if source is not None else ''
-        normalized = re.sub(r'[^a-z0-9]+', ' ', title.lower()).strip()
-        rows.append(dict(article_id=hashlib.sha256(url.encode()).hexdigest()[:20],
-                         state=code, title=title,
-                         source_domain=urlsplit(source_url).netloc.lower(),
-                         url=url, seen_at_utc='', published_at=published.isoformat(),
-                         retrieved_at_utc=retrieved, topic_hint=topic(title),
-                         title_cluster_id=hashlib.sha256(normalized.encode()).hexdigest()[:16],
-                         shortlisted=False, review_status='needs_review',
-                         filter_notes='google_news_redirect_url;feed_publication_time_unverified', summary=''))
-    rows.sort(key=lambda r: r['published_at'], reverse=True)
-    return rows[:20]
+        urls.add(row['google_news_url'])
+        titles.add(key)
+        chosen.append(row)
+        if len(chosen) >= limit:
+            break
+    return chosen if limit else []
 
 
 def main():
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--states', nargs='+')
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--days', type=int, default=7)
-    p.add_argument('--max-per-state', type=int, default=5, help='Number to shortlist, not download limit.')
-    p.add_argument('--until')
-    p.add_argument('--sources', default='')
-    p.add_argument('--interval', type=float, default=15, help='Minimum seconds between requests (default 15).')
-    p.add_argument('--retries', type=int, default=4)
-    p.add_argument('--new-run', action='store_true', help='Archive current results and start a fresh window.')
+    p.add_argument('--national-limit', type=int, default=5)
+    p.add_argument('--state-limit', type=int, default=3)
+    p.add_argument('--states', default=','.join(STATES), help='Comma-separated state codes')
+    p.add_argument('--until', help='Timezone-aware ISO cutoff; default now (UTC)')
+    p.add_argument('--out', type=Path, help='Output root; default project data/news_google')
     args = p.parse_args()
-    states = [s.upper() for s in (args.states or STATES)]
-    if len(states) != len(set(states)) or set(states) - STATES.keys():
-        p.error('Unknown or duplicate state codes.')
-    if args.days < 1 or args.max_per_state < 1 or args.interval < 5 or args.retries < 0:
-        p.error('days/max-per-state must be positive; interval >= 5; retries >= 0.')
-    sources = sorted(set(s.strip().lower() for s in args.sources.split(',') if s.strip()))
-    if any(not re.fullmatch(r'[a-z0-9.-]+', s) for s in sources):
-        p.error('Invalid source domain.')
-    run_dir = ROOT / 'current'
-    if args.new_run and run_dir.exists():
-        archive = ROOT / datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
-        run_dir.rename(archive)
-        print(f'Previous run archived: {archive}')
-    run_dir.mkdir(parents=True, exist_ok=True)
-    csv_path, status_path = run_dir / 'news_leads.csv', run_dir / 'collection_status.csv'
-    statuses = read_csv(status_path)
-    rows = read_csv(csv_path)
-    if statuses:
-        if [s['state'] for s in statuses] != states:
-            p.error('Resume requires same --states; use --new-run for different states.')
-        first = statuses[0]
-        start, end = parse_date(first['window_start_utc']), parse_date(first['window_end_utc'])
-        if (first['sources'] != ','.join(sources)
-                or int(first['max_per_state_shortlisted']) != args.max_per_state
-                or end - start != timedelta(days=args.days)
-                or (args.until and parse_date(args.until) != end)):
-            p.error('Resume options differ; use original options or --new-run.')
-        print(f'Resuming fixed window: {start.isoformat()} to {end.isoformat()}')
-    else:
-        if rows:
-            p.error('Missing collection_status.csv; preserve this folder and use --new-run.')
-        end = parse_date(args.until) if args.until else datetime.now(timezone.utc)
-        start = end - timedelta(days=args.days)
-        statuses = [dict(state=s, status='pending', count=0, window_start_utc=start.isoformat(),
-                         window_end_utc=end.isoformat(), sources=','.join(sources),
-                         max_per_state_shortlisted=args.max_per_state, error='') for s in states]
-        save_csv(status_path, statuses, STATUS_FIELDS)
-    client = Client(args.interval, args.retries)
-    for item in statuses:
-        code = item['state']
-        if item['status'] == 'completed':
-            print(f'{code}: skipped (already completed).', flush=True)
-            continue
+    codes = list(dict.fromkeys(x.strip().upper() for x in args.states.split(',') if x.strip()))
+    if not codes or set(codes) - STATES.keys():
+        p.error('Use supported Senate state codes, for example MI,PA.')
+    if args.days < 1 or min(args.national_limit, args.state_limit) < 0:
+        p.error('days must be positive and limits must be nonnegative.')
+    now = datetime.now(timezone.utc)
+    cutoff = now
+    if args.until:
         try:
-            state_rows = collect(code, start, end, sources, client)
-        except (RuntimeError, ValueError) as e:
-            item.update(status='failed', error=str(e))
-            save_csv(status_path, statuses, STATUS_FIELDS)
-            print(f'{code}: stopped: {e}\nSaved results remain at {csv_path}\nRepeat the same command to resume.', flush=True)
-            return 1
-        for row in state_rows[:args.max_per_state]:
-            row['shortlisted'] = True
-        # Replace this state's rows: safe if interrupted between the two saves.
-        rows = [r for r in rows if r['state'] != code] + state_rows
-        save_csv(csv_path, rows, FIELDS)
-        item.update(status='completed', count=len(state_rows), error='')
-        save_csv(status_path, statuses, STATUS_FIELDS)
-        print(f'{code}: collected {len(state_rows)} articles; CSV saved.', flush=True)
-    print(f'Done: {len(rows)} article rows. Output: {csv_path}')
-    return 0
+            cutoff = datetime.fromisoformat(args.until.replace('Z', '+00:00'))
+            if cutoff.tzinfo is None:
+                raise ValueError('Missing timezone')
+            cutoff = cutoff.astimezone(timezone.utc)
+        except ValueError:
+            p.error('--until requires an ISO datetime with timezone.')
+    if cutoff > now:
+        p.error('--until cannot be in the future.')
+    start = cutoff - timedelta(days=args.days)
+    # Supports placement in the repo root or its scripts directory.
+    parent = Path(__file__).resolve().parent
+    project = parent.parent if parent.name == 'scripts' else parent
+    root = args.out or project / 'data' / 'news_google'
+    root.mkdir(parents=True, exist_ok=True)
+    selected, coverage = [], []
+    scopes = [('national', '', args.national_limit)] + [('state', STATES[c], args.state_limit) for c in codes]
+    for number, (level, state, limit) in enumerate(scopes):
+        if not limit:
+            continue
+        if number:
+            time.sleep(2)
+        label = state or 'United States'
+        # Broader calendar-date query, then exact timestamp filtering locally.
+        after = (start - timedelta(days=1)).strftime('%Y-%m-%d')
+        before = (cutoff + timedelta(days=1)).strftime('%Y-%m-%d')
+        q = f'"{label}" {ISSUES} after:{after} before:{before}'
+        url = 'https://news.google.com/rss/search?' + urlencode(
+            {'q': q, 'hl': 'en-US', 'gl': 'US', 'ceid': 'US:en'})
+        status = {'level': level, 'state': state, 'status': 'ok',
+                  'returned': 0, 'eligible': 0, 'selected': 0, 'error': ''}
+        print(f'Collecting {label} (up to {limit})...', flush=True)
+        try:
+            raw = fetch(url)
+            rows, audit = parse_feed(raw, level, state, start, cutoff)
+            chosen = select(rows, limit)
+            selected.extend(chosen)
+            status.update(returned=len(audit), eligible=len(rows), selected=len(chosen))
+            if not audit:
+                status['status'] = 'empty_feed'
+            elif not chosen:
+                status['status'] = 'no_eligible_items'
+        except Exception as exc:
+            status.update(status='collection_failed', error=str(exc))
+            print(f'  Failed: {exc}', flush=True)
+        coverage.append(status)
+        write_csv(root / 'news_google.csv', selected, FIELDS)
+        write_csv(root / 'coverage.csv', coverage,
+                  ['level', 'state', 'status', 'returned', 'eligible', 'selected', 'error'])
+    print(f'Saved {len(selected)} selected records to {root.resolve()}')
+    print('RSS metadata only. Review original articles before using as voter context.')
+    return int(any(r['status'] == 'collection_failed' for r in coverage))
 
 
 if __name__ == '__main__':
-    try:
-        raise SystemExit(main())
-    except KeyboardInterrupt:
-        raise SystemExit('\nInterrupted. Repeat the same command to resume.') from None
-    except (OSError, ValueError) as error:
-        raise SystemExit(f'Collection stopped: {error}') from None
+    sys.exit(main())
