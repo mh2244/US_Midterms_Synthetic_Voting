@@ -71,7 +71,8 @@ DEMOS = ["birthyr", # year respondent was born in
          "votereg", # voting registration status: yes/no/don't know
          "votereg_post", # voting registration status post: yes/no/don't know 
          "cit1", # US citizenship: yes/no
-         "ideo5" # Ideology: very liberal/liberal/moderate/conservative/very conservative/not sure
+         "ideo5", # Ideology: very liberal/liberal/moderate/conservative/very conservative/not sure
+         "faminc_new" # Family income
          ]
 
 # 2024 CES Common Content includes weights for both pre-election and post-election waves 
@@ -131,6 +132,25 @@ IDEO5 = {1: "Very liberal", 2: "Liberal", 3: "Moderate",
          4: "Conservative", 5: "Very conservative", 6: "Not sure"}
 PRES24 = {1: "Harris", 2: "Trump", 3: "Kennedy", 4: "Stein", 5: "West",
           6: "Oliver", 8: "Other", 9: "Did not vote for President"}
+FAMINC = {
+    1: "Less than $10,000",
+    2: "$10,000 - $19,999",
+    3: "$20,000 - $29,999",
+    4: "$30,000 - $39,999",
+    5: "$40,000 - $49,999",
+    6: "$50,000 - $59,999",
+    7: "$60,000 - $69,999",
+    8: "$70,000 - $79,999",
+    9: "$80,000 - $99,999",
+    10: "$100,000 - $119,999",
+    11: "$120,000 - $149,999",
+    12: "$150,000 - $199,999",
+    13: "$200,000 - $249,999",
+    14: "$250,000 - $349,999",
+    15: "$350,000 - $499,999",
+    16: "$500,000 or more",
+    97: "Prefer not to say"
+}
 
 # Define functions
 
@@ -273,6 +293,13 @@ def main():
     out["senate_vote_best"] = best
     out["senate_vote_best_source"] = src
 
+# ------------ Income -----------------------
+    out["faminc_raw"] = pd.to_numeric(df["faminc_new"], errors="coerce")
+    out["family_income"] = decode(df["faminc_new"], FAMINC)
+    
+    # Cleaned version mapping refusal/skipped codes (97, 998, 999) to NaN for analysis
+    out["family_income_clean"] = out["faminc_raw"].replace([97, 998, 999], np.nan)
+    
      # ---------- 2024 presidential vote (post-election question) ----------
     out["CC24_410"] = df["CC24_410"]                       # raw code, kept for reference
     out["pres_vote_2024"] = decode(df["CC24_410"], PRES24)  # readable name
@@ -281,7 +308,7 @@ def main():
                              .map({"Harris": "Democratic", "Trump": "Republican"})
                              .fillna("Other")
                              .where(voted_pres))
-    
+
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(OUT_PATH, index=False)
