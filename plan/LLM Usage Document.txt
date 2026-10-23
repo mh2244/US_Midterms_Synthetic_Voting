@@ -1,3 +1,7 @@
 LLM Usage Document
 
-AI models used:
+AI models used: Claude Sonnet 5.5 Medium for clarification on how to plan the analysis, coding scripts, troubleshooting coding errors
+
+laguna": "poolside/laguna-s-2.1:free" -- used in test run
+    "nemotron": "nvidia/nemotron-3-ultra-550b-a55b:free", -- used in test run
+
