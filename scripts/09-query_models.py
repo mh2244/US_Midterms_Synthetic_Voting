@@ -10,6 +10,7 @@
 # Any other information needed? Run from the project root.
 #   python scripts/09-query_models.py --limit 4      <- first try: 4 real calls
 #   python scripts/09-query_models.py                <- everything not yet answered
+#   python scripts/09-query_models.py --batch-size 10 --sleep 0   <- paid models: 10 requests at once
 #   python scripts/09-query_models.py --mock         <- no internet, no key: fake answers to
 #                                                       test scripts 10-13
 #
@@ -23,9 +24,9 @@
 # result depends on the model (Murray & Alexander 2026 used four).
 # WHY we save model_returned and queried_at_utc: the disclosure checklist asks for exact model
 # ids and query dates, and models change under the same name (Bisbee et al. 2024).
-# NOTE: "stealth" models on OpenRouter are anonymous and can log prompts. Our prompts hold only
-# invented survey personas, so this is acceptable, but say so in the paper. They can also be
-# renamed or withdrawn without notice.
+# NOTE: free models can log prompts and can be withdrawn without notice (the stealth model we
+# first chose was). Our prompts hold only invented survey personas, so logging is acceptable,
+# but say so in the paper.
 # LIMIT: reasoning models can spend their token budget thinking and return empty text. Those
 # rows are saved with error = "empty_content", and the next run tries them again.
 
@@ -34,9 +35,11 @@
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
 import numpy as np
@@ -45,13 +48,16 @@ import requests
 
 import config
 
-URL = "https://openrouter.ai/api/v1/chat/completions"
+URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")   # override is for testing only
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--models", default=",".join(config.MODELS), help="short names from config.MODELS")
 ap.add_argument("--repeats", type=int, default=config.N_REPEATS)
 ap.add_argument("--limit", type=int, default=None, help="stop after this many new calls")
-ap.add_argument("--sleep", type=float, default=3.2, help="seconds between calls")
+ap.add_argument("--sleep", type=float, default=3.2,
+                help="minimum average seconds per call (3.2 = under 20 a minute); use 0 on a paid model")
+ap.add_argument("--batch-size", type=int, default=1,
+                help="send this many requests at the same time (1 = one at a time)")
 ap.add_argument("--max-tokens", type=int, default=800)
 ap.add_argument("--mock", action="store_true", help="fake answers, no internet")
 args = ap.parse_args()
@@ -84,7 +90,7 @@ def call_openrouter(key, model_id, prompt_text):
             text = r.text[:300]
             if "per-day" in text or "per day" in text or "daily" in text.lower():
                 raise StopRun("Daily free-model limit reached. Run again tomorrow. " + text)
-            out["error"] = "rate limited (429)"
+            out["error"] = "rate limited (429): " + " ".join(text.split())[:220]
             time.sleep(30 * (attempt + 1))
             continue
         if r.status_code >= 500:
@@ -190,27 +196,52 @@ def save():
         config.write_table(frame, config.RESPONSES_FILE)
 
 
+def ask_one(item):
+    """Get one result (mock or real) for one to-do item."""
+    rep, short, p = item
+    if args.mock:
+        result = {"response_text": mock_answer(p.prompt_text, p.design, short, p.prompt_id),
+                  "model_returned": "MOCK-" + config.MODELS[short], "input_tokens": 0,
+                  "output_tokens": 0, "error": ""}
+        if not result["response_text"]:
+            result["error"] = "empty_content"
+        return result
+    return call_openrouter(key, config.MODELS[short], p.prompt_text)
+
+
 try:
-    for i, (rep, short, p) in enumerate(todo, start=1):
-        if args.mock:
-            result = {"response_text": mock_answer(p.prompt_text, p.design, short, p.prompt_id),
-                      "model_returned": "MOCK-" + config.MODELS[short], "input_tokens": 0,
-                      "output_tokens": 0, "error": ""}
-            if not result["response_text"]:
-                result["error"] = "empty_content"
-        else:
-            result = call_openrouter(key, config.MODELS[short], p.prompt_text)
-            time.sleep(args.sleep)
-        new_rows.append({
-            "prompt_id": p.prompt_id, "persona_id": p.persona_id, "state": p.state, "design": p.design,
-            "model": short, "model_requested": config.MODELS[short], "repeat": rep,
-            "queried_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), **result})
-        errors_in_a_row = errors_in_a_row + 1 if result["error"] and result["error"] != "empty_content" else 0
-        if errors_in_a_row >= 5:
-            raise StopRun("Five failed calls in a row: " + result["error"])
-        if i % 10 == 0:
-            save()
-            print(f"  {i}/{len(todo)} done", flush=True)
+    done_count, since_save = 0, 0
+    batch = max(1, args.batch_size)
+    with ThreadPoolExecutor(max_workers=batch) as pool:
+        for start in range(0, len(todo), batch):
+            chunk = todo[start:start + batch]
+            t0 = time.time()
+            futures = [pool.submit(ask_one, item) for item in chunk]    # the whole group is sent at once
+            stop_signal = None
+            for (rep, short, p), fut in zip(chunk, futures):            # results are matched back by position
+                try:
+                    result = fut.result()
+                except StopRun as stop:
+                    stop_signal = stop                                   # keep the answers that did arrive
+                    continue
+                new_rows.append({
+                    "prompt_id": p.prompt_id, "persona_id": p.persona_id, "state": p.state, "design": p.design,
+                    "model": short, "model_requested": config.MODELS[short], "repeat": rep,
+                    "queried_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), **result})
+                real_error = result["error"] and result["error"] != "empty_content"
+                errors_in_a_row = errors_in_a_row + 1 if real_error else 0
+                if errors_in_a_row >= 5 and stop_signal is None:
+                    stop_signal = StopRun("Five failed calls in a row: " + result["error"])
+            done_count += len(chunk)
+            since_save += len(chunk)
+            if since_save >= 10:
+                save()
+                print(f"  {done_count}/{len(todo)} done", flush=True)
+                since_save = 0
+            if stop_signal is not None:
+                raise stop_signal
+            if not args.mock:                                            # stay under the per-minute limit
+                time.sleep(max(0.0, len(chunk) * args.sleep - (time.time() - t0)))
 except StopRun as stop:
     print("\nSTOPPED:", stop)
 finally:
@@ -220,4 +251,9 @@ if new_rows:
     got = pd.DataFrame(new_rows)
     print(f"\nThis run: {len(got)} calls, {int((got['error'] != '').sum())} with an error")
     print(got.groupby("model")["model_returned"].agg(lambda s: sorted(set(s))).to_string())
+    problems = got[got["error"] != ""]
+    if len(problems):
+        print("\nERROR MESSAGES (first of each kind, by model):")
+        for (model, err), n in problems.groupby(["model", "error"]).size().items():
+            print(f"  {model}: {err}   (x{n})")
 print(f"Saved to {config.RESPONSES_FILE}")

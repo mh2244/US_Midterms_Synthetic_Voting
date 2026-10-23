@@ -2,7 +2,7 @@
 # Purpose: Builds the personas ("digital twins"): for each 2026 race state, draws real CES 2024
 #          respondents with probability proportional to their survey weight, and writes a
 #          short text description of each one.
-# Author: (group)
+# Author: Maggie, Coco, Amelia
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/03_extract_data.py and scripts/06-clean_candidates.py first.

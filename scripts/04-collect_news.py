@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Collect Google News RSS metadata for national/state public-policy news.
+"""
+Pre-amble:
+Collect Google News RSS metadata for national/state public-policy news.
 
 Python 3.10+, standard library only. No API key or LLM calls.
 Run: python scripts/02-collect_news.py

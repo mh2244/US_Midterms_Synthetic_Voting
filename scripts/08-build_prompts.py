@@ -1,7 +1,7 @@
 #### Preamble ####
 # Purpose: Builds the prompt for each persona: instructions, optional news headlines, the
 #          persona description, and the voting question.
-# Author: (group)
+# Author: Maggie, Coco, Amelia
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/06-clean_candidates.py and scripts/07-build_personas.py first.

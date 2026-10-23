@@ -1,8 +1,14 @@
 #### Preamble ####
 # Purpose: Turns the Wikipedia candidate list into one row per race that names the main
 #          "left" candidate (the Democrat, or the leading independent where there is none)
-#          and the Republican. Later scripts put these names in the prompts and anchors.
-# Author: (group)
+#          and the Republican. Later scripts put these names in the prompts and anchors. 
+#          While there are multiple parties (Republican, Democrat, Independent, Liberterian, etc.)
+#          this script compares the senate_candidates_2026.csv to the real polling data to identify
+#          2 sides--SSR requires 1 scale (not Republican to definitely Republican, in our case). from
+#          real polling data, idnetifies the Republican candidate with most vote share and opposition 
+#          /non-Republican with highest vote share as the two main candidates. 
+#           Would be a limitation to mention in our analysis.
+# Author: Maggie, Coco, Amelia.
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/05-collect_candidates.py first. The poll file is optional,
@@ -26,8 +32,8 @@ import config
 # Idaho: the polls show David Roth as the Democrat, but he is missing from our candidate file;
 # CHECK THIS before the final run (it is left to the rule below until you do).
 OVERRIDES = {
-    "AK": {"rep_name": "Dan Sullivan"},
-    "NE": {"left_name": "Dan Osborn", "left_party": "Independent"},
+    # "AK": {"rep_name": "Dan Sullivan"}, # manually checked--should beOK
+    # "NE": {"left_name": "Dan Osborn", "left_party": "Independent"},
 }
 
 
