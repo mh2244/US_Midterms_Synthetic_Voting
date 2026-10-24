@@ -1,0 +1,71 @@
+state,race_type,name,party
+FL,special,Angie Nixon,Democratic
+FL,special,Ashley Moody,Republican
+OH,special,Sherrod Brown,Democratic
+OH,special,Jon Husted,Republican
+AL,regular,Everett Wess,Democratic
+AL,regular,Barry Moore,Republican
+AK,regular,Mary Peltola,Democratic
+AK,regular,Dan Sullivan,Republican
+AR,regular,Hallie Shoffner,Democratic
+AR,regular,Tom Cotton,Republican
+CO,regular,John Hickenlooper,Democratic
+CO,regular,Mark Baisley,Republican
+DE,regular,Chris Coons,Democratic
+DE,regular,Michael Katz,Republican
+GA,regular,Jon Ossoff,Democratic
+GA,regular,Mike Collins,Republican
+ID,regular,Todd Achilles,Independent
+ID,regular,Jim Risch,Republican
+IL,regular,Juliana Stratton,Democratic
+IL,regular,Don Tracy,Republican
+IA,regular,Josh Turek,Democratic
+IA,regular,Ashley Hinson,Republican
+KS,regular,Adam Hamilton,Democratic
+KS,regular,Roger Marshall,Republican
+KY,regular,Charles Booker,Democratic
+KY,regular,Andy Barr,Republican
+LA,regular,Jamie Davis,Democratic
+LA,regular,Julia Letlow,Republican
+ME,regular,Troy Jackson,Democratic
+ME,regular,Susan Collins,Republican
+MA,regular,Ed Markey,Democratic
+MA,regular,John Deaton,Republican
+MI,regular,Abdul El-Sayed,Democratic
+MI,regular,Mike Rogers,Republican
+MN,regular,Peggy Flanagan,Democratic
+MN,regular,Michele Tafoya,Republican
+MS,regular,Scott Colom,Democratic
+MS,regular,Cindy Hyde-Smith,Republican
+MT,regular,Alani Bankhead,Democratic
+MT,regular,Kurt Alme,Republican
+NE,regular,Dan Osborn,Independent
+NE,regular,Pete Ricketts,Republican
+NH,regular,Chris Pappas,Democratic
+NH,regular,John E. Sununu,Republican
+NJ,regular,Cory Booker,Democratic
+NJ,regular,Justin Murphy,Republican
+NM,regular,Ben Ray Luján,Democratic
+NM,regular,Larry Marker,Republican
+NC,regular,Roy Cooper,Democratic
+NC,regular,Michael Whatley,Republican
+OK,regular,N'Kiyla Jasmine Thomas,Democratic
+OK,regular,Kevin Hern,Republican
+OR,regular,Jeff Merkley,Democratic
+OR,regular,David Brock Smith,Republican
+RI,regular,Jack Reed,Democratic
+RI,regular,Raymond McKay,Republican
+SC,regular,Annie Andrews,Democratic
+SC,regular,Darline Graham,Republican
+SD,regular,Brian Bengs,Independent
+SD,regular,Mike Rounds,Republican
+TN,regular,Marquita Bradshaw,Democratic
+TN,regular,Bill Hagerty,Republican
+TX,regular,James Talarico,Democratic
+TX,regular,Ken Paxton,Republican
+VA,regular,Mark Warner,Democratic
+VA,regular,Bert Mizusawa,Republican
+WV,regular,Rachel Fetty Anderson,Democratic
+WV,regular,Shelley Moore Capito,Republican
+WY,regular,James W. Byrd,Democratic
+WY,regular,Harriet Hageman,Republican
