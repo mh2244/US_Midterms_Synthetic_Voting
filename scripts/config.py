@@ -22,7 +22,7 @@ N_DRAWS = 1000            # simulated outcomes per state and model (same as the 
 # CHECK both ids on https://openrouter.ai/models before running; stealth models can be renamed
 # or withdrawn without notice, which is why the id the API returns is saved with every answer.
 MODELS = {
-    "gemma": "google/gemma-4-26b-a4b-it:free",
+    "laguna": "poolside/laguna-s-2.1:free", #Laguna will not be available Oct.31st
     "nemotron": "nvidia/nemotron-3-ultra-550b-a55b:free",
 }
 
