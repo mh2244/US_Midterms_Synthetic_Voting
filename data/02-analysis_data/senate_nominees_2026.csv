@@ -1,0 +1,36 @@
+state,state_name,race_type,left_name,left_party,rep_name,other_names,n_others
+FL,Florida,special,Angie Nixon,Democratic,Ashley Moody,Neil Gillespie (Independent),1
+OH,Ohio,special,Sherrod Brown,Democratic,Jon Husted,Greg Levy (Independent); William Redpath (Libertarian),2
+AL,Alabama,regular,Everett Wess,Democratic,Barry Moore,,0
+AK,Alaska,regular,Mary Peltola,Democratic,Dan Sullivan,,0
+AR,Arkansas,regular,Hallie Shoffner,Democratic,Tom Cotton,Jeff Wadlin (Libertarian),1
+CO,Colorado,regular,John Hickenlooper,Democratic,Mark Baisley,Christopher Baum (Approval Voting); Bob Chew (Forward); Blake Huber (Libertarian); Adam Withrow (Unity),4
+DE,Delaware,regular,Chris Coons,Democratic,Michael Katz,,0
+GA,Georgia,regular,Jon Ossoff,Democratic,Mike Collins,,0
+ID,Idaho,regular,Todd Achilles,Independent,Jim Risch,Natalie Fleming (Independent); Matt Loesby (Libertarian),2
+IL,Illinois,regular,Juliana Stratton,Democratic,Don Tracy,Whitfield Harrington Jr. (Independent),1
+IA,Iowa,regular,Josh Turek,Democratic,Ashley Hinson,Thomas Laehn (Libertarian),1
+KS,Kansas,regular,Adam Hamilton,Democratic,Roger Marshall,David Graham (Libertarian),1
+KY,Kentucky,regular,Charles Booker,Democratic,Andy Barr,Christopher Campbell (Independent),1
+LA,Louisiana,regular,Jamie Davis,Democratic,Julia Letlow,,0
+ME,Maine,regular,Troy Jackson,Democratic,Susan Collins,,0
+MA,Massachusetts,regular,Ed Markey,Democratic,John Deaton,Shiva Ayyadurai (Independent); Joe Tache (Socialism and Liberation),2
+MI,Michigan,regular,Abdul El-Sayed,Democratic,Mike Rogers,Lydia Christensen (Libertarian); Walter P. Kristy (Natural Law); Tim Long (U.S. Taxpayers); Douglas P. Marsh (Green),4
+MN,Minnesota,regular,Peggy Flanagan,Democratic,Michele Tafoya,Marisa Simonetti (Independent); Rebecca Whiting (Libertarian),2
+MS,Mississippi,regular,Scott Colom,Democratic,Cindy Hyde-Smith,Ty Pinkins (Independent),1
+MT,Montana,regular,Alani Bankhead,Democratic,Kurt Alme,Kyle Austin (Libertarian); Seth Bodnar (Independent),2
+NE,Nebraska,regular,Dan Osborn,Independent,Pete Ricketts,Chuck Conboy (America First); Mike Marvin (Legal Marijuana Now); Robin Richards (Working People),3
+NH,New Hampshire,regular,Chris Pappas,Democratic,John E. Sununu,Edmond LaPlante (Constitution),1
+NJ,New Jersey,regular,Cory Booker,Democratic,Justin Murphy,Veronica Fernandez (Independent); Joanne Kuniansky (Socialist Workers),2
+NM,New Mexico,regular,Ben Ray Luján,Democratic,Larry Marker,,0
+NC,North Carolina,regular,Roy Cooper,Democratic,Michael Whatley,Shannon Bray (Libertarian); Michael Dublin (Green),2
+OK,Oklahoma,regular,N'Kiyla Jasmine Thomas,Democratic,Kevin Hern,Ron Meinhardt (Independent); Curtis Stinnett (Independent); Sevier White (Libertarian),3
+OR,Oregon,regular,Jeff Merkley,Democratic,David Brock Smith,Gary Lyndon Dye (Libertarian); Chris Henry (Progressive),2
+RI,Rhode Island,regular,Jack Reed,Democratic,Raymond McKay,Michael Bahry (Independent),1
+SC,South Carolina,regular,Annie Andrews,Democratic,Darline Graham,Mark Hackett (Constitution); Kasie Whitener (Libertarian),2
+SD,South Dakota,regular,Brian Bengs,Independent,Mike Rounds,,0
+TN,Tennessee,regular,Marquita Bradshaw,Democratic,Bill Hagerty,Tharon Chandler (Independent); Andrew Gerena (Independent); Jeremy Hearn (Independent); Robert Jones (Independent); James Macon III (Independent); Yoshi Matthews (Independent); David Sutman Jr. (Independent); Catherine Whitson (Independent),8
+TX,Texas,regular,James Talarico,Democratic,Ken Paxton,Ted Brown (Libertarian),1
+VA,Virginia,regular,Mark Warner,Democratic,Bert Mizusawa,,0
+WV,West Virginia,regular,Rachel Fetty Anderson,Democratic,Shelley Moore Capito,S. Marshall Wilson (Constitution),1
+WY,Wyoming,regular,James W. Byrd,Democratic,Harriet Hageman,,0

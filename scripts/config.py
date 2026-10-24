@@ -1,6 +1,6 @@
 #### Preamble ####
 # Purpose: Settings shared by scripts 06-13, so a number or model name is changed in one place.
-# Author: (group)
+# Author: Maggie Huang
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: None. Other scripts do `import config`; run them from the project root,
@@ -8,7 +8,6 @@
 # Note: this file never contains the API key. The key is read from the environment
 #   variable OPENROUTER_API_KEY, or from a file called .env in the project root
 #   (a line such as OPENROUTER_API_KEY=sk-or-...). Put .env in .gitignore.
-
 
 import os
 from pathlib import Path
@@ -23,8 +22,8 @@ N_DRAWS = 1000            # simulated outcomes per state and model (same as the 
 # CHECK both ids on https://openrouter.ai/models before running; stealth models can be renamed
 # or withdrawn without notice, which is why the id the API returns is saved with every answer.
 MODELS = {
-    "space_bunny": "stealth/space-bunny-alpha",
-    "nemotron": "nvidia/nemotron-3-super-120b-a12b:free",
+    "gemma": "google/gemma-4-26b-a4b-it:free",
+    "nemotron": "nvidia/nemotron-3-ultra-550b-a55b:free",
 }
 
 # Embedding model for SSR (script 10). "local" needs: pip install sentence-transformers
