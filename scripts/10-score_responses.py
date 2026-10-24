@@ -8,7 +8,8 @@
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/09-query_models.py first (or with --mock).
-#   For real embeddings: pip install sentence-transformers   (downloads a small model once)
+#   For the local embedder: pip install sentence-transformers   (downloads a small model once)
+#   For Gemini Embedding 2 (the paper's model): --embedder openrouter  (about $0.20 per million tokens)
 # Any other information needed? Run from the project root.
 #   python scripts/10-score_responses.py                      <- local embedding model
 #   python scripts/10-score_responses.py --embedder mock      <- offline plumbing test only
@@ -55,24 +56,34 @@ REFUSAL = re.compile(
 
 
 #### Embedders ####
-def embed_local(texts):
+def embed_local(texts, as_query=False):
     from sentence_transformers import SentenceTransformer     # imported here so it is optional
     model = SentenceTransformer(config.LOCAL_EMBED_MODEL)
     return np.asarray(model.encode(texts, normalize_embeddings=True))
 
 
-def embed_openrouter(texts):
+def embed_openrouter(texts, as_query=False, chunk=128):
+    """Send the texts in chunks so a large run does not exceed the request size limit.
+    as_query=True marks the model's answers; False marks the anchors (see config for the prefixes)."""
     key = config.get_api_key()
     assert key, "No OPENROUTER_API_KEY found (see script 09)"
-    r = requests.post("https://openrouter.ai/api/v1/embeddings",
-                      headers={"Authorization": f"Bearer {key}"},
-                      json={"model": config.OPENROUTER_EMBED_MODEL, "input": list(texts)}, timeout=120)
-    r.raise_for_status()
-    vecs = np.asarray([d["embedding"] for d in r.json()["data"]], dtype=float)
+    prefix = config.EMBED_QUERY_PREFIX if as_query else config.EMBED_DOC_PREFIX
+    texts = [prefix + t for t in texts]
+    pieces = []
+    for start in range(0, len(texts), chunk):
+        body = {"model": config.OPENROUTER_EMBED_MODEL, "input": texts[start:start + chunk]}
+        if config.EMBED_DIMENSIONS:
+            body["dimensions"] = config.EMBED_DIMENSIONS
+        r = requests.post("https://openrouter.ai/api/v1/embeddings",
+                          headers={"Authorization": f"Bearer {key}"}, json=body, timeout=120)
+        r.raise_for_status()
+        data = sorted(r.json()["data"], key=lambda d: d.get("index", 0))
+        pieces.append(np.asarray([d["embedding"] for d in data], dtype=np.float32))
+    vecs = np.vstack(pieces)
     return vecs / np.linalg.norm(vecs, axis=1, keepdims=True)
 
 
-def embed_mock(texts, dim=512):
+def embed_mock(texts, as_query=False, dim=512):
     """Word-count vectors from hashed 4-letter word starts. Only for testing the plumbing."""
     out = np.zeros((len(texts), dim))
     for i, t in enumerate(texts):
@@ -150,13 +161,15 @@ if is_b.any():
     texts = responses.loc[is_b, "response_text"].tolist()
     anchor_rows = {s: anchors_for(nominees.loc[s]) for s in responses.loc[is_b, "state"].unique()}
     all_anchor_text = sorted({a for lst in anchor_rows.values() for a in lst})
-    unique_texts = sorted(set(texts) | set(all_anchor_text))
-    print(f"Embedding {len(unique_texts)} unique texts with the '{args.embedder}' embedder ...")
-    vectors = dict(zip(unique_texts, EMBED(unique_texts)))
+    answer_texts = sorted(set(texts))
+    print(f"Embedding {len(answer_texts)} unique answers and {len(all_anchor_text)} anchors "
+          f"with the '{args.embedder}' embedder ...")
+    answer_vecs = dict(zip(answer_texts, EMBED(answer_texts, as_query=True)))        # answers = queries
+    anchor_vecs = dict(zip(all_anchor_text, EMBED(all_anchor_text, as_query=False)))  # anchors = documents
 
     for idx, row in responses[is_b].iterrows():
         anchors = anchor_rows[row["state"]]
-        sims = [float(vectors[row["response_text"]] @ vectors[a]) for a in anchors]
+        sims = [float(answer_vecs[row["response_text"]] @ anchor_vecs[a]) for a in anchors]
         p = ssr_probabilities(sims, args.temperature)
         responses.loc[idx, ["p_left", "p_rep", "p_other"]] = [p[0] + p[1], p[3] + p[4], p[2]]
 
@@ -175,7 +188,8 @@ left_party = responses["state"].map(nominees["left_party"])
 responses["vote_choice"] = pd.Series(best).map({0: "left", 1: "Republican", 2: "Undecided"}).where(~np.isnan(best))
 responses.loc[responses["vote_choice"] == "left", "vote_choice"] = left_party
 responses["ssr_temperature"] = args.temperature
-responses["embedder"] = args.embedder if args.embedder != "local" else config.LOCAL_EMBED_MODEL
+responses["embedder"] = {"local": config.LOCAL_EMBED_MODEL, "openrouter": config.OPENROUTER_EMBED_MODEL,
+                         "mock": "mock"}[args.embedder]
 
 #### Checks and save ####
 scored = responses[responses["p_left"].notna()]
