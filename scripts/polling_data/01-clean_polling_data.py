@@ -1,3 +1,12 @@
+#### Preamble ####
+# Purpose: Selects useful polling columns, standardizes dates, and retains
+#          2026 general-election Senate polls from the downloaded dataset.
+# Author: Jingxuan Feng
+# Date: 24 October 2026
+# Contact: amelia.f.feng@outlook.com
+# License: MIT
+# Pre-requisites: Python 3.10+; run 00-download_polling_data.py first.
+#                 Uses only the Python standard library.
 
 """Select useful columns and retain 2026-cycle general-election Senate polls.
 

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+#### Preamble ####
+# Purpose: Collects recent news from media outlets and uses OpenRouter to filter
+#          national election-relevant items and generate short prompt paragraphs.
+# Author: Jingxuan Feng
+# Date: 24 October 2026
+# Contact: amelia.f.feng@outlook.com
+# License: MIT
+# Pre-requisites: pip install requests tqdm python-dotenv
+#                 Set OPENROUTER_API_KEY in the environment or project .env.
+
 """Collect up to 60 recent news items per media outlet, with no global cap.
 
 RSS first, then a Google News site: query if needed. Only the past 48 hours
