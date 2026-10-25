@@ -1,0 +1,101 @@
+---
+title: "Synthetic Voting for 2026 U.S Senate Midterm Elections"
+author: 
+- "Jingxuan Feng"
+- "Maggie Huang"
+- "Kexin Liu"
+date: today
+date-format: long
+format: html
+---
+
+## Senate Results
+
+
+- Include a map of the US with eligible states highlighted with projected result - could also include whether the forecasted result is a  flip (exemplar can be seen in Reuters article)
+
+- Include summary of battleground states: https://ballotpedia.org/U.S._Senate_battlegrounds,_2026 
+Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas
+
+- Include graphic/table with uncertainty measurements
+
+## Crosstabs
+
+## Composition of Sample
+
+## News Summaries 
+
+## API Costs
+
+## Internal Validation
+
+## Models Used
+
+## AI Prompts
+
+## Methods
+
+All results were generated from synthetic respondents. These are not survey results.
+
+### Data
+
+To generate realistic digital twins, respondent records were first obtained from the 2024 Cooperative Election Study (CES), consisting of 60,000 US adults' responses which are nationally representative. Of these respondents, 38,307 were in one of the 35 Senate-race states, and 23,025 of that subset were assigned a weight ("vvweight_post") which we used as probabilities when sampling for personas from each state (33 with 2 special races).  According to the 2024 CES Codebook, "vvweight_post" is recommended for research relating to the characterization of voters' opinions, behaviours, or traits, where "vv" means "voter validated" [CITATION]. The "post" designation indicates that the voter is not only registered but completed both pre-election and post-election waves of the study. We relied on vvweight-post given that we were interested in voter behaviour and that the features we chose to construct our personas were taken from both Pre- and Post-election questionnaires. 
+
+### Personas
+In particular, we focused on the following variables: age, education, race, gender, household income, 5-point ideology, and 7-point party identification. 
+
+### Bias and Variance
+A known limitation of LLM synthetic voting is partisan bias, dependent on the model [CITATION]. As a remedy, synthetic votes would be weighted with polling data obtained from PollResults, an open polling data platform that compiles and aggregates polls originally tracked by The New York Times pertaining to the Senate races [CITATION and NOTE that this still has to be done on our full run].  
+
+An additional limitation of LLM synthetic voting is mode collapse, where an LLM generates responses that concentrate around the mode of the true distribution and results in synthetic distributions having unrealistically low variance, with consequences such as overconfident estimates and inaccurate power calculations [Heath and Alexander YEAR]. As such, Semantic Similarity Rating (SSR) was used.
+
+### Sampling
+
+Sampling was conducted by state. 100 personas were sampled per state. Some states had less than 100 respondents in the 2024 CES data, which included Wyoming (54/95 respondents with a weight) and Alaska (88/128 respondents with a weight). For consistency, sampling with replacement was used across all 35 states.
+
+### Prompts and models
+
+Each persona was asked how it would vote in its stat's Senate race. Candidate order was randomised for each persona. Design B (what we did in the test run) asked the persona to provide a free-text answer, which would then be sent to our embedding model. Every prompt was sent to the following models: [LIST MODELS USED HERE] via OpenRouter, 3 times each, at temperature [INSERT TEMPERATURE]. Below, we record the number of calls failed or which came back empty, by model:
+
+- Model 1:
+- Model 2:
+- Model 3:
+- Model 4:
+
+### Turning Answers into Voting Probabilities
+
+For design B we used Semantic Similarity Rating (SSR) [Maier et al. 2025; Heath and Alexander 2026]. We embedded each answer and five statements written for that race, from "I will definitely vote for [Democrat]" to
+"I will definitely vote for [Republican]", with an undecided statement in the middle. We took the cosine similarity between the answer and each statement, rescaled the five values to 0 to 1, and applied a softmax with
+temperature 0.25. The two statements on each side were summed, which gives p(left), p(Republican) and p(other) for each answer. Heath and Alexander tested SSR on 0 to 100 ratings, so using it for vote choice is our adaptation. We used [the local all-MiniLM-L6-v2 model / Gemini Embedding 2], [which differs from their asymmetric Gemini setup]. For design C we parsed the percentages and rescaled totals between 90 and 110 to 100. Answers that were empty, refused or could not be parsed were counted and left out. 
+
+### Testing and Checks
+
+As a test run, we utilized Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia's Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free). 5 personas were drawn fron each state with repeated sampling [VERIFY] and SSR embedding was conducted using a local embedding model (all-MiniLM-L6-v2).
+
+We also did a simulation to understand how our final dataset would be constructed.
+
+News summaries were obtained for the dates of October 27th, 29th, and the 31st.
+
+## Discussion
+
+## Limitations
+
+- Because we used real polling data to correct for biased LLM responses via weighted averages, forecast is no longer an independent test of the models
+- For states that had no real polling data available, the "average gap" was applied. However, this assumes the model's lean is the same everywhere when some states may lean more Democratic/more Republican.
+- The gap between synthetic vote distributions and polling data is ultimately measured against polls, and polls have their own error which may be correlated across states [CITATION - Shirani-Mehr et al., 2018]. However, we hoped to mitigate this by relying on a poll aggregator (PollResults).
+- In order to apply SSR, we had to flatten the candidate choices in each state to 2 sides to create a scale from Democrat to Republican, or Independent to Republican, depending on which party candidates belonged to. Minor candidates and "don't know" answers are not fully reflected in these results.
+- Due to cost reasons, we could not update the news summaries everyday. Instead, news summaries were provided and the model was re-run on October 27th, 29th, and 31st. While [CITATION - PAPER] stated that adding party identification to persona descriptions ultimately reduced the impact that news had in impacting synthetic voting results, further research could be done as to how different news diets or differing amounts of news could impact synthetic voting results.
+
+- Our original plan was to take data from multiple pollsters and divide them into either a training or validation set, use the training set to correct for bias with our model, and then compare it against aggregated results from our validation set. However, due to time constraints, we were unable to use this approach.
+- No real data to validate our model against, as 2026 midterms have not yet occurred.
+
+
+## References
+
+- Design references:
+1. https://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false 
+2. https://www.politico.com/2024-election/results/senate/ 
+3. https://apps.npr.org/2024-election-results/senate.html 
+4. https://newsinteractives.cbc.ca/elections/us/2024/results/ 
+5. https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/ 
+
