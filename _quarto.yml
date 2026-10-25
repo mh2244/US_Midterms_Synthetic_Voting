@@ -1,0 +1,11 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  page-footer:
+    center: "[Code on GitHub](https://github.com/mh2244/US_Midterms_Synthetic_Voting)"
+
+format:
+  html:
+    theme: default

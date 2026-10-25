@@ -4,6 +4,18 @@ To-Do List and Notes
 - Will be using Python
 
 
+Notes October. 24
+- Coco will run full model queries
+- Maggie finished test model queries
+- Amelia has updated news collection script
+- Design references:
+1. https://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false 
+2. https://www.politico.com/2024-election/results/senate/ 
+3. https://apps.npr.org/2024-election-results/senate.html 
+4. https://newsinteractives.cbc.ca/elections/us/2024/results/ 
+5. https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/ 
+
+
 Notes from October. 20th Meeting
 - Use vvweights_post 
 - Still want to work out how to sample from each state.

@@ -1,0 +1,149 @@
+[
+  {
+    "objectID": "index.html#discussion",
+    "href": "index.html#discussion",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Discussion",
+    "text": "Discussion"
+  },
+  {
+    "objectID": "scripts/README_PIPELINE.html",
+    "href": "scripts/README_PIPELINE.html",
+    "title": "Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)",
+    "section": "",
+    "text": "Copy the files in scripts/ into your project’s scripts/ folder (keep config.py beside the others). Run everything from the project root.\n\n\npip install pandas numpy pyarrow requests matplotlib sentence-transformers\nMake a file called .env in the project root with ONE line (no quotes):\nOPENROUTER_API_KEY=sk-or-...your new key...\nAdd .env to .gitignore. The key you pasted in chat is exposed: revoke it at openrouter.ai/keys and make a new one.\n\n\n\n\n\n\n\n\n\n\n\nScript\nWhat it does\nWrites\n\n\n\n\n06-clean_candidates.py\none left and one Republican name per race; prints warnings to fix\nsenate_nominees_2026.csv\n\n\n07-build_personas.py\ndraws 5 real CES respondents per state by weight; writes persona text\npersonas.parquet/.csv\n\n\n08-build_prompts.py\npersona + question (--designs B,C, --news)\nprompts.parquet\n\n\n09-query_models.py\nasks both models (--limit 4 first; --mock for a dry run)\nresponses.parquet\n\n\n10-score_responses.py\nSSR (design B) or parsing (design C)\nscores.parquet, scores_with_text.csv\n\n\n11-build_forecast.py\nstate shares, 1,000 draws, poll and 2024 comparison\nforecast.parquet, state_comparison.csv\n\n\n12-test_actual_data.py\ntests on real files\nprints “All tests passed”\n\n\n13-make_figures.py\nquantile dotplot\ndocs/figures/forecast_dotplot.png\n\n\n\nOutputs go to data/02-analysis_data/ and data/03-results/. config.py holds the settings (models, N per state, paths).\n\n\n\n20 requests per minute, and 50 per day unless you have bought 10 credits (then 1,000 per day). 175 personas x 2 models = 350 calls. Script 09 saves as it goes, skips finished prompts, retries failed ones, and stops cleanly at the daily limit. Run it again the next day.\n\n\n\n\nLive OpenRouter calls: the two model ids (stealth/space-bunny-alpha, nvidia/nemotron-3-super-120b-a12b:free), how reasoning models report empty answers, and the daily-limit message text.\nThe real embedding model in script 10 (sentence-transformers). The fake embedder only checks the code path.\nParquet writing (my sandbox had no pyarrow; the code falls back to csv only when pyarrow is missing).\n\n\n\n\n\nCandidate file (script 06 warnings): Idaho, Nebraska and South Dakota have no Democrat listed; Idaho’s polls show David Roth as Democrat; Alaska lists 3 Republicans. Edit OVERRIDES after checking Ballotpedia.\nNews headlines are weak (many have nothing to do with the Senate). Skip --news for the first runs.\nDEM_NOT_UP / REP_NOT_UP (34 / 31) are copied from your simulation script; check them.\nRaw data should be in data/01-raw_data/ per the assignment; scripts 02/03 still write to data/.\nCandidate order is randomised per persona (column left_first); keep it, or say why not.\n\n\n\n\n\n5 personas per state gives a standard error of about 22 points on a share near 50%. The test run checks the code, not the election.\nThe forecast spread covers persona sampling only. Add model and repeat spread, calibration error and a shared national error before the final run (see the comments in script 11).\nOur local embedder is symmetric and small; Heath & Alexander used Gemini Embedding 2 with asymmetric embeddings.\nDesign B and SSR for vote choice is an adaptation of a method tested on 0-100 ratings."
+  },
+  {
+    "objectID": "scripts/README_PIPELINE.html#one-time-setup",
+    "href": "scripts/README_PIPELINE.html#one-time-setup",
+    "title": "Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)",
+    "section": "",
+    "text": "pip install pandas numpy pyarrow requests matplotlib sentence-transformers\nMake a file called .env in the project root with ONE line (no quotes):\nOPENROUTER_API_KEY=sk-or-...your new key...\nAdd .env to .gitignore. The key you pasted in chat is exposed: revoke it at openrouter.ai/keys and make a new one."
+  },
+  {
+    "objectID": "scripts/README_PIPELINE.html#order",
+    "href": "scripts/README_PIPELINE.html#order",
+    "title": "Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)",
+    "section": "",
+    "text": "Script\nWhat it does\nWrites\n\n\n\n\n06-clean_candidates.py\none left and one Republican name per race; prints warnings to fix\nsenate_nominees_2026.csv\n\n\n07-build_personas.py\ndraws 5 real CES respondents per state by weight; writes persona text\npersonas.parquet/.csv\n\n\n08-build_prompts.py\npersona + question (--designs B,C, --news)\nprompts.parquet\n\n\n09-query_models.py\nasks both models (--limit 4 first; --mock for a dry run)\nresponses.parquet\n\n\n10-score_responses.py\nSSR (design B) or parsing (design C)\nscores.parquet, scores_with_text.csv\n\n\n11-build_forecast.py\nstate shares, 1,000 draws, poll and 2024 comparison\nforecast.parquet, state_comparison.csv\n\n\n12-test_actual_data.py\ntests on real files\nprints “All tests passed”\n\n\n13-make_figures.py\nquantile dotplot\ndocs/figures/forecast_dotplot.png\n\n\n\nOutputs go to data/02-analysis_data/ and data/03-results/. config.py holds the settings (models, N per state, paths)."
+  },
+  {
+    "objectID": "scripts/README_PIPELINE.html#free-model-limits",
+    "href": "scripts/README_PIPELINE.html#free-model-limits",
+    "title": "Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)",
+    "section": "",
+    "text": "20 requests per minute, and 50 per day unless you have bought 10 credits (then 1,000 per day). 175 personas x 2 models = 350 calls. Script 09 saves as it goes, skips finished prompts, retries failed ones, and stops cleanly at the daily limit. Run it again the next day."
+  },
+  {
+    "objectID": "scripts/README_PIPELINE.html#not-verified-by-me-checked-offline-with-a-fake-model-only",
+    "href": "scripts/README_PIPELINE.html#not-verified-by-me-checked-offline-with-a-fake-model-only",
+    "title": "Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)",
+    "section": "",
+    "text": "Live OpenRouter calls: the two model ids (stealth/space-bunny-alpha, nvidia/nemotron-3-super-120b-a12b:free), how reasoning models report empty answers, and the daily-limit message text.\nThe real embedding model in script 10 (sentence-transformers). The fake embedder only checks the code path.\nParquet writing (my sandbox had no pyarrow; the code falls back to csv only when pyarrow is missing)."
+  },
+  {
+    "objectID": "scripts/README_PIPELINE.html#fix-before-the-final-run",
+    "href": "scripts/README_PIPELINE.html#fix-before-the-final-run",
+    "title": "Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)",
+    "section": "",
+    "text": "Candidate file (script 06 warnings): Idaho, Nebraska and South Dakota have no Democrat listed; Idaho’s polls show David Roth as Democrat; Alaska lists 3 Republicans. Edit OVERRIDES after checking Ballotpedia.\nNews headlines are weak (many have nothing to do with the Senate). Skip --news for the first runs.\nDEM_NOT_UP / REP_NOT_UP (34 / 31) are copied from your simulation script; check them.\nRaw data should be in data/01-raw_data/ per the assignment; scripts 02/03 still write to data/.\nCandidate order is randomised per persona (column left_first); keep it, or say why not."
+  },
+  {
+    "objectID": "scripts/README_PIPELINE.html#limits-to-write-about",
+    "href": "scripts/README_PIPELINE.html#limits-to-write-about",
+    "title": "Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)",
+    "section": "",
+    "text": "5 personas per state gives a standard error of about 22 points on a share near 50%. The test run checks the code, not the election.\nThe forecast spread covers persona sampling only. Add model and repeat spread, calibration error and a shared national error before the final run (see the comments in script 11).\nOur local embedder is symmetric and small; Heath & Alexander used Gemini Embedding 2 with asymmetric embeddings.\nDesign B and SSR for vote choice is an adaptation of a method tested on 0-100 ratings."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "",
+    "text": "Include a map of the US with eligible states highlighted with projected result - could also include whether the forecasted result is a flip (exemplar can be seen in Reuters article)\nInclude summary of battleground states: https://ballotpedia.org/U.S._Senate_battlegrounds,_2026 Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas\nInclude graphic/table with uncertainty measurements"
+  },
+  {
+    "objectID": "index.html#senate-results",
+    "href": "index.html#senate-results",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "",
+    "text": "Include a map of the US with eligible states highlighted with projected result - could also include whether the forecasted result is a flip (exemplar can be seen in Reuters article)\nInclude summary of battleground states: https://ballotpedia.org/U.S._Senate_battlegrounds,_2026 Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas\nInclude graphic/table with uncertainty measurements"
+  },
+  {
+    "objectID": "index.html#crosstabs",
+    "href": "index.html#crosstabs",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Crosstabs",
+    "text": "Crosstabs"
+  },
+  {
+    "objectID": "index.html#composition-of-sample",
+    "href": "index.html#composition-of-sample",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Composition of Sample",
+    "text": "Composition of Sample"
+  },
+  {
+    "objectID": "index.html#news-summaries",
+    "href": "index.html#news-summaries",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "News Summaries",
+    "text": "News Summaries"
+  },
+  {
+    "objectID": "index.html#api-costs",
+    "href": "index.html#api-costs",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "API Costs",
+    "text": "API Costs"
+  },
+  {
+    "objectID": "index.html#internal-validation",
+    "href": "index.html#internal-validation",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Internal Validation",
+    "text": "Internal Validation"
+  },
+  {
+    "objectID": "index.html#models-and-ai-prompts",
+    "href": "index.html#models-and-ai-prompts",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Models and AI Prompts",
+    "text": "Models and AI Prompts"
+  },
+  {
+    "objectID": "index.html#methods",
+    "href": "index.html#methods",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Methods",
+    "text": "Methods\nAll results were generated from synthetic respondents. These are not survey results.\n\nData\nTo generate realistic digital twins, respondent records were first obtained from the 2024 Cooperative Election Study (CES), consisting of 60,000 US adults’ responses which are nationally representative. Of these respondents, 38,307 were in one of the 35 Senate-race states, and 23,025 of that subset were assigned a weight (“vvweight_post”) which we used as probabilities when sampling for personas from each state (33 with 2 special races). According to the 2024 CES Codebook, “vvweight_post” is recommended for research relating to the characterization of voters’ opinions, behaviours, or traits, where “vv” means “voter validated” [CITATION]. The “post” designation indicates that the voter is not only registered but completed both pre-election and post-election waves of the study. We relied on vvweight-post given that we were interested in voter behaviour and that the features we chose to construct our personas were taken from both Pre- and Post-election questionnaires.\n\n\nPersonas\nIn particular, we focused on the following variables: age, education, race, gender, household income, 5-point ideology, and 7-point party identification.\n\n\nBias and Variance\nA known limitation of LLM synthetic voting is partisan bias, dependent on the model [CITATION]. As a remedy, synthetic votes would be weighted with polling data obtained from PollResults, an open polling data platform that compiles and aggregates polls originally tracked by The New York Times pertaining to the Senate races [CITATION and NOTE that this still has to be done on our full run].\nAn additional limitation of LLM synthetic voting is mode collapse, where an LLM generates responses that concentrate around the mode of the true distribution and results in synthetic distributions having unrealistically low variance, with consequences such as overconfident estimates and inaccurate power calculations [Heath and Alexander YEAR]. As such, Semantic Similarity Rating (SSR) was used.\n\n\nSampling\nSampling was conducted by state. 100 personas were sampled per state. Some states had less than 100 respondents in the 2024 CES data, which included Wyoming (54/95 respondents with a weight) and Alaska (88/128 respondents with a weight). For consistency, sampling with replacement was used across all 35 states.\n\n\nPrompts and models\nEach persona was asked how it would vote in its stat’s Senate race. Candidate order was randomised for each persona. Design B (what we did in the test run) asked the persona to provide a free-text answer, which would then be sent to our embedding model. Every prompt was sent to the following models: [LIST MODELS USED HERE] via OpenRouter, 3 times each, at temperature [INSERT TEMPERATURE]. Below, we record the number of calls failed or which came back empty, by model:\n\nModel 1:\nModel 2:\nModel 3:\nModel 4:\n\n\n\nTurning Answers into Voting Probabilities\nFor design B we used Semantic Similarity Rating (SSR) [Maier et al. 2025; Heath and Alexander 2026]. We embedded each answer and five statements written for that race, from “I will definitely vote for [Democrat]” to “I will definitely vote for [Republican]”, with an undecided statement in the middle. We took the cosine similarity between the answer and each statement, rescaled the five values to 0 to 1, and applied a softmax with temperature 0.25. The two statements on each side were summed, which gives p(left), p(Republican) and p(other) for each answer. Heath and Alexander tested SSR on 0 to 100 ratings, so using it for vote choice is our adaptation. We used [the local all-MiniLM-L6-v2 model / Gemini Embedding 2], [which differs from their asymmetric Gemini setup]. For design C we parsed the percentages and rescaled totals between 90 and 110 to 100. Answers that were empty, refused or could not be parsed were counted and left out.\n\n\nTesting and Checks\nAs a test run, we utilized Poolside’s Laguna (poolside/laguna-s-2.1:free) and Nvidia’s Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free). 5 personas were drawn fron each state with repeated sampling [VERIFY] and SSR embedding was conducted using a local embedding model (all-MiniLM-L6-v2).\nWe also did a simulation to understand how our final dataset would be constructed.\nNews summaries were obtained for the dates of October 27th, 29th, and the 31st."
+  },
+  {
+    "objectID": "index.html#limitations",
+    "href": "index.html#limitations",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Limitations",
+    "text": "Limitations\n\nBecause we used real polling data to correct for biased LLM responses via weighted averages, forecast is no longer an independent test of the models\nFor states that had no real polling data available, the “average gap” was applied. However, this assumes the model’s lean is the same everywhere when some states may lean more Democratic/more Republican.\nThe gap between synthetic vote distributions and polling data is ultimately measured against polls, and polls have their own error which may be correlated across states [CITATION - Shirani-Mehr et al., 2018]. However, we hoped to mitigate this by relying on a poll aggregator (PollResults).\nIn order to apply SSR, we had to flatten the candidate choices in each state to 2 sides to create a scale from Democrat to Republican, or Independent to Republican, depending on which party candidates belonged to. Minor candidates and “don’t know” answers are not fully reflected in these results.\nDue to cost reasons, we could not update the news summaries everyday. Instead, news summaries were provided and the model was re-run on October 27th, 29th, and 31st. While [CITATION - PAPER] stated that adding party identification to persona descriptions ultimately reduced the impact that news had in impacting synthetic voting results, further research could be done as to how different news diets or differing amounts of news could impact synthetic voting results.\nOur original plan was to take data from multiple pollsters and divide them into either a training or validation set, use the training set to correct for bias with our model, and then compare it against aggregated results from our validation set. However, due to time constraints, we were unable to use this approach.\nNo real data to validate our model against, as 2026 midterms have not yet occurred."
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "References",
+    "text": "References\n\nDesign references:\n\n\nhttps://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false\nhttps://www.politico.com/2024-election/results/senate/\nhttps://apps.npr.org/2024-election-results/senate.html\nhttps://newsinteractives.cbc.ca/elections/us/2024/results/\nhttps://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/"
+  },
+  {
+    "objectID": "index.html#models-used",
+    "href": "index.html#models-used",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "Models Used",
+    "text": "Models Used"
+  },
+  {
+    "objectID": "index.html#ai-prompts",
+    "href": "index.html#ai-prompts",
+    "title": "Synthetic Voting for 2026 U.S Senate Midterm Elections",
+    "section": "AI Prompts",
+    "text": "AI Prompts"
+  }
+]
