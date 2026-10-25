@@ -29,7 +29,14 @@ MODELS = {
 # Embedding model for SSR (script 10). "local" needs: pip install sentence-transformers
 EMBEDDER = "local"
 LOCAL_EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-OPENROUTER_EMBED_MODEL = "openai/text-embedding-3-small"   # only used with --embedder openrouter
+OPENROUTER_EMBED_MODEL = "google/gemini-embedding-2"   # the model Heath & Alexander used; --embedder openrouter
+                                                      # $0.20 per million tokens (":batch" variant $0.10), 8,192-token limit
+EMBED_DIMENSIONS = None   # e.g. 768 to shrink the vectors (the model allows 128-3072). None = model default (3072)
+# Asymmetric embedding (answers as "queries", anchors as "documents"), as in Heath & Alexander 2026.
+# HOW to ask for it through OpenRouter is NOT confirmed: check the Gemini Embedding 2 documentation
+# (task types or text prefixes) and then fill these in. Empty strings = no asymmetric mode.
+EMBED_QUERY_PREFIX = ""
+EMBED_DOC_PREFIX = ""
 SSR_TEMPERATURE = 0.25    # Heath & Alexander Methods use 0.25 (their Results say 0.2)
 
 # Date the news headlines and polls were collected (write it in the paper)
