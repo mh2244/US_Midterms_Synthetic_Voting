@@ -283,6 +283,8 @@ Our original plan was to take data from multiple pollsters and divide them into 
 
 Furthermore, several limitations arise from applying SSR, which Heath and Alexander applied to a scale of 0 to 100 ratings, to vote choice [@heath2026]. There is no fitted temperature, whereas Heath and Alexander fit theirs on their own data. Vote choice is not a scale, and our middle anchor is a separate category. We keep only the left, Republican, and other weights, which loses detail but fits a two-sided forecast. SSR is meant to address the mode collapse problem, and we can test this by comparing Design B with Design C.
 
+Finally, future iterations of this project could experiment with how polling data and synthetic data are weighted and averaged together to correct for bias. In our project, we applied a placeholder shrinkage strength of $k = 3.0$. 
+
 ## References
 
 ::: {#refs}
