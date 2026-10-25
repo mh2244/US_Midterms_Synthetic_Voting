@@ -14,8 +14,8 @@ from pathlib import Path
 
 #### Settings you are likely to change ####
 SEED = 2026               # one seed for every random step, so reruns match
-N_PER_STATE = 5           # personas per state. Test run = 5; the real run was planned at 100
-N_REPEATS = 1             # times each prompt is sent to each model (planned: 3)
+N_PER_STATE = 100           # personas per state. Test run = 5; the real run was planned at 100
+N_REPEATS = 3             # times each prompt is sent to each model (planned: 3)
 N_DRAWS = 1000            # simulated outcomes per state and model (same as the simulated data)
 
 # Short names are used in the data; the values are the OpenRouter model ids.

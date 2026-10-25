@@ -3,9 +3,15 @@ project:
   output-dir: docs
 
 website:
+  title: "2026 U.S. Senate: synthetic forecast"
   page-footer:
-    center: "[Code on GitHub](https://github.com/mh2244/US_Midterms_Synthetic_Voting)"
+    left: "Maggie, Coco, Amelia"
+    right: "[Code on GitHub](https://github.com/mh2244/US_Midterms_Synthetic_Voting)"
 
 format:
   html:
-    theme: default
+    theme: cosmo
+    toc: true
+    toc-location: left
+    smooth-scroll: true
+    page-layout: full
