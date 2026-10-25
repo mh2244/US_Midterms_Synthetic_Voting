@@ -3,6 +3,19 @@ To-Do List and Notes
 - Senate seems to have the most polling data?? Number of races will depend on number of seats up for election. 36 gubernatorial races, all 435 house seats. 
 - Will be using Python
 
+Notes October 25th
+Maggie:
+- In the scripts, there are 2 designs, Design B and Design C. Design B is scored with SSR, I believe, but Design C is not.
+If we don't have enough time to test and compare both designs, then go with Design B.
+- Script 15 is supposed to create a summary bar like sample-politico.png
+- Will have to double-check that all the citations were done correctly
+- Still need to cite the websites that I referenced for design inspo? Currently, they are just a bunch of links at the very bottom of the reference section
+- AI statement in README needs to name each model with dated idenfier, what it was used for, whether it was used through a coding agent
+- Synthetic-results notice must sit at top. Needs some kind of disclosure box
+- Need to do some kind of internal validation check (e.g. asking LLM based on its persona, what state it lives in)
+- Double check Python version and packages citations (were all packages cited?)
+- Ensure that project folder is organized with appropriate naming conventions.
+- Can delete "New folder" and sample exemplar figures subfolder once our actual figures have been generated. I just included these so we can reference them when making our own.
 
 Notes October. 24
 - Coco will run full model queries

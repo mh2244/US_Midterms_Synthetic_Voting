@@ -1,10 +1,24 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Synthetic Voting for the 2026 U.S. Senate Midterm Elections",
+    "section": "",
+    "text": "https://www.politico.com/2024-election/results/senate/"
+  },
+  {
+    "objectID": "index.html#party-is-projected-to-win-with-amount.",
+    "href": "index.html#party-is-projected-to-win-with-amount.",
+    "title": "Synthetic Voting for the 2026 U.S. Senate Midterm Elections",
+    "section": "",
+    "text": "https://www.politico.com/2024-election/results/senate/"
+  },
+  {
     "objectID": "index.html#senate-results",
     "href": "index.html#senate-results",
     "title": "Synthetic Voting for the 2026 U.S. Senate Midterm Elections",
     "section": "Senate Results",
-    "text": "Senate Results\n\n\n\n\nFrom Reuters (https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/)\n\n\n\n\n\nFrom NPR (https://apps.npr.org/2024-election-results/senate.html)\n\n\n[TO DO: Include a map of the US with the eligible states highlighted by projected result. The map could also show whether the forecasted result is a flip (the Reuters figure above is an exemplar). Include a summary of the battleground states listed by Ballotpedia (Ballotpedia 2026), which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]"
+    "text": "Senate Results\n\n\n\n\nFrom Reuters (https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/)\n\n\n\n\n\nFrom NPR (https://apps.npr.org/2024-election-results/senate.html)\n\n\n[TO DO: Include a map of the US with the eligible states highlighted by projected result. The map could also show whether the forecasted result is a flip (the Reuters figure above is an exemplar). Include a summary of the battleground states listed by Ballotpedia (Ballotpedia 2026), which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]\n\nIn the scripts, there are 2 designs (Design B and Design C–basically it asks the LLM to return the answer in a certain way, which will affect how SSR works). Not sure if we will be able to test both designs, but if not, I believe Design B is preferred.\nDouble-check how references should be done (in a ref.bib file or hyperlink to the source)"
   },
   {
     "objectID": "index.html#crosstabs",
