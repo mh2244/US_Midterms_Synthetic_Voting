@@ -9,13 +9,15 @@ link-citations: true
 
 ## [PARTY] is projected to win with [AMOUNT].
 
+![https://www.politico.com/2024-election/results/senate/](New folder/sample-politico.png)
+
 ## Senate Results
 
 <!-- The two images below are design references only. Delete them (and the folder sample-figures-delete-later) before submission. -->
 
-![From Reuters (https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/)](sample-figures-delete-later/sample-reuters.png)
+![From Reuters (https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/)](New folder/sample-reuters.png)
 
-![From NPR (https://apps.npr.org/2024-election-results/senate.html)](sample-figures-delete-later/sample-npr-senate-chart.png)
+![From NPR (https://apps.npr.org/2024-election-results/senate.html)](New folder/sample-npr-senate-chart.png)
 
 [TO DO: Include a map of the US with the eligible states highlighted by projected result. The map could also show whether the forecasted result is a flip (the Reuters figure above is an exemplar). Include a summary of the battleground states listed by Ballotpedia [@ballotpedia2026], which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]
 
