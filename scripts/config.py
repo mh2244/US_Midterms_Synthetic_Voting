@@ -10,6 +10,8 @@
 #   (a line such as OPENROUTER_API_KEY=sk-or-...). Put .env in .gitignore.
 
 import os
+import re
+from datetime import date
 from pathlib import Path
 
 #### Settings you are likely to change ####
@@ -73,27 +75,32 @@ AS_OF = RUN if NEWS_RUN else "2026-10-27"
 
 #### Paths (relative to the project root) ####
 DATA = Path("data")
-ANALYSIS = DATA / "02-analysis_data"
+SHARED_ANALYSIS = DATA / "02-analysis_data"
+RUN = os.environ.get("RUN", "").strip()
+if RUN and RUN != "nonews":
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", RUN):
+        raise ValueError("RUN must be nonews or YYYY-MM-DD")
+    date.fromisoformat(RUN)  # reject invalid calendar dates as well
+# Shared source tables stay in the base directory. Experiment outputs are isolated.
+ANALYSIS = SHARED_ANALYSIS / f"run_{RUN}" if RUN else SHARED_ANALYSIS
 RESULTS = DATA / "03-results"
+FIGURES = Path("docs/figures")
+if RUN:
+    RESULTS = RESULTS / f"run_{RUN}"
+    FIGURES = FIGURES / f"run_{RUN}"
 CES_FILE = DATA / "ces2024_senate_demographics.csv"
 CANDIDATES_RAW = DATA / "senate_candidates_2026.csv"
-NEWS_FILE = DATA / "news_google" / "news_google.csv"   # OLD headline file (deleted); Amelia replaces it
-# One merged news summary per run day, written by the news step (Amelia). Script 08 puts its text
-# in every prompt of that run. Plain text, about 150-300 words.
-NEWS_SUMMARY_FILE = DATA / "news" / f"summary_{AS_OF}.txt"
+NEWS_FILE = DATA / "news" / "news_context.csv"
+NEWS_SUMMARIES_FILE = DATA / "news" / "persona_news_summaries.csv"
 POLLS_FILE = DATA / "polling_data" / "02-analysis_data" / "senate_polls_2026_general.csv"
 
-NOMINEES_FILE = ANALYSIS / "senate_nominees_2026.csv"
-CANDIDATES_CLEAN = ANALYSIS / "candidates_clean.csv"
-PERSONAS_FILE = ANALYSIS / "personas.parquet"
-# Personas are shared by all runs (same people every day, so runs can be compared person by
-# person). Everything after them is stored per run.
-RUN_DIR = ANALYSIS / f"run_{RUN}"
-RUN_RESULTS = RESULTS / f"run_{RUN}"
-PROMPTS_FILE = RUN_DIR / "prompts.parquet"
-RESPONSES_FILE = RUN_DIR / "responses.parquet"
-SCORES_FILE = RUN_DIR / "scores.parquet"
-FORECAST_FILE = RUN_RESULTS / "forecast.parquet"
+NOMINEES_FILE = SHARED_ANALYSIS / "senate_nominees_2026.csv"
+CANDIDATES_CLEAN = SHARED_ANALYSIS / "candidates_clean.csv"
+PERSONAS_FILE = SHARED_ANALYSIS / "personas.parquet"
+PROMPTS_FILE = ANALYSIS / "prompts.parquet"
+RESPONSES_FILE = ANALYSIS / "responses.parquet"
+SCORES_FILE = ANALYSIS / "scores.parquet"
+FORECAST_FILE = RESULTS / "forecast.parquet"
 
 STATE_ABBR = {
     "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",

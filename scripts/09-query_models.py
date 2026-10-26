@@ -173,7 +173,11 @@ for m in short_names:
 try:
     existing = config.read_table(config.RESPONSES_FILE)
     existing["error"] = existing["error"].fillna("")
-    kept = existing[existing["error"] == ""]            # failed rows are tried again
+    valid = existing["error"].eq("") & existing["prompt_id"].isin(prompts["prompt_id"])
+    valid &= existing["model"].isin(short_names) & existing["repeat"].between(1, args.repeats)
+    valid &= existing["model_requested"].eq(existing["model"].map(config.MODELS))
+    valid &= existing["model_returned"].fillna("").str.startswith("MOCK-").eq(args.mock)
+    kept = existing.loc[valid].copy()  # exclude obsolete experiments and mock/real mixtures
 except (FileNotFoundError, OSError):
     kept = pd.DataFrame()
 

@@ -1,124 +1,111 @@
 #### Preamble ####
-# Purpose: Builds the headline block for the top of the website: one sentence on chamber control
-#          and a seat bar (Democratic seats not up, Democratic wins, independent wins, Republican
-#          wins, Republican seats not up). Written as a small file that index.qmd includes.
-# Author: (group)
-# Date: 25 October 2026
+# Purpose: Summarizes forecast draws as state-level win probabilities and plots
+#          stacked horizontal bars for the Democratic/independent and Republican sides.
+# Author: Jingxuan Feng
+# Date: 26 October 2026
+# Contact: amelia.f.feng@outlook.com
 # License: MIT
-# Pre-requisites: Run scripts/11-build_forecast.py first. No packages beyond pandas and numpy.
-# Any other information needed? Run from the project root:
-#   python scripts/15-make_summary_bar.py
-#   python scripts/15-make_summary_bar.py --note "Test run with 5 personas per state."
-# Output: includes/forecast_summary.md  (index.qmd has {{< include includes/forecast_summary.md >}})
-#   The file is an HTML block inside a ```{=html} fence, so Quarto does not read the indented
-#   lines as code.
-#
-# HOW the numbers are made: for every draw of every model we count the races the Democrat wins,
-# the races an independent wins, and the races the Republican wins. The bar shows the MEDIAN of
-# each count over all draws and models (models count equally). The sentence reports how often
-# the Republicans keep control, as a count out of 100 draws, not a percentage with decimals.
-# HOW control is defined (same rule as script 11): Vice President Vance (Republican) breaks
-#   50-50 ties, so Republicans control the Senate with 50 or more seats whichever side the
-#   independents join. Below 50, Democrats control alone with 51; otherwise control depends on
-#   which side the independents (Osborn, Achilles, Bengs) caucus with.
-# LIMITS to write about:
-#   - An independent who wins is NOT counted as a Democratic seat here.
-#   - The bar uses medians, so the three counts always add to the number of races even when
-#     individual draws differ a lot. The 80% range is printed under the bar.
-#   - DEM_NOT_UP and REP_NOT_UP (34 and 31) were checked on 2026-10-25; see script 11.
+# Pre-requisites: Run 11-build_forecast.py; install pandas numpy matplotlib pyarrow.
+# Run from the project root: python scripts/15-make_summary_bar.py
+# Outputs: data/03-results/win_probabilities.csv and
+#          docs/figures/forecast_win_probability_bar.png
+# Each draw counts once, using its saved winner (including tie-break results).
+# These are simulated win frequencies, not vote shares or calibrated election odds.
 
-#### Workspace setup ####
-import argparse
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 
 import config
 
-ap = argparse.ArgumentParser()
-ap.add_argument("--dem-not-up", type=int, default=34)
-ap.add_argument("--rep-not-up", type=int, default=31)
-ap.add_argument("--note", default="", help="short line under the bar, e.g. 'Test run: not a forecast.'")
-ap.add_argument("--updated", default=config.AS_OF, help="date shown on the page (polls and news as of)")
-args = ap.parse_args()
-
-BLUE, RED, GREY_BLUE = "#2166ac", "#b2182b", "#5b7f95"
-DARK_BLUE, DARK_RED = "#14385f", "#6e1020"     # seats not up for election
-OUT = Path("includes")
-OUT.mkdir(exist_ok=True)
-
-#### Counts per draw ####
-forecast = config.read_table(config.FORECAST_FILE)
-print(f"Summary bar from run {config.RUN}")
-nominees = pd.read_csv(config.NOMINEES_FILE)
-n_races = nominees["state"].nunique()
-assert args.dem_not_up + args.rep_not_up + n_races == 100, \
-    f"Seats not up ({args.dem_not_up} + {args.rep_not_up}) plus {n_races} races must equal 100"
-
-results = forecast[["model", "draw", "state", "winner"]].drop_duplicates()
-by_draw = (results.assign(dem=results["winner"] == "Democratic",
-                          ind=results["winner"] == "Independent",
-                          rep=results["winner"] == "Republican")
-           .groupby(["model", "draw"])[["dem", "ind", "rep"]].sum())
-assert (by_draw.sum(axis=1) == n_races).all(), "A draw does not have one winner per race"
-
-dem = int(round(by_draw["dem"].median()))
-ind = int(round(by_draw["ind"].median()))
-rep = n_races - dem - ind                      # keeps the bar at exactly 100 seats
-dem_total = args.dem_not_up + by_draw["dem"]
-rep_total = args.rep_not_up + by_draw["rep"]
-per_100 = int(round(float((rep_total >= 50).mean()) * 100))        # Republicans keep control
-dem_alone_100 = int(round(float((dem_total >= 51).mean()) * 100))  # Democrats win 51 without independents
-lo, hi = (int(x) for x in np.percentile(dem_total, [10, 90]))
-n_draws = by_draw.groupby("model").size().iloc[0]
-n_models = by_draw.index.get_level_values("model").nunique()
-
-#### Sentence ####
-if per_100 >= 50:
-    headline = f"Republicans keep control of the Senate in {per_100} of 100 simulated outcomes."
-else:
-    headline = (f"Republicans lose control of the Senate in {100 - per_100} of 100 simulated outcomes; "
-                f"Democrats reach 51 seats on their own in {dem_alone_100}.")
-
-#### HTML ####
-def seg(seats, color, label):
-    return (f'<div class="seg" style="width:{seats}%;background:{color}" title="{label}: {seats}"></div>'
-            if seats > 0 else "")
+BLUE, RED, INDEPENDENT = "#2166ac", "#b2182b", "#5b7f95"
 
 
-dem_all, rep_all = args.dem_not_up + dem, args.rep_not_up + rep
-ind_label = f'<div class="mid"><span class="num" style="color:{GREY_BLUE}">{ind}</span> IND</div>' if ind else ""
-bar = (seg(args.dem_not_up, DARK_BLUE, "Democratic seats not up") + seg(dem, BLUE, "Democratic wins")
-       + seg(ind, GREY_BLUE, "Independent wins") + seg(rep, RED, "Republican wins")
-       + seg(args.rep_not_up, DARK_RED, "Republican seats not up"))
-alt = (f"Seat bar. Democrats {dem_all} seats ({args.dem_not_up} not up for election), "
-       f"Republicans {rep_all} seats ({args.rep_not_up} not up)"
-       + (f", independents {ind}" if ind else "") + ". Median of the simulated outcomes.")
-note = f'<p class="bar-note">{args.note}</p>' if args.note else ""
+def summarize(forecast, nominees):
+    """Count one saved winner per state/model/draw, checking both party rows."""
+    required = {"state", "model", "draw", "party", "winner"}
+    if forecast.empty or not required <= set(forecast.columns):
+        raise ValueError("Forecast is empty or missing required columns")
+    if nominees["state"].duplicated().any():
+        raise ValueError("Nominees must contain one row per state")
+    if forecast[list(required)].isna().any().any():
+        raise ValueError("Forecast contains missing identifiers, parties or winners")
+    keys = ["state", "model", "draw"]
+    if forecast.duplicated(keys + ["party"]).any():
+        raise ValueError("Duplicate party rows in a forecast draw")
+    groups = forecast.groupby(keys)
+    if not groups.size().eq(2).all() or not groups["winner"].nunique().eq(1).all():
+        raise ValueError("Each draw must contain two party rows and one consistent winner")
+    checked = forecast.merge(nominees[["state", "left_party"]], on="state", how="left", validate="many_to_one")
+    if checked["left_party"].isna().any():
+        raise ValueError("Forecast state missing from nominees")
+    if not checked["left_party"].isin(["Democratic", "Independent"]).all():
+        raise ValueError("Expected a Democratic or independent left-side candidate")
+    if not (checked["party"].eq("Republican") | checked["party"].eq(checked["left_party"])).all():
+        raise ValueError("Forecast party does not match the candidate table")
+    if not (checked["winner"].eq("Republican") | checked["winner"].eq(checked["left_party"])).all():
+        raise ValueError("Forecast winner does not match the candidate table")
+    draws = checked.drop_duplicates(keys).copy()
+    draws["left_win"] = draws["winner"].eq(draws["left_party"])
+    summary = draws.groupby(["state", "model"]).agg(
+        n_draws=("draw", "size"), p_left_win=("left_win", "mean")
+    ).reset_index()
+    summary["p_rep_win"] = 1 - summary["p_left_win"]
+    return summary.merge(nominees[["state", "left_party"]], on="state", validate="many_to_one")
 
-html = f"""```{{=html}}
-<div class="forecast-summary">
-  <p class="headline">{headline}</p>
-  <div class="bar" role="img" aria-label="{alt}">
-    {bar}
-    <div class="line50" title="51 seats is a majority"></div>
-  </div>
-  <div class="bar-labels">
-    <div class="left"><span class="num" style="color:{BLUE}">{dem_all}</span> DEM<br><small>{args.dem_not_up} seats not up</small></div>
-    {ind_label}
-    <div class="right">REP <span class="num" style="color:{RED}">{rep_all}</span><br><small>{args.rep_not_up} seats not up</small></div>
-  </div>
-  <p class="bar-note">Median seats over {n_models * n_draws:,} simulated outcomes ({n_models} models x {n_draws:,} draws).
-  In 80 of 100 outcomes the Democrats hold between {lo} and {hi} seats. Dashed line: 50 seats; 51 is a majority.
-  Seats not up for election are held constant.</p>
-  {note}
-</div>
-```
-"""
-(OUT / "forecast_summary.md").write_text(html)
 
-print(f"Saved {OUT / 'forecast_summary.md'}")
-print(headline)
-print(f"Median Democratic wins {dem}, independent wins {ind}, Republican wins {rep} (of {n_races} races)")
-print(f"Democratic total {dem_all}, Republican total {rep_all}; 80% range of Democratic seats {lo}-{hi}")
+def main():
+    forecast = config.read_table(config.FORECAST_FILE)
+    nominees = pd.read_csv(config.NOMINEES_FILE)
+    summary = summarize(forecast, nominees)
+    models = sorted(summary["model"].unique())
+    order = summary.groupby("state")["p_left_win"].mean().sort_values().index
+    parties = nominees.set_index("state")["left_party"]
+    y = np.arange(len(order))
+    fig, axes = plt.subplots(
+        1, len(models), figsize=(5.1 * len(models), 0.30 * len(order) + 2.3),
+        sharey=True, squeeze=False,
+    )
+    for ax, model in zip(axes[0], models):
+        values = summary[summary["model"] == model].set_index("state").reindex(order)
+        available = values["p_left_win"].notna().to_numpy()
+        left = values.loc[available, "p_left_win"].to_numpy() * 100
+        colors = [BLUE if parties[state] == "Democratic" else INDEPENDENT
+                  for state in order[available]]
+        ax.barh(y[available], left, color=colors, height=0.72)
+        ax.barh(y[available], 100 - left, left=left, color=RED, height=0.72)
+        for pos, value in zip(y[available], left):
+            if value >= 12:
+                ax.text(value / 2, pos, f"{value:.0f}%", ha="center", va="center", color="white", fontsize=7)
+            if 100 - value >= 12:
+                ax.text((value + 100) / 2, pos, f"{100-value:.0f}%", ha="center", va="center", color="white", fontsize=7)
+        for pos in y[~available]:
+            ax.text(50, pos, "No forecast", ha="center", va="center", fontsize=7, color="gray")
+        ax.axvline(50, color="black", lw=0.7, linestyle="--", alpha=0.5)
+        ax.set(xlim=(0, 100), xlabel="Share of simulated wins (%)", title=model)
+        ax.spines[["top", "right"]].set_visible(False)
+    axes[0, 0].set_yticks(y, [s + ("*" if parties[s] == "Independent" else "") for s in order], fontsize=8)
+    axes[0, 0].invert_yaxis()
+    fig.suptitle("Senate simulation: state win probabilities", fontsize=13)
+    fig.legend(handles=[Patch(color=BLUE, label="Democratic"), Patch(color=INDEPENDENT, label="Independent*"),
+                        Patch(color=RED, label="Republican")], loc="lower center", bbox_to_anchor=(0.5, 0.045), ncol=3, frameon=False)
+    fig.text(0.02, 0.015, "* Independent opposition candidate. Each draw counts once.\n"
+             "Simulated win frequencies, not vote shares; reliability depends on the forecast inputs.", fontsize=8)
+    fig.tight_layout(rect=(0, 0.10, 1, 0.96))
+    out = config.FIGURES
+    out.mkdir(parents=True, exist_ok=True)
+    config.RESULTS.mkdir(parents=True, exist_ok=True)
+    summary.to_csv(config.RESULTS / "win_probabilities.csv", index=False)
+    fig.savefig(out / "forecast_win_probability_bar.png", dpi=200)
+    plt.close(fig)
+    print(f"Saved {config.RESULTS / 'win_probabilities.csv'}")
+    print(f"Saved {out / 'forecast_win_probability_bar.png'}")
+
+
+if __name__ == "__main__":
+    main()
