@@ -15,10 +15,8 @@
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 from datetime import datetime, timezone
-from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -110,11 +108,13 @@ def save(path, rows):
 
 def main():
     parser = argparse.ArgumentParser(description="Select 3/3/3 news items per persona and concatenate their existing summaries; no API calls.")
-    parser.add_argument("--run", default=os.environ.get("RUN") or datetime.now(ZoneInfo("America/Toronto")).date().isoformat())
+    parser.add_argument("--run", default=config.RUN)
     parser.add_argument("--seed", type=int, default=config.SEED)
     parser.add_argument("--out", type=Path, default=config.NEWS_SUMMARIES_FILE)
     parser.add_argument("--dry-run", action="store_true", help="Preview selections without writing output")
     args = parser.parse_args()
+    if args.run != config.RUN:
+        parser.error("--run must match config.RUN; set RUN=YYYY-MM-DD for all stages")
     if args.run == "nonews":
         parser.error("The nonews baseline does not require news summaries")
     try:

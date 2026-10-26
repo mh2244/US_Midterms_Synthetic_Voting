@@ -99,11 +99,11 @@ def main():
     fig.tight_layout(rect=(0, 0.10, 1, 0.96))
     out = config.FIGURES
     out.mkdir(parents=True, exist_ok=True)
-    config.RESULTS.mkdir(parents=True, exist_ok=True)
-    summary.to_csv(config.RESULTS / "win_probabilities.csv", index=False)
+    config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
+    summary.to_csv(config.RUN_RESULTS / "win_probabilities.csv", index=False)
     fig.savefig(out / "forecast_win_probability_bar.png", dpi=200)
     plt.close(fig)
-    print(f"Saved {config.RESULTS / 'win_probabilities.csv'}")
+    print(f"Saved {config.RUN_RESULTS / 'win_probabilities.csv'}")
     print(f"Saved {out / 'forecast_win_probability_bar.png'}")
 
 

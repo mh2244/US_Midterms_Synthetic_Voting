@@ -61,6 +61,8 @@ ap.add_argument("--batch-size", type=int, default=1,
 ap.add_argument("--max-tokens", type=int, default=800)
 ap.add_argument("--mock", action="store_true", help="fake answers, no internet")
 args = ap.parse_args()
+if args.repeats < 1 or (args.limit is not None and args.limit < 1):
+    ap.error("--repeats and --limit must be positive")
 
 
 class StopRun(Exception):
@@ -174,6 +176,7 @@ try:
     existing = config.read_table(config.RESPONSES_FILE)
     existing["error"] = existing["error"].fillna("")
     valid = existing["error"].eq("") & existing["prompt_id"].isin(prompts["prompt_id"])
+    valid &= existing["response_text"].fillna("").str.strip().ne("")
     valid &= existing["model"].isin(short_names) & existing["repeat"].between(1, args.repeats)
     valid &= existing["model_requested"].eq(existing["model"].map(config.MODELS))
     valid &= existing["model_returned"].fillna("").str.startswith("MOCK-").eq(args.mock)
@@ -186,6 +189,7 @@ todo = [(rep, m, p) for rep in range(1, args.repeats + 1) for m in short_names
         for p in prompts.itertuples() if (p.prompt_id, m, rep) not in done]
 print(f"{len(prompts)} prompts x {len(short_names)} models x {args.repeats} repeats; "
       f"{len(done)} already answered, {len(todo)} to do")
+required_calls = len(todo)  # count all unfinished work before applying a pilot limit
 if args.limit is not None:
     todo = todo[: args.limit]
     print(f"--limit: doing {len(todo)} this run")
@@ -198,6 +202,7 @@ if not args.mock:
 
 #### Ask ####
 new_rows, errors_in_a_row = [], 0
+stopped = False
 
 
 def save():
@@ -254,6 +259,7 @@ try:
             if not args.mock:                                            # stay under the per-minute limit
                 time.sleep(max(0.0, len(chunk) * args.sleep - (time.time() - t0)))
 except StopRun as stop:
+    stopped = True
     print("\nSTOPPED:", stop)
 finally:
     save()
@@ -268,3 +274,11 @@ if new_rows:
         for (model, err), n in problems.groupby(["model", "error"]).size().items():
             print(f"  {model}: {err}   (x{n})")
 print(f"Saved to {config.RESPONSES_FILE}")
+# A partial run is saved for resuming, but must not trigger downstream forecasting.
+completed_calls = sum(not row["error"] and bool(row["response_text"].strip()) for row in new_rows)
+remaining_calls = required_calls - completed_calls
+if stopped or remaining_calls:
+    print(f"INCOMPLETE: {remaining_calls} calls still need successful answers. "
+          "Progress saved; rerun 09 with the same prompts to continue.")
+    sys.exit(1)
+print("COMPLETE: all requested prompts/models/repeats have successful answers.")
