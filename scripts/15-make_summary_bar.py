@@ -50,6 +50,7 @@ OUT.mkdir(exist_ok=True)
 
 #### Counts per draw ####
 forecast = config.read_table(config.FORECAST_FILE)
+print(f"Summary bar from run {config.RUN}")
 nominees = pd.read_csv(config.NOMINEES_FILE)
 n_races = nominees["state"].nunique()
 assert args.dem_not_up + args.rep_not_up + n_races == 100, \

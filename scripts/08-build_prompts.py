@@ -33,7 +33,8 @@ import config
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--designs", default="B", help="comma list from B,C")
-ap.add_argument("--news", action="store_true", help="include news headlines")
+ap.add_argument("--news", action=argparse.BooleanOptionalAction, default=config.NEWS_RUN,
+                help="include the news (default: on for dated runs, off for RUN=nonews)")
 args = ap.parse_args()
 designs = [d.strip().upper() for d in args.designs.split(",")]
 assert set(designs) <= {"B", "C"}, "designs must be B and/or C"
@@ -91,6 +92,11 @@ personas = config.read_table(config.PERSONAS_FILE)
 nominees = pd.read_csv(config.NOMINEES_FILE).set_index("state")
 rng = np.random.default_rng(config.SEED)
 news_by_state = {s: news_block(config.STATE_NAME[s]) for s in nominees.index} if args.news else {}
+# Stop instead of silently building news prompts that contain no news (paid calls would be wasted)
+if args.news and not any(news_by_state.values()):
+    raise SystemExit(f"Run {config.RUN} needs news, but no news text was found "
+                     f"(expected {config.NEWS_SUMMARY_FILE}). Add the summary, or use RUN=nonews.")
+print(f"Run: {config.RUN}  (news={args.news}; files in {config.RUN_DIR})")
 
 rows = []
 for _, p in personas.iterrows():
@@ -103,8 +109,8 @@ for _, p in personas.iterrows():
             parts.append(news_by_state[p["state"]])
         parts += [p["persona_text"], question]
         rows.append({
-            "prompt_id": f"{p['persona_id']}|{design}|news{int(args.news)}",
-            "persona_id": p["persona_id"], "state": p["state"], "design": design,
+            "prompt_id": f"{p['persona_id']}|{design}|{config.RUN}",
+            "run": config.RUN, "persona_id": p["persona_id"], "state": p["state"], "design": design,
             "news": bool(args.news), "left_first": left_first,
             "prompt_text": "\n\n".join(parts),
         })
@@ -113,6 +119,7 @@ prompts = pd.DataFrame(rows)
 
 #### Checks and save ####
 assert prompts["prompt_id"].is_unique
+assert prompts["news"].eq(args.news).all()
 assert prompts["prompt_text"].str.len().gt(100).all()
 # News headlines may name politicians, so only the persona text is checked for the 2024 vote
 assert not personas["persona_text"].str.contains("Trump|Harris", case=False).any(), "2024 vote leaked into a persona"

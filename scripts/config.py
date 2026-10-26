@@ -60,8 +60,16 @@ EMBED_QUERY_PREFIX = ""
 EMBED_DOC_PREFIX = ""
 SSR_TEMPERATURE = 0.25    # Heath & Alexander Methods use 0.25 (their Results say 0.2)
 
-# Date the news headlines and polls were collected (write it in the paper)
-AS_OF = "2026-10-21"
+# Which run the scripts read and write (scripts 08-13 and 15). Each run gets its own folder, so
+# the three news days and the no-news baseline never overwrite or mix with each other.
+# Planned runs: "2026-10-27", "2026-10-29", "2026-10-31" (with that day's news summary) and
+# "nonews" (baseline, same personas and questions, no news). Change it here, or set it for one
+# command only:   RUN=2026-10-29 python scripts/09-query_models.py
+RUN = os.environ.get("RUN", "2026-10-27")
+NEWS_RUN = RUN != "nonews"          # every dated run includes that day's news; "nonews" does not
+# Date the news and polls were collected (write it in the paper). For "nonews" it is the date of
+# the first news run, which shares its personas and polls.
+AS_OF = RUN if NEWS_RUN else "2026-10-27"
 
 #### Paths (relative to the project root) ####
 DATA = Path("data")
@@ -69,16 +77,23 @@ ANALYSIS = DATA / "02-analysis_data"
 RESULTS = DATA / "03-results"
 CES_FILE = DATA / "ces2024_senate_demographics.csv"
 CANDIDATES_RAW = DATA / "senate_candidates_2026.csv"
-NEWS_FILE = DATA / "news_google" / "news_google.csv"
+NEWS_FILE = DATA / "news_google" / "news_google.csv"   # OLD headline file (deleted); Amelia replaces it
+# One merged news summary per run day, written by the news step (Amelia). Script 08 puts its text
+# in every prompt of that run. Plain text, about 150-300 words.
+NEWS_SUMMARY_FILE = DATA / "news" / f"summary_{AS_OF}.txt"
 POLLS_FILE = DATA / "polling_data" / "02-analysis_data" / "senate_polls_2026_general.csv"
 
 NOMINEES_FILE = ANALYSIS / "senate_nominees_2026.csv"
 CANDIDATES_CLEAN = ANALYSIS / "candidates_clean.csv"
 PERSONAS_FILE = ANALYSIS / "personas.parquet"
-PROMPTS_FILE = ANALYSIS / "prompts.parquet"
-RESPONSES_FILE = ANALYSIS / "responses.parquet"
-SCORES_FILE = ANALYSIS / "scores.parquet"
-FORECAST_FILE = RESULTS / "forecast.parquet"
+# Personas are shared by all runs (same people every day, so runs can be compared person by
+# person). Everything after them is stored per run.
+RUN_DIR = ANALYSIS / f"run_{RUN}"
+RUN_RESULTS = RESULTS / f"run_{RUN}"
+PROMPTS_FILE = RUN_DIR / "prompts.parquet"
+RESPONSES_FILE = RUN_DIR / "responses.parquet"
+SCORES_FILE = RUN_DIR / "scores.parquet"
+FORECAST_FILE = RUN_RESULTS / "forecast.parquet"
 
 STATE_ABBR = {
     "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",

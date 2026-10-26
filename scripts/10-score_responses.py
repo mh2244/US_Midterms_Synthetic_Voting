@@ -198,7 +198,7 @@ assert np.isclose(sums, 1).all(), "Probabilities do not add up to 1"
 
 config.write_table(responses.drop(columns=["response_text"]), config.SCORES_FILE)
 responses[["prompt_id", "model", "repeat", "status", "response_text", "p_left", "p_rep", "p_other"]].to_csv(
-    config.ANALYSIS / "scores_with_text.csv", index=False)   # open this and READ the answers
+    config.RUN_DIR / "scores_with_text.csv", index=False)   # open this and READ the answers
 
 print(f"\nSaved {len(responses)} rows to {config.SCORES_FILE}")
 print("\nStatus by model and design (anything but 'ok' is not scored):")

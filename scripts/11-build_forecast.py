@@ -63,6 +63,7 @@ nominees = pd.read_csv(config.NOMINEES_FILE).set_index("state")
 personas = config.read_table(config.PERSONAS_FILE)
 
 #### Persona-level probabilities ####
+print(f"Run: {config.RUN}  (results in {config.RUN_RESULTS})")
 scores = config.read_table(config.SCORES_FILE)
 scores = scores[(scores["design"] == args.design) & scores["p_left"].notna()]
 per_persona = (scores.groupby(["state", "persona_id", "model"])[["p_left", "p_rep", "p_other"]]
@@ -192,16 +193,16 @@ control = chamber["p_rep_control"]
 assert forecast["share"].between(0, 1).all()
 assert np.isclose(forecast.groupby(["draw", "state", "model"])["share"].sum(), 1).all()
 
-config.RESULTS.mkdir(parents=True, exist_ok=True)
+config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 config.write_table(forecast, config.FORECAST_FILE)
-comparison.round(3).to_csv(config.RESULTS / "state_comparison.csv", index=False)
-polls_df.to_csv(config.RESULTS / "poll_averages.csv", index=False)
-chamber.round(3).to_csv(config.RESULTS / "chamber_summary.csv")
+comparison.round(3).to_csv(config.RUN_RESULTS / "state_comparison.csv", index=False)
+polls_df.to_csv(config.RUN_RESULTS / "poll_averages.csv", index=False)
+chamber.round(3).to_csv(config.RUN_RESULTS / "chamber_summary.csv")
 if len(gap_table):
-    gap_table.to_csv(config.RESULTS / "calibration_gaps.csv", index=False)
+    gap_table.to_csv(config.RUN_RESULTS / "calibration_gaps.csv", index=False)
 
 print(f"\nSaved {len(forecast):,} rows to {config.FORECAST_FILE}")
-print(f"Saved the comparison table to {config.RESULTS / 'state_comparison.csv'}")
+print(f"Saved the comparison table to {config.RUN_RESULTS / 'state_comparison.csv'}")
 print(f"Polls matched for {len(polls_df)} of {len(nominees)} states")
 print(f"\nSenate by model (national error SD = {args.national_sd}). Republicans control with 50+ seats:")
 print(chamber.round(2).to_string())

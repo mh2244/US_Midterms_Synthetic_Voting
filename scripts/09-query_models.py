@@ -164,6 +164,7 @@ def mock_answer(prompt_text, design, model, seed_text):
 
 
 #### Work out what still needs asking ####
+print(f"Run: {config.RUN}  (files in {config.RUN_DIR})")
 prompts = config.read_table(config.PROMPTS_FILE)
 short_names = [m.strip() for m in args.models.split(",")]
 for m in short_names:
@@ -230,7 +231,8 @@ try:
                     stop_signal = stop                                   # keep the answers that did arrive
                     continue
                 new_rows.append({
-                    "prompt_id": p.prompt_id, "persona_id": p.persona_id, "state": p.state, "design": p.design,
+                    "prompt_id": p.prompt_id, "run": config.RUN, "persona_id": p.persona_id,
+                    "state": p.state, "design": p.design,
                     "model": short, "model_requested": config.MODELS[short], "repeat": rep,
                     "queried_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), **result})
                 real_error = result["error"] and result["error"] != "empty_content"

@@ -25,6 +25,7 @@ prompts = config.read_table(config.PROMPTS_FILE)
 responses = config.read_table(config.RESPONSES_FILE)
 scores = config.read_table(config.SCORES_FILE)
 forecast = config.read_table(config.FORECAST_FILE)
+print(f"Testing run {config.RUN}")
 
 #### Settings used by the tests ####
 n_races = 35
@@ -100,6 +101,12 @@ print("Prompts: all tests passed")
 # 8. Complete grid: every prompt answered once per model and repeat
 n_repeats = responses["repeat"].nunique()
 assert len(responses) == len(prompts) * len(models) * n_repeats, "Wrong number of responses"
+# Every prompt and answer belongs to this run (runs must never mix)
+assert prompts["prompt_id"].str.endswith("|" + config.RUN).all(), "A prompt from another run"
+assert responses["prompt_id"].str.endswith("|" + config.RUN).all(), "An answer from another run"
+assert set(responses["prompt_id"]) <= set(prompts["prompt_id"]), "An answer has no matching prompt"
+# Dated runs must contain news; the baseline must not
+assert prompts["news"].eq(config.NEWS_RUN).all(), "News setting does not match the run"
 assert not responses.duplicated(["prompt_id", "model", "repeat"]).any(), "A prompt was answered twice"
 
 # 9. Share of empty or failed answers per model is below the limit
