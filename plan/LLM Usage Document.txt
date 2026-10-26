@@ -1,9 +1,65 @@
 LLM Usage Document
+Updated: 26 October 2026
 
-AI models used: Claude Sonnet 5.5 Medium for clarification on how to plan the analysis, coding scripts, making figures and website design,
-troubleshooting coding errors. Also used Claude Sonnet 5.5 Medium to correct for minor writing/grammar errors after providing rough + final drafts.
-Gemini 3.5 flash-lite also to clarify how to plan the analysis, explaining concepts from papers, troubleshooting coding errors
+1. AI assistance in project development
 
-laguna": "poolside/laguna-s-2.1:free" -- used in test run
-    "nemotron": "nvidia/nemotron-3-ultra-550b-a55b:free", -- used in test run
+Claude Sonnet 5.5 Medium was used to clarify the analysis plan, write scripts,
+make figures, design the website, troubleshoot coding errors, and correct minor
+writing/grammar issues after rough and final drafts were provided.
 
+Gemini 3.5 Flash Lite was also used to clarify the analysis plan, explain concepts
+from papers, and troubleshoot coding errors.
+
+Codex/ChatGPT assistance in this project included code review and edits,
+GitHub Actions and environment setup, pipeline documentation, and explanations
+of the analysis. The exact assistant model version was not recorded here.
+These development-assistance tools are separate from the pipeline models below.
+
+2. Current pipeline configuration: six models
+
+The following are the current configured defaults, not a claim that every planned
+full run has already completed. All six are accessed through OpenRouter. Actual
+runs can use explicit overrides, so recorded output metadata should be used to
+identify which models produced a result.
+
+Model: openai/gpt-4.1-nano
+Stage: scripts/04-collect_news.py
+Purpose: Classify news for US national significance and election relevance;
+produce short, neutral, source-attributed paragraphs; rewrite paragraphs flagged
+by role-consistency rules. Inputs are article titles and RSS/feed excerpts,
+not downloaded full articles. Temperature is 0.1. The model receives a small
+role fact list verified on 26 October 2026. An unresolved flagged paragraph is
+excluded. These checks are not independent verification of article claims.
+The model ID can be overridden with --model or OPENROUTER_NEWS_MODEL.
+
+Model: anthropic/claude-haiku-5.5
+Stage: scripts/09-query_models.py; alias haiku
+Purpose: Generate voting responses from supplied persona descriptions,
+candidate information and, for news runs, the persona's nine news paragraphs.
+
+Model: openai/gpt-6-luna
+Stage: scripts/09-query_models.py; alias luna
+Purpose: The same voting task, providing a model from a different developer.
+
+Model: deepseek/deepseek-v4.1-flash
+Stage: scripts/09-query_models.py; alias deepseek
+Purpose: The same voting task for comparison across models.
+
+Model: google/gemini-3.5-flash-lite
+Stage: scripts/09-query_models.py; alias gemini
+Purpose: The same voting task for comparison across models. This API use is
+separate from its use as a development assistant described above.
+
+Model: google/gemini-embedding-2
+Stage: scripts/10-score_responses.py
+Purpose: Embed each usable Design B answer and five candidate-specific anchor
+statements. Cosine similarities are min-max scaled, passed through softmax,
+and grouped into p_left, p_rep and p_other. This model does not generate voting
+answers or news summaries. Inputs are sent in chunks of at most 100 texts.
+The configured query/document prefixes are empty, so the current use is
+symmetric. SSR temperature 0.25 belongs to the scoring transformation, not a
+text-generation setting. Design C percentages are parsed without SSR.
+
+3. Historical models
+
+Earlier pilots used poolside/laguna-s-2.1:free and nvidia/nemotron-3-ultra-550b-a55b:free for voting responses, sentence-transformers/all-MiniLM-L6-v2 for SSR embeddings, and dots-studio/dots-3-note-preview:free for news screening and summaries.

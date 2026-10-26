@@ -121,15 +121,31 @@ jobs:
             docs/figures/run_${{ steps.run_info.outputs.run_id }}/
           if-no-files-found: warn
 
-      - name: Commit results (also after a failure)
+      - name: Commit answers and scores (always, so paid answers are kept)
         if: ${{ always() && steps.run_info.outputs.run_id != '' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for path in data/news data/polling_data "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}" "docs/figures/run_${RUN}" includes; do
+          for path in data/news data/polling_data "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}/polling_input.csv"; do
             if [ -e "$path" ]; then git add -- "$path"; fi
           done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
-          git commit -m "Forecast run ${RUN} (automatic)"
+          git commit -m "Answers for run ${RUN} (automatic)"
+          # Keep unpublished outputs out of the way during rebase, then restore them.
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash push --include-untracked -m "Unpublished outputs for run ${RUN}"
+            trap 'git stash pop' EXIT
+          fi
+          git pull --rebase
+          git push
+
+      - name: Commit forecast and figures (only if every test passed)
+        if: ${{ success() && steps.run_info.outputs.run_id != '' }}
+        run: |
+          for path in "data/03-results/run_${RUN}" "docs/figures/run_${RUN}" includes; do
+            if [ -e "$path" ]; then git add -- "$path"; fi
+          done
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          git commit -m "Forecast for run ${RUN}, tests passed (automatic)"
           git pull --rebase
           git push

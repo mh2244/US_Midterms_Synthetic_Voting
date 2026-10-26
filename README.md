@@ -1,135 +1,177 @@
 # U.S. Midterm Synthetic Voting
 
-Research project using survey, polling, candidate, and news data to study
-synthetic voter responses in the 2026 U.S. Senate elections.
+This project uses CES survey respondents as synthetic voter personas to study the
+2026 U.S. Senate elections. Four language models answer voting questions; their
+responses are scored and aggregated into simulated state outcomes.
 
-## Data
+**Current design:** 35 states × 100 personas × 4 voting models × 3 repeats =
+**42,000 voting requests per run**, using Design B. News screening and embedding
+requests are additional. Model-derived scores and simulations are not verified
+individual voting probabilities.
 
-- **CES 2024:** demographics, validated-voter weights, and Senate/presidential vote responses from [Harvard Dataverse](https://dataverse.harvard.edu/).
-- **Senate polls:** 2026 general-election polling from [PollResults.org](https://pollresults.org/api/), which uses New York Times polling data.
-- **News:** RSS headlines/excerpts from ten publishers, supplemented by Google News, saved to `data/news/news.csv`. Publisher groups follow [paper section 2.2](paper.pdf#page=4).
-- **Candidates:** 2026 Senate candidate list collected from [Wikipedia](https://en.wikipedia.org/wiki/2026_United_States_Senate_elections) in `data/senate_candidates_2026.csv`.
+## Setup
 
-## News collection
-
-One script: RSS collection, then OpenRouter filtering and prompt paragraphs.
-Set `OPENROUTER_API_KEY` in the project-root `.env` before running:
+Use Python 3.12 (the version used by GitHub Actions). From the project root:
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 python -m pip install -r requirements.txt
-python scripts/04-collect_news.py
 ```
 
-The script reads publisher RSS/Atom feeds first and supplements sparse/failed
-feeds with a Google News `site:domain` query. It checks publisher domains and
-RSS publication timestamps, removes duplicate URLs and repeated titles within a
-publisher, and applies the article limit separately to each publisher.
-Only news published in the **48 hours before the run starts** is eligible, and
-**at most 60 articles per publisher** are saved, with no global cap. Articles are sorted newest first.
-Feeds may contain more candidate records; no linked article pages are downloaded.
-Missing, timezone-free or updated-only dates are skipped rather than guessed.
+Create a local `.env` file:
 
-| Group (`diet`) | Publishers |
+```dotenv
+OPENROUTER_API_KEY=your_key_here
+```
+
+Do not commit `.env`. For GitHub Actions, add the same variable name as a
+repository secret under **Settings → Secrets and variables → Actions**.
+The default news, voting and embedding models all require OpenRouter credits.
+
+## Data and scripts
+
+| Stage | Scripts | What they do |
+|---|---|---|
+| Artificial test data | `00`, `01` | Generate and check fake personas, answers and election outcomes; no model calls |
+| CES survey inputs | `02`, `03` | Download CES 2024 from [Harvard Dataverse](https://dataverse.harvard.edu/) and extract demographics, weights and vote variables |
+| Polling inputs | `polling_data/00`, `polling_data/01` | Download [PollResults.org](https://pollresults.org/api/) records and retain 2026 general-election Senate polls |
+| Candidates | `05`, `06` | Collect the [Wikipedia candidate list](https://en.wikipedia.org/wiki/2026_United_States_Senate_elections), select the main two sides, and flag ambiguities for review |
+| Personas | `07` | Sample validated 2024 voters within each state, with replacement, proportional to `vvweight_post` |
+| News | `04`, `04b` | Collect and screen articles, then assemble nine existing news paragraphs per persona |
+| Prompts and responses | `08`, `09` | Build prompts and query the four voting models |
+| Scoring and forecast | `10`, `11` | Apply SSR or parse percentages; simulate outcomes and compare with polling averages |
+| Checks and figures | `12`, `13`, `15` | Check output consistency; draw outcome distributions and win-probability bars |
+| Persona composition | `14` | Summarize the demographic composition of the persona sample |
+
+All scripts are in [`scripts/`](scripts/). Shared inputs are
+`data/ces2024_senate_demographics.csv`, `data/02-analysis_data/personas.parquet`,
+and `data/02-analysis_data/senate_nominees_2026.csv`.
+Prepare these before running the forecast; the forecast workflow does not rebuild
+personas or candidates. Review candidate warnings rather than assuming scraped
+names are correct.
+
+## Run a news experiment locally
+
+Set the same `RUN` for every step. The planned news runs are `2026-10-27`,
+`2026-10-29`, and `2026-10-31`; the default in `config.py` is `2026-10-27`.
+
+```bash
+export RUN=2026-10-27
+
+python scripts/polling_data/00-download_polling_data.py
+python scripts/polling_data/01-clean_polling_data.py
+python scripts/04-collect_news.py
+python scripts/04b-summarize_news.py
+python scripts/08-build_prompts.py --news
+python scripts/09-query_models.py --batch-size 40 --sleep 0
+python scripts/10-score_responses.py
+python scripts/11-build_forecast.py
+python scripts/12-test_actual_data.py
+python scripts/13-make_figures.py
+python scripts/15-make_summary_bar.py
+```
+
+These commands make paid model requests. For a small query pilot, use
+`python scripts/09-query_models.py --limit 4`. Answers are saved, but exit code 1
+is expected while the full request set remains unfinished. To continue querying,
+rerun `09` with the same prompts. Rebuilding news/prompts may change their IDs and
+require new answers.
+
+For the **no-news baseline**, set `export RUN=nonews`, skip `04` and `04b`, and
+run `08` without `--news`, followed by `09–15` as above (excluding optional `14`).
+Design B asks for a short first-person voting answer. Optional `--designs B,C`
+also creates the “100 people like you” percentage question and doubles requests.
+
+## How news is used
+
+`04` reads RSS/Atom feeds, with Google News as a supplement. It keeps the previous
+**48 hours**, up to **60 articles per publisher**, without a global cap. It uses
+headlines and feed excerpts, not full article bodies.
+
+| Source group | Publishers |
 |---|---|
+| `left_leaning` | HuffPost, Mother Jones, Vox |
 | `newspapers` | The New York Times, Washington Post, Wall Street Journal, USA Today |
 | `right_leaning` | Fox News, New York Post, The Daily Wire |
-| `left_leaning` | HuffPost, Mother Jones, Vox |
 
-These are paper-defined source groups, not article-level bias ratings. Newspapers
-are not automatically labeled neutral. This is recent article collection, not a
-replication of the paper's archived-homepage summaries. Wikipedia and no-news
-experimental inputs are not collected as media articles by this script.
+These are source groups, not article-level bias measurements; `newspapers` does
+not mean neutral. The LLM retains national, election-relevant policy/economic
+background and writes one attributed paragraph per item. A dated role fact list
+and conflict-word rules trigger a rewrite or exclusion for inconsistent titles.
+This is not independent verification of the reported events.
 
-Each run replaces **`data/news/news.csv`** with the eligible selected items:
+`04b` randomly selects **three unique articles per group for each persona** and
+concatenates their nine paragraphs unchanged. It makes no model calls. Different
+personas may share articles; fixed inputs, RUN and seed reproduce the selection.
+Each group must have at least three eligible articles. A persona's B/C prompts
+use the same selection.
 
-- `published_at_utc`, `collected_at_utc`: publication and run-start timestamps.
-- `outlet`, `diet`: publisher and source group.
-- `title`, `summary`: headline and at most 1,000 characters of publisher RSS excerpt.
-- `url`, `feed_url`: news link and discovery feed; Google links may redirect to the publisher.
-- `acquisition_method`: `rss` or `google_news`.
-- `text_basis`: `feed_excerpt` or `headline_only`; neither means full article text.
-
-Google descriptions often repeat the headline, so their `summary` is left empty.
-This script does not download full bodies, independently verify facts, or use
-Archive. LLM filtering and paragraphs use only the supplied titles and excerpts. A publisher may contribute fewer than 60 items. Source errors
-are logged, and the remaining sources continue. If every feed fails, the script
-exits with an error and preserves the previous output; that file must not be
-mistaken for a successful fresh run. If valid feeds return no in-window items,
-the output contains only column headers. Existing legacy datasets/cache files
-are left alone.
-
-To lower the per-publisher limit or choose another output file:
+Useful options:
 
 ```bash
-python scripts/04-collect_news.py --per-source-limit 30 --out /tmp/news.csv
+python scripts/04-collect_news.py --collect-only  # no screening/model calls
+python scripts/04-collect_news.py --filter-only   # rescreen saved news; no new collection
+python scripts/04b-summarize_news.py --dry-run    # preview selections; no output writes
 ```
 
-`--per-source-limit` (also accepted as `--limit`) accepts 1–60 per publisher; the 48-hour window is fixed. Requests have connection/read
-timeouts, the terminal shows progress by outlet, and CSV replacement is atomic.
-Dependencies include `requests`, `tqdm`, and `python-dotenv`.
+## Models
 
-## LLM filtering and prompt paragraphs
+| Purpose | Default model ID |
+|---|---|
+| News screening, single-item summaries and corrective rewrites (`04`) | `openai/gpt-4.1-nano` |
+| Voting responses (`09`) | `anthropic/claude-haiku-5.5` |
+| Voting responses (`09`) | `openai/gpt-6-luna` |
+| Voting responses (`09`) | `deepseek/deepseek-v4.1-flash` |
+| Voting responses (`09`) | `google/gemini-3.5-flash-lite` |
+| SSR embeddings (`10`) | `google/gemini-embedding-2` |
 
-The default free model is `dots-studio/dots-3-note-preview:free`. Override with
-`--model` or `OPENROUTER_NEWS_MODEL` in `.env`. The script verifies that the model
-is listed, has zero prompt/completion prices, and permits disabling reasoning.
-Paid models and automatic paid fallbacks are not enabled. Environment values take
-precedence over `.env`.
+Voting, embedding and sampling settings are in [`scripts/config.py`](scripts/config.py).
+The news default is in `04`; override it with `--model` or
+`OPENROUTER_NEWS_MODEL`. Historical pilot models and AI-assisted development are
+recorded in [`plan/LLM Usage Document.txt`](plan/LLM%20Usage%20Document.txt).
 
-Keep an item only if it has both US national significance and substantive relevance
-to election background: federal law, policy, courts, economic developments, jobs,
-inflation, healthcare, immigration, taxes, energy, education, voting rules or
-national election developments. Explicitly mentioning an election is not required.
-Purely local/state stories, sports, entertainment, personal gossip and unsupported
-opinion are excluded. Mentioning a politician or a political controversy alone
-is insufficient. A local ICE incident or a sporting boycott does not automatically
-qualify as national policy. Kept items must use a supported substantive topic.
+## Outputs
 
-A kept item gets one neutral English `prompt_paragraph`, generally 30–80 words.
-Each paragraph is prefixed with the reporting outlet. Headline-only evidence
-permits a shorter attributed sentence; the model must not
-pad with external knowledge or invented details. Allegations/uncertainty must be
-attributed. This is not independent fact-checking and does not establish that a
-story causes changes in voting behavior. It does not merge differently titled
-reports into unique events.
+| Location | Contents |
+|---|---|
+| `data/00-simulated_data/` | Artificial test data |
+| `data/polling_data/` | Timestamped raw polling downloads and cleaned poll answers |
+| `data/news/` | Raw news, screening decisions, kept paragraphs and per-persona selections |
+| `data/02-analysis_data/run_<RUN>/` | Prompts, raw model responses, scores and readable scored answers |
+| `data/03-results/run_<RUN>/` | Forecast draws, polling averages, state comparisons, chamber summary and win probabilities |
+| `docs/figures/run_<RUN>/` | Distribution plot and state win-probability bar chart |
 
-Outputs next to the raw `news.csv`:
+`news_screening.csv` includes exclusions, errors and role-check audit fields;
+`news_context.csv` contains kept articles only. Per-persona selections are in
+`persona_news_summaries.csv`. The forecast workflow archives news with date-suffixed
+filenames and saves the polling input as `run_<RUN>/polling_input.csv`.
 
-- `news_context.csv`: only kept news, including `prompt_paragraph`, topic,
-  publisher, timestamp, evidence basis and source URL. Use `prompt_paragraph`
-  as the news input to the simulation, with provenance available in the same row.
-- `news_screening.csv`: every input row with `llm_status` (`keep`, `exclude`,
-  `error`, `not_processed`), national/relevance flags, topic and reason. Errors
-  and skipped rows are not treated as irrelevant news.
+Forecast shares are normalized between the two selected candidates. Polling
+averages use sample-size weights within a 45-day window ending at the newest
+poll in the file. Polls are a comparison by default; `11 --calibrate` enables an
+optional correction. Simulations include persona resampling and an assumed
+national error (default SD 0.03); this is not a complete election-error model.
 
-To filter the existing raw CSV without repeating collection:
+## GitHub Actions and website
 
-```bash
-python scripts/04-collect_news.py --filter-only
-```
+- **Forecast run:** scheduled for October 27, 29 and 31 at 18:13 UTC (2:13 p.m.
+  Toronto on those dates). It refreshes polling data, runs the news/forecast
+  pipeline and uploads artifacts. It saves news, polling inputs, answers and
+  scores even after a failure; forecasts and figures are committed only when
+  all preceding steps succeed. `09` exits nonzero when queries are incomplete.
+- **Manual forecast:** Actions → Forecast run → Run workflow. Enter a date or
+  `nonews`; leave blank for today's Toronto date. A rerun recollects news; it is
+  not a frozen-input resume.
+- **Polling data:** a separate daily download/clean workflow that uploads an
+  artifact. The forecast refreshes its own polling inputs and does not depend
+  on this artifact.
 
-This screens the saved collection snapshot; it does not refresh the publication
-window. To collect without a key or model calls:
+Schedules run from the default branch and can be delayed. The October cron repeats
+each year; disable it after the project. Artifact upload provides a backup if an
+automatic push is blocked. Inspect failed runs before treating their outputs as
+valid results. Six-hour completion is not guaranteed for 42,000 requests.
 
-```bash
-python scripts/04-collect_news.py --collect-only
-```
-
-Requests process 20 articles by default (`--batch-size 1` through `20`). Valid
-completed decisions are cached per model, prompt and article content in the
-Git-ignored `.cache/news_llm.json`. Re-running `--filter-only` reuses them and
-retries errors/unprocessed rows. A 429 stops new batches; completed results are
-saved. Invalid JSON/decisions are retried once. Batches that remain malformed or encounter
-a provider content filter are subdivided to isolate unprocessed items. A singly
-blocked item remains an error; it is not marked irrelevant or sent to another
-provider to bypass the filter. Generic provider HTTP 400 also triggers bounded
-subdivision, stopping at five articles to limit request consumption. Error messages
-include available provider details. Free daily/provider limits still
-apply; the script cannot guarantee all 600 possible inputs finish in one run.
-Never interpret an empty/partial final CSV after an API failure as no relevant news.
-
-## GitHub Actions
-
-Polling and news workflows run daily and can also be started manually from the
-Actions tab. News runs `scripts/04-collect_news.py` and uploads `data/news/*.csv`
-as artifacts. Set the repository secret `OPENROUTER_API_KEY` to enable screening.
+The website source is `index.qmd`, with `_quarto.yml` and `styles.css`; rendered
+files are in `docs/`. Use `quarto render` to rebuild it. The forecast workflow
+creates figures but does not render or publish the website.
