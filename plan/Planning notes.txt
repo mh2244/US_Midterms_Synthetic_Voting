@@ -6,7 +6,7 @@ To-Do List and Notes
 
 Notes October. 24
 - Coco will run full model queries
-- Maggie finished test model queries
+- Maggie finished test model queries - will look for relevant articles to include in discussion
 - Amelia has updated news collection script
 - Design references:
 1. https://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false 
