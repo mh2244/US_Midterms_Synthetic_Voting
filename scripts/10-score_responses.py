@@ -36,9 +36,13 @@
 #### Workspace setup ####
 import argparse
 import json
+import hashlib
+import os
 import re
+import shutil
 import time
 import zlib
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -66,19 +70,30 @@ def embed_local(texts, as_query=False):
 def embed_openrouter(texts, as_query=False, chunk=100):
     """Send the texts in chunks: Gemini accepts at most 100 texts per request (HTTP 400 above that).
     as_query=True marks the model's answers; False marks the anchors (see config for the prefixes).
-    Each chunk is retried up to 4 times, so one failed request does not stop a full run."""
+    Each chunk is retried up to 4 times, so one failed request does not stop a full run.
+    Finished chunks are cached on disk (.cache/embeddings/run_<RUN>/, git-ignored), so a rerun
+    after a failure only requests the chunks that are missing. The cache is removed once the
+    scores are saved."""
     key = config.get_api_key()
     assert key, "No OPENROUTER_API_KEY found (see script 09)"
     prefix = config.EMBED_QUERY_PREFIX if as_query else config.EMBED_DOC_PREFIX
     texts = [prefix + t for t in texts]
     pieces = []
+    EMBED_CACHE.mkdir(parents=True, exist_ok=True)
     for start in range(0, len(texts), chunk):
-        body = {"model": config.OPENROUTER_EMBED_MODEL, "input": texts[start:start + chunk]}
+        part = texts[start:start + chunk]
+        tag = hashlib.sha1(json.dumps([config.OPENROUTER_EMBED_MODEL, config.EMBED_DIMENSIONS, part])
+                           .encode()).hexdigest()
+        cached = EMBED_CACHE / f"{tag}.npy"
+        if cached.exists():
+            pieces.append(np.load(cached))
+            continue
+        body = {"model": config.OPENROUTER_EMBED_MODEL, "input": part}
         if config.EMBED_DIMENSIONS:
             body["dimensions"] = config.EMBED_DIMENSIONS
         for attempt in range(4):
             try:
-                r = requests.post("https://openrouter.ai/api/v1/embeddings",
+                r = requests.post(EMBED_URL,
                                   headers={"Authorization": f"Bearer {key}"}, json=body, timeout=120)
                 if r.status_code == 200:
                     break
@@ -91,7 +106,10 @@ def embed_openrouter(texts, as_query=False, chunk=100):
         else:
             raise SystemExit(f"Embedding failed 4 times ({problem})")
         data = sorted(r.json()["data"], key=lambda d: d.get("index", 0))
-        pieces.append(np.asarray([d["embedding"] for d in data], dtype=np.float32))
+        vecs_part = np.asarray([d["embedding"] for d in data], dtype=np.float32)
+        assert len(vecs_part) == len(part), "Embedding count does not match the texts sent"
+        np.save(cached, vecs_part)
+        pieces.append(vecs_part)
     vecs = np.vstack(pieces)
     return vecs / np.linalg.norm(vecs, axis=1, keepdims=True)
 
@@ -107,6 +125,8 @@ def embed_mock(texts, as_query=False, dim=512):
 
 
 EMBED = {"local": embed_local, "openrouter": embed_openrouter, "mock": embed_mock}[args.embedder]
+EMBED_CACHE = Path(".cache") / "embeddings" / f"run_{config.RUN}"
+EMBED_URL = os.environ.get("OPENROUTER_EMBED_URL", "https://openrouter.ai/api/v1/embeddings")  # override: tests only
 
 
 def ssr_probabilities(sims, temperature):
@@ -214,6 +234,7 @@ responses[["prompt_id", "model", "repeat", "status", "response_text", "p_left", 
     config.RUN_DIR / "scores_with_text.csv", index=False)   # open this and READ the answers
 
 print(f"\nSaved {len(responses)} rows to {config.SCORES_FILE}")
+shutil.rmtree(EMBED_CACHE, ignore_errors=True)       # scores are saved, so the cache is no longer needed
 print("\nStatus by model and design (anything but 'ok' is not scored):")
 print(pd.crosstab([responses["design"], responses["model"]], responses["status"]).to_string())
 print("\nMean probabilities by model and design:")
