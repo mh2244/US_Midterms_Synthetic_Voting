@@ -1,5 +1,6 @@
 ---
 title: "Synthetic Voting for the 2026 U.S. Senate Midterm Elections"
+subtitle: "[SYNTHETIC VOTE DISCLOSURE STATEMENT. ABSTRACT?]"
 date: today
 date-format: long
 format: html
