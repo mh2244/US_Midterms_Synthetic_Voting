@@ -73,6 +73,11 @@ def call_openrouter(key, model_id, prompt_text):
                "X-Title": "Senate silicon sampling class project"}
     body = {"model": model_id, "max_tokens": args.max_tokens,
             "messages": [{"role": "user", "content": prompt_text}]}
+    settings = getattr(config, "REASONING", None) or {}
+    short = {v: k for k, v in config.MODELS.items()}.get(model_id)
+    reasoning = settings.get(short, settings.get("default"))
+    if reasoning is not None:
+        body["reasoning"] = reasoning   # see config.py: thinking off (or minimal) to save output tokens
     out = {"response_text": "", "model_returned": "", "input_tokens": None,
            "output_tokens": None, "error": ""}
     for attempt in range(4):

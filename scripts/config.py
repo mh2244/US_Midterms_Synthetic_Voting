@@ -17,13 +17,34 @@ SEED = 2026               # one seed for every random step, so reruns match
 N_PER_STATE = 100           # personas per state. Test run = 5; the real run was planned at 100
 N_REPEATS = 3             # times each prompt is sent to each model (planned: 3)
 N_DRAWS = 1000            # simulated outcomes per state and model (same as the simulated data)
+# SD of an error shared by all states in a draw (two-party share). Polls miss in the same
+# direction across states (Shirani-Mehr et al. 2018), and the synthetic voters can lean one way
+# overall. 0.03 (3 points) is an ASSUMPTION; script 11 can be rerun with --national-sd 0 / 0.02 /
+# 0.04 for the sensitivity table in the paper.
+NATIONAL_SD = 0.03
 
 # Short names are used in the data; the values are the OpenRouter model ids.
-# CHECK both ids on https://openrouter.ai/models before running; stealth models can be renamed
+# CHECK the ids on https://openrouter.ai/models before running; models can be renamed
 # or withdrawn without notice, which is why the id the API returns is saved with every answer.
+# Full run (from 2026-10-27): four cheap paid models from four different companies.
+# Prices per 1M tokens (input / output) on OpenRouter, checked 2026-10-25.
+# The test run (2026-10-21) used poolside/laguna-s-2.1:free and nvidia/nemotron-3-ultra-550b-a55b:free.
 MODELS = {
-    "laguna": "poolside/laguna-s-2.1:free", #Laguna will not be available Oct.31st
-    "nemotron": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "haiku": "anthropic/claude-haiku-5.5",        # Anthropic, $0.10 / $0.50
+    "luna": "openai/gpt-6-luna",                  # OpenAI, $0.10 / $0.50
+    "deepseek": "deepseek/deepseek-v4.1-flash",   # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
+    "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
+}
+
+# Reasoning ("thinking") setting sent with every request (script 09). Hidden reasoning tokens are
+# billed as output, so it is switched off: the answers only need two or three sentences.
+# Keys are the short names in MODELS; "default" covers any model not listed. None = send nothing
+# and use the model's own default (write that choice in the paper).
+# Gemini 3.5 Flash Lite refuses requests with reasoning disabled (HTTP 400 "Reasoning is mandatory"),
+# so it gets the smallest effort level instead.
+REASONING = {
+    "default": {"enabled": False},
+    "gemini": {"effort": "minimal"},
 }
 
 # Embedding model for SSR (script 10). "local" needs: pip install sentence-transformers
