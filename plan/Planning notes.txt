@@ -16,6 +16,10 @@ If we don't have enough time to test and compare both designs, then go with Desi
 - Double check Python version and packages citations (were all packages cited?)
 - Ensure that project folder is organized with appropriate naming conventions.
 - Can delete "New folder" and sample exemplar figures subfolder once our actual figures have been generated. I just included these so we can reference them when making our own.
+- In script 11 when real polling data is averaged with synthetic data, we apply shrinkage strength of k=3.0.
+However, this is arbitrarily chosen. Either experiment with other strengths or find literature to inform which k to use (?)
+- Will have to clean up and delete unncessary comments in scripts, ensure pre-ambles are consistent, etc.
+- Include a "last run" date and time in footer of website similar to exemplar website provided.
 
 Notes October. 24
 - Coco will run full model queries
