@@ -29,7 +29,7 @@ import config
 
 BLUE, RED, GREY_BLUE = "#2166ac", "#b2182b", "#5b7f95"
 N_DOTS = 20
-OUT = Path("docs/figures")
+OUT = config.FIGURES
 OUT.mkdir(parents=True, exist_ok=True)
 
 forecast = config.read_table(config.FORECAST_FILE)

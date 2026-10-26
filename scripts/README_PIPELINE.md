@@ -44,7 +44,7 @@ Outputs go to `data/02-analysis_data/` and `data/03-results/`. `config.py` holds
 ## Fix before the final run
 
 - Candidate file (script 06 warnings): Idaho, Nebraska and South Dakota have no Democrat listed; Idaho's polls show David Roth as Democrat; Alaska lists 3 Republicans. Edit `OVERRIDES` after checking Ballotpedia.
-- News headlines are weak (many have nothing to do with the Senate). Skip `--news` for the first runs.
+- News flow: `04-collect_news.py` screens articles; `04b-summarize_news.py` samples 3 left_leaning + 3 newspapers + 3 right_leaning items per persona and concatenates the nine existing `prompt_paragraph` values, without another LLM call. `newspapers` does not mean neutral. The summaries and selected sources are saved to `data/news/persona_news_summaries.csv`. `08-build_prompts.py --news` loads each persona's summary, shared across B/C designs, and rejects unfinished or stale summaries. Summaries use headlines/feed excerpts, not full articles. Prompt IDs include a content hash; 09 only reuses current prompt/model/mode results.
 - `DEM_NOT_UP` / `REP_NOT_UP` (34 / 31) are copied from your simulation script; check them.
 - Raw data should be in `data/01-raw_data/` per the assignment; scripts 02/03 still write to `data/`.
 - Candidate order is randomised per persona (column `left_first`); keep it, or say why not.
@@ -55,3 +55,25 @@ Outputs go to `data/02-analysis_data/` and `data/03-results/`. `config.py` holds
 - The forecast spread covers persona sampling only. Add model and repeat spread, calibration error and a shared national error before the final run (see the comments in script 11).
 - Our local embedder is symmetric and small; Heath & Alexander used Gemini Embedding 2 with asymmetric embeddings.
 - Design B and SSR for vote choice is an adaptation of a method tested on 0-100 ratings.
+
+## Persona news summaries (04b)
+
+```bash
+# Preview the selection without API calls or writing output:
+python scripts/04b-summarize_news.py --dry-run
+# Save nine existing paragraphs per persona, then build prompts:
+python scripts/04b-summarize_news.py
+python scripts/08-build_prompts.py --news
+```
+
+The default run ID is today's Toronto date, or the workflow's `RUN`; use `--run YYYY-MM-DD` to reproduce an earlier day with the same inputs. Fixed seed + run ID + news pool + persona determine sampling. Each selection has nine unique URLs, three per group; different personas may share articles. If a group has fewer than three eligible articles, collection must be expanded first. Script 04b preserves each existing paragraph, numbers the items [1]-[9], and separates them with blank lines. It does not rewrite, compress, or truncate them and needs no API key. Source metadata and input fingerprints are saved in `data/news/persona_news_summaries.csv`. Script 08 rejects stale inputs or the older LLM-compressed format. Both B/C designs use the same nine-item context for a persona. Script 04 still uses an LLM to screen and summarize individual articles; script 09 still queries voting models. Longer nine-item prompts increase those voting models' input tokens compared with a compressed summary.
+
+## Run-specific output paths
+
+With `RUN` set (as in the Forecast run workflow), scripts 08-15 use:
+
+- `data/02-analysis_data/run_<RUN>/` for prompts, responses and scores.
+- `data/03-results/run_<RUN>/` for forecasts, comparisons and win probabilities.
+- `docs/figures/run_<RUN>/` for both forecast figures.
+
+Candidates and personas remain shared inputs under `data/02-analysis_data/`; news inputs remain under `data/news/`. `RUN=nonews` isolates baseline results in `run_nonews`. Without `RUN`, local scripts keep their original output paths. Use the same `RUN` for every stage, for example `RUN=2026-10-27 python scripts/08-build_prompts.py --news` followed by `RUN=2026-10-27 python scripts/09-query_models.py`. A news run's 04b summary must carry the same run ID. Previous files are not moved automatically. The workflow uploads run files as an artifact before committing, providing a fallback if pushing fails. Input freezing and voting-model configuration are separate from this path change.

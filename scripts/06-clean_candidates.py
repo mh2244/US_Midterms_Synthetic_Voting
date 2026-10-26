@@ -137,7 +137,7 @@ if counts:
 
 
 #### Save ####
-config.ANALYSIS.mkdir(parents=True, exist_ok=True)
+config.SHARED_ANALYSIS.mkdir(parents=True, exist_ok=True)
 nominees.to_csv(config.NOMINEES_FILE, index=False)
 candidates_clean.to_csv(config.CANDIDATES_CLEAN, index=False)
 

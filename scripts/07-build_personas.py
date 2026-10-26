@@ -145,7 +145,7 @@ assert (personas.groupby("state").size() == args.n).all()
 assert not personas["persona_text"].str.contains("Trump|Harris|president", case=False).any()
 
 config.write_table(personas, config.PERSONAS_FILE)
-personas.to_csv(config.ANALYSIS / "personas.csv", index=False)   # easy to open in Excel
+personas.to_csv(config.SHARED_ANALYSIS / "personas.csv", index=False)   # easy to open in Excel
 
 print(f"\nSaved {len(personas)} personas ({args.n} per state) to {config.PERSONAS_FILE}")
 print("States with the thinnest pools (small n_eff means the forecast is weaker there):")
