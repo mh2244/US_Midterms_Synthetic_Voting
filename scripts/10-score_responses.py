@@ -37,6 +37,7 @@
 import argparse
 import json
 import re
+import time
 import zlib
 
 import numpy as np
@@ -62,9 +63,10 @@ def embed_local(texts, as_query=False):
     return np.asarray(model.encode(texts, normalize_embeddings=True))
 
 
-def embed_openrouter(texts, as_query=False, chunk=128):
-    """Send the texts in chunks so a large run does not exceed the request size limit.
-    as_query=True marks the model's answers; False marks the anchors (see config for the prefixes)."""
+def embed_openrouter(texts, as_query=False, chunk=100):
+    """Send the texts in chunks: Gemini accepts at most 100 texts per request (HTTP 400 above that).
+    as_query=True marks the model's answers; False marks the anchors (see config for the prefixes).
+    Each chunk is retried up to 4 times, so one failed request does not stop a full run."""
     key = config.get_api_key()
     assert key, "No OPENROUTER_API_KEY found (see script 09)"
     prefix = config.EMBED_QUERY_PREFIX if as_query else config.EMBED_DOC_PREFIX
@@ -74,9 +76,20 @@ def embed_openrouter(texts, as_query=False, chunk=128):
         body = {"model": config.OPENROUTER_EMBED_MODEL, "input": texts[start:start + chunk]}
         if config.EMBED_DIMENSIONS:
             body["dimensions"] = config.EMBED_DIMENSIONS
-        r = requests.post("https://openrouter.ai/api/v1/embeddings",
-                          headers={"Authorization": f"Bearer {key}"}, json=body, timeout=120)
-        r.raise_for_status()
+        for attempt in range(4):
+            try:
+                r = requests.post("https://openrouter.ai/api/v1/embeddings",
+                                  headers={"Authorization": f"Bearer {key}"}, json=body, timeout=120)
+                if r.status_code == 200:
+                    break
+                problem = f"HTTP {r.status_code}: {r.text[:300]}"
+                if r.status_code in (400, 401, 402):
+                    raise SystemExit(f"Embedding request refused ({problem})")   # retrying cannot help
+            except requests.RequestException as exc:
+                problem = f"network: {exc}"
+            time.sleep(10 * (attempt + 1))
+        else:
+            raise SystemExit(f"Embedding failed 4 times ({problem})")
         data = sorted(r.json()["data"], key=lambda d: d.get("index", 0))
         pieces.append(np.asarray([d["embedding"] for d in data], dtype=np.float32))
     vecs = np.vstack(pieces)
@@ -205,4 +218,4 @@ print("\nStatus by model and design (anything but 'ok' is not scored):")
 print(pd.crosstab([responses["design"], responses["model"]], responses["status"]).to_string())
 print("\nMean probabilities by model and design:")
 print(scored.groupby(["design", "model"])[["p_left", "p_rep", "p_other"]].mean().round(3).to_string())
-print("\nOpen data/02-analysis_data/scores_with_text.csv and read about 30 answers next to their scores.")
+print(f"\nOpen {config.RUN_DIR / 'scores_with_text.csv'} and read about 30 answers next to their scores.")
