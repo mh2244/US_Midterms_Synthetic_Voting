@@ -133,8 +133,7 @@ rep.to_csv(OUT / "repeats_by_state.csv", index=False)
 
 #### Markdown for index.qmd ####
 per_state_text = str(per_state.min()) if per_state.min() == per_state.max() else f"{per_state.min()} to {per_state.max()}"
-md = ["### Composition of the persona sample", "",
-      f"{len(personas):,} personas, {per_state_text} in each of "
+md = [f"{len(personas):,} personas, {per_state_text} in each of "
       f"{personas['state'].nunique()} states. The expected share is the weighted CES share in each "
       "state, averaged over states.", ""]
 for var in VARS:
