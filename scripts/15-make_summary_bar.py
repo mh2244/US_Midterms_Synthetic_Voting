@@ -16,14 +16,16 @@
 # HOW the numbers are made: for every draw of every model we count the races the Democrat wins,
 # the races an independent wins, and the races the Republican wins. The bar shows the MEDIAN of
 # each count over all draws and models (models count equally). The sentence reports how often
-# the Democrats reach 51 seats, as a count out of 100 draws, not a percentage with decimals.
+# the Republicans keep control, as a count out of 100 draws, not a percentage with decimals.
+# HOW control is defined (same rule as script 11): Vice President Vance (Republican) breaks
+#   50-50 ties, so Republicans control the Senate with 50 or more seats whichever side the
+#   independents join. Below 50, Democrats control alone with 51; otherwise control depends on
+#   which side the independents (Osborn, Achilles, Bengs) caucus with.
 # LIMITS to write about:
-#   - 51 seats is the majority. With exactly 50 the Vice President breaks ties, and in 2026 that
-#     is a Republican. An independent who wins is NOT counted as a Democratic seat here.
+#   - An independent who wins is NOT counted as a Democratic seat here.
 #   - The bar uses medians, so the three counts always add to the number of races even when
 #     individual draws differ a lot. The 80% range is printed under the bar.
-#   - DEM_NOT_UP and REP_NOT_UP are copied from the group's simulation script. Check them: they
-#     must add up to 100 minus the number of races (35).
+#   - DEM_NOT_UP and REP_NOT_UP (34 and 31) were checked on 2026-10-25; see script 11.
 
 #### Workspace setup ####
 import argparse
@@ -48,6 +50,7 @@ OUT.mkdir(exist_ok=True)
 
 #### Counts per draw ####
 forecast = config.read_table(config.FORECAST_FILE)
+print(f"Summary bar from run {config.RUN}")
 nominees = pd.read_csv(config.NOMINEES_FILE)
 n_races = nominees["state"].nunique()
 assert args.dem_not_up + args.rep_not_up + n_races == 100, \
@@ -64,17 +67,19 @@ dem = int(round(by_draw["dem"].median()))
 ind = int(round(by_draw["ind"].median()))
 rep = n_races - dem - ind                      # keeps the bar at exactly 100 seats
 dem_total = args.dem_not_up + by_draw["dem"]
-p_control = float((dem_total >= 51).mean())
-per_100 = int(round(p_control * 100))
+rep_total = args.rep_not_up + by_draw["rep"]
+per_100 = int(round(float((rep_total >= 50).mean()) * 100))        # Republicans keep control
+dem_alone_100 = int(round(float((dem_total >= 51).mean()) * 100))  # Democrats win 51 without independents
 lo, hi = (int(x) for x in np.percentile(dem_total, [10, 90]))
 n_draws = by_draw.groupby("model").size().iloc[0]
 n_models = by_draw.index.get_level_values("model").nunique()
 
 #### Sentence ####
 if per_100 >= 50:
-    headline = f"Democrats win control of the Senate in {per_100} of 100 simulated outcomes."
+    headline = f"Republicans keep control of the Senate in {per_100} of 100 simulated outcomes."
 else:
-    headline = f"Republicans keep control of the Senate in {100 - per_100} of 100 simulated outcomes."
+    headline = (f"Republicans lose control of the Senate in {100 - per_100} of 100 simulated outcomes; "
+                f"Democrats reach 51 seats on their own in {dem_alone_100}.")
 
 #### HTML ####
 def seg(seats, color, label):

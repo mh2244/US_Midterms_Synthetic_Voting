@@ -73,6 +73,11 @@ def call_openrouter(key, model_id, prompt_text):
                "X-Title": "Senate silicon sampling class project"}
     body = {"model": model_id, "max_tokens": args.max_tokens,
             "messages": [{"role": "user", "content": prompt_text}]}
+    settings = getattr(config, "REASONING", None) or {}
+    short = {v: k for k, v in config.MODELS.items()}.get(model_id)
+    reasoning = settings.get(short, settings.get("default"))
+    if reasoning is not None:
+        body["reasoning"] = reasoning   # see config.py: thinking off (or minimal) to save output tokens
     out = {"response_text": "", "model_returned": "", "input_tokens": None,
            "output_tokens": None, "error": ""}
     for attempt in range(4):
@@ -159,6 +164,7 @@ def mock_answer(prompt_text, design, model, seed_text):
 
 
 #### Work out what still needs asking ####
+print(f"Run: {config.RUN}  (files in {config.RUN_DIR})")
 prompts = config.read_table(config.PROMPTS_FILE)
 short_names = [m.strip() for m in args.models.split(",")]
 for m in short_names:
@@ -225,7 +231,8 @@ try:
                     stop_signal = stop                                   # keep the answers that did arrive
                     continue
                 new_rows.append({
-                    "prompt_id": p.prompt_id, "persona_id": p.persona_id, "state": p.state, "design": p.design,
+                    "prompt_id": p.prompt_id, "run": config.RUN, "persona_id": p.persona_id,
+                    "state": p.state, "design": p.design,
                     "model": short, "model_requested": config.MODELS[short], "repeat": rep,
                     "queried_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), **result})
                 real_error = result["error"] and result["error"] != "empty_content"

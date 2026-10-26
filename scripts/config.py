@@ -17,13 +17,34 @@ SEED = 2026               # one seed for every random step, so reruns match
 N_PER_STATE = 100           # personas per state. Test run = 5; the real run was planned at 100
 N_REPEATS = 3             # times each prompt is sent to each model (planned: 3)
 N_DRAWS = 1000            # simulated outcomes per state and model (same as the simulated data)
+# SD of an error shared by all states in a draw (two-party share). Polls miss in the same
+# direction across states (Shirani-Mehr et al. 2018), and the synthetic voters can lean one way
+# overall. 0.03 (3 points) is an ASSUMPTION; script 11 can be rerun with --national-sd 0 / 0.02 /
+# 0.04 for the sensitivity table in the paper.
+NATIONAL_SD = 0.03
 
 # Short names are used in the data; the values are the OpenRouter model ids.
-# CHECK both ids on https://openrouter.ai/models before running; stealth models can be renamed
+# CHECK the ids on https://openrouter.ai/models before running; models can be renamed
 # or withdrawn without notice, which is why the id the API returns is saved with every answer.
+# Full run (from 2026-10-27): four cheap paid models from four different companies.
+# Prices per 1M tokens (input / output) on OpenRouter, checked 2026-10-25.
+# The test run (2026-10-21) used poolside/laguna-s-2.1:free and nvidia/nemotron-3-ultra-550b-a55b:free.
 MODELS = {
-    "laguna": "poolside/laguna-s-2.1:free", #Laguna will not be available Oct.31st
-    "nemotron": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "haiku": "anthropic/claude-haiku-5.5",        # Anthropic, $0.10 / $0.50
+    "luna": "openai/gpt-6-luna",                  # OpenAI, $0.10 / $0.50
+    "deepseek": "deepseek/deepseek-v4.1-flash",   # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
+    "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
+}
+
+# Reasoning ("thinking") setting sent with every request (script 09). Hidden reasoning tokens are
+# billed as output, so it is switched off: the answers only need two or three sentences.
+# Keys are the short names in MODELS; "default" covers any model not listed. None = send nothing
+# and use the model's own default (write that choice in the paper).
+# Gemini 3.5 Flash Lite refuses requests with reasoning disabled (HTTP 400 "Reasoning is mandatory"),
+# so it gets the smallest effort level instead.
+REASONING = {
+    "default": {"enabled": False},
+    "gemini": {"effort": "minimal"},
 }
 
 # Embedding model for SSR (script 10). "local" needs: pip install sentence-transformers
@@ -39,8 +60,16 @@ EMBED_QUERY_PREFIX = ""
 EMBED_DOC_PREFIX = ""
 SSR_TEMPERATURE = 0.25    # Heath & Alexander Methods use 0.25 (their Results say 0.2)
 
-# Date the news headlines and polls were collected (write it in the paper)
-AS_OF = "2026-10-21"
+# Which run the scripts read and write (scripts 08-13 and 15). Each run gets its own folder, so
+# the three news days and the no-news baseline never overwrite or mix with each other.
+# Planned runs: "2026-10-27", "2026-10-29", "2026-10-31" (with that day's news summary) and
+# "nonews" (baseline, same personas and questions, no news). Change it here, or set it for one
+# command only:   RUN=2026-10-29 python scripts/09-query_models.py
+RUN = os.environ.get("RUN", "2026-10-27")
+NEWS_RUN = RUN != "nonews"          # every dated run includes that day's news; "nonews" does not
+# Date the news and polls were collected (write it in the paper). For "nonews" it is the date of
+# the first news run, which shares its personas and polls.
+AS_OF = RUN if NEWS_RUN else "2026-10-27"
 
 #### Paths (relative to the project root) ####
 DATA = Path("data")
@@ -48,16 +77,23 @@ ANALYSIS = DATA / "02-analysis_data"
 RESULTS = DATA / "03-results"
 CES_FILE = DATA / "ces2024_senate_demographics.csv"
 CANDIDATES_RAW = DATA / "senate_candidates_2026.csv"
-NEWS_FILE = DATA / "news_google" / "news_google.csv"
+NEWS_FILE = DATA / "news_google" / "news_google.csv"   # OLD headline file (deleted); Amelia replaces it
+# One merged news summary per run day, written by the news step (Amelia). Script 08 puts its text
+# in every prompt of that run. Plain text, about 150-300 words.
+NEWS_SUMMARY_FILE = DATA / "news" / f"summary_{AS_OF}.txt"
 POLLS_FILE = DATA / "polling_data" / "02-analysis_data" / "senate_polls_2026_general.csv"
 
 NOMINEES_FILE = ANALYSIS / "senate_nominees_2026.csv"
 CANDIDATES_CLEAN = ANALYSIS / "candidates_clean.csv"
 PERSONAS_FILE = ANALYSIS / "personas.parquet"
-PROMPTS_FILE = ANALYSIS / "prompts.parquet"
-RESPONSES_FILE = ANALYSIS / "responses.parquet"
-SCORES_FILE = ANALYSIS / "scores.parquet"
-FORECAST_FILE = RESULTS / "forecast.parquet"
+# Personas are shared by all runs (same people every day, so runs can be compared person by
+# person). Everything after them is stored per run.
+RUN_DIR = ANALYSIS / f"run_{RUN}"
+RUN_RESULTS = RESULTS / f"run_{RUN}"
+PROMPTS_FILE = RUN_DIR / "prompts.parquet"
+RESPONSES_FILE = RUN_DIR / "responses.parquet"
+SCORES_FILE = RUN_DIR / "scores.parquet"
+FORECAST_FILE = RUN_RESULTS / "forecast.parquet"
 
 STATE_ABBR = {
     "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",

@@ -20,10 +20,16 @@
 #   This captures persona-sampling error only. With 5 personas per state the spread is huge
 #   (a share near 50% has a standard error of about 22 points), so the test-run forecast is a
 #   check that the code works, NOT a forecast. With 100 personas it is about 5 points.
-# NOT included yet (add before the final run and say so in the paper):
-#   - spread between models and repeats, error in the poll correction, and a national error
-#     shared across states (Gelman et al. 2020; Shirani-Mehr et al. 2018). Use --national-sd
-#     for a first version; 0.02 is an assumption, not an estimate.
+# A national error shared by all states is ON by default (config.NATIONAL_SD = 0.03, an
+#   assumption; Gelman et al. 2020; Shirani-Mehr et al. 2018). Rerun with --national-sd 0, 0.02
+#   and 0.04 for the sensitivity table.
+# NOT included yet (say so in the paper): spread between models and repeats, and error in the
+#   poll correction.
+# HOW seats are counted: Nebraska, Idaho and South Dakota have an independent instead of a
+#   Democrat, and Osborn (NE) has said he will not caucus with either party, so independent wins
+#   are counted as their own category, not as Democratic seats. The headline is the chance that
+#   Republicans keep control: with Vice President Vance breaking 50-50 ties, Republicans control
+#   the Senate with 50 or more seats, whichever side the independents join.
 # WHY polls are used only as a check or a correction: the model is biased toward one side
 # (Pew 2026; Heath & Alexander 2026). Polls are not the truth either, because poll errors are
 # correlated across polls and offices (Shirani-Mehr et al. 2018).
@@ -42,11 +48,14 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--design", default="B", choices=["B", "C"], help="which prompt design to forecast from")
 ap.add_argument("--draws", type=int, default=config.N_DRAWS)
 ap.add_argument("--calibrate", action="store_true", help="subtract the shrunk average model-minus-poll gap")
-ap.add_argument("--national-sd", type=float, default=0.0, help="SD of an error shared by all states")
+ap.add_argument("--national-sd", type=float, default=config.NATIONAL_SD,
+                help="SD of an error shared by all states (default in config.py; 0 = states independent)")
 ap.add_argument("--poll-window-days", type=int, default=45)
 args = ap.parse_args()
 
-# Seats not up in 2026. Copied from the simulation script; CHECK before the final run.
+# Seats not up in 2026, checked 2026-10-25: the Senate is 53 R - 47 D (the 47 include King and
+# Sanders, independents who caucus with Democrats). 35 seats are up: 13 held by Democrats and 22
+# by Republicans (including the FL and OH specials). 47 - 13 = 34 and 53 - 22 = 31.
 DEM_NOT_UP, REP_NOT_UP = 34, 31
 
 rng = np.random.default_rng(config.SEED)
@@ -54,6 +63,7 @@ nominees = pd.read_csv(config.NOMINEES_FILE).set_index("state")
 personas = config.read_table(config.PERSONAS_FILE)
 
 #### Persona-level probabilities ####
+print(f"Run: {config.RUN}  (results in {config.RUN_RESULTS})")
 scores = config.read_table(config.SCORES_FILE)
 scores = scores[(scores["design"] == args.design) & scores["p_left"].notna()]
 per_persona = (scores.groupby(["state", "persona_id", "model"])[["p_left", "p_rep", "p_other"]]
@@ -165,25 +175,36 @@ comparison = (means.reset_index().pivot(index="state", columns="model", values="
 
 #### Chamber summary ####
 results = forecast[["model", "draw", "state", "winner"]].drop_duplicates()
-results["dem_win"] = results["winner"] == "Democratic"
-dem_seats = results.groupby(["model", "draw"])["dem_win"].sum() + DEM_NOT_UP
-control = (dem_seats >= 51).groupby("model").mean()
+seats = (results.assign(dem=results["winner"] == "Democratic", ind=results["winner"] == "Independent",
+                        rep=results["winner"] == "Republican")
+         .groupby(["model", "draw"])[["dem", "ind", "rep"]].sum())
+seats["dem"] += DEM_NOT_UP
+seats["rep"] += REP_NOT_UP
+assert (seats.sum(axis=1) == 100).all(), "Seats do not add up to 100"
+chamber = seats.groupby("model").agg(
+    dem_median=("dem", "median"), ind_median=("ind", "median"), rep_median=("rep", "median"),
+    rep_q05=("rep", lambda s: s.quantile(0.05)), rep_q95=("rep", lambda s: s.quantile(0.95)))
+chamber["p_rep_control"] = (seats["rep"] >= 50).groupby("model").mean()        # VP breaks 50-50 ties
+chamber["p_dem_51_without_ind"] = (seats["dem"] >= 51).groupby("model").mean()  # no independent needed
+chamber["national_sd"] = args.national_sd
+control = chamber["p_rep_control"]
 
 #### Checks and save ####
 assert forecast["share"].between(0, 1).all()
 assert np.isclose(forecast.groupby(["draw", "state", "model"])["share"].sum(), 1).all()
 
-config.RESULTS.mkdir(parents=True, exist_ok=True)
+config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 config.write_table(forecast, config.FORECAST_FILE)
-comparison.round(3).to_csv(config.RESULTS / "state_comparison.csv", index=False)
-polls_df.to_csv(config.RESULTS / "poll_averages.csv", index=False)
+comparison.round(3).to_csv(config.RUN_RESULTS / "state_comparison.csv", index=False)
+polls_df.to_csv(config.RUN_RESULTS / "poll_averages.csv", index=False)
+chamber.round(3).to_csv(config.RUN_RESULTS / "chamber_summary.csv")
 if len(gap_table):
-    gap_table.to_csv(config.RESULTS / "calibration_gaps.csv", index=False)
+    gap_table.to_csv(config.RUN_RESULTS / "calibration_gaps.csv", index=False)
 
 print(f"\nSaved {len(forecast):,} rows to {config.FORECAST_FILE}")
-print(f"Saved the comparison table to {config.RESULTS / 'state_comparison.csv'}")
+print(f"Saved the comparison table to {config.RUN_RESULTS / 'state_comparison.csv'}")
 print(f"Polls matched for {len(polls_df)} of {len(nominees)} states")
-print("\nChance of Democratic control (51+ seats), by model. TEST RUN: not a result.")
-print(control.round(2).to_string())
+print(f"\nSenate by model (national error SD = {args.national_sd}). Republicans control with 50+ seats:")
+print(chamber.round(2).to_string())
 print("\nFirst rows of the comparison table:")
 print(comparison.round(2).head(8).to_string(index=False))

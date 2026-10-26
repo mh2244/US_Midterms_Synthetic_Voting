@@ -19,7 +19,11 @@
 # weights; drawing without replacement would not preserve them.
 # WHY the 2024 presidential vote is NOT in the persona: it nearly gives the answer away once
 # party and ideology are known, and we keep it as a held-out check instead.
-# LIMIT: 2024 voters stand in for the 2026 electorate; midterm turnout differs.
+# WHY validated voters only (decided 2026-10-26): vvweight_post covers every respondent matched to
+# a registration record, including registered people who did NOT vote in 2024 (about 8% of the
+# weight). We forecast votes, so the pool keeps only respondents whose 2024 vote was confirmed
+# in the voter file (validated_voter, from TS_g2024 codes 1-6 in script 03).
+# LIMIT: 2024 voters stand in for the 2026 electorate; midterm turnout is lower and differs.
 
 
 #### Workspace setup ####
@@ -106,7 +110,11 @@ states = list(nominees["state"])
 
 ces = pd.read_csv(config.CES_FILE, low_memory=False)
 pool = ces[ces["state"].isin(states) & ces["vvweight_post"].notna() & (ces["vvweight_post"] > 0)].copy()
+n_registered = len(pool)
+pool = pool[pool["validated_voter"].astype(str).str.lower() == "true"].copy()   # 2024 validated voters only
 n_start = len(pool)
+print(f"Pool: kept {n_start:,} validated 2024 voters of {n_registered:,} registered respondents "
+      f"({n_registered - n_start:,} non-voters dropped)")
 
 # Keep "Not sure" and "Prefer not to say" as categories instead of dropping those people
 pool["party_id_7"] = pool["party_id_7"].fillna("Not sure")
@@ -115,7 +123,7 @@ pool["family_income"] = pool["family_income"].fillna("Prefer not to say")
 
 # Drop the few people missing something we cannot sensibly fill in
 pool = pool.dropna(subset=["age_group", "education", "gender", "race_5"])
-print(f"Pool: {n_start:,} respondents with vvweight_post in {len(states)} states; "
+print(f"Pool: {n_start:,} validated voters with vvweight_post in {len(states)} states; "
       f"{n_start - len(pool)} dropped for missing age/education/gender/race")
 
 #### Draw personas ####
