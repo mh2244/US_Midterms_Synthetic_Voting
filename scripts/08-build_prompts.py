@@ -26,7 +26,6 @@
 import argparse
 import hashlib
 import json
-import os
 
 import numpy as np
 import pandas as pd
@@ -37,6 +36,9 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--designs", default="B", help="comma list from B,C")
 ap.add_argument("--news", action="store_true", help="include nine existing news summaries per persona from script 04b")
 args = ap.parse_args()
+if args.news and not config.NEWS_RUN:
+    ap.error("RUN=nonews cannot be combined with --news")
+args.news = config.NEWS_RUN  # RUN is the single authority for news vs baseline
 designs = [d.strip().upper() for d in args.designs.split(",")]
 assert set(designs) <= {"B", "C"}, "designs must be B and/or C"
 
@@ -80,7 +82,7 @@ def load_summaries(personas):
             raise ValueError(f"Unfinished summary for {pid}; resume script 04b")
         if row["persona_hash"] != person_hash or row["news_file_hash"] != source_hash:
             raise ValueError(f"Stale persona/news summary for {pid}; rerun script 04b")
-        if os.environ.get("RUN") and row["run_id"] != os.environ["RUN"]:
+        if row["run_id"] != config.RUN:
             raise ValueError(f"Summary run id mismatch for {pid}; rerun script 04b")
     return summaries
 
@@ -140,8 +142,8 @@ for _, p in personas.iterrows():
         prompt_text = "\n\n".join(parts)
         prompt_hash = hashlib.sha256(prompt_text.encode()).hexdigest()
         rows.append({
-            "prompt_id": f"{p['persona_id']}|{design}|news{int(args.news)}|{prompt_hash}",
-            "persona_id": p["persona_id"], "state": p["state"], "design": design,
+            "prompt_id": f"{p['persona_id']}|{design}|news{int(args.news)}|{prompt_hash}|{config.RUN}",
+            "run": config.RUN, "persona_id": p["persona_id"], "state": p["state"], "design": design,
             "news": bool(args.news), "left_first": left_first,
             "news_summary_id": summary["request_hash"] if summary is not None else "",
             "news_articles_json": summary["articles_json"] if summary is not None else "",

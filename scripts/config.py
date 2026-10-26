@@ -67,7 +67,7 @@ SSR_TEMPERATURE = 0.25    # Heath & Alexander Methods use 0.25 (their Results sa
 # Planned runs: "2026-10-27", "2026-10-29", "2026-10-31" (with that day's news summary) and
 # "nonews" (baseline, same personas and questions, no news). Change it here, or set it for one
 # command only:   RUN=2026-10-29 python scripts/09-query_models.py
-RUN = os.environ.get("RUN", "2026-10-27")
+RUN = os.environ.get("RUN", "2026-10-27").strip()
 NEWS_RUN = RUN != "nonews"          # every dated run includes that day's news; "nonews" does not
 # Date the news and polls were collected (write it in the paper). For "nonews" it is the date of
 # the first news run, which shares its personas and polls.
@@ -76,18 +76,16 @@ AS_OF = RUN if NEWS_RUN else "2026-10-27"
 #### Paths (relative to the project root) ####
 DATA = Path("data")
 SHARED_ANALYSIS = DATA / "02-analysis_data"
-RUN = os.environ.get("RUN", "").strip()
-if RUN and RUN != "nonews":
+if RUN != "nonews":
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", RUN):
         raise ValueError("RUN must be nonews or YYYY-MM-DD")
-    date.fromisoformat(RUN)  # reject invalid calendar dates as well
-# Shared source tables stay in the base directory. Experiment outputs are isolated.
-ANALYSIS = SHARED_ANALYSIS / f"run_{RUN}" if RUN else SHARED_ANALYSIS
+    date.fromisoformat(RUN)
+# Base directories hold shared inputs; RUN directories hold experiment outputs.
+ANALYSIS = SHARED_ANALYSIS
 RESULTS = DATA / "03-results"
-FIGURES = Path("docs/figures")
-if RUN:
-    RESULTS = RESULTS / f"run_{RUN}"
-    FIGURES = FIGURES / f"run_{RUN}"
+RUN_DIR = ANALYSIS / f"run_{RUN}"
+RUN_RESULTS = RESULTS / f"run_{RUN}"
+FIGURES = Path("docs/figures") / f"run_{RUN}"
 CES_FILE = DATA / "ces2024_senate_demographics.csv"
 CANDIDATES_RAW = DATA / "senate_candidates_2026.csv"
 NEWS_FILE = DATA / "news" / "news_context.csv"
@@ -97,10 +95,10 @@ POLLS_FILE = DATA / "polling_data" / "02-analysis_data" / "senate_polls_2026_gen
 NOMINEES_FILE = SHARED_ANALYSIS / "senate_nominees_2026.csv"
 CANDIDATES_CLEAN = SHARED_ANALYSIS / "candidates_clean.csv"
 PERSONAS_FILE = SHARED_ANALYSIS / "personas.parquet"
-PROMPTS_FILE = ANALYSIS / "prompts.parquet"
-RESPONSES_FILE = ANALYSIS / "responses.parquet"
-SCORES_FILE = ANALYSIS / "scores.parquet"
-FORECAST_FILE = RESULTS / "forecast.parquet"
+PROMPTS_FILE = RUN_DIR / "prompts.parquet"
+RESPONSES_FILE = RUN_DIR / "responses.parquet"
+SCORES_FILE = RUN_DIR / "scores.parquet"
+FORECAST_FILE = RUN_RESULTS / "forecast.parquet"
 
 STATE_ABBR = {
     "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",
