@@ -47,8 +47,11 @@ REASONING = {
     "gemini": {"effort": "minimal"},
 }
 
-# Embedding model for SSR (script 10). "local" needs: pip install sentence-transformers
-EMBEDDER = "local"
+# Embedding model for SSR (script 10). Chosen 2026-10-26 after a check on 200 real Florida answers:
+# of 159 clear vote statements, the local MiniLM model put 12 on the wrong side of 50 per cent
+# (answers that named the opponent were pulled toward that opponent's anchor); Gemini Embedding 2
+# put 1. Every run must use the same embedder. "local" needs: pip install sentence-transformers
+EMBEDDER = "openrouter"
 LOCAL_EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 OPENROUTER_EMBED_MODEL = "google/gemini-embedding-2"   # the model Heath & Alexander used; --embedder openrouter
                                                       # $0.20 per million tokens (":batch" variant $0.10), 8,192-token limit
