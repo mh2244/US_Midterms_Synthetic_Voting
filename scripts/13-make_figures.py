@@ -33,6 +33,7 @@ OUT = config.FIGURES
 OUT.mkdir(parents=True, exist_ok=True)
 
 forecast = config.read_table(config.FORECAST_FILE)
+print(f"Figure from run {config.RUN}")
 nominees = pd.read_csv(config.NOMINEES_FILE).set_index("state")
 left = forecast[forecast["party"] != "Republican"]          # the left candidate's share
 models = sorted(left["model"].unique())

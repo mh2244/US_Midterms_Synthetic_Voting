@@ -152,6 +152,7 @@ prompts = pd.DataFrame(rows)
 
 #### Checks and save ####
 assert prompts["prompt_id"].is_unique
+assert prompts["news"].eq(args.news).all()
 assert prompts["prompt_text"].str.len().gt(100).all()
 # News summaries may name politicians, so only the persona text is checked for the 2024 vote
 assert not personas["persona_text"].str.contains("Trump|Harris", case=False).any(), "2024 vote leaked into a persona"

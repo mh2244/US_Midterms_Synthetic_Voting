@@ -1,6 +1,8 @@
 LLM Usage Document
 
-AI models used: Claude Sonnet 5.5 Medium for clarification on how to plan the analysis, coding scripts, troubleshooting coding errors
+AI models used: Claude Sonnet 5.5 Medium for clarification on how to plan the analysis, coding scripts, making figures and website design,
+troubleshooting coding errors. Also used Claude Sonnet 5.5 Medium to correct for minor writing/grammar errors after providing rough + final drafts.
+Gemini 3.5 flash-lite also to clarify how to plan the analysis, explaining concepts from papers, troubleshooting coding errors
 
 laguna": "poolside/laguna-s-2.1:free" -- used in test run
     "nemotron": "nvidia/nemotron-3-ultra-550b-a55b:free", -- used in test run

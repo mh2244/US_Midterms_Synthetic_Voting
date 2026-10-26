@@ -1,11 +1,25 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - index.qmd
 
 website:
+  title: "Synthetic Voting for the 2026 U.S. Senate Midterm Elections"
   page-footer:
-    center: "[Code on GitHub](https://github.com/mh2244/US_Midterms_Synthetic_Voting)"
+    left: "Jingxuan Feng, Maggie Huang, and Kexin Liu"
+    right: "[Code and data on GitHub](https://github.com/mh2244/US_Midterms_Synthetic_Voting)"
 
 format:
   html:
     theme: default
+    css: styles.css
+    mainfont: Georgia
+    fontsize: 1.1rem
+    toc: false
+    page-layout: article
+    grid:
+      body-width: 860px
+      margin-width: 60px
+    fig-align: center
+    smooth-scroll: true

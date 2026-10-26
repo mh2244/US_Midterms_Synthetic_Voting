@@ -1,0 +1,73 @@
+/* FONTS: change the two names in :root to try a different pairing (see the list in the chat).
+   The @import line loads the web fonts; if the reader is offline, the fallback fonts are used. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap");
+:root {
+  --serif: "Newsreader", "Iowan Old Style", Palatino, "Palatino Linotype", Cambria, serif;
+  --sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Page: white background, serif text, sans-serif labels */
+body { background: #ffffff; color: #1a1a1a; font-family: var(--serif); }
+h1, h2, h3, h4, .sectionnav, .estimate-head, .forecast-summary, figcaption, .figure-caption,
+.quarto-title-meta, table, .page-footer, .disclosure {
+  font-family: var(--sans);
+}
+
+/* Title block, centred */
+.quarto-title { text-align: center; margin-bottom: 1.2rem; }
+h1.title { font-family: var(--serif); font-size: 3rem; line-height: 1.1;
+           font-weight: 700; margin: 0.4em 0 0.3em; text-align: center; }
+.quarto-title .subtitle { font-style: italic; font-size: 1.25rem; line-height: 1.5; color: #333;
+                          max-width: 40em; margin: 0 auto 0.8em; text-align: center; }
+.quarto-title-meta { justify-content: center; font-size: 0.85rem; color: #555; }
+
+/* Disclosure box */
+.disclosure { border-left: 4px solid #555; background: #f2f2f2; padding: 0.7em 1em;
+              font-size: 0.95rem; margin: 1.2rem 0; }
+
+/* Section menu: uppercase labels between two rules, stays at the top while scrolling */
+.sectionnav { position: sticky; top: 0; z-index: 20; background: #ffffff; text-align: center;
+              border-top: 2px solid #111; border-bottom: 1px solid #111; padding: 0.75rem 0;
+              margin: 1.8rem 0 1.5rem; text-transform: uppercase; letter-spacing: 0.08em;
+              font-size: 0.78rem; font-weight: 700; }
+.sectionnav p { margin: 0; }
+.sectionnav a { color: #111; text-decoration: none; margin: 0 0.85rem; white-space: nowrap; }
+.sectionnav a:hover { text-decoration: underline; }
+h2 { scroll-margin-top: 4.5rem; }
+
+/* Section headings */
+h2 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700;
+     margin-top: 2.4em; border-bottom: none; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+
+/* "Latest estimate" row */
+.estimate-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;
+                 gap: 0.4rem; margin-top: 0.5rem; }
+.estimate-head .label { text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700; font-size: 0.85rem; }
+.estimate-head .updated { color: #555; font-size: 0.85rem; }
+
+/* Headline and seat bar (made by scripts/15-make_summary_bar.py) */
+.forecast-summary { margin: 0.8rem 0 1.5rem; }
+.forecast-summary .headline { font-size: 1.9rem; font-weight: 700; line-height: 1.2; text-align: center;
+                              margin: 0.6rem 0 1.4rem; font-family: var(--serif); }
+.forecast-summary .bar { position: relative; display: flex; height: 34px; border: 2px solid #222; }
+.forecast-summary .seg { height: 100%; }
+.forecast-summary .line50 { position: absolute; left: 50%; top: -6px; bottom: -6px;
+                            border-left: 2px dashed #222; }
+.forecast-summary .bar-labels { display: flex; justify-content: space-between; align-items: flex-start;
+                                margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em;
+                                font-weight: 700; font-size: 0.95rem; }
+.forecast-summary .bar-labels .num { font-size: 1.9rem; }
+.forecast-summary .bar-labels small { text-transform: none; letter-spacing: 0; font-weight: 400; color: #444; }
+.forecast-summary .bar-labels .right { text-align: right; }
+.forecast-summary .bar-labels .mid { text-align: center; }
+.forecast-summary .bar-note { font-size: 0.82rem; color: #555; margin: 0.4rem 0 0; }
+
+/* Figures and captions */
+figcaption, .figure-caption { font-size: 0.82rem; color: #555; text-align: left; }
+table { font-size: 0.9rem; }
+.page-footer { font-size: 0.85rem; }
+
+/* Composition tables placed side by side: slightly smaller text */
+.columns table { font-size: 0.8rem; }
+.columns table th, .columns table td { padding: 0.2rem 0.4rem; }
