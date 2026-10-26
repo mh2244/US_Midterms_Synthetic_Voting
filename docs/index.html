@@ -11,7 +11,7 @@
 <meta name="author" content="Kexin Liu">
 <meta name="dcterms.date" content="2026-10-25">
 
-<title>Synthetic Voting for 2026 U.S Senate Midterm Elections</title>
+<title>Synthetic Voting for 2026 U.S Senate Midterm Elections – 2026 U.S. Senate: synthetic forecast</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -48,7 +48,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d0cfe7a3482e0d49a74229a8f3b76718.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-172ba59bd5e0b52282274ba0c0cc16fc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -76,20 +76,52 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="floating quarto-light">
 
 <div id="quarto-search-results"></div>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#senate-results" id="toc-senate-results" class="nav-link active" data-scroll-target="#senate-results">Senate Results</a></li>
+  <li><a href="#crosstabs" id="toc-crosstabs" class="nav-link" data-scroll-target="#crosstabs">Crosstabs</a></li>
+  <li><a href="#composition-of-sample" id="toc-composition-of-sample" class="nav-link" data-scroll-target="#composition-of-sample">Composition of Sample</a></li>
+  <li><a href="#news-summaries" id="toc-news-summaries" class="nav-link" data-scroll-target="#news-summaries">News Summaries</a></li>
+  <li><a href="#api-costs" id="toc-api-costs" class="nav-link" data-scroll-target="#api-costs">API Costs</a></li>
+  <li><a href="#internal-validation" id="toc-internal-validation" class="nav-link" data-scroll-target="#internal-validation">Internal Validation</a></li>
+  <li><a href="#models-used" id="toc-models-used" class="nav-link" data-scroll-target="#models-used">Models Used</a></li>
+  <li><a href="#ai-prompts" id="toc-ai-prompts" class="nav-link" data-scroll-target="#ai-prompts">AI Prompts</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
+  <ul class="collapse">
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#personas" id="toc-personas" class="nav-link" data-scroll-target="#personas">Personas</a></li>
+  <li><a href="#mode-collapse" id="toc-mode-collapse" class="nav-link" data-scroll-target="#mode-collapse">Mode Collapse</a></li>
+  <li><a href="#sampling" id="toc-sampling" class="nav-link" data-scroll-target="#sampling">Sampling</a></li>
+  <li><a href="#prompts-and-models" id="toc-prompts-and-models" class="nav-link" data-scroll-target="#prompts-and-models">Prompts and models</a></li>
+  <li><a href="#turning-answers-into-voting-probabilities" id="toc-turning-answers-into-voting-probabilities" class="nav-link" data-scroll-target="#turning-answers-into-voting-probabilities">Turning Answers into Voting Probabilities</a></li>
+  <li><a href="#testing-and-checks" id="toc-testing-and-checks" class="nav-link" data-scroll-target="#testing-and-checks">Testing and Checks</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -98,7 +130,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     <div>
     <div class="quarto-title-meta-heading">Authors</div>
@@ -663,18 +695,19 @@ ul.task-list li input[type="checkbox"] {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-      &nbsp;
-    </div>   
+<p>Maggie, Coco, Amelia</p>
+</div>   
     <div class="nav-footer-center">
-<p><a href="https://github.com/mh2244/US_Midterms_Synthetic_Voting">Code on GitHub</a></p>
-</div>
-    <div class="nav-footer-right">
       &nbsp;
     </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/mh2244/US_Midterms_Synthetic_Voting">Code on GitHub</a></p>
+</div>
   </div>
 </footer>
 
 
 
 
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
