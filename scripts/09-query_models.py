@@ -29,6 +29,12 @@
 # but say so in the paper.
 # LIMIT: reasoning models can spend their token budget thinking and return empty text. Those
 # rows are saved with error = "empty_content", and the next run tries them again.
+# SAFETY (added 2026-10-26): a malformed response (bad JSON, no "choices") or any other
+# unexpected error becomes an error row for that call only, so it can never stop the run or
+# lose the other paid answers of the same batch. An answer cut off by max_tokens
+# (finish_reason "length") is kept for inspection but marked as an error, so it is not scored.
+# Every failed call is also appended to failed_calls.csv in the run folder; the responses file
+# keeps only the latest attempt, so that log is what the paper's failure counts come from.
 
 
 #### Workspace setup ####
@@ -81,7 +87,7 @@ def call_openrouter(key, model_id, prompt_text):
     if reasoning is not None:
         body["reasoning"] = reasoning   # see config.py: thinking off (or minimal) to save output tokens
     out = {"response_text": "", "model_returned": "", "input_tokens": None,
-           "output_tokens": None, "error": ""}
+           "output_tokens": None, "finish_reason": "", "error": ""}
     for attempt in range(4):
         try:
             r = requests.post(URL, headers=headers, json=body, timeout=120)
@@ -107,16 +113,32 @@ def call_openrouter(key, model_id, prompt_text):
         if r.status_code != 200:
             out["error"] = f"http {r.status_code}: {r.text[:200]}"
             return out
-        data = r.json()
-        if "error" in data:
-            out["error"] = f"api error: {str(data['error'])[:200]}"
-            return out
-        choice = data["choices"][0]
-        text = (choice.get("message") or {}).get("content") or ""
-        usage = data.get("usage") or {}
-        out.update(response_text=text.strip(), model_returned=data.get("model", ""),
+        try:
+            data = r.json()
+            if not isinstance(data, dict):
+                raise TypeError(f"response is a {type(data).__name__}, not an object")
+            if "error" in data:
+                out["error"] = f"api error: {str(data['error'])[:200]}"
+                return out
+            choice = data["choices"][0]
+            text = (choice.get("message") or {}).get("content") or ""
+            finish = str(choice.get("finish_reason") or "")
+            usage = data.get("usage") or {}
+        except (ValueError, KeyError, IndexError, TypeError, AttributeError) as exc:
+            # Bad JSON or an unexpected shape: try this call again, then give up on it alone
+            out["error"] = f"bad response ({type(exc).__name__}): " + " ".join(r.text[:150].split())
+            time.sleep(5 * (attempt + 1))
+            continue
+        text = text.strip() if isinstance(text, str) else ""
+        if not text:
+            error = "empty_content"
+        elif finish == "length":
+            error = "truncated (finish_reason=length)"     # cut off by max_tokens; not scored
+        else:
+            error = ""
+        out.update(response_text=text, model_returned=data.get("model", ""),
                    input_tokens=usage.get("prompt_tokens"), output_tokens=usage.get("completion_tokens"),
-                   error="" if text.strip() else "empty_content")
+                   finish_reason=finish, error=error)
         return out
     return out
 
@@ -177,7 +199,9 @@ try:
     existing["error"] = existing["error"].fillna("")
     valid = existing["error"].eq("") & existing["prompt_id"].isin(prompts["prompt_id"])
     valid &= existing["response_text"].fillna("").str.strip().ne("")
-    valid &= existing["model"].isin(short_names) & existing["repeat"].between(1, args.repeats)
+    # Rows for models or repeats not asked in THIS command are kept (not re-asked), so running
+    # one model with --models, or fewer --repeats, never deletes answers already paid for.
+    valid &= existing["repeat"].ge(1)
     valid &= existing["model_requested"].eq(existing["model"].map(config.MODELS))
     valid &= existing["model_returned"].fillna("").str.startswith("MOCK-").eq(args.mock)
     kept = existing.loc[valid].copy()  # exclude obsolete experiments and mock/real mixtures
@@ -202,13 +226,24 @@ if not args.mock:
 
 #### Ask ####
 new_rows, errors_in_a_row = [], 0
+FAILED_LOG = config.RUN_DIR / "failed_calls.csv"
+logged = 0                                  # how many of new_rows are already in the failure log
 stopped = False
 
 
 def save():
+    """Write all answers so far, and append new failed calls to the failure log."""
+    global logged
     frame = pd.concat([kept, pd.DataFrame(new_rows)], ignore_index=True) if len(kept) else pd.DataFrame(new_rows)
     if len(frame):
         config.write_table(frame, config.RESPONSES_FILE)
+    fresh = pd.DataFrame(new_rows[logged:])
+    if len(fresh):
+        failed = fresh[fresh["error"] != ""].drop(columns=["response_text"], errors="ignore")
+        if len(failed):
+            FAILED_LOG.parent.mkdir(parents=True, exist_ok=True)
+            failed.to_csv(FAILED_LOG, mode="a", header=not FAILED_LOG.exists(), index=False)
+    logged = len(new_rows)
 
 
 def ask_one(item):
@@ -217,7 +252,7 @@ def ask_one(item):
     if args.mock:
         result = {"response_text": mock_answer(p.prompt_text, p.design, short, p.prompt_id),
                   "model_returned": "MOCK-" + config.MODELS[short], "input_tokens": 0,
-                  "output_tokens": 0, "error": ""}
+                  "output_tokens": 0, "finish_reason": "stop", "error": ""}
         if not result["response_text"]:
             result["error"] = "empty_content"
         return result
@@ -239,6 +274,10 @@ try:
                 except StopRun as stop:
                     stop_signal = stop                                   # keep the answers that did arrive
                     continue
+                except Exception as exc:                                 # never lose the rest of the batch
+                    result = {"response_text": "", "model_returned": "", "input_tokens": None,
+                              "output_tokens": None, "finish_reason": "",
+                              "error": f"unexpected ({type(exc).__name__}): {str(exc)[:150]}"}
                 new_rows.append({
                     "prompt_id": p.prompt_id, "run": config.RUN, "persona_id": p.persona_id,
                     "state": p.state, "design": p.design,
