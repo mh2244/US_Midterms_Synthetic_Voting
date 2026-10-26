@@ -1,17 +1,41 @@
-name: News data
+# Purpose: Full forecast run on the three news days (Oct 27, 29, 31):
+#          collect news -> concatenate nine summaries/persona -> prompts (08) -> model queries (09) -> SSR (10)
+#          -> forecast (11) -> tests (12) -> figures (13, 15) -> commit results.
+# Needs: repository secret OPENROUTER_API_KEY.
+# Manual run: Actions > Forecast run > Run workflow. Leave run empty for today's
+# Toronto date, or enter nonews for the baseline.
+# Integration pending: paid voting-model settings.
+# RUN selects matching output and commit paths; completed answers are saved even on failure.
+# Disable this workflow before the project deadline.
+
+name: Forecast run
 
 on:
   schedule:
-    - cron: "43 17 * * *"
+    - cron: "13 18 27,29,31 10 *"  # 2:13 pm Toronto on these October dates
   workflow_dispatch:
+    inputs:
+      run:
+        description: "Run id: empty = today's date (Toronto); or nonews"
+        required: false
+        default: ""
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: forecast-run
+  cancel-in-progress: false
+
+env:
+  SUMMARY_SCRIPT: scripts/04b-summarize_news.py
 
 jobs:
-  collect-news:
+  forecast:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 360
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -20,19 +44,92 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: |
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
 
-      - name: Collect news
+      - name: Set the run id
+        id: run_info
         env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: python scripts/04-collect_news.py
+          RUN_INPUT: ${{ inputs.run }}
+        run: |
+          RUN="$RUN_INPUT"
+          if [ -z "$RUN" ]; then RUN=$(TZ=America/Toronto date +%F); fi
+          if [[ "$RUN" != "nonews" && ! "$RUN" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "Run id must be nonews or YYYY-MM-DD" >&2
+            exit 1
+          fi
+          echo "RUN=$RUN" >> "$GITHUB_ENV"
+          echo "run_id=$RUN" >> "$GITHUB_OUTPUT"
+          echo "Run id: $RUN"
 
-      - name: Upload news data
-        if: always()
+      - name: Refresh polling data for this forecast
+        run: |
+          python scripts/polling_data/00-download_polling_data.py
+          python scripts/polling_data/01-clean_polling_data.py
+          mkdir -p "data/03-results/run_${RUN}"
+          cp data/polling_data/02-analysis_data/senate_polls_2026_general.csv \
+             "data/03-results/run_${RUN}/polling_input.csv"
+
+      - name: Collect news and assemble persona news
+        if: steps.run_info.outputs.run_id != 'nonews'
+        run: |
+          python scripts/04-collect_news.py
+          python "$SUMMARY_SCRIPT"
+          cp data/news/news.csv "data/news/news_${RUN}.csv"
+          cp data/news/news_context.csv "data/news/news_context_${RUN}.csv"
+          cp data/news/persona_news_summaries.csv "data/news/persona_news_summaries_${RUN}.csv"
+
+      - name: Build prompts (08)
+        run: |
+          if [ "$RUN" = "nonews" ]; then
+            python scripts/08-build_prompts.py
+          else
+            python scripts/08-build_prompts.py --news
+          fi
+
+      - name: Query models (09)
+        run: python scripts/09-query_models.py --batch-size 40 --sleep 0
+
+      - name: Score answers with SSR (10)
+        run: python scripts/10-score_responses.py
+
+      - name: Build the forecast (11)
+        run: python scripts/11-build_forecast.py
+
+      - name: Test the real data (12)
+        run: python scripts/12-test_actual_data.py
+
+      - name: Make figures (13, 15)
+        run: |
+          python scripts/13-make_figures.py
+          python scripts/15-make_summary_bar.py
+
+      - name: Upload run files (also after a failure)
+        if: ${{ always() && steps.run_info.outputs.run_id != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: news-data
-          path: data/news/*.csv
+          name: forecast-${{ steps.run_info.outputs.run_id }}
+          path: |
+            data/news/*.csv
+            data/polling_data/
+            data/02-analysis_data/run_${{ steps.run_info.outputs.run_id }}/
+            data/03-results/run_${{ steps.run_info.outputs.run_id }}/
+            docs/figures/run_${{ steps.run_info.outputs.run_id }}/
           if-no-files-found: warn
+
+      - name: Commit results (also after a failure)
+        if: ${{ always() && steps.run_info.outputs.run_id != '' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for path in data/news data/polling_data "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}" "docs/figures/run_${RUN}" includes; do
+            if [ -e "$path" ]; then git add -- "$path"; fi
+          done
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          git commit -m "Forecast run ${RUN} (automatic)"
+          git pull --rebase
+          git push

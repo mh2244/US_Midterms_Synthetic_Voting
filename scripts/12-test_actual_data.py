@@ -102,6 +102,8 @@ print("Prompts: all tests passed")
 n_repeats = responses["repeat"].nunique()
 assert len(responses) == len(prompts) * len(models) * n_repeats, "Wrong number of responses"
 # Every prompt and answer belongs to this run (runs must never mix)
+assert prompts["run"].eq(config.RUN).all(), "Prompt run field does not match"
+assert responses["run"].eq(config.RUN).all(), "Response run field does not match"
 assert prompts["prompt_id"].str.endswith("|" + config.RUN).all(), "A prompt from another run"
 assert responses["prompt_id"].str.endswith("|" + config.RUN).all(), "An answer from another run"
 assert set(responses["prompt_id"]) <= set(prompts["prompt_id"]), "An answer has no matching prompt"

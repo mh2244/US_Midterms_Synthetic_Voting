@@ -1,3 +1,11 @@
+#### Preamble ####
+# Purpose: Downloads the complete Senate polling dataset from the PollResults API
+#          and saves the raw JSON and flattened CSV for our 2026 Senate project.
+# Author: Jingxuan Feng
+# Date: 24 October 2026
+# Contact: amelia.f.feng@outlook.com
+# License: MIT
+# Pre-requisites: Python 3.10+ and system curl; no additional Python packages.
 
 """Download the complete Senate dataset from the documented PollResults API.
 
