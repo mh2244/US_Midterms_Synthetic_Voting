@@ -1,92 +1,85 @@
-# Pipeline scripts 06-13 (test run: 5 personas per state, 2 free models)
+# Running the forecast pipeline
 
-Copy the files in `scripts/` into your project's `scripts/` folder (keep `config.py` beside the others). Run everything from the project root.
+See the [project README](../README.md) for setup, data sources, model IDs and
+output locations. Run commands from the project root with `.venv` activated.
+Settings are in [`config.py`](config.py).
 
-## One-time setup
+## News run
 
-```
-pip install pandas numpy pyarrow requests matplotlib sentence-transformers
-```
-
-Make a file called `.env` in the project root with ONE line (no quotes):
-
-```
-OPENROUTER_API_KEY=sk-or-...your new key...
-```
-
-Add `.env` to `.gitignore`. The key you pasted in chat is exposed: revoke it at openrouter.ai/keys and make a new one.
-
-## Order
-
-| Script | What it does | Writes |
-|---|---|---|
-| `06-clean_candidates.py` | one left and one Republican name per race; prints warnings to fix | `senate_nominees_2026.csv` |
-| `07-build_personas.py` | draws 5 real CES respondents per state by weight; writes persona text | `personas.parquet/.csv` |
-| `08-build_prompts.py` | persona + question (`--designs B,C`, `--news`) | `prompts.parquet` |
-| `09-query_models.py` | asks both models (`--limit 4` first; `--mock` for a dry run) | `responses.parquet` |
-| `10-score_responses.py` | SSR (design B) or parsing (design C) | `scores.parquet`, `scores_with_text.csv` |
-| `11-build_forecast.py` | state shares, 1,000 draws, inverse-variance combination with polls (`--combine ivw/shrink/none`) | `forecast.parquet`, `state_comparison.csv`, `ivw_weights.csv` |
-| `12-test_actual_data.py` | tests on real files | prints "All tests passed" |
-| `13-make_figures.py` | quantile dotplot | `figures/run_<RUN>/forecast_dotplot.png` |
-| `13b-make_map.py` | interactive Senate map drawn as SVG from `data/01-raw_data/us-states.json` (from `02b-download_map.py`); hover for candidates, share, chance of winning | `senate_map.md` (included in index.qmd) |
-| `14-sample_composition.py` | persona sample against the weighted CES pool | `composition/composition_overall.md` (included in index.qmd) |
-| `15b-make_headline.py` | headline and seat bar from the pooled draws (Democrats need 51 without independents) | `headline.md`, `figures/run_<RUN>/seat_bar.png` |
-| `16-make_crosstabs.py` | synthetic vote by group against the 2024 vote of the same personas | `crosstabs.csv`, `crosstabs.md` (included in index.qmd) |
-| `17-publish_latest.py` | copies the latest news run (figures, crosstabs, headline numbers) to fixed paths | `figures/latest/`, `data/03-results/latest/` (used by index.qmd) |
-
-Outputs go to `data/02-analysis_data/` and `data/03-results/`. `config.py` holds the settings (models, N per state, paths).
-
-## Free-model limits
-
-20 requests per minute, and 50 per day unless you have bought 10 credits (then 1,000 per day). 175 personas x 2 models = 350 calls. Script 09 saves as it goes, skips finished prompts, retries failed ones, and stops cleanly at the daily limit. Run it again the next day.
-
-## Not verified by me (checked offline with a fake model only)
-
-- Live OpenRouter calls: the two model ids (`stealth/space-bunny-alpha`, `nvidia/nemotron-3-super-120b-a12b:free`), how reasoning models report empty answers, and the daily-limit message text.
-- The real embedding model in script 10 (`sentence-transformers`). The fake embedder only checks the code path.
-- Parquet writing (my sandbox had no pyarrow; the code falls back to csv only when pyarrow is missing).
-
-## Fix before the final run
-
-- Candidate file (script 06 warnings): Idaho, Nebraska and South Dakota have no Democrat listed; Idaho's polls show David Roth as Democrat; Alaska lists 3 Republicans. Edit `OVERRIDES` after checking Ballotpedia.
-- News flow: `04-collect_news.py` screens articles; `04b-summarize_news.py` samples 3 left_leaning + 3 newspapers + 3 right_leaning items per persona and concatenates the nine existing `prompt_paragraph` values, without another LLM call. `newspapers` does not mean neutral. The summaries and selected sources are saved to `data/news/persona_news_summaries.csv`. `08-build_prompts.py --news` loads each persona's summary, shared across B/C designs, and rejects unfinished or stale summaries. Summaries use headlines/feed excerpts, not full articles. Prompt IDs include a content hash; 09 only reuses current prompt/model/mode results.
-- `DEM_NOT_UP` / `REP_NOT_UP` (34 / 31) are copied from your simulation script; check them.
-- Raw data should be in `data/01-raw_data/` per the assignment; scripts 02/03 still write to `data/`.
-- Candidate order is randomised per persona (column `left_first`); keep it, or say why not.
-
-## Limits to write about
-
-- 5 personas per state gives a standard error of about 22 points on a share near 50%. The test run checks the code, not the election.
-- The forecast spread covers persona sampling only. Add model and repeat spread, calibration error and a shared national error before the final run (see the comments in script 11).
-- Our local embedder is symmetric and small; Heath & Alexander used Gemini Embedding 2 with asymmetric embeddings.
-- Design B and SSR for vote choice is an adaptation of a method tested on 0-100 ratings.
-
-## Persona news summaries (04b)
+Shared CES, candidate and persona files must already exist. Set the same RUN for
+every stage:
 
 ```bash
-# Preview the selection without API calls or writing output:
-python scripts/04b-summarize_news.py --dry-run
-# Save nine existing paragraphs per persona, then build prompts:
+export RUN=2026-10-27
+python scripts/polling_data/00-download_polling_data.py
+python scripts/polling_data/01-clean_polling_data.py
+python scripts/04-collect_news.py
 python scripts/04b-summarize_news.py
 python scripts/08-build_prompts.py --news
+python scripts/09-query_models.py --batch-size 40 --sleep 0
+python scripts/10-score_responses.py
+python scripts/11-build_forecast.py --combine none
+python scripts/11-build_forecast.py --combine shrink
+python scripts/11-build_forecast.py              # inverse-variance headline, run last
+python scripts/13-make_figures.py
+python scripts/13b-make_map.py
+python scripts/15-make_summary_bar.py
+python scripts/15b-make_headline.py
+python scripts/16-make_crosstabs.py
+python scripts/12-test_actual_data.py
+python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```
 
-All stages use `config.RUN` (default `2026-10-27`), overridden by environment variable `RUN`; set the same RUN for 04b and 08-15. If supplied, 04b's `--run` must match config.RUN. Fixed seed + run ID + news pool + persona determine sampling. Each selection has nine unique URLs, three per group; different personas may share articles. If a group has fewer than three eligible articles, collection must be expanded first. Script 04b preserves each existing paragraph, numbers the items [1]-[9], and separates them with blank lines. It does not rewrite, compress, or truncate them and needs no API key. Source metadata and input fingerprints are saved in `data/news/persona_news_summaries.csv`. Script 08 rejects stale inputs or the older LLM-compressed format. Both B/C designs use the same nine-item context for a persona. Script 04 still uses an LLM to screen and summarize individual articles; script 09 still queries voting models. Longer nine-item prompts increase those voting models' input tokens compared with a compressed summary.
+Planned news dates are October 27, 29 and 31, 2026. Without an override, RUN is
+`2026-10-27`. For the baseline, use `export RUN=nonews`, skip 04/04b, and run 08
+without `--news`, followed by the remaining stages. Optional script 14 summarizes
+persona composition and is not part of the forecast workflow.
 
-## Run-specific output paths
+These commands make paid requests: news uses GPT-4.1 Nano, voting uses four
+models, and SSR uses Gemini Embedding 2. With 3,500 personas and three repeats,
+Design B requires 42,000 voting requests per run, plus screening/embedding.
 
-Scripts 08-15 always use the selected RUN (default `2026-10-27`):
+## What to expect
 
-- `data/02-analysis_data/run_<RUN>/` for prompts, responses and scores.
-- `data/03-results/run_<RUN>/` for forecasts, comparisons and win probabilities.
-- `figures/run_<RUN>/` for both forecast figures (not `docs/`, which Quarto rebuilds).
+- **04:** collect the last 48 hours, up to 60 articles per publisher; screen and
+  summarize supplied headlines/excerpts. Role conflicts trigger one corrective
+  rewrite or exclusion. This is not independent verification of reported facts.
+- **04b:** sample three articles per source group for each persona and concatenate
+  nine existing paragraphs. No extra LLM calls; at least three eligible articles
+  per group are required. `newspapers` does not mean neutral.
+- **08:** validate persona/news inputs and build prompts. Content hashes and RUN
+  identify the prompt version. B/C share the persona's news selection.
+- **09:** save raw responses and reuse matching successes. Incomplete runs exit
+  with code 1, including an unfinished `--limit` pilot. Keep prompts unchanged
+  and rerun 09 to retry remaining work.
+- **10–16:** score, simulate, plot and test. Script 11 combines the synthetic share
+  with polls (or 2024 + uniform swing) by inverse-variance weights; `--combine
+  shrink` and `--combine none` are kept for comparison. 13b, 15b and 16 write the
+  map, headline and crosstabs. Tests check consistency, not prediction accuracy.
+- **17:** copies the latest news run to `figures/latest/` and
+  `data/03-results/latest/`, which `index.qmd` reads.
 
-Candidates and personas remain shared inputs under `data/02-analysis_data/`; news inputs remain under `data/news/`. `RUN=nonews` isolates baseline results in `run_nonews`. Without an environment override, local scripts use `run_2026-10-27`. Dates automatically enable news in 08; `RUN=nonews` disables it, and combining nonews with `--news` is rejected. Prompt IDs contain both a content hash and the RUN suffix; prompts and responses also record a `run` field. Use the same `RUN` for every stage, for example `RUN=2026-10-27 python scripts/08-build_prompts.py --news` followed by `RUN=2026-10-27 python scripts/09-query_models.py`. A news run's 04b summary must carry the same run ID. Previous files are not moved automatically. The workflow uploads run files as an artifact before committing, providing a fallback if pushing fails. Input freezing and voting-model configuration are separate from this path change.
+Outputs are isolated under `data/02-analysis_data/run_<RUN>/`,
+`data/03-results/run_<RUN>/`, and `figures/run_<RUN>/` (not `docs/`, which Quarto rebuilds). Shared candidates and
+personas stay in `data/02-analysis_data/`; news stays in `data/news/`.
 
-## Query-step exit status
+## Useful commands
 
-Script 09 saves completed answers before exiting. It returns exit code 1 if it stops early or any planned prompt/model/repeat still lacks a successful nonempty answer (including a deliberately limited `--limit` pilot). GitHub then skips scoring/forecasting while the always-run upload/commit steps can preserve progress. Run 09 again with the same prompts to retry unfinished requests. Fully successful runs return 0. The requirements file includes pyarrow (Parquet), sentence-transformers (SSR), and matplotlib (figures).
+```bash
+python scripts/04-collect_news.py --collect-only  # collect without model calls
+python scripts/04-collect_news.py --filter-only   # rescreen the saved collection
+python scripts/04b-summarize_news.py --dry-run    # preview without writing
+python scripts/09-query_models.py --limit 4       # paid pilot; partial exit code 1
+```
 
-## Fresh polling input in the forecast workflow
+After changing the news pool or personas, rerun 04b and 08. If using 04b's
+`--run`, it must match config.RUN. Rebuilding prompts can require new voting
+requests. A full GitHub workflow rerun recollects news; it is not a frozen-input
+resume. Failed workflow outputs are retained for inspection, not automatically
+certified as valid results.
 
-The Forecast run workflow downloads and cleans polling data itself before collecting news or querying voting models, including for `nonews`. It does not depend on the separate Polling data workflow's artifact. Script 11 reads the freshly updated `data/polling_data/02-analysis_data/senate_polls_2026_general.csv`. An identical copy is saved as `data/03-results/run_<RUN>/polling_input.csv` for tracing each forecast's input. Both the raw/cleaned polling data and the per-run copy are included in artifact upload and automatic commit. If downloading or cleaning fails, normal downstream steps stop; the workflow does not silently fall back to the old polling file. The standalone polling workflow remains available for independent downloads.
+The workflow refreshes its own polling input, archives a copy as
+`data/03-results/run_<RUN>/polling_input.csv`, uploads artifacts, and attempts to
+commit news, polling inputs, answers and scores even after failure. Forecasts,
+figures and the rendered website (`docs/`) are committed only when all
+preceding steps, including the tests, succeed.

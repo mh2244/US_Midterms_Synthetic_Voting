@@ -152,25 +152,36 @@ jobs:
             figures/run_${{ steps.run_info.outputs.run_id }}/
           if-no-files-found: warn
 
-      - name: Commit results (answers always; forecast and website only if everything passed)
+      - name: Commit answers and scores (always, so paid answers are kept)
         if: ${{ always() && steps.run_info.outputs.run_id != '' }}
-        env:
-          JOB_STATUS: ${{ job.status }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          paths=(data/news data/polling_data "data/02-analysis_data/run_${RUN}")
-          if [ "$JOB_STATUS" = "success" ]; then
-            paths+=("data/03-results/run_${RUN}" "figures/run_${RUN}" data/03-results/latest figures/latest docs)
-            message="Forecast run ${RUN} (automatic)"
-          else
-            message="Forecast run ${RUN}: model answers only, run did not finish (automatic)"
+          for path in data/news data/polling_data "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}/polling_input.csv"; do
+            if [ -e "$path" ]; then git add -- "$path"; fi
+          done
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          git commit -m "Answers for run ${RUN} (automatic)"
+          # Keep unpublished outputs out of the way during rebase, then restore them.
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash push --include-untracked -m "Unpublished outputs for run ${RUN}"
+            trap 'git stash pop' EXIT
           fi
-          for path in "${paths[@]}"; do
+          git pull --rebase
+          git push
+
+      - name: Commit forecast, figures and website (only if every test passed)
+        if: ${{ success() && steps.run_info.outputs.run_id != '' }}
+        run: |
+          for path in "data/03-results/run_${RUN}" "figures/run_${RUN}" data/03-results/latest figures/latest docs; do
             if [ -e "$path" ]; then git add -A -- "$path"; fi
           done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
-          git commit -m "$message"
+          git commit -m "Forecast for run ${RUN}, tests passed (automatic)"
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash push --include-untracked -m "Other files for run ${RUN}"
+            trap 'git stash pop' EXIT
+          fi
           # Generated files: if someone pushed meanwhile, keep this run's version on a conflict
           git pull --rebase -X theirs
           git push
