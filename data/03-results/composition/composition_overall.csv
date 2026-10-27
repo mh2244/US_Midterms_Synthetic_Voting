@@ -49,3 +49,8 @@ Ideology,Moderate,980,28.0,27.3,30.6,0.7
 Ideology,Conservative,847,24.2,24.4,21.5,-0.2
 Ideology,Very conservative,627,17.9,18.1,13.6,-0.1
 Ideology,Not sure,99,2.8,3.1,2.2,-0.3
+2024 presidential vote (not in the prompt),Harris,1522,43.5,43.2,52.5,0.3
+2024 presidential vote (not in the prompt),Trump,1846,52.7,53.5,43.2,-0.7
+2024 presidential vote (not in the prompt),Third party,71,2.0,1.9,3.2,0.1
+2024 presidential vote (not in the prompt),Did not vote for president,31,0.9,0.7,0.6,0.2
+2024 presidential vote (not in the prompt),No answer,30,0.9,0.7,0.6,0.1

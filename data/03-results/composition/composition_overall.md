@@ -1,5 +1,10 @@
 The sample has 3,500 personas, 100 in each of the 35 states. The expected share is the weighted CES share among validated 2024 voters in each state, averaged over states, because every state contributes the same number of personas. On every category, the sample is within 1.1 percentage points of the expected share.
 
+![Composition of the 3,500 personas (black) against the expected shares from the weighted CES pool (grey). Household income is grouped into seven bands here; the table view has all 17 categories.](figures/composition.png){fig-alt="Paired horizontal bars for gender, race and ethnicity, age, education, party identification, ideology, household income and 2024 presidential vote, comparing the persona sample with the expected shares."}
+
+<details>
+<summary>Table view</summary>
+
 ::: {.columns}
 
 ::: {.column width="48%"}
@@ -102,6 +107,9 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 
 :::
 
+::: {.columns}
+
+::: {.column width="48%"}
 **Household income**
 
 | Category | Personas | Sample (%) | Expected (%) |
@@ -123,6 +131,28 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | $350,000 - $499,999 | 10 | 0.3 | 0.4 |
 | $500,000 or more | 10 | 0.3 | 0.3 |
 | Prefer not to say | 323 | 9.2 | 9.6 |
+
+:::
+
+::: {.column width="4%"}
+:::
+
+::: {.column width="48%"}
+**2024 presidential vote (not in the prompt)**
+
+| Category | Personas | Sample (%) | Expected (%) |
+|---|---:|---:|---:|
+| Harris | 1,522 | 43.5 | 43.2 |
+| Trump | 1,846 | 52.7 | 53.5 |
+| Third party | 71 | 2.0 | 1.9 |
+| Did not vote for president | 31 | 0.9 | 0.7 |
+| No answer | 30 | 0.9 | 0.7 |
+
+:::
+
+:::
+
+</details>
 
 **Repeated draws**
 

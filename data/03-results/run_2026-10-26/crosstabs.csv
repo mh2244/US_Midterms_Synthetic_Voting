@@ -135,22 +135,22 @@ Ideology,Not sure,deepseek,99,99.0,0.3899,0.369,0.2809,,,
 Ideology,Not sure,gemini,99,99.0,0.3999,0.3955,0.2809,,,
 Ideology,Not sure,haiku,99,99.0,0.4069,0.3773,0.2809,,,
 Ideology,Not sure,luna,99,99.0,0.4235,0.4924,0.2809,,,
-Household income,"Under $50,000",deepseek,1210,1210.0,0.468,0.4927,0.4861,,,
-Household income,"Under $50,000",gemini,1210,1210.0,0.4801,0.4985,0.4861,,,
-Household income,"Under $50,000",haiku,1210,1210.0,0.4793,0.5026,0.4861,,,
-Household income,"Under $50,000",luna,1210,1210.0,0.4896,0.5139,0.4861,,,
-Household income,"$50,000 to $99,999",deepseek,1143,1143.0,0.4407,0.4402,0.4251,,,
-Household income,"$50,000 to $99,999",gemini,1143,1143.0,0.4383,0.4322,0.4251,,,
-Household income,"$50,000 to $99,999",haiku,1143,1143.0,0.4398,0.4385,0.4251,,,
-Household income,"$50,000 to $99,999",luna,1143,1143.0,0.4495,0.4601,0.4251,,,
-Household income,"$100,000 to $199,999",deepseek,689,689.0,0.4229,0.42,0.4376,,,
-Household income,"$100,000 to $199,999",gemini,689,689.0,0.4274,0.4184,0.4376,,,
-Household income,"$100,000 to $199,999",haiku,689,689.0,0.4337,0.4264,0.4376,,,
-Household income,"$100,000 to $199,999",luna,689,689.0,0.4221,0.427,0.4376,,,
-Household income,"$200,000 or more",deepseek,135,135.0,0.4448,0.4653,0.499,,,
-Household income,"$200,000 or more",gemini,135,135.0,0.4561,0.4683,0.499,,,
-Household income,"$200,000 or more",haiku,135,135.0,0.4599,0.4747,0.499,,,
-Household income,"$200,000 or more",luna,135,135.0,0.4708,0.4866,0.499,,,
+Household income,Under $50K,deepseek,1210,1210.0,0.468,0.4927,0.4861,,,
+Household income,Under $50K,gemini,1210,1210.0,0.4801,0.4985,0.4861,,,
+Household income,Under $50K,haiku,1210,1210.0,0.4793,0.5026,0.4861,,,
+Household income,Under $50K,luna,1210,1210.0,0.4896,0.5139,0.4861,,,
+Household income,$50K to $100K,deepseek,1143,1143.0,0.4407,0.4402,0.4251,,,
+Household income,$50K to $100K,gemini,1143,1143.0,0.4383,0.4322,0.4251,,,
+Household income,$50K to $100K,haiku,1143,1143.0,0.4398,0.4385,0.4251,,,
+Household income,$50K to $100K,luna,1143,1143.0,0.4495,0.4601,0.4251,,,
+Household income,$100K to $200K,deepseek,689,689.0,0.4229,0.42,0.4376,,,
+Household income,$100K to $200K,gemini,689,689.0,0.4274,0.4184,0.4376,,,
+Household income,$100K to $200K,haiku,689,689.0,0.4337,0.4264,0.4376,,,
+Household income,$100K to $200K,luna,689,689.0,0.4221,0.427,0.4376,,,
+Household income,$200K or more,deepseek,135,135.0,0.4448,0.4653,0.499,,,
+Household income,$200K or more,gemini,135,135.0,0.4561,0.4683,0.499,,,
+Household income,$200K or more,haiku,135,135.0,0.4599,0.4747,0.499,,,
+Household income,$200K or more,luna,135,135.0,0.4708,0.4866,0.499,,,
 Household income,Prefer not to say,deepseek,323,323.0,0.3857,0.3835,0.3835,,,
 Household income,Prefer not to say,gemini,323,323.0,0.3987,0.3783,0.3835,,,
 Household income,Prefer not to say,haiku,323,323.0,0.4105,0.415,0.3835,,,
@@ -189,8 +189,8 @@ Ideology,Moderate,mean of models,980,,0.5572,0.5846,0.5664,0.534,0.5912,0.0183
 Ideology,Conservative,mean of models,847,,0.1234,0.0317,0.0498,0.0886,0.1437,-0.0181
 Ideology,Very conservative,mean of models,627,,0.1203,0.0119,0.0198,0.0816,0.1392,-0.0079
 Ideology,Not sure,mean of models,99,,0.4051,0.4085,0.2809,0.3899,0.4235,0.1277
-Household income,"Under $50,000",mean of models,1210,,0.4793,0.5019,0.4861,0.468,0.4896,0.0159
-Household income,"$50,000 to $99,999",mean of models,1143,,0.4421,0.4428,0.4251,0.4383,0.4495,0.0177
-Household income,"$100,000 to $199,999",mean of models,689,,0.4265,0.423,0.4376,0.4221,0.4337,-0.0147
-Household income,"$200,000 or more",mean of models,135,,0.4579,0.4737,0.499,0.4448,0.4708,-0.0253
+Household income,Under $50K,mean of models,1210,,0.4793,0.5019,0.4861,0.468,0.4896,0.0159
+Household income,$50K to $100K,mean of models,1143,,0.4421,0.4428,0.4251,0.4383,0.4495,0.0177
+Household income,$100K to $200K,mean of models,689,,0.4265,0.423,0.4376,0.4221,0.4337,-0.0147
+Household income,$200K or more,mean of models,135,,0.4579,0.4737,0.499,0.4448,0.4708,-0.0253
 Household income,Prefer not to say,mean of models,323,,0.4011,0.4022,0.3835,0.3857,0.4105,0.0187

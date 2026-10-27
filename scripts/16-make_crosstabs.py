@@ -50,8 +50,7 @@ ORDER = {
     "party_id_7": ["Strong Dem", "Weak Dem", "Lean Dem", "Independent", "Lean Rep", "Weak Rep",
                    "Strong Rep", "Not sure"],
     "ideology": ["Very liberal", "Liberal", "Moderate", "Conservative", "Very conservative", "Not sure"],
-    "income_band": ["Under $50,000", "$50,000 to $99,999", "$100,000 to $199,999", "$200,000 or more",
-                    "Prefer not to say"],
+    "income_band": ["Under $50K", "$50K to $100K", "$100K to $200K", "$200K or more", "Prefer not to say"],
 }
 SMALL = 30   # cells with fewer personas are marked
 
@@ -63,12 +62,12 @@ def income_band(x):
     low = float(str(x).replace("Less than ", "0 - ").split(" - ")[0].replace("$", "").replace(",", "")
                 .replace(" or more", ""))
     if low < 50_000:
-        return "Under $50,000"
+        return "Under $50K"
     if low < 100_000:
-        return "$50,000 to $99,999"
+        return "$50K to $100K"
     if low < 200_000:
-        return "$100,000 to $199,999"
-    return "$200,000 or more"
+        return "$100K to $200K"
+    return "$200K or more"
 
 
 #### Data ####
@@ -155,19 +154,34 @@ def signed(x):
     return "0" if v == 0 else f"+{v}" if v > 0 else f"\u2212{-v}"
 
 
-md = ["| Group | Personas | Synthetic share (%) | Range across models | Leaning left (%) "
-      "| Harris 2024 (%) | Difference (points) |",
-      "|---|---:|---:|---:|---:|---:|---:|"]
-for label in ["All personas"] + list(LABELS.values()):
-    sub = mean[mean["variable"] == ("All personas" if label == "All personas" else label)]
-    if label != "All personas":
-        md.append(f"| **{label}** | | | | | | |")
+# Two narrow tables side by side, written as HTML so each variable is its own block (tbody) with
+# a shaded header row; the styling is in styles.css (.crosstab). Each row: group, persona count,
+# synthetic share with the range across models, leaning left, Harris 2024 and the difference.
+import html as html_lib
+
+HEAD = ("<thead><tr><th>Group</th><th>n</th><th>Synthetic (range)</th><th>Lean left</th>"
+        "<th>Harris</th><th>Diff.</th></tr></thead>")
+
+
+def block(label):
+    sub = mean[mean["variable"] == label]
+    rows = [] if label == "All personas" else [f'<tr class="ct-head"><th colspan="6">{html_lib.escape(label)}</th></tr>']
     for _, r in sub.iterrows():
-        mark = " †" if r["n_personas"] < SMALL else ""
-        name = f"**{r['category']}**" if label == "All personas" else r["category"]
-        md.append(f"| {name}{mark} | {r['n_personas']:,} | {pct(r['share_2026'])} | "
-                  f"{pct(r['low'])} to {pct(r['high'])} | {pct(r['lean_left'])} | "
-                  f"{pct(r['harris_2024'])} | {signed(r['change'])} |")
+        mark = " \u2020" if r["n_personas"] < SMALL else ""
+        cls = ' class="ct-all"' if label == "All personas" else ""
+        rows.append(f"<tr{cls}><td>{html_lib.escape(r['category'])}{mark}</td><td>{r['n_personas']:,}</td>"
+                    f"<td>{pct(r['share_2026'])} ({pct(r['low'])}\u2013{pct(r['high'])})</td>"
+                    f"<td>{pct(r['lean_left'])}</td><td>{pct(r['harris_2024'])}</td>"
+                    f"<td>{signed(r['change'])}</td></tr>")
+    return "<tbody>" + "".join(rows) + "</tbody>"
+
+
+left = ["All personas", "Gender", "Race and ethnicity", "Age group", "Education"]
+right = ["Party identification", "Ideology", "Household income"]
+assert set(left + right) == {"All personas", *LABELS.values()}, "A crosstab variable is not placed"
+tables = "".join(f'<div class="crosstab-col"><table class="crosstab">{HEAD}{"".join(block(v) for v in side)}'
+                 "</table></div>" for side in (left, right))
+md = ["```{=html}", f'<div class="crosstab-pair">{tables}</div>', "```"]
 (config.RUN_RESULTS / "crosstabs.md").write_text("\n".join(md) + "\n")
 
 print(f"Saved {config.RUN_RESULTS / 'crosstabs.csv'} and crosstabs.md")
