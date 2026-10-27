@@ -1,34 +1,34 @@
 state,variable,category,n,pct
-AK,Gender,Man,52,52.0
-AK,Gender,Woman,48,48.0
+AK,Gender,Man,43,43.0
+AK,Gender,Woman,57,57.0
 AK,Gender,Non-binary,0,0.0
 AK,Gender,Other,0,0.0
 AL,Gender,Man,45,45.0
 AL,Gender,Woman,55,55.0
 AL,Gender,Non-binary,0,0.0
 AL,Gender,Other,0,0.0
-AR,Gender,Man,53,53.0
-AR,Gender,Woman,46,46.0
-AR,Gender,Non-binary,1,1.0
+AR,Gender,Man,43,43.0
+AR,Gender,Woman,57,57.0
+AR,Gender,Non-binary,0,0.0
 AR,Gender,Other,0,0.0
-CO,Gender,Man,54,54.0
-CO,Gender,Woman,44,44.0
-CO,Gender,Non-binary,2,2.0
+CO,Gender,Man,47,47.0
+CO,Gender,Woman,53,53.0
+CO,Gender,Non-binary,0,0.0
 CO,Gender,Other,0,0.0
-DE,Gender,Man,54,54.0
-DE,Gender,Woman,46,46.0
+DE,Gender,Man,50,50.0
+DE,Gender,Woman,50,50.0
 DE,Gender,Non-binary,0,0.0
 DE,Gender,Other,0,0.0
-FL,Gender,Man,47,47.0
-FL,Gender,Woman,52,52.0
-FL,Gender,Non-binary,1,1.0
+FL,Gender,Man,55,55.0
+FL,Gender,Woman,45,45.0
+FL,Gender,Non-binary,0,0.0
 FL,Gender,Other,0,0.0
-GA,Gender,Man,52,52.0
-GA,Gender,Woman,47,47.0
-GA,Gender,Non-binary,1,1.0
+GA,Gender,Man,40,40.0
+GA,Gender,Woman,58,58.0
+GA,Gender,Non-binary,2,2.0
 GA,Gender,Other,0,0.0
-IA,Gender,Man,45,45.0
-IA,Gender,Woman,55,55.0
+IA,Gender,Man,43,43.0
+IA,Gender,Woman,57,57.0
 IA,Gender,Non-binary,0,0.0
 IA,Gender,Other,0,0.0
 ID,Gender,Man,49,49.0
@@ -36,1716 +36,1716 @@ ID,Gender,Woman,50,50.0
 ID,Gender,Non-binary,1,1.0
 ID,Gender,Other,0,0.0
 IL,Gender,Man,46,46.0
-IL,Gender,Woman,53,53.0
-IL,Gender,Non-binary,1,1.0
+IL,Gender,Woman,54,54.0
+IL,Gender,Non-binary,0,0.0
 IL,Gender,Other,0,0.0
-KS,Gender,Man,44,44.0
-KS,Gender,Woman,56,56.0
+KS,Gender,Man,47,47.0
+KS,Gender,Woman,52,52.0
 KS,Gender,Non-binary,0,0.0
-KS,Gender,Other,0,0.0
-KY,Gender,Man,49,49.0
-KY,Gender,Woman,48,48.0
-KY,Gender,Non-binary,3,3.0
+KS,Gender,Other,1,1.0
+KY,Gender,Man,52,52.0
+KY,Gender,Woman,46,46.0
+KY,Gender,Non-binary,2,2.0
 KY,Gender,Other,0,0.0
 LA,Gender,Man,38,38.0
 LA,Gender,Woman,62,62.0
 LA,Gender,Non-binary,0,0.0
 LA,Gender,Other,0,0.0
-MA,Gender,Man,49,49.0
-MA,Gender,Woman,49,49.0
-MA,Gender,Non-binary,2,2.0
+MA,Gender,Man,56,56.0
+MA,Gender,Woman,43,43.0
+MA,Gender,Non-binary,1,1.0
 MA,Gender,Other,0,0.0
-ME,Gender,Man,46,46.0
-ME,Gender,Woman,51,51.0
-ME,Gender,Non-binary,2,2.0
+ME,Gender,Man,42,42.0
+ME,Gender,Woman,56,56.0
+ME,Gender,Non-binary,1,1.0
 ME,Gender,Other,1,1.0
-MI,Gender,Man,47,47.0
+MI,Gender,Man,46,46.0
 MI,Gender,Woman,53,53.0
 MI,Gender,Non-binary,0,0.0
-MI,Gender,Other,0,0.0
-MN,Gender,Man,43,43.0
-MN,Gender,Woman,56,56.0
-MN,Gender,Non-binary,1,1.0
+MI,Gender,Other,1,1.0
+MN,Gender,Man,55,55.0
+MN,Gender,Woman,45,45.0
+MN,Gender,Non-binary,0,0.0
 MN,Gender,Other,0,0.0
-MS,Gender,Man,42,42.0
-MS,Gender,Woman,58,58.0
+MS,Gender,Man,47,47.0
+MS,Gender,Woman,53,53.0
 MS,Gender,Non-binary,0,0.0
 MS,Gender,Other,0,0.0
-MT,Gender,Man,46,46.0
-MT,Gender,Woman,54,54.0
+MT,Gender,Man,50,50.0
+MT,Gender,Woman,50,50.0
 MT,Gender,Non-binary,0,0.0
 MT,Gender,Other,0,0.0
-NC,Gender,Man,45,45.0
-NC,Gender,Woman,55,55.0
+NC,Gender,Man,44,44.0
+NC,Gender,Woman,56,56.0
 NC,Gender,Non-binary,0,0.0
 NC,Gender,Other,0,0.0
-NE,Gender,Man,50,50.0
-NE,Gender,Woman,50,50.0
+NE,Gender,Man,48,48.0
+NE,Gender,Woman,52,52.0
 NE,Gender,Non-binary,0,0.0
 NE,Gender,Other,0,0.0
-NH,Gender,Man,44,44.0
-NH,Gender,Woman,56,56.0
+NH,Gender,Man,50,50.0
+NH,Gender,Woman,50,50.0
 NH,Gender,Non-binary,0,0.0
 NH,Gender,Other,0,0.0
-NJ,Gender,Man,45,45.0
-NJ,Gender,Woman,55,55.0
+NJ,Gender,Man,51,51.0
+NJ,Gender,Woman,49,49.0
 NJ,Gender,Non-binary,0,0.0
 NJ,Gender,Other,0,0.0
-NM,Gender,Man,45,45.0
-NM,Gender,Woman,55,55.0
+NM,Gender,Man,46,46.0
+NM,Gender,Woman,54,54.0
 NM,Gender,Non-binary,0,0.0
 NM,Gender,Other,0,0.0
-OH,Gender,Man,43,43.0
-OH,Gender,Woman,55,55.0
-OH,Gender,Non-binary,2,2.0
+OH,Gender,Man,50,50.0
+OH,Gender,Woman,49,49.0
+OH,Gender,Non-binary,1,1.0
 OH,Gender,Other,0,0.0
-OK,Gender,Man,54,54.0
-OK,Gender,Woman,44,44.0
-OK,Gender,Non-binary,2,2.0
+OK,Gender,Man,49,49.0
+OK,Gender,Woman,48,48.0
+OK,Gender,Non-binary,3,3.0
 OK,Gender,Other,0,0.0
-OR,Gender,Man,52,52.0
-OR,Gender,Woman,45,45.0
-OR,Gender,Non-binary,1,1.0
-OR,Gender,Other,2,2.0
-RI,Gender,Man,29,29.0
-RI,Gender,Woman,70,70.0
-RI,Gender,Non-binary,0,0.0
+OR,Gender,Man,56,56.0
+OR,Gender,Woman,43,43.0
+OR,Gender,Non-binary,0,0.0
+OR,Gender,Other,1,1.0
+RI,Gender,Man,42,42.0
+RI,Gender,Woman,56,56.0
+RI,Gender,Non-binary,1,1.0
 RI,Gender,Other,1,1.0
-SC,Gender,Man,42,42.0
-SC,Gender,Woman,58,58.0
+SC,Gender,Man,38,38.0
+SC,Gender,Woman,62,62.0
 SC,Gender,Non-binary,0,0.0
 SC,Gender,Other,0,0.0
-SD,Gender,Man,51,51.0
-SD,Gender,Woman,49,49.0
+SD,Gender,Man,52,52.0
+SD,Gender,Woman,48,48.0
 SD,Gender,Non-binary,0,0.0
 SD,Gender,Other,0,0.0
-TN,Gender,Man,53,53.0
-TN,Gender,Woman,46,46.0
+TN,Gender,Man,46,46.0
+TN,Gender,Woman,54,54.0
 TN,Gender,Non-binary,0,0.0
-TN,Gender,Other,1,1.0
-TX,Gender,Man,50,50.0
-TX,Gender,Woman,49,49.0
-TX,Gender,Non-binary,1,1.0
+TN,Gender,Other,0,0.0
+TX,Gender,Man,43,43.0
+TX,Gender,Woman,57,57.0
+TX,Gender,Non-binary,0,0.0
 TX,Gender,Other,0,0.0
-VA,Gender,Man,51,51.0
-VA,Gender,Woman,47,47.0
+VA,Gender,Man,43,43.0
+VA,Gender,Woman,57,57.0
 VA,Gender,Non-binary,0,0.0
-VA,Gender,Other,2,2.0
-WV,Gender,Man,52,52.0
-WV,Gender,Woman,48,48.0
+VA,Gender,Other,0,0.0
+WV,Gender,Man,44,44.0
+WV,Gender,Woman,56,56.0
 WV,Gender,Non-binary,0,0.0
 WV,Gender,Other,0,0.0
-WY,Gender,Man,43,43.0
-WY,Gender,Woman,57,57.0
+WY,Gender,Man,44,44.0
+WY,Gender,Woman,56,56.0
 WY,Gender,Non-binary,0,0.0
 WY,Gender,Other,0,0.0
-AK,Race and ethnicity,White,70,70.0
+AK,Race and ethnicity,White,73,73.0
 AK,Race and ethnicity,Black,0,0.0
-AK,Race and ethnicity,Hispanic,6,6.0
+AK,Race and ethnicity,Hispanic,7,7.0
 AK,Race and ethnicity,Asian,2,2.0
-AK,Race and ethnicity,Other,22,22.0
-AL,Race and ethnicity,White,70,70.0
-AL,Race and ethnicity,Black,27,27.0
-AL,Race and ethnicity,Hispanic,0,0.0
-AL,Race and ethnicity,Asian,0,0.0
-AL,Race and ethnicity,Other,3,3.0
-AR,Race and ethnicity,White,77,77.0
-AR,Race and ethnicity,Black,15,15.0
-AR,Race and ethnicity,Hispanic,3,3.0
+AK,Race and ethnicity,Other,18,18.0
+AL,Race and ethnicity,White,71,71.0
+AL,Race and ethnicity,Black,25,25.0
+AL,Race and ethnicity,Hispanic,2,2.0
+AL,Race and ethnicity,Asian,1,1.0
+AL,Race and ethnicity,Other,1,1.0
+AR,Race and ethnicity,White,71,71.0
+AR,Race and ethnicity,Black,25,25.0
+AR,Race and ethnicity,Hispanic,0,0.0
 AR,Race and ethnicity,Asian,0,0.0
-AR,Race and ethnicity,Other,5,5.0
-CO,Race and ethnicity,White,80,80.0
-CO,Race and ethnicity,Black,2,2.0
-CO,Race and ethnicity,Hispanic,13,13.0
+AR,Race and ethnicity,Other,4,4.0
+CO,Race and ethnicity,White,77,77.0
+CO,Race and ethnicity,Black,4,4.0
+CO,Race and ethnicity,Hispanic,16,16.0
 CO,Race and ethnicity,Asian,1,1.0
-CO,Race and ethnicity,Other,4,4.0
-DE,Race and ethnicity,White,79,79.0
-DE,Race and ethnicity,Black,13,13.0
-DE,Race and ethnicity,Hispanic,5,5.0
-DE,Race and ethnicity,Asian,2,2.0
-DE,Race and ethnicity,Other,1,1.0
-FL,Race and ethnicity,White,57,57.0
+CO,Race and ethnicity,Other,2,2.0
+DE,Race and ethnicity,White,69,69.0
+DE,Race and ethnicity,Black,17,17.0
+DE,Race and ethnicity,Hispanic,4,4.0
+DE,Race and ethnicity,Asian,6,6.0
+DE,Race and ethnicity,Other,4,4.0
+FL,Race and ethnicity,White,67,67.0
 FL,Race and ethnicity,Black,18,18.0
-FL,Race and ethnicity,Hispanic,20,20.0
-FL,Race and ethnicity,Asian,4,4.0
-FL,Race and ethnicity,Other,1,1.0
-GA,Race and ethnicity,White,61,61.0
-GA,Race and ethnicity,Black,35,35.0
-GA,Race and ethnicity,Hispanic,2,2.0
-GA,Race and ethnicity,Asian,2,2.0
-GA,Race and ethnicity,Other,0,0.0
-IA,Race and ethnicity,White,89,89.0
-IA,Race and ethnicity,Black,7,7.0
-IA,Race and ethnicity,Hispanic,2,2.0
-IA,Race and ethnicity,Asian,2,2.0
-IA,Race and ethnicity,Other,0,0.0
-ID,Race and ethnicity,White,93,93.0
-ID,Race and ethnicity,Black,0,0.0
-ID,Race and ethnicity,Hispanic,2,2.0
+FL,Race and ethnicity,Hispanic,15,15.0
+FL,Race and ethnicity,Asian,0,0.0
+FL,Race and ethnicity,Other,0,0.0
+GA,Race and ethnicity,White,57,57.0
+GA,Race and ethnicity,Black,34,34.0
+GA,Race and ethnicity,Hispanic,5,5.0
+GA,Race and ethnicity,Asian,3,3.0
+GA,Race and ethnicity,Other,1,1.0
+IA,Race and ethnicity,White,88,88.0
+IA,Race and ethnicity,Black,2,2.0
+IA,Race and ethnicity,Hispanic,3,3.0
+IA,Race and ethnicity,Asian,6,6.0
+IA,Race and ethnicity,Other,1,1.0
+ID,Race and ethnicity,White,90,90.0
+ID,Race and ethnicity,Black,1,1.0
+ID,Race and ethnicity,Hispanic,3,3.0
 ID,Race and ethnicity,Asian,3,3.0
-ID,Race and ethnicity,Other,2,2.0
-IL,Race and ethnicity,White,70,70.0
-IL,Race and ethnicity,Black,13,13.0
-IL,Race and ethnicity,Hispanic,11,11.0
+ID,Race and ethnicity,Other,3,3.0
+IL,Race and ethnicity,White,65,65.0
+IL,Race and ethnicity,Black,14,14.0
+IL,Race and ethnicity,Hispanic,14,14.0
 IL,Race and ethnicity,Asian,4,4.0
-IL,Race and ethnicity,Other,2,2.0
-KS,Race and ethnicity,White,84,84.0
-KS,Race and ethnicity,Black,6,6.0
-KS,Race and ethnicity,Hispanic,6,6.0
-KS,Race and ethnicity,Asian,2,2.0
-KS,Race and ethnicity,Other,2,2.0
-KY,Race and ethnicity,White,85,85.0
-KY,Race and ethnicity,Black,9,9.0
+IL,Race and ethnicity,Other,3,3.0
+KS,Race and ethnicity,White,87,87.0
+KS,Race and ethnicity,Black,0,0.0
+KS,Race and ethnicity,Hispanic,7,7.0
+KS,Race and ethnicity,Asian,3,3.0
+KS,Race and ethnicity,Other,3,3.0
+KY,Race and ethnicity,White,84,84.0
+KY,Race and ethnicity,Black,8,8.0
 KY,Race and ethnicity,Hispanic,3,3.0
 KY,Race and ethnicity,Asian,2,2.0
-KY,Race and ethnicity,Other,1,1.0
-LA,Race and ethnicity,White,61,61.0
-LA,Race and ethnicity,Black,35,35.0
-LA,Race and ethnicity,Hispanic,1,1.0
-LA,Race and ethnicity,Asian,1,1.0
-LA,Race and ethnicity,Other,2,2.0
-MA,Race and ethnicity,White,82,82.0
-MA,Race and ethnicity,Black,5,5.0
-MA,Race and ethnicity,Hispanic,6,6.0
+KY,Race and ethnicity,Other,3,3.0
+LA,Race and ethnicity,White,71,71.0
+LA,Race and ethnicity,Black,20,20.0
+LA,Race and ethnicity,Hispanic,6,6.0
+LA,Race and ethnicity,Asian,3,3.0
+LA,Race and ethnicity,Other,0,0.0
+MA,Race and ethnicity,White,78,78.0
+MA,Race and ethnicity,Black,10,10.0
+MA,Race and ethnicity,Hispanic,7,7.0
 MA,Race and ethnicity,Asian,5,5.0
-MA,Race and ethnicity,Other,2,2.0
-ME,Race and ethnicity,White,94,94.0
-ME,Race and ethnicity,Black,3,3.0
-ME,Race and ethnicity,Hispanic,2,2.0
+MA,Race and ethnicity,Other,0,0.0
+ME,Race and ethnicity,White,96,96.0
+ME,Race and ethnicity,Black,0,0.0
+ME,Race and ethnicity,Hispanic,0,0.0
 ME,Race and ethnicity,Asian,0,0.0
-ME,Race and ethnicity,Other,1,1.0
-MI,Race and ethnicity,White,77,77.0
-MI,Race and ethnicity,Black,11,11.0
-MI,Race and ethnicity,Hispanic,5,5.0
-MI,Race and ethnicity,Asian,3,3.0
-MI,Race and ethnicity,Other,4,4.0
-MN,Race and ethnicity,White,89,89.0
-MN,Race and ethnicity,Black,5,5.0
+ME,Race and ethnicity,Other,4,4.0
+MI,Race and ethnicity,White,73,73.0
+MI,Race and ethnicity,Black,14,14.0
+MI,Race and ethnicity,Hispanic,4,4.0
+MI,Race and ethnicity,Asian,8,8.0
+MI,Race and ethnicity,Other,1,1.0
+MN,Race and ethnicity,White,92,92.0
+MN,Race and ethnicity,Black,1,1.0
 MN,Race and ethnicity,Hispanic,3,3.0
-MN,Race and ethnicity,Asian,3,3.0
-MN,Race and ethnicity,Other,0,0.0
-MS,Race and ethnicity,White,64,64.0
-MS,Race and ethnicity,Black,34,34.0
+MN,Race and ethnicity,Asian,2,2.0
+MN,Race and ethnicity,Other,2,2.0
+MS,Race and ethnicity,White,66,66.0
+MS,Race and ethnicity,Black,31,31.0
 MS,Race and ethnicity,Hispanic,1,1.0
-MS,Race and ethnicity,Asian,1,1.0
+MS,Race and ethnicity,Asian,2,2.0
 MS,Race and ethnicity,Other,0,0.0
-MT,Race and ethnicity,White,89,89.0
+MT,Race and ethnicity,White,92,92.0
 MT,Race and ethnicity,Black,0,0.0
-MT,Race and ethnicity,Hispanic,1,1.0
+MT,Race and ethnicity,Hispanic,0,0.0
 MT,Race and ethnicity,Asian,0,0.0
-MT,Race and ethnicity,Other,10,10.0
-NC,Race and ethnicity,White,78,78.0
-NC,Race and ethnicity,Black,17,17.0
-NC,Race and ethnicity,Hispanic,5,5.0
-NC,Race and ethnicity,Asian,0,0.0
-NC,Race and ethnicity,Other,0,0.0
-NE,Race and ethnicity,White,89,89.0
-NE,Race and ethnicity,Black,2,2.0
+MT,Race and ethnicity,Other,8,8.0
+NC,Race and ethnicity,White,70,70.0
+NC,Race and ethnicity,Black,22,22.0
+NC,Race and ethnicity,Hispanic,6,6.0
+NC,Race and ethnicity,Asian,1,1.0
+NC,Race and ethnicity,Other,1,1.0
+NE,Race and ethnicity,White,86,86.0
+NE,Race and ethnicity,Black,3,3.0
 NE,Race and ethnicity,Hispanic,6,6.0
-NE,Race and ethnicity,Asian,0,0.0
+NE,Race and ethnicity,Asian,2,2.0
 NE,Race and ethnicity,Other,3,3.0
 NH,Race and ethnicity,White,97,97.0
 NH,Race and ethnicity,Black,0,0.0
 NH,Race and ethnicity,Hispanic,2,2.0
 NH,Race and ethnicity,Asian,0,0.0
 NH,Race and ethnicity,Other,1,1.0
-NJ,Race and ethnicity,White,62,62.0
-NJ,Race and ethnicity,Black,20,20.0
-NJ,Race and ethnicity,Hispanic,7,7.0
-NJ,Race and ethnicity,Asian,7,7.0
-NJ,Race and ethnicity,Other,4,4.0
-NM,Race and ethnicity,White,49,49.0
+NJ,Race and ethnicity,White,68,68.0
+NJ,Race and ethnicity,Black,13,13.0
+NJ,Race and ethnicity,Hispanic,15,15.0
+NJ,Race and ethnicity,Asian,3,3.0
+NJ,Race and ethnicity,Other,1,1.0
+NM,Race and ethnicity,White,47,47.0
 NM,Race and ethnicity,Black,3,3.0
-NM,Race and ethnicity,Hispanic,35,35.0
-NM,Race and ethnicity,Asian,1,1.0
-NM,Race and ethnicity,Other,12,12.0
-OH,Race and ethnicity,White,80,80.0
-OH,Race and ethnicity,Black,15,15.0
-OH,Race and ethnicity,Hispanic,3,3.0
-OH,Race and ethnicity,Asian,1,1.0
-OH,Race and ethnicity,Other,1,1.0
-OK,Race and ethnicity,White,76,76.0
-OK,Race and ethnicity,Black,7,7.0
-OK,Race and ethnicity,Hispanic,2,2.0
-OK,Race and ethnicity,Asian,1,1.0
-OK,Race and ethnicity,Other,14,14.0
-OR,Race and ethnicity,White,86,86.0
-OR,Race and ethnicity,Black,1,1.0
-OR,Race and ethnicity,Hispanic,4,4.0
-OR,Race and ethnicity,Asian,5,5.0
-OR,Race and ethnicity,Other,4,4.0
-RI,Race and ethnicity,White,85,85.0
-RI,Race and ethnicity,Black,6,6.0
-RI,Race and ethnicity,Hispanic,9,9.0
-RI,Race and ethnicity,Asian,0,0.0
+NM,Race and ethnicity,Hispanic,39,39.0
+NM,Race and ethnicity,Asian,0,0.0
+NM,Race and ethnicity,Other,11,11.0
+OH,Race and ethnicity,White,87,87.0
+OH,Race and ethnicity,Black,9,9.0
+OH,Race and ethnicity,Hispanic,2,2.0
+OH,Race and ethnicity,Asian,0,0.0
+OH,Race and ethnicity,Other,2,2.0
+OK,Race and ethnicity,White,78,78.0
+OK,Race and ethnicity,Black,9,9.0
+OK,Race and ethnicity,Hispanic,0,0.0
+OK,Race and ethnicity,Asian,3,3.0
+OK,Race and ethnicity,Other,10,10.0
+OR,Race and ethnicity,White,91,91.0
+OR,Race and ethnicity,Black,3,3.0
+OR,Race and ethnicity,Hispanic,3,3.0
+OR,Race and ethnicity,Asian,1,1.0
+OR,Race and ethnicity,Other,2,2.0
+RI,Race and ethnicity,White,83,83.0
+RI,Race and ethnicity,Black,11,11.0
+RI,Race and ethnicity,Hispanic,5,5.0
+RI,Race and ethnicity,Asian,1,1.0
 RI,Race and ethnicity,Other,0,0.0
-SC,Race and ethnicity,White,73,73.0
-SC,Race and ethnicity,Black,22,22.0
-SC,Race and ethnicity,Hispanic,1,1.0
+SC,Race and ethnicity,White,67,67.0
+SC,Race and ethnicity,Black,26,26.0
+SC,Race and ethnicity,Hispanic,2,2.0
 SC,Race and ethnicity,Asian,2,2.0
-SC,Race and ethnicity,Other,2,2.0
-SD,Race and ethnicity,White,92,92.0
+SC,Race and ethnicity,Other,3,3.0
+SD,Race and ethnicity,White,94,94.0
 SD,Race and ethnicity,Black,0,0.0
-SD,Race and ethnicity,Hispanic,3,3.0
+SD,Race and ethnicity,Hispanic,2,2.0
 SD,Race and ethnicity,Asian,0,0.0
-SD,Race and ethnicity,Other,5,5.0
-TN,Race and ethnicity,White,78,78.0
-TN,Race and ethnicity,Black,17,17.0
+SD,Race and ethnicity,Other,4,4.0
+TN,Race and ethnicity,White,81,81.0
+TN,Race and ethnicity,Black,14,14.0
 TN,Race and ethnicity,Hispanic,2,2.0
 TN,Race and ethnicity,Asian,0,0.0
 TN,Race and ethnicity,Other,3,3.0
-TX,Race and ethnicity,White,61,61.0
-TX,Race and ethnicity,Black,13,13.0
-TX,Race and ethnicity,Hispanic,23,23.0
-TX,Race and ethnicity,Asian,2,2.0
+TX,Race and ethnicity,White,58,58.0
+TX,Race and ethnicity,Black,10,10.0
+TX,Race and ethnicity,Hispanic,31,31.0
+TX,Race and ethnicity,Asian,0,0.0
 TX,Race and ethnicity,Other,1,1.0
-VA,Race and ethnicity,White,64,64.0
-VA,Race and ethnicity,Black,20,20.0
-VA,Race and ethnicity,Hispanic,5,5.0
-VA,Race and ethnicity,Asian,4,4.0
-VA,Race and ethnicity,Other,7,7.0
-WV,Race and ethnicity,White,98,98.0
+VA,Race and ethnicity,White,68,68.0
+VA,Race and ethnicity,Black,15,15.0
+VA,Race and ethnicity,Hispanic,6,6.0
+VA,Race and ethnicity,Asian,8,8.0
+VA,Race and ethnicity,Other,3,3.0
+WV,Race and ethnicity,White,96,96.0
 WV,Race and ethnicity,Black,0,0.0
 WV,Race and ethnicity,Hispanic,1,1.0
 WV,Race and ethnicity,Asian,0,0.0
-WV,Race and ethnicity,Other,1,1.0
-WY,Race and ethnicity,White,86,86.0
+WV,Race and ethnicity,Other,3,3.0
+WY,Race and ethnicity,White,87,87.0
 WY,Race and ethnicity,Black,0,0.0
 WY,Race and ethnicity,Hispanic,11,11.0
-WY,Race and ethnicity,Asian,0,0.0
-WY,Race and ethnicity,Other,3,3.0
-AK,Age group,18-29,13,13.0
-AK,Age group,30-44,31,31.0
-AK,Age group,45-64,29,29.0
-AK,Age group,65+,27,27.0
-AL,Age group,18-29,13,13.0
-AL,Age group,30-44,23,23.0
-AL,Age group,45-64,33,33.0
-AL,Age group,65+,31,31.0
-AR,Age group,18-29,15,15.0
-AR,Age group,30-44,24,24.0
-AR,Age group,45-64,33,33.0
-AR,Age group,65+,28,28.0
-CO,Age group,18-29,17,17.0
-CO,Age group,30-44,23,23.0
-CO,Age group,45-64,39,39.0
-CO,Age group,65+,21,21.0
-DE,Age group,18-29,16,16.0
-DE,Age group,30-44,22,22.0
-DE,Age group,45-64,33,33.0
-DE,Age group,65+,29,29.0
-FL,Age group,18-29,10,10.0
-FL,Age group,30-44,24,24.0
-FL,Age group,45-64,25,25.0
-FL,Age group,65+,41,41.0
-GA,Age group,18-29,18,18.0
+WY,Race and ethnicity,Asian,1,1.0
+WY,Race and ethnicity,Other,1,1.0
+AK,Age group,18-29,22,22.0
+AK,Age group,30-44,18,18.0
+AK,Age group,45-64,32,32.0
+AK,Age group,65+,28,28.0
+AL,Age group,18-29,14,14.0
+AL,Age group,30-44,19,19.0
+AL,Age group,45-64,35,35.0
+AL,Age group,65+,32,32.0
+AR,Age group,18-29,6,6.0
+AR,Age group,30-44,22,22.0
+AR,Age group,45-64,34,34.0
+AR,Age group,65+,38,38.0
+CO,Age group,18-29,16,16.0
+CO,Age group,30-44,18,18.0
+CO,Age group,45-64,38,38.0
+CO,Age group,65+,28,28.0
+DE,Age group,18-29,14,14.0
+DE,Age group,30-44,18,18.0
+DE,Age group,45-64,34,34.0
+DE,Age group,65+,34,34.0
+FL,Age group,18-29,8,8.0
+FL,Age group,30-44,21,21.0
+FL,Age group,45-64,41,41.0
+FL,Age group,65+,30,30.0
+GA,Age group,18-29,22,22.0
 GA,Age group,30-44,27,27.0
 GA,Age group,45-64,32,32.0
-GA,Age group,65+,23,23.0
-IA,Age group,18-29,5,5.0
-IA,Age group,30-44,27,27.0
-IA,Age group,45-64,38,38.0
-IA,Age group,65+,30,30.0
-ID,Age group,18-29,22,22.0
-ID,Age group,30-44,19,19.0
-ID,Age group,45-64,23,23.0
-ID,Age group,65+,36,36.0
-IL,Age group,18-29,15,15.0
-IL,Age group,30-44,23,23.0
-IL,Age group,45-64,37,37.0
-IL,Age group,65+,25,25.0
-KS,Age group,18-29,11,11.0
-KS,Age group,30-44,29,29.0
-KS,Age group,45-64,33,33.0
-KS,Age group,65+,27,27.0
+GA,Age group,65+,19,19.0
+IA,Age group,18-29,9,9.0
+IA,Age group,30-44,16,16.0
+IA,Age group,45-64,35,35.0
+IA,Age group,65+,40,40.0
+ID,Age group,18-29,21,21.0
+ID,Age group,30-44,18,18.0
+ID,Age group,45-64,26,26.0
+ID,Age group,65+,35,35.0
+IL,Age group,18-29,16,16.0
+IL,Age group,30-44,20,20.0
+IL,Age group,45-64,40,40.0
+IL,Age group,65+,24,24.0
+KS,Age group,18-29,15,15.0
+KS,Age group,30-44,27,27.0
+KS,Age group,45-64,29,29.0
+KS,Age group,65+,29,29.0
 KY,Age group,18-29,13,13.0
-KY,Age group,30-44,25,25.0
-KY,Age group,45-64,35,35.0
-KY,Age group,65+,27,27.0
-LA,Age group,18-29,17,17.0
-LA,Age group,30-44,22,22.0
-LA,Age group,45-64,36,36.0
-LA,Age group,65+,25,25.0
-MA,Age group,18-29,12,12.0
-MA,Age group,30-44,23,23.0
-MA,Age group,45-64,35,35.0
-MA,Age group,65+,30,30.0
-ME,Age group,18-29,9,9.0
+KY,Age group,30-44,24,24.0
+KY,Age group,45-64,37,37.0
+KY,Age group,65+,26,26.0
+LA,Age group,18-29,9,9.0
+LA,Age group,30-44,25,25.0
+LA,Age group,45-64,33,33.0
+LA,Age group,65+,33,33.0
+MA,Age group,18-29,15,15.0
+MA,Age group,30-44,22,22.0
+MA,Age group,45-64,34,34.0
+MA,Age group,65+,29,29.0
+ME,Age group,18-29,7,7.0
 ME,Age group,30-44,19,19.0
-ME,Age group,45-64,38,38.0
-ME,Age group,65+,34,34.0
-MI,Age group,18-29,19,19.0
-MI,Age group,30-44,25,25.0
-MI,Age group,45-64,28,28.0
-MI,Age group,65+,28,28.0
-MN,Age group,18-29,15,15.0
-MN,Age group,30-44,25,25.0
-MN,Age group,45-64,37,37.0
-MN,Age group,65+,23,23.0
-MS,Age group,18-29,17,17.0
-MS,Age group,30-44,25,25.0
-MS,Age group,45-64,21,21.0
-MS,Age group,65+,37,37.0
+ME,Age group,45-64,41,41.0
+ME,Age group,65+,33,33.0
+MI,Age group,18-29,13,13.0
+MI,Age group,30-44,26,26.0
+MI,Age group,45-64,32,32.0
+MI,Age group,65+,29,29.0
+MN,Age group,18-29,10,10.0
+MN,Age group,30-44,26,26.0
+MN,Age group,45-64,38,38.0
+MN,Age group,65+,26,26.0
+MS,Age group,18-29,19,19.0
+MS,Age group,30-44,18,18.0
+MS,Age group,45-64,28,28.0
+MS,Age group,65+,35,35.0
 MT,Age group,18-29,12,12.0
-MT,Age group,30-44,27,27.0
-MT,Age group,45-64,37,37.0
-MT,Age group,65+,24,24.0
-NC,Age group,18-29,17,17.0
-NC,Age group,30-44,22,22.0
-NC,Age group,45-64,33,33.0
-NC,Age group,65+,28,28.0
-NE,Age group,18-29,19,19.0
-NE,Age group,30-44,19,19.0
-NE,Age group,45-64,40,40.0
-NE,Age group,65+,22,22.0
-NH,Age group,18-29,11,11.0
+MT,Age group,30-44,24,24.0
+MT,Age group,45-64,38,38.0
+MT,Age group,65+,26,26.0
+NC,Age group,18-29,13,13.0
+NC,Age group,30-44,25,25.0
+NC,Age group,45-64,43,43.0
+NC,Age group,65+,19,19.0
+NE,Age group,18-29,20,20.0
+NE,Age group,30-44,23,23.0
+NE,Age group,45-64,30,30.0
+NE,Age group,65+,27,27.0
+NH,Age group,18-29,9,9.0
 NH,Age group,30-44,24,24.0
-NH,Age group,45-64,36,36.0
-NH,Age group,65+,29,29.0
-NJ,Age group,18-29,17,17.0
-NJ,Age group,30-44,25,25.0
-NJ,Age group,45-64,37,37.0
-NJ,Age group,65+,21,21.0
-NM,Age group,18-29,14,14.0
-NM,Age group,30-44,11,11.0
-NM,Age group,45-64,48,48.0
-NM,Age group,65+,27,27.0
-OH,Age group,18-29,15,15.0
-OH,Age group,30-44,34,34.0
-OH,Age group,45-64,23,23.0
-OH,Age group,65+,28,28.0
-OK,Age group,18-29,18,18.0
-OK,Age group,30-44,26,26.0
-OK,Age group,45-64,29,29.0
-OK,Age group,65+,27,27.0
-OR,Age group,18-29,16,16.0
-OR,Age group,30-44,23,23.0
-OR,Age group,45-64,28,28.0
-OR,Age group,65+,33,33.0
-RI,Age group,18-29,8,8.0
-RI,Age group,30-44,22,22.0
-RI,Age group,45-64,36,36.0
-RI,Age group,65+,34,34.0
-SC,Age group,18-29,16,16.0
-SC,Age group,30-44,22,22.0
-SC,Age group,45-64,31,31.0
-SC,Age group,65+,31,31.0
+NH,Age group,45-64,23,23.0
+NH,Age group,65+,44,44.0
+NJ,Age group,18-29,15,15.0
+NJ,Age group,30-44,21,21.0
+NJ,Age group,45-64,38,38.0
+NJ,Age group,65+,26,26.0
+NM,Age group,18-29,10,10.0
+NM,Age group,30-44,15,15.0
+NM,Age group,45-64,44,44.0
+NM,Age group,65+,31,31.0
+OH,Age group,18-29,11,11.0
+OH,Age group,30-44,27,27.0
+OH,Age group,45-64,36,36.0
+OH,Age group,65+,26,26.0
+OK,Age group,18-29,8,8.0
+OK,Age group,30-44,21,21.0
+OK,Age group,45-64,43,43.0
+OK,Age group,65+,28,28.0
+OR,Age group,18-29,12,12.0
+OR,Age group,30-44,21,21.0
+OR,Age group,45-64,33,33.0
+OR,Age group,65+,34,34.0
+RI,Age group,18-29,10,10.0
+RI,Age group,30-44,20,20.0
+RI,Age group,45-64,44,44.0
+RI,Age group,65+,26,26.0
+SC,Age group,18-29,13,13.0
+SC,Age group,30-44,20,20.0
+SC,Age group,45-64,43,43.0
+SC,Age group,65+,24,24.0
 SD,Age group,18-29,15,15.0
-SD,Age group,30-44,23,23.0
-SD,Age group,45-64,30,30.0
+SD,Age group,30-44,24,24.0
+SD,Age group,45-64,29,29.0
 SD,Age group,65+,32,32.0
-TN,Age group,18-29,18,18.0
-TN,Age group,30-44,19,19.0
-TN,Age group,45-64,37,37.0
-TN,Age group,65+,26,26.0
+TN,Age group,18-29,14,14.0
+TN,Age group,30-44,16,16.0
+TN,Age group,45-64,32,32.0
+TN,Age group,65+,38,38.0
 TX,Age group,18-29,15,15.0
-TX,Age group,30-44,19,19.0
-TX,Age group,45-64,37,37.0
-TX,Age group,65+,29,29.0
-VA,Age group,18-29,24,24.0
-VA,Age group,30-44,28,28.0
-VA,Age group,45-64,25,25.0
-VA,Age group,65+,23,23.0
-WV,Age group,18-29,7,7.0
-WV,Age group,30-44,20,20.0
-WV,Age group,45-64,44,44.0
-WV,Age group,65+,29,29.0
-WY,Age group,18-29,13,13.0
-WY,Age group,30-44,21,21.0
-WY,Age group,45-64,39,39.0
-WY,Age group,65+,27,27.0
-AK,Education,No HS,7,7.0
-AK,Education,HS grad,35,35.0
-AK,Education,Some college,25,25.0
-AK,Education,2-year,6,6.0
-AK,Education,4-year,17,17.0
-AK,Education,Post-grad,10,10.0
-AL,Education,No HS,11,11.0
-AL,Education,HS grad,34,34.0
-AL,Education,Some college,15,15.0
-AL,Education,2-year,11,11.0
-AL,Education,4-year,17,17.0
-AL,Education,Post-grad,12,12.0
-AR,Education,No HS,10,10.0
-AR,Education,HS grad,29,29.0
-AR,Education,Some college,17,17.0
-AR,Education,2-year,11,11.0
-AR,Education,4-year,25,25.0
-AR,Education,Post-grad,8,8.0
+TX,Age group,30-44,39,39.0
+TX,Age group,45-64,25,25.0
+TX,Age group,65+,21,21.0
+VA,Age group,18-29,22,22.0
+VA,Age group,30-44,21,21.0
+VA,Age group,45-64,36,36.0
+VA,Age group,65+,21,21.0
+WV,Age group,18-29,6,6.0
+WV,Age group,30-44,21,21.0
+WV,Age group,45-64,39,39.0
+WV,Age group,65+,34,34.0
+WY,Age group,18-29,14,14.0
+WY,Age group,30-44,20,20.0
+WY,Age group,45-64,43,43.0
+WY,Age group,65+,23,23.0
+AK,Education,No HS,0,0.0
+AK,Education,HS grad,16,16.0
+AK,Education,Some college,28,28.0
+AK,Education,2-year,12,12.0
+AK,Education,4-year,28,28.0
+AK,Education,Post-grad,16,16.0
+AL,Education,No HS,5,5.0
+AL,Education,HS grad,36,36.0
+AL,Education,Some college,13,13.0
+AL,Education,2-year,8,8.0
+AL,Education,4-year,23,23.0
+AL,Education,Post-grad,15,15.0
+AR,Education,No HS,6,6.0
+AR,Education,HS grad,33,33.0
+AR,Education,Some college,16,16.0
+AR,Education,2-year,14,14.0
+AR,Education,4-year,24,24.0
+AR,Education,Post-grad,7,7.0
 CO,Education,No HS,4,4.0
-CO,Education,HS grad,30,30.0
-CO,Education,Some college,21,21.0
-CO,Education,2-year,10,10.0
-CO,Education,4-year,24,24.0
-CO,Education,Post-grad,11,11.0
-DE,Education,No HS,4,4.0
-DE,Education,HS grad,24,24.0
-DE,Education,Some college,22,22.0
-DE,Education,2-year,8,8.0
+CO,Education,HS grad,24,24.0
+CO,Education,Some college,17,17.0
+CO,Education,2-year,8,8.0
+CO,Education,4-year,29,29.0
+CO,Education,Post-grad,18,18.0
+DE,Education,No HS,5,5.0
+DE,Education,HS grad,21,21.0
+DE,Education,Some college,24,24.0
+DE,Education,2-year,7,7.0
 DE,Education,4-year,27,27.0
-DE,Education,Post-grad,15,15.0
-FL,Education,No HS,8,8.0
-FL,Education,HS grad,25,25.0
-FL,Education,Some college,20,20.0
-FL,Education,2-year,6,6.0
-FL,Education,4-year,29,29.0
-FL,Education,Post-grad,12,12.0
+DE,Education,Post-grad,16,16.0
+FL,Education,No HS,5,5.0
+FL,Education,HS grad,29,29.0
+FL,Education,Some college,16,16.0
+FL,Education,2-year,8,8.0
+FL,Education,4-year,27,27.0
+FL,Education,Post-grad,15,15.0
 GA,Education,No HS,8,8.0
-GA,Education,HS grad,28,28.0
-GA,Education,Some college,20,20.0
-GA,Education,2-year,5,5.0
-GA,Education,4-year,26,26.0
+GA,Education,HS grad,29,29.0
+GA,Education,Some college,22,22.0
+GA,Education,2-year,4,4.0
+GA,Education,4-year,24,24.0
 GA,Education,Post-grad,13,13.0
 IA,Education,No HS,3,3.0
-IA,Education,HS grad,24,24.0
-IA,Education,Some college,30,30.0
+IA,Education,HS grad,17,17.0
+IA,Education,Some college,24,24.0
 IA,Education,2-year,10,10.0
-IA,Education,4-year,24,24.0
-IA,Education,Post-grad,9,9.0
-ID,Education,No HS,5,5.0
-ID,Education,HS grad,24,24.0
-ID,Education,Some college,26,26.0
-ID,Education,2-year,22,22.0
-ID,Education,4-year,18,18.0
-ID,Education,Post-grad,5,5.0
-IL,Education,No HS,3,3.0
+IA,Education,4-year,34,34.0
+IA,Education,Post-grad,12,12.0
+ID,Education,No HS,6,6.0
+ID,Education,HS grad,21,21.0
+ID,Education,Some college,16,16.0
+ID,Education,2-year,26,26.0
+ID,Education,4-year,21,21.0
+ID,Education,Post-grad,10,10.0
+IL,Education,No HS,6,6.0
 IL,Education,HS grad,25,25.0
 IL,Education,Some college,20,20.0
-IL,Education,2-year,10,10.0
-IL,Education,4-year,20,20.0
-IL,Education,Post-grad,22,22.0
+IL,Education,2-year,12,12.0
+IL,Education,4-year,24,24.0
+IL,Education,Post-grad,13,13.0
 KS,Education,No HS,11,11.0
-KS,Education,HS grad,25,25.0
-KS,Education,Some college,20,20.0
-KS,Education,2-year,15,15.0
-KS,Education,4-year,19,19.0
-KS,Education,Post-grad,10,10.0
-KY,Education,No HS,7,7.0
-KY,Education,HS grad,31,31.0
-KY,Education,Some college,15,15.0
-KY,Education,2-year,13,13.0
-KY,Education,4-year,19,19.0
-KY,Education,Post-grad,15,15.0
-LA,Education,No HS,12,12.0
-LA,Education,HS grad,22,22.0
-LA,Education,Some college,19,19.0
-LA,Education,2-year,9,9.0
-LA,Education,4-year,22,22.0
-LA,Education,Post-grad,16,16.0
-MA,Education,No HS,4,4.0
-MA,Education,HS grad,19,19.0
-MA,Education,Some college,19,19.0
-MA,Education,2-year,7,7.0
-MA,Education,4-year,32,32.0
-MA,Education,Post-grad,19,19.0
+KS,Education,HS grad,22,22.0
+KS,Education,Some college,17,17.0
+KS,Education,2-year,16,16.0
+KS,Education,4-year,22,22.0
+KS,Education,Post-grad,12,12.0
+KY,Education,No HS,8,8.0
+KY,Education,HS grad,26,26.0
+KY,Education,Some college,18,18.0
+KY,Education,2-year,19,19.0
+KY,Education,4-year,20,20.0
+KY,Education,Post-grad,9,9.0
+LA,Education,No HS,11,11.0
+LA,Education,HS grad,29,29.0
+LA,Education,Some college,16,16.0
+LA,Education,2-year,5,5.0
+LA,Education,4-year,21,21.0
+LA,Education,Post-grad,18,18.0
+MA,Education,No HS,3,3.0
+MA,Education,HS grad,20,20.0
+MA,Education,Some college,20,20.0
+MA,Education,2-year,10,10.0
+MA,Education,4-year,24,24.0
+MA,Education,Post-grad,23,23.0
 ME,Education,No HS,3,3.0
 ME,Education,HS grad,30,30.0
-ME,Education,Some college,21,21.0
-ME,Education,2-year,4,4.0
-ME,Education,4-year,29,29.0
-ME,Education,Post-grad,13,13.0
+ME,Education,Some college,24,24.0
+ME,Education,2-year,2,2.0
+ME,Education,4-year,27,27.0
+ME,Education,Post-grad,14,14.0
 MI,Education,No HS,6,6.0
-MI,Education,HS grad,24,24.0
-MI,Education,Some college,26,26.0
-MI,Education,2-year,14,14.0
-MI,Education,4-year,17,17.0
-MI,Education,Post-grad,13,13.0
+MI,Education,HS grad,25,25.0
+MI,Education,Some college,23,23.0
+MI,Education,2-year,10,10.0
+MI,Education,4-year,22,22.0
+MI,Education,Post-grad,14,14.0
 MN,Education,No HS,4,4.0
-MN,Education,HS grad,20,20.0
-MN,Education,Some college,20,20.0
-MN,Education,2-year,16,16.0
-MN,Education,4-year,24,24.0
-MN,Education,Post-grad,16,16.0
-MS,Education,No HS,12,12.0
-MS,Education,HS grad,34,34.0
-MS,Education,Some college,10,10.0
+MN,Education,HS grad,25,25.0
+MN,Education,Some college,14,14.0
+MN,Education,2-year,19,19.0
+MN,Education,4-year,21,21.0
+MN,Education,Post-grad,17,17.0
+MS,Education,No HS,13,13.0
+MS,Education,HS grad,27,27.0
+MS,Education,Some college,17,17.0
 MS,Education,2-year,18,18.0
-MS,Education,4-year,12,12.0
-MS,Education,Post-grad,14,14.0
+MS,Education,4-year,13,13.0
+MS,Education,Post-grad,12,12.0
 MT,Education,No HS,6,6.0
-MT,Education,HS grad,24,24.0
-MT,Education,Some college,14,14.0
-MT,Education,2-year,20,20.0
-MT,Education,4-year,28,28.0
+MT,Education,HS grad,26,26.0
+MT,Education,Some college,8,8.0
+MT,Education,2-year,18,18.0
+MT,Education,4-year,34,34.0
 MT,Education,Post-grad,8,8.0
-NC,Education,No HS,5,5.0
-NC,Education,HS grad,28,28.0
-NC,Education,Some college,18,18.0
-NC,Education,2-year,17,17.0
-NC,Education,4-year,23,23.0
-NC,Education,Post-grad,9,9.0
+NC,Education,No HS,8,8.0
+NC,Education,HS grad,18,18.0
+NC,Education,Some college,14,14.0
+NC,Education,2-year,20,20.0
+NC,Education,4-year,25,25.0
+NC,Education,Post-grad,15,15.0
 NE,Education,No HS,5,5.0
-NE,Education,HS grad,16,16.0
+NE,Education,HS grad,23,23.0
 NE,Education,Some college,24,24.0
-NE,Education,2-year,10,10.0
-NE,Education,4-year,29,29.0
-NE,Education,Post-grad,16,16.0
-NH,Education,No HS,8,8.0
-NH,Education,HS grad,22,22.0
-NH,Education,Some college,12,12.0
-NH,Education,2-year,13,13.0
-NH,Education,4-year,34,34.0
-NH,Education,Post-grad,11,11.0
+NE,Education,2-year,5,5.0
+NE,Education,4-year,28,28.0
+NE,Education,Post-grad,15,15.0
+NH,Education,No HS,7,7.0
+NH,Education,HS grad,17,17.0
+NH,Education,Some college,13,13.0
+NH,Education,2-year,14,14.0
+NH,Education,4-year,35,35.0
+NH,Education,Post-grad,14,14.0
 NJ,Education,No HS,9,9.0
-NJ,Education,HS grad,23,23.0
-NJ,Education,Some college,9,9.0
-NJ,Education,2-year,8,8.0
-NJ,Education,4-year,36,36.0
-NJ,Education,Post-grad,15,15.0
-NM,Education,No HS,9,9.0
-NM,Education,HS grad,34,34.0
-NM,Education,Some college,17,17.0
-NM,Education,2-year,12,12.0
-NM,Education,4-year,15,15.0
-NM,Education,Post-grad,13,13.0
-OH,Education,No HS,11,11.0
-OH,Education,HS grad,26,26.0
-OH,Education,Some college,19,19.0
-OH,Education,2-year,9,9.0
-OH,Education,4-year,23,23.0
-OH,Education,Post-grad,12,12.0
-OK,Education,No HS,9,9.0
-OK,Education,HS grad,39,39.0
-OK,Education,Some college,17,17.0
+NJ,Education,HS grad,17,17.0
+NJ,Education,Some college,17,17.0
+NJ,Education,2-year,9,9.0
+NJ,Education,4-year,32,32.0
+NJ,Education,Post-grad,16,16.0
+NM,Education,No HS,0,0.0
+NM,Education,HS grad,31,31.0
+NM,Education,Some college,25,25.0
+NM,Education,2-year,16,16.0
+NM,Education,4-year,13,13.0
+NM,Education,Post-grad,15,15.0
+OH,Education,No HS,5,5.0
+OH,Education,HS grad,37,37.0
+OH,Education,Some college,15,15.0
+OH,Education,2-year,11,11.0
+OH,Education,4-year,19,19.0
+OH,Education,Post-grad,13,13.0
+OK,Education,No HS,7,7.0
+OK,Education,HS grad,30,30.0
+OK,Education,Some college,24,24.0
 OK,Education,2-year,11,11.0
-OK,Education,4-year,16,16.0
-OK,Education,Post-grad,8,8.0
-OR,Education,No HS,2,2.0
-OR,Education,HS grad,24,24.0
-OR,Education,Some college,17,17.0
-OR,Education,2-year,8,8.0
-OR,Education,4-year,27,27.0
-OR,Education,Post-grad,22,22.0
-RI,Education,No HS,7,7.0
-RI,Education,HS grad,27,27.0
-RI,Education,Some college,12,12.0
-RI,Education,2-year,16,16.0
-RI,Education,4-year,24,24.0
-RI,Education,Post-grad,14,14.0
-SC,Education,No HS,7,7.0
-SC,Education,HS grad,23,23.0
-SC,Education,Some college,16,16.0
-SC,Education,2-year,13,13.0
-SC,Education,4-year,33,33.0
-SC,Education,Post-grad,8,8.0
+OK,Education,4-year,18,18.0
+OK,Education,Post-grad,10,10.0
+OR,Education,No HS,3,3.0
+OR,Education,HS grad,30,30.0
+OR,Education,Some college,21,21.0
+OR,Education,2-year,9,9.0
+OR,Education,4-year,22,22.0
+OR,Education,Post-grad,15,15.0
+RI,Education,No HS,6,6.0
+RI,Education,HS grad,36,36.0
+RI,Education,Some college,5,5.0
+RI,Education,2-year,11,11.0
+RI,Education,4-year,21,21.0
+RI,Education,Post-grad,21,21.0
+SC,Education,No HS,3,3.0
+SC,Education,HS grad,28,28.0
+SC,Education,Some college,15,15.0
+SC,Education,2-year,12,12.0
+SC,Education,4-year,32,32.0
+SC,Education,Post-grad,10,10.0
 SD,Education,No HS,8,8.0
-SD,Education,HS grad,28,28.0
-SD,Education,Some college,16,16.0
-SD,Education,2-year,13,13.0
-SD,Education,4-year,25,25.0
-SD,Education,Post-grad,10,10.0
-TN,Education,No HS,7,7.0
-TN,Education,HS grad,24,24.0
-TN,Education,Some college,19,19.0
-TN,Education,2-year,16,16.0
-TN,Education,4-year,26,26.0
-TN,Education,Post-grad,8,8.0
-TX,Education,No HS,2,2.0
-TX,Education,HS grad,22,22.0
-TX,Education,Some college,19,19.0
-TX,Education,2-year,12,12.0
-TX,Education,4-year,28,28.0
-TX,Education,Post-grad,17,17.0
-VA,Education,No HS,11,11.0
-VA,Education,HS grad,13,13.0
-VA,Education,Some college,17,17.0
-VA,Education,2-year,8,8.0
-VA,Education,4-year,32,32.0
-VA,Education,Post-grad,19,19.0
-WV,Education,No HS,15,15.0
-WV,Education,HS grad,39,39.0
-WV,Education,Some college,16,16.0
-WV,Education,2-year,3,3.0
-WV,Education,4-year,18,18.0
+SD,Education,HS grad,31,31.0
+SD,Education,Some college,9,9.0
+SD,Education,2-year,11,11.0
+SD,Education,4-year,28,28.0
+SD,Education,Post-grad,13,13.0
+TN,Education,No HS,9,9.0
+TN,Education,HS grad,30,30.0
+TN,Education,Some college,17,17.0
+TN,Education,2-year,15,15.0
+TN,Education,4-year,15,15.0
+TN,Education,Post-grad,14,14.0
+TX,Education,No HS,3,3.0
+TX,Education,HS grad,27,27.0
+TX,Education,Some college,22,22.0
+TX,Education,2-year,6,6.0
+TX,Education,4-year,22,22.0
+TX,Education,Post-grad,20,20.0
+VA,Education,No HS,9,9.0
+VA,Education,HS grad,15,15.0
+VA,Education,Some college,14,14.0
+VA,Education,2-year,5,5.0
+VA,Education,4-year,39,39.0
+VA,Education,Post-grad,18,18.0
+WV,Education,No HS,14,14.0
+WV,Education,HS grad,37,37.0
+WV,Education,Some college,11,11.0
+WV,Education,2-year,7,7.0
+WV,Education,4-year,22,22.0
 WV,Education,Post-grad,9,9.0
 WY,Education,No HS,0,0.0
-WY,Education,HS grad,25,25.0
-WY,Education,Some college,39,39.0
-WY,Education,2-year,7,7.0
-WY,Education,4-year,24,24.0
+WY,Education,HS grad,26,26.0
+WY,Education,Some college,38,38.0
+WY,Education,2-year,4,4.0
+WY,Education,4-year,27,27.0
 WY,Education,Post-grad,5,5.0
-AK,Household income,"Less than $10,000",23,23.0
-AK,Household income,"$10,000 - $19,999",1,1.0
-AK,Household income,"$20,000 - $29,999",1,1.0
-AK,Household income,"$30,000 - $39,999",4,4.0
-AK,Household income,"$40,000 - $49,999",13,13.0
-AK,Household income,"$50,000 - $59,999",3,3.0
-AK,Household income,"$60,000 - $69,999",16,16.0
+AK,Household income,"Less than $10,000",3,3.0
+AK,Household income,"$10,000 - $19,999",2,2.0
+AK,Household income,"$20,000 - $29,999",4,4.0
+AK,Household income,"$30,000 - $39,999",1,1.0
+AK,Household income,"$40,000 - $49,999",15,15.0
+AK,Household income,"$50,000 - $59,999",7,7.0
+AK,Household income,"$60,000 - $69,999",15,15.0
 AK,Household income,"$70,000 - $79,999",3,3.0
-AK,Household income,"$80,000 - $99,999",0,0.0
-AK,Household income,"$100,000 - $119,999",14,14.0
-AK,Household income,"$120,000 - $149,999",0,0.0
-AK,Household income,"$150,000 - $199,999",6,6.0
-AK,Household income,"$200,000 - $249,999",0,0.0
+AK,Household income,"$80,000 - $99,999",4,4.0
+AK,Household income,"$100,000 - $119,999",19,19.0
+AK,Household income,"$120,000 - $149,999",2,2.0
+AK,Household income,"$150,000 - $199,999",3,3.0
+AK,Household income,"$200,000 - $249,999",3,3.0
 AK,Household income,"$250,000 - $349,999",0,0.0
 AK,Household income,"$350,000 - $499,999",0,0.0
 AK,Household income,"$500,000 or more",0,0.0
-AK,Household income,Prefer not to say,16,16.0
-AL,Household income,"Less than $10,000",8,8.0
-AL,Household income,"$10,000 - $19,999",11,11.0
+AK,Household income,Prefer not to say,19,19.0
+AL,Household income,"Less than $10,000",6,6.0
+AL,Household income,"$10,000 - $19,999",4,4.0
 AL,Household income,"$20,000 - $29,999",10,10.0
-AL,Household income,"$30,000 - $39,999",19,19.0
+AL,Household income,"$30,000 - $39,999",13,13.0
 AL,Household income,"$40,000 - $49,999",16,16.0
 AL,Household income,"$50,000 - $59,999",4,4.0
-AL,Household income,"$60,000 - $69,999",6,6.0
+AL,Household income,"$60,000 - $69,999",2,2.0
 AL,Household income,"$70,000 - $79,999",6,6.0
-AL,Household income,"$80,000 - $99,999",4,4.0
-AL,Household income,"$100,000 - $119,999",1,1.0
-AL,Household income,"$120,000 - $149,999",5,5.0
-AL,Household income,"$150,000 - $199,999",3,3.0
+AL,Household income,"$80,000 - $99,999",7,7.0
+AL,Household income,"$100,000 - $119,999",10,10.0
+AL,Household income,"$120,000 - $149,999",7,7.0
+AL,Household income,"$150,000 - $199,999",4,4.0
 AL,Household income,"$200,000 - $249,999",1,1.0
 AL,Household income,"$250,000 - $349,999",0,0.0
 AL,Household income,"$350,000 - $499,999",0,0.0
-AL,Household income,"$500,000 or more",1,1.0
-AL,Household income,Prefer not to say,5,5.0
-AR,Household income,"Less than $10,000",4,4.0
-AR,Household income,"$10,000 - $19,999",6,6.0
-AR,Household income,"$20,000 - $29,999",21,21.0
-AR,Household income,"$30,000 - $39,999",8,8.0
+AL,Household income,"$500,000 or more",0,0.0
+AL,Household income,Prefer not to say,10,10.0
+AR,Household income,"Less than $10,000",3,3.0
+AR,Household income,"$10,000 - $19,999",7,7.0
+AR,Household income,"$20,000 - $29,999",14,14.0
+AR,Household income,"$30,000 - $39,999",9,9.0
 AR,Household income,"$40,000 - $49,999",5,5.0
-AR,Household income,"$50,000 - $59,999",3,3.0
-AR,Household income,"$60,000 - $69,999",6,6.0
+AR,Household income,"$50,000 - $59,999",5,5.0
+AR,Household income,"$60,000 - $69,999",9,9.0
 AR,Household income,"$70,000 - $79,999",8,8.0
-AR,Household income,"$80,000 - $99,999",14,14.0
-AR,Household income,"$100,000 - $119,999",8,8.0
-AR,Household income,"$120,000 - $149,999",5,5.0
-AR,Household income,"$150,000 - $199,999",1,1.0
-AR,Household income,"$200,000 - $249,999",0,0.0
-AR,Household income,"$250,000 - $349,999",3,3.0
-AR,Household income,"$350,000 - $499,999",3,3.0
+AR,Household income,"$80,000 - $99,999",12,12.0
+AR,Household income,"$100,000 - $119,999",6,6.0
+AR,Household income,"$120,000 - $149,999",4,4.0
+AR,Household income,"$150,000 - $199,999",2,2.0
+AR,Household income,"$200,000 - $249,999",5,5.0
+AR,Household income,"$250,000 - $349,999",1,1.0
+AR,Household income,"$350,000 - $499,999",2,2.0
 AR,Household income,"$500,000 or more",0,0.0
-AR,Household income,Prefer not to say,5,5.0
-CO,Household income,"Less than $10,000",5,5.0
-CO,Household income,"$10,000 - $19,999",5,5.0
+AR,Household income,Prefer not to say,8,8.0
+CO,Household income,"Less than $10,000",2,2.0
+CO,Household income,"$10,000 - $19,999",4,4.0
 CO,Household income,"$20,000 - $29,999",6,6.0
-CO,Household income,"$30,000 - $39,999",7,7.0
-CO,Household income,"$40,000 - $49,999",6,6.0
-CO,Household income,"$50,000 - $59,999",8,8.0
-CO,Household income,"$60,000 - $69,999",1,1.0
-CO,Household income,"$70,000 - $79,999",7,7.0
-CO,Household income,"$80,000 - $99,999",8,8.0
-CO,Household income,"$100,000 - $119,999",11,11.0
-CO,Household income,"$120,000 - $149,999",9,9.0
-CO,Household income,"$150,000 - $199,999",7,7.0
+CO,Household income,"$30,000 - $39,999",13,13.0
+CO,Household income,"$40,000 - $49,999",9,9.0
+CO,Household income,"$50,000 - $59,999",5,5.0
+CO,Household income,"$60,000 - $69,999",5,5.0
+CO,Household income,"$70,000 - $79,999",4,4.0
+CO,Household income,"$80,000 - $99,999",6,6.0
+CO,Household income,"$100,000 - $119,999",4,4.0
+CO,Household income,"$120,000 - $149,999",15,15.0
+CO,Household income,"$150,000 - $199,999",8,8.0
 CO,Household income,"$200,000 - $249,999",5,5.0
-CO,Household income,"$250,000 - $349,999",2,2.0
+CO,Household income,"$250,000 - $349,999",0,0.0
 CO,Household income,"$350,000 - $499,999",0,0.0
 CO,Household income,"$500,000 or more",0,0.0
-CO,Household income,Prefer not to say,13,13.0
-DE,Household income,"Less than $10,000",4,4.0
-DE,Household income,"$10,000 - $19,999",19,19.0
+CO,Household income,Prefer not to say,14,14.0
+DE,Household income,"Less than $10,000",1,1.0
+DE,Household income,"$10,000 - $19,999",14,14.0
 DE,Household income,"$20,000 - $29,999",2,2.0
-DE,Household income,"$30,000 - $39,999",3,3.0
-DE,Household income,"$40,000 - $49,999",12,12.0
-DE,Household income,"$50,000 - $59,999",14,14.0
-DE,Household income,"$60,000 - $69,999",14,14.0
-DE,Household income,"$70,000 - $79,999",1,1.0
+DE,Household income,"$30,000 - $39,999",7,7.0
+DE,Household income,"$40,000 - $49,999",6,6.0
+DE,Household income,"$50,000 - $59,999",11,11.0
+DE,Household income,"$60,000 - $69,999",16,16.0
+DE,Household income,"$70,000 - $79,999",5,5.0
 DE,Household income,"$80,000 - $99,999",5,5.0
-DE,Household income,"$100,000 - $119,999",4,4.0
-DE,Household income,"$120,000 - $149,999",9,9.0
-DE,Household income,"$150,000 - $199,999",2,2.0
-DE,Household income,"$200,000 - $249,999",1,1.0
+DE,Household income,"$100,000 - $119,999",7,7.0
+DE,Household income,"$120,000 - $149,999",7,7.0
+DE,Household income,"$150,000 - $199,999",3,3.0
+DE,Household income,"$200,000 - $249,999",2,2.0
 DE,Household income,"$250,000 - $349,999",0,0.0
-DE,Household income,"$350,000 - $499,999",1,1.0
+DE,Household income,"$350,000 - $499,999",0,0.0
 DE,Household income,"$500,000 or more",1,1.0
-DE,Household income,Prefer not to say,8,8.0
-FL,Household income,"Less than $10,000",0,0.0
-FL,Household income,"$10,000 - $19,999",10,10.0
+DE,Household income,Prefer not to say,13,13.0
+FL,Household income,"Less than $10,000",2,2.0
+FL,Household income,"$10,000 - $19,999",4,4.0
 FL,Household income,"$20,000 - $29,999",11,11.0
-FL,Household income,"$30,000 - $39,999",6,6.0
-FL,Household income,"$40,000 - $49,999",13,13.0
-FL,Household income,"$50,000 - $59,999",10,10.0
-FL,Household income,"$60,000 - $69,999",6,6.0
-FL,Household income,"$70,000 - $79,999",7,7.0
-FL,Household income,"$80,000 - $99,999",7,7.0
-FL,Household income,"$100,000 - $119,999",3,3.0
-FL,Household income,"$120,000 - $149,999",7,7.0
+FL,Household income,"$30,000 - $39,999",12,12.0
+FL,Household income,"$40,000 - $49,999",9,9.0
+FL,Household income,"$50,000 - $59,999",8,8.0
+FL,Household income,"$60,000 - $69,999",8,8.0
+FL,Household income,"$70,000 - $79,999",9,9.0
+FL,Household income,"$80,000 - $99,999",2,2.0
+FL,Household income,"$100,000 - $119,999",6,6.0
+FL,Household income,"$120,000 - $149,999",8,8.0
 FL,Household income,"$150,000 - $199,999",7,7.0
 FL,Household income,"$200,000 - $249,999",4,4.0
-FL,Household income,"$250,000 - $349,999",3,3.0
+FL,Household income,"$250,000 - $349,999",0,0.0
 FL,Household income,"$350,000 - $499,999",0,0.0
 FL,Household income,"$500,000 or more",0,0.0
-FL,Household income,Prefer not to say,6,6.0
-GA,Household income,"Less than $10,000",6,6.0
-GA,Household income,"$10,000 - $19,999",12,12.0
-GA,Household income,"$20,000 - $29,999",3,3.0
-GA,Household income,"$30,000 - $39,999",5,5.0
+FL,Household income,Prefer not to say,10,10.0
+GA,Household income,"Less than $10,000",5,5.0
+GA,Household income,"$10,000 - $19,999",3,3.0
+GA,Household income,"$20,000 - $29,999",8,8.0
+GA,Household income,"$30,000 - $39,999",10,10.0
 GA,Household income,"$40,000 - $49,999",11,11.0
-GA,Household income,"$50,000 - $59,999",3,3.0
-GA,Household income,"$60,000 - $69,999",3,3.0
-GA,Household income,"$70,000 - $79,999",6,6.0
-GA,Household income,"$80,000 - $99,999",9,9.0
-GA,Household income,"$100,000 - $119,999",5,5.0
-GA,Household income,"$120,000 - $149,999",13,13.0
+GA,Household income,"$50,000 - $59,999",6,6.0
+GA,Household income,"$60,000 - $69,999",6,6.0
+GA,Household income,"$70,000 - $79,999",7,7.0
+GA,Household income,"$80,000 - $99,999",6,6.0
+GA,Household income,"$100,000 - $119,999",6,6.0
+GA,Household income,"$120,000 - $149,999",10,10.0
 GA,Household income,"$150,000 - $199,999",3,3.0
 GA,Household income,"$200,000 - $249,999",4,4.0
-GA,Household income,"$250,000 - $349,999",3,3.0
-GA,Household income,"$350,000 - $499,999",1,1.0
-GA,Household income,"$500,000 or more",1,1.0
+GA,Household income,"$250,000 - $349,999",1,1.0
+GA,Household income,"$350,000 - $499,999",0,0.0
+GA,Household income,"$500,000 or more",2,2.0
 GA,Household income,Prefer not to say,12,12.0
-IA,Household income,"Less than $10,000",2,2.0
-IA,Household income,"$10,000 - $19,999",8,8.0
-IA,Household income,"$20,000 - $29,999",10,10.0
-IA,Household income,"$30,000 - $39,999",18,18.0
-IA,Household income,"$40,000 - $49,999",9,9.0
-IA,Household income,"$50,000 - $59,999",6,6.0
+IA,Household income,"Less than $10,000",0,0.0
+IA,Household income,"$10,000 - $19,999",4,4.0
+IA,Household income,"$20,000 - $29,999",9,9.0
+IA,Household income,"$30,000 - $39,999",6,6.0
+IA,Household income,"$40,000 - $49,999",15,15.0
+IA,Household income,"$50,000 - $59,999",9,9.0
 IA,Household income,"$60,000 - $69,999",4,4.0
-IA,Household income,"$70,000 - $79,999",6,6.0
-IA,Household income,"$80,000 - $99,999",10,10.0
-IA,Household income,"$100,000 - $119,999",11,11.0
-IA,Household income,"$120,000 - $149,999",4,4.0
-IA,Household income,"$150,000 - $199,999",5,5.0
-IA,Household income,"$200,000 - $249,999",0,0.0
-IA,Household income,"$250,000 - $349,999",2,2.0
-IA,Household income,"$350,000 - $499,999",1,1.0
+IA,Household income,"$70,000 - $79,999",12,12.0
+IA,Household income,"$80,000 - $99,999",7,7.0
+IA,Household income,"$100,000 - $119,999",18,18.0
+IA,Household income,"$120,000 - $149,999",5,5.0
+IA,Household income,"$150,000 - $199,999",3,3.0
+IA,Household income,"$200,000 - $249,999",3,3.0
+IA,Household income,"$250,000 - $349,999",0,0.0
+IA,Household income,"$350,000 - $499,999",0,0.0
 IA,Household income,"$500,000 or more",0,0.0
-IA,Household income,Prefer not to say,4,4.0
-ID,Household income,"Less than $10,000",1,1.0
+IA,Household income,Prefer not to say,5,5.0
+ID,Household income,"Less than $10,000",0,0.0
 ID,Household income,"$10,000 - $19,999",6,6.0
-ID,Household income,"$20,000 - $29,999",10,10.0
-ID,Household income,"$30,000 - $39,999",19,19.0
-ID,Household income,"$40,000 - $49,999",6,6.0
-ID,Household income,"$50,000 - $59,999",9,9.0
-ID,Household income,"$60,000 - $69,999",5,5.0
-ID,Household income,"$70,000 - $79,999",2,2.0
-ID,Household income,"$80,000 - $99,999",12,12.0
-ID,Household income,"$100,000 - $119,999",4,4.0
+ID,Household income,"$20,000 - $29,999",15,15.0
+ID,Household income,"$30,000 - $39,999",14,14.0
+ID,Household income,"$40,000 - $49,999",5,5.0
+ID,Household income,"$50,000 - $59,999",14,14.0
+ID,Household income,"$60,000 - $69,999",3,3.0
+ID,Household income,"$70,000 - $79,999",4,4.0
+ID,Household income,"$80,000 - $99,999",10,10.0
+ID,Household income,"$100,000 - $119,999",5,5.0
 ID,Household income,"$120,000 - $149,999",3,3.0
-ID,Household income,"$150,000 - $199,999",5,5.0
+ID,Household income,"$150,000 - $199,999",3,3.0
 ID,Household income,"$200,000 - $249,999",4,4.0
-ID,Household income,"$250,000 - $349,999",0,0.0
+ID,Household income,"$250,000 - $349,999",1,1.0
 ID,Household income,"$350,000 - $499,999",0,0.0
 ID,Household income,"$500,000 or more",0,0.0
-ID,Household income,Prefer not to say,14,14.0
+ID,Household income,Prefer not to say,13,13.0
 IL,Household income,"Less than $10,000",7,7.0
 IL,Household income,"$10,000 - $19,999",6,6.0
-IL,Household income,"$20,000 - $29,999",7,7.0
-IL,Household income,"$30,000 - $39,999",14,14.0
-IL,Household income,"$40,000 - $49,999",6,6.0
-IL,Household income,"$50,000 - $59,999",6,6.0
-IL,Household income,"$60,000 - $69,999",10,10.0
-IL,Household income,"$70,000 - $79,999",11,11.0
+IL,Household income,"$20,000 - $29,999",10,10.0
+IL,Household income,"$30,000 - $39,999",11,11.0
+IL,Household income,"$40,000 - $49,999",4,4.0
+IL,Household income,"$50,000 - $59,999",7,7.0
+IL,Household income,"$60,000 - $69,999",6,6.0
+IL,Household income,"$70,000 - $79,999",6,6.0
 IL,Household income,"$80,000 - $99,999",8,8.0
-IL,Household income,"$100,000 - $119,999",5,5.0
-IL,Household income,"$120,000 - $149,999",3,3.0
-IL,Household income,"$150,000 - $199,999",5,5.0
-IL,Household income,"$200,000 - $249,999",3,3.0
+IL,Household income,"$100,000 - $119,999",7,7.0
+IL,Household income,"$120,000 - $149,999",11,11.0
+IL,Household income,"$150,000 - $199,999",8,8.0
+IL,Household income,"$200,000 - $249,999",2,2.0
 IL,Household income,"$250,000 - $349,999",2,2.0
-IL,Household income,"$350,000 - $499,999",1,1.0
+IL,Household income,"$350,000 - $499,999",0,0.0
 IL,Household income,"$500,000 or more",0,0.0
-IL,Household income,Prefer not to say,6,6.0
-KS,Household income,"Less than $10,000",3,3.0
+IL,Household income,Prefer not to say,5,5.0
+KS,Household income,"Less than $10,000",2,2.0
 KS,Household income,"$10,000 - $19,999",2,2.0
 KS,Household income,"$20,000 - $29,999",7,7.0
-KS,Household income,"$30,000 - $39,999",8,8.0
-KS,Household income,"$40,000 - $49,999",10,10.0
-KS,Household income,"$50,000 - $59,999",7,7.0
-KS,Household income,"$60,000 - $69,999",4,4.0
-KS,Household income,"$70,000 - $79,999",14,14.0
-KS,Household income,"$80,000 - $99,999",7,7.0
-KS,Household income,"$100,000 - $119,999",2,2.0
-KS,Household income,"$120,000 - $149,999",12,12.0
-KS,Household income,"$150,000 - $199,999",8,8.0
+KS,Household income,"$30,000 - $39,999",3,3.0
+KS,Household income,"$40,000 - $49,999",14,14.0
+KS,Household income,"$50,000 - $59,999",8,8.0
+KS,Household income,"$60,000 - $69,999",9,9.0
+KS,Household income,"$70,000 - $79,999",13,13.0
+KS,Household income,"$80,000 - $99,999",9,9.0
+KS,Household income,"$100,000 - $119,999",4,4.0
+KS,Household income,"$120,000 - $149,999",8,8.0
+KS,Household income,"$150,000 - $199,999",5,5.0
 KS,Household income,"$200,000 - $249,999",1,1.0
-KS,Household income,"$250,000 - $349,999",2,2.0
+KS,Household income,"$250,000 - $349,999",1,1.0
 KS,Household income,"$350,000 - $499,999",0,0.0
 KS,Household income,"$500,000 or more",0,0.0
-KS,Household income,Prefer not to say,13,13.0
-KY,Household income,"Less than $10,000",8,8.0
-KY,Household income,"$10,000 - $19,999",14,14.0
-KY,Household income,"$20,000 - $29,999",16,16.0
-KY,Household income,"$30,000 - $39,999",8,8.0
-KY,Household income,"$40,000 - $49,999",6,6.0
-KY,Household income,"$50,000 - $59,999",9,9.0
-KY,Household income,"$60,000 - $69,999",4,4.0
+KS,Household income,Prefer not to say,14,14.0
+KY,Household income,"Less than $10,000",6,6.0
+KY,Household income,"$10,000 - $19,999",7,7.0
+KY,Household income,"$20,000 - $29,999",5,5.0
+KY,Household income,"$30,000 - $39,999",13,13.0
+KY,Household income,"$40,000 - $49,999",9,9.0
+KY,Household income,"$50,000 - $59,999",16,16.0
+KY,Household income,"$60,000 - $69,999",8,8.0
 KY,Household income,"$70,000 - $79,999",4,4.0
-KY,Household income,"$80,000 - $99,999",10,10.0
-KY,Household income,"$100,000 - $119,999",6,6.0
+KY,Household income,"$80,000 - $99,999",13,13.0
+KY,Household income,"$100,000 - $119,999",3,3.0
 KY,Household income,"$120,000 - $149,999",6,6.0
-KY,Household income,"$150,000 - $199,999",3,3.0
-KY,Household income,"$200,000 - $249,999",3,3.0
+KY,Household income,"$150,000 - $199,999",2,2.0
+KY,Household income,"$200,000 - $249,999",2,2.0
 KY,Household income,"$250,000 - $349,999",0,0.0
 KY,Household income,"$350,000 - $499,999",0,0.0
-KY,Household income,"$500,000 or more",1,1.0
-KY,Household income,Prefer not to say,2,2.0
-LA,Household income,"Less than $10,000",8,8.0
-LA,Household income,"$10,000 - $19,999",10,10.0
-LA,Household income,"$20,000 - $29,999",8,8.0
-LA,Household income,"$30,000 - $39,999",10,10.0
-LA,Household income,"$40,000 - $49,999",8,8.0
-LA,Household income,"$50,000 - $59,999",9,9.0
-LA,Household income,"$60,000 - $69,999",11,11.0
-LA,Household income,"$70,000 - $79,999",3,3.0
-LA,Household income,"$80,000 - $99,999",9,9.0
+KY,Household income,"$500,000 or more",0,0.0
+KY,Household income,Prefer not to say,6,6.0
+LA,Household income,"Less than $10,000",5,5.0
+LA,Household income,"$10,000 - $19,999",13,13.0
+LA,Household income,"$20,000 - $29,999",6,6.0
+LA,Household income,"$30,000 - $39,999",7,7.0
+LA,Household income,"$40,000 - $49,999",7,7.0
+LA,Household income,"$50,000 - $59,999",4,4.0
+LA,Household income,"$60,000 - $69,999",14,14.0
+LA,Household income,"$70,000 - $79,999",2,2.0
+LA,Household income,"$80,000 - $99,999",16,16.0
 LA,Household income,"$100,000 - $119,999",4,4.0
-LA,Household income,"$120,000 - $149,999",4,4.0
-LA,Household income,"$150,000 - $199,999",7,7.0
-LA,Household income,"$200,000 - $249,999",2,2.0
+LA,Household income,"$120,000 - $149,999",7,7.0
+LA,Household income,"$150,000 - $199,999",6,6.0
+LA,Household income,"$200,000 - $249,999",4,4.0
 LA,Household income,"$250,000 - $349,999",2,2.0
-LA,Household income,"$350,000 - $499,999",2,2.0
+LA,Household income,"$350,000 - $499,999",1,1.0
 LA,Household income,"$500,000 or more",0,0.0
-LA,Household income,Prefer not to say,3,3.0
-MA,Household income,"Less than $10,000",7,7.0
-MA,Household income,"$10,000 - $19,999",10,10.0
-MA,Household income,"$20,000 - $29,999",6,6.0
-MA,Household income,"$30,000 - $39,999",3,3.0
+LA,Household income,Prefer not to say,2,2.0
+MA,Household income,"Less than $10,000",4,4.0
+MA,Household income,"$10,000 - $19,999",9,9.0
+MA,Household income,"$20,000 - $29,999",7,7.0
+MA,Household income,"$30,000 - $39,999",5,5.0
 MA,Household income,"$40,000 - $49,999",3,3.0
-MA,Household income,"$50,000 - $59,999",10,10.0
-MA,Household income,"$60,000 - $69,999",7,7.0
-MA,Household income,"$70,000 - $79,999",4,4.0
-MA,Household income,"$80,000 - $99,999",12,12.0
-MA,Household income,"$100,000 - $119,999",7,7.0
-MA,Household income,"$120,000 - $149,999",10,10.0
-MA,Household income,"$150,000 - $199,999",9,9.0
+MA,Household income,"$50,000 - $59,999",7,7.0
+MA,Household income,"$60,000 - $69,999",8,8.0
+MA,Household income,"$70,000 - $79,999",10,10.0
+MA,Household income,"$80,000 - $99,999",4,4.0
+MA,Household income,"$100,000 - $119,999",10,10.0
+MA,Household income,"$120,000 - $149,999",5,5.0
+MA,Household income,"$150,000 - $199,999",6,6.0
 MA,Household income,"$200,000 - $249,999",3,3.0
-MA,Household income,"$250,000 - $349,999",3,3.0
+MA,Household income,"$250,000 - $349,999",5,5.0
 MA,Household income,"$350,000 - $499,999",1,1.0
-MA,Household income,"$500,000 or more",0,0.0
-MA,Household income,Prefer not to say,5,5.0
-ME,Household income,"Less than $10,000",3,3.0
-ME,Household income,"$10,000 - $19,999",5,5.0
-ME,Household income,"$20,000 - $29,999",7,7.0
-ME,Household income,"$30,000 - $39,999",10,10.0
-ME,Household income,"$40,000 - $49,999",10,10.0
-ME,Household income,"$50,000 - $59,999",4,4.0
-ME,Household income,"$60,000 - $69,999",6,6.0
-ME,Household income,"$70,000 - $79,999",7,7.0
-ME,Household income,"$80,000 - $99,999",8,8.0
-ME,Household income,"$100,000 - $119,999",3,3.0
-ME,Household income,"$120,000 - $149,999",9,9.0
-ME,Household income,"$150,000 - $199,999",6,6.0
-ME,Household income,"$200,000 - $249,999",2,2.0
-ME,Household income,"$250,000 - $349,999",1,1.0
+MA,Household income,"$500,000 or more",1,1.0
+MA,Household income,Prefer not to say,12,12.0
+ME,Household income,"Less than $10,000",0,0.0
+ME,Household income,"$10,000 - $19,999",3,3.0
+ME,Household income,"$20,000 - $29,999",10,10.0
+ME,Household income,"$30,000 - $39,999",14,14.0
+ME,Household income,"$40,000 - $49,999",8,8.0
+ME,Household income,"$50,000 - $59,999",5,5.0
+ME,Household income,"$60,000 - $69,999",2,2.0
+ME,Household income,"$70,000 - $79,999",9,9.0
+ME,Household income,"$80,000 - $99,999",12,12.0
+ME,Household income,"$100,000 - $119,999",5,5.0
+ME,Household income,"$120,000 - $149,999",7,7.0
+ME,Household income,"$150,000 - $199,999",7,7.0
+ME,Household income,"$200,000 - $249,999",1,1.0
+ME,Household income,"$250,000 - $349,999",2,2.0
 ME,Household income,"$350,000 - $499,999",1,1.0
-ME,Household income,"$500,000 or more",1,1.0
-ME,Household income,Prefer not to say,17,17.0
-MI,Household income,"Less than $10,000",1,1.0
-MI,Household income,"$10,000 - $19,999",5,5.0
-MI,Household income,"$20,000 - $29,999",11,11.0
-MI,Household income,"$30,000 - $39,999",11,11.0
-MI,Household income,"$40,000 - $49,999",9,9.0
-MI,Household income,"$50,000 - $59,999",4,4.0
-MI,Household income,"$60,000 - $69,999",10,10.0
-MI,Household income,"$70,000 - $79,999",7,7.0
-MI,Household income,"$80,000 - $99,999",7,7.0
-MI,Household income,"$100,000 - $119,999",3,3.0
-MI,Household income,"$120,000 - $149,999",6,6.0
-MI,Household income,"$150,000 - $199,999",6,6.0
-MI,Household income,"$200,000 - $249,999",5,5.0
+ME,Household income,"$500,000 or more",0,0.0
+ME,Household income,Prefer not to say,14,14.0
+MI,Household income,"Less than $10,000",3,3.0
+MI,Household income,"$10,000 - $19,999",4,4.0
+MI,Household income,"$20,000 - $29,999",12,12.0
+MI,Household income,"$30,000 - $39,999",6,6.0
+MI,Household income,"$40,000 - $49,999",12,12.0
+MI,Household income,"$50,000 - $59,999",8,8.0
+MI,Household income,"$60,000 - $69,999",2,2.0
+MI,Household income,"$70,000 - $79,999",11,11.0
+MI,Household income,"$80,000 - $99,999",5,5.0
+MI,Household income,"$100,000 - $119,999",11,11.0
+MI,Household income,"$120,000 - $149,999",3,3.0
+MI,Household income,"$150,000 - $199,999",8,8.0
+MI,Household income,"$200,000 - $249,999",3,3.0
 MI,Household income,"$250,000 - $349,999",0,0.0
-MI,Household income,"$350,000 - $499,999",2,2.0
+MI,Household income,"$350,000 - $499,999",1,1.0
 MI,Household income,"$500,000 or more",0,0.0
-MI,Household income,Prefer not to say,13,13.0
-MN,Household income,"Less than $10,000",1,1.0
-MN,Household income,"$10,000 - $19,999",4,4.0
-MN,Household income,"$20,000 - $29,999",7,7.0
-MN,Household income,"$30,000 - $39,999",5,5.0
-MN,Household income,"$40,000 - $49,999",8,8.0
+MI,Household income,Prefer not to say,11,11.0
+MN,Household income,"Less than $10,000",3,3.0
+MN,Household income,"$10,000 - $19,999",7,7.0
+MN,Household income,"$20,000 - $29,999",6,6.0
+MN,Household income,"$30,000 - $39,999",3,3.0
+MN,Household income,"$40,000 - $49,999",5,5.0
 MN,Household income,"$50,000 - $59,999",8,8.0
-MN,Household income,"$60,000 - $69,999",9,9.0
-MN,Household income,"$70,000 - $79,999",8,8.0
-MN,Household income,"$80,000 - $99,999",21,21.0
-MN,Household income,"$100,000 - $119,999",4,4.0
-MN,Household income,"$120,000 - $149,999",7,7.0
-MN,Household income,"$150,000 - $199,999",4,4.0
-MN,Household income,"$200,000 - $249,999",2,2.0
+MN,Household income,"$60,000 - $69,999",12,12.0
+MN,Household income,"$70,000 - $79,999",11,11.0
+MN,Household income,"$80,000 - $99,999",12,12.0
+MN,Household income,"$100,000 - $119,999",10,10.0
+MN,Household income,"$120,000 - $149,999",6,6.0
+MN,Household income,"$150,000 - $199,999",7,7.0
+MN,Household income,"$200,000 - $249,999",0,0.0
 MN,Household income,"$250,000 - $349,999",1,1.0
-MN,Household income,"$350,000 - $499,999",3,3.0
+MN,Household income,"$350,000 - $499,999",1,1.0
 MN,Household income,"$500,000 or more",0,0.0
 MN,Household income,Prefer not to say,8,8.0
-MS,Household income,"Less than $10,000",10,10.0
+MS,Household income,"Less than $10,000",7,7.0
 MS,Household income,"$10,000 - $19,999",8,8.0
-MS,Household income,"$20,000 - $29,999",8,8.0
-MS,Household income,"$30,000 - $39,999",14,14.0
-MS,Household income,"$40,000 - $49,999",10,10.0
-MS,Household income,"$50,000 - $59,999",8,8.0
-MS,Household income,"$60,000 - $69,999",20,20.0
+MS,Household income,"$20,000 - $29,999",6,6.0
+MS,Household income,"$30,000 - $39,999",21,21.0
+MS,Household income,"$40,000 - $49,999",5,5.0
+MS,Household income,"$50,000 - $59,999",12,12.0
+MS,Household income,"$60,000 - $69,999",18,18.0
 MS,Household income,"$70,000 - $79,999",4,4.0
-MS,Household income,"$80,000 - $99,999",5,5.0
-MS,Household income,"$100,000 - $119,999",5,5.0
-MS,Household income,"$120,000 - $149,999",3,3.0
+MS,Household income,"$80,000 - $99,999",4,4.0
+MS,Household income,"$100,000 - $119,999",3,3.0
+MS,Household income,"$120,000 - $149,999",4,4.0
 MS,Household income,"$150,000 - $199,999",0,0.0
 MS,Household income,"$200,000 - $249,999",0,0.0
 MS,Household income,"$250,000 - $349,999",0,0.0
 MS,Household income,"$350,000 - $499,999",0,0.0
-MS,Household income,"$500,000 or more",1,1.0
-MS,Household income,Prefer not to say,4,4.0
+MS,Household income,"$500,000 or more",2,2.0
+MS,Household income,Prefer not to say,6,6.0
 MT,Household income,"Less than $10,000",3,3.0
-MT,Household income,"$10,000 - $19,999",7,7.0
-MT,Household income,"$20,000 - $29,999",3,3.0
-MT,Household income,"$30,000 - $39,999",11,11.0
-MT,Household income,"$40,000 - $49,999",4,4.0
-MT,Household income,"$50,000 - $59,999",13,13.0
-MT,Household income,"$60,000 - $69,999",15,15.0
-MT,Household income,"$70,000 - $79,999",5,5.0
-MT,Household income,"$80,000 - $99,999",8,8.0
-MT,Household income,"$100,000 - $119,999",13,13.0
-MT,Household income,"$120,000 - $149,999",7,7.0
-MT,Household income,"$150,000 - $199,999",4,4.0
-MT,Household income,"$200,000 - $249,999",0,0.0
+MT,Household income,"$10,000 - $19,999",6,6.0
+MT,Household income,"$20,000 - $29,999",2,2.0
+MT,Household income,"$30,000 - $39,999",14,14.0
+MT,Household income,"$40,000 - $49,999",3,3.0
+MT,Household income,"$50,000 - $59,999",16,16.0
+MT,Household income,"$60,000 - $69,999",18,18.0
+MT,Household income,"$70,000 - $79,999",7,7.0
+MT,Household income,"$80,000 - $99,999",5,5.0
+MT,Household income,"$100,000 - $119,999",9,9.0
+MT,Household income,"$120,000 - $149,999",5,5.0
+MT,Household income,"$150,000 - $199,999",6,6.0
+MT,Household income,"$200,000 - $249,999",3,3.0
 MT,Household income,"$250,000 - $349,999",0,0.0
 MT,Household income,"$350,000 - $499,999",0,0.0
 MT,Household income,"$500,000 or more",0,0.0
-MT,Household income,Prefer not to say,7,7.0
-NC,Household income,"Less than $10,000",7,7.0
-NC,Household income,"$10,000 - $19,999",5,5.0
-NC,Household income,"$20,000 - $29,999",13,13.0
-NC,Household income,"$30,000 - $39,999",7,7.0
+MT,Household income,Prefer not to say,3,3.0
+NC,Household income,"Less than $10,000",6,6.0
+NC,Household income,"$10,000 - $19,999",3,3.0
+NC,Household income,"$20,000 - $29,999",7,7.0
+NC,Household income,"$30,000 - $39,999",15,15.0
 NC,Household income,"$40,000 - $49,999",10,10.0
-NC,Household income,"$50,000 - $59,999",5,5.0
-NC,Household income,"$60,000 - $69,999",13,13.0
+NC,Household income,"$50,000 - $59,999",10,10.0
+NC,Household income,"$60,000 - $69,999",7,7.0
 NC,Household income,"$70,000 - $79,999",5,5.0
-NC,Household income,"$80,000 - $99,999",6,6.0
-NC,Household income,"$100,000 - $119,999",6,6.0
-NC,Household income,"$120,000 - $149,999",6,6.0
-NC,Household income,"$150,000 - $199,999",6,6.0
-NC,Household income,"$200,000 - $249,999",1,1.0
-NC,Household income,"$250,000 - $349,999",0,0.0
-NC,Household income,"$350,000 - $499,999",0,0.0
+NC,Household income,"$80,000 - $99,999",9,9.0
+NC,Household income,"$100,000 - $119,999",3,3.0
+NC,Household income,"$120,000 - $149,999",7,7.0
+NC,Household income,"$150,000 - $199,999",4,4.0
+NC,Household income,"$200,000 - $249,999",3,3.0
+NC,Household income,"$250,000 - $349,999",1,1.0
+NC,Household income,"$350,000 - $499,999",1,1.0
 NC,Household income,"$500,000 or more",0,0.0
-NC,Household income,Prefer not to say,10,10.0
-NE,Household income,"Less than $10,000",1,1.0
-NE,Household income,"$10,000 - $19,999",10,10.0
+NC,Household income,Prefer not to say,9,9.0
+NE,Household income,"Less than $10,000",2,2.0
+NE,Household income,"$10,000 - $19,999",7,7.0
 NE,Household income,"$20,000 - $29,999",10,10.0
 NE,Household income,"$30,000 - $39,999",4,4.0
-NE,Household income,"$40,000 - $49,999",7,7.0
-NE,Household income,"$50,000 - $59,999",9,9.0
-NE,Household income,"$60,000 - $69,999",11,11.0
-NE,Household income,"$70,000 - $79,999",5,5.0
-NE,Household income,"$80,000 - $99,999",11,11.0
-NE,Household income,"$100,000 - $119,999",11,11.0
-NE,Household income,"$120,000 - $149,999",7,7.0
-NE,Household income,"$150,000 - $199,999",11,11.0
-NE,Household income,"$200,000 - $249,999",0,0.0
+NE,Household income,"$40,000 - $49,999",8,8.0
+NE,Household income,"$50,000 - $59,999",8,8.0
+NE,Household income,"$60,000 - $69,999",10,10.0
+NE,Household income,"$70,000 - $79,999",1,1.0
+NE,Household income,"$80,000 - $99,999",12,12.0
+NE,Household income,"$100,000 - $119,999",12,12.0
+NE,Household income,"$120,000 - $149,999",9,9.0
+NE,Household income,"$150,000 - $199,999",12,12.0
+NE,Household income,"$200,000 - $249,999",1,1.0
 NE,Household income,"$250,000 - $349,999",0,0.0
 NE,Household income,"$350,000 - $499,999",0,0.0
 NE,Household income,"$500,000 or more",0,0.0
-NE,Household income,Prefer not to say,3,3.0
+NE,Household income,Prefer not to say,4,4.0
 NH,Household income,"Less than $10,000",0,0.0
 NH,Household income,"$10,000 - $19,999",1,1.0
-NH,Household income,"$20,000 - $29,999",4,4.0
-NH,Household income,"$30,000 - $39,999",3,3.0
-NH,Household income,"$40,000 - $49,999",10,10.0
-NH,Household income,"$50,000 - $59,999",5,5.0
-NH,Household income,"$60,000 - $69,999",3,3.0
-NH,Household income,"$70,000 - $79,999",7,7.0
-NH,Household income,"$80,000 - $99,999",13,13.0
+NH,Household income,"$20,000 - $29,999",6,6.0
+NH,Household income,"$30,000 - $39,999",7,7.0
+NH,Household income,"$40,000 - $49,999",9,9.0
+NH,Household income,"$50,000 - $59,999",6,6.0
+NH,Household income,"$60,000 - $69,999",5,5.0
+NH,Household income,"$70,000 - $79,999",9,9.0
+NH,Household income,"$80,000 - $99,999",9,9.0
 NH,Household income,"$100,000 - $119,999",11,11.0
-NH,Household income,"$120,000 - $149,999",8,8.0
-NH,Household income,"$150,000 - $199,999",11,11.0
-NH,Household income,"$200,000 - $249,999",8,8.0
+NH,Household income,"$120,000 - $149,999",9,9.0
+NH,Household income,"$150,000 - $199,999",6,6.0
+NH,Household income,"$200,000 - $249,999",9,9.0
 NH,Household income,"$250,000 - $349,999",0,0.0
 NH,Household income,"$350,000 - $499,999",0,0.0
 NH,Household income,"$500,000 or more",0,0.0
-NH,Household income,Prefer not to say,16,16.0
+NH,Household income,Prefer not to say,13,13.0
 NJ,Household income,"Less than $10,000",4,4.0
-NJ,Household income,"$10,000 - $19,999",4,4.0
-NJ,Household income,"$20,000 - $29,999",6,6.0
-NJ,Household income,"$30,000 - $39,999",7,7.0
-NJ,Household income,"$40,000 - $49,999",3,3.0
-NJ,Household income,"$50,000 - $59,999",13,13.0
+NJ,Household income,"$10,000 - $19,999",6,6.0
+NJ,Household income,"$20,000 - $29,999",2,2.0
+NJ,Household income,"$30,000 - $39,999",4,4.0
+NJ,Household income,"$40,000 - $49,999",10,10.0
+NJ,Household income,"$50,000 - $59,999",7,7.0
 NJ,Household income,"$60,000 - $69,999",8,8.0
-NJ,Household income,"$70,000 - $79,999",10,10.0
-NJ,Household income,"$80,000 - $99,999",11,11.0
-NJ,Household income,"$100,000 - $119,999",3,3.0
-NJ,Household income,"$120,000 - $149,999",8,8.0
-NJ,Household income,"$150,000 - $199,999",4,4.0
-NJ,Household income,"$200,000 - $249,999",2,2.0
-NJ,Household income,"$250,000 - $349,999",5,5.0
-NJ,Household income,"$350,000 - $499,999",0,0.0
+NJ,Household income,"$70,000 - $79,999",7,7.0
+NJ,Household income,"$80,000 - $99,999",12,12.0
+NJ,Household income,"$100,000 - $119,999",6,6.0
+NJ,Household income,"$120,000 - $149,999",14,14.0
+NJ,Household income,"$150,000 - $199,999",9,9.0
+NJ,Household income,"$200,000 - $249,999",1,1.0
+NJ,Household income,"$250,000 - $349,999",4,4.0
+NJ,Household income,"$350,000 - $499,999",1,1.0
 NJ,Household income,"$500,000 or more",0,0.0
-NJ,Household income,Prefer not to say,12,12.0
-NM,Household income,"Less than $10,000",13,13.0
-NM,Household income,"$10,000 - $19,999",8,8.0
-NM,Household income,"$20,000 - $29,999",3,3.0
-NM,Household income,"$30,000 - $39,999",3,3.0
-NM,Household income,"$40,000 - $49,999",6,6.0
-NM,Household income,"$50,000 - $59,999",10,10.0
-NM,Household income,"$60,000 - $69,999",10,10.0
-NM,Household income,"$70,000 - $79,999",12,12.0
+NJ,Household income,Prefer not to say,5,5.0
+NM,Household income,"Less than $10,000",5,5.0
+NM,Household income,"$10,000 - $19,999",9,9.0
+NM,Household income,"$20,000 - $29,999",7,7.0
+NM,Household income,"$30,000 - $39,999",6,6.0
+NM,Household income,"$40,000 - $49,999",9,9.0
+NM,Household income,"$50,000 - $59,999",8,8.0
+NM,Household income,"$60,000 - $69,999",4,4.0
+NM,Household income,"$70,000 - $79,999",16,16.0
 NM,Household income,"$80,000 - $99,999",7,7.0
-NM,Household income,"$100,000 - $119,999",11,11.0
-NM,Household income,"$120,000 - $149,999",5,5.0
+NM,Household income,"$100,000 - $119,999",10,10.0
+NM,Household income,"$120,000 - $149,999",3,3.0
 NM,Household income,"$150,000 - $199,999",3,3.0
 NM,Household income,"$200,000 - $249,999",1,1.0
 NM,Household income,"$250,000 - $349,999",0,0.0
 NM,Household income,"$350,000 - $499,999",0,0.0
 NM,Household income,"$500,000 or more",0,0.0
-NM,Household income,Prefer not to say,8,8.0
-OH,Household income,"Less than $10,000",4,4.0
-OH,Household income,"$10,000 - $19,999",8,8.0
-OH,Household income,"$20,000 - $29,999",8,8.0
-OH,Household income,"$30,000 - $39,999",13,13.0
-OH,Household income,"$40,000 - $49,999",11,11.0
-OH,Household income,"$50,000 - $59,999",3,3.0
-OH,Household income,"$60,000 - $69,999",8,8.0
-OH,Household income,"$70,000 - $79,999",6,6.0
-OH,Household income,"$80,000 - $99,999",12,12.0
-OH,Household income,"$100,000 - $119,999",3,3.0
+NM,Household income,Prefer not to say,12,12.0
+OH,Household income,"Less than $10,000",7,7.0
+OH,Household income,"$10,000 - $19,999",6,6.0
+OH,Household income,"$20,000 - $29,999",7,7.0
+OH,Household income,"$30,000 - $39,999",12,12.0
+OH,Household income,"$40,000 - $49,999",9,9.0
+OH,Household income,"$50,000 - $59,999",10,10.0
+OH,Household income,"$60,000 - $69,999",12,12.0
+OH,Household income,"$70,000 - $79,999",7,7.0
+OH,Household income,"$80,000 - $99,999",8,8.0
+OH,Household income,"$100,000 - $119,999",8,8.0
 OH,Household income,"$120,000 - $149,999",4,4.0
-OH,Household income,"$150,000 - $199,999",2,2.0
-OH,Household income,"$200,000 - $249,999",3,3.0
+OH,Household income,"$150,000 - $199,999",4,4.0
+OH,Household income,"$200,000 - $249,999",1,1.0
 OH,Household income,"$250,000 - $349,999",1,1.0
-OH,Household income,"$350,000 - $499,999",1,1.0
+OH,Household income,"$350,000 - $499,999",0,0.0
 OH,Household income,"$500,000 or more",0,0.0
-OH,Household income,Prefer not to say,13,13.0
-OK,Household income,"Less than $10,000",4,4.0
-OK,Household income,"$10,000 - $19,999",7,7.0
-OK,Household income,"$20,000 - $29,999",16,16.0
-OK,Household income,"$30,000 - $39,999",12,12.0
-OK,Household income,"$40,000 - $49,999",7,7.0
-OK,Household income,"$50,000 - $59,999",7,7.0
-OK,Household income,"$60,000 - $69,999",5,5.0
-OK,Household income,"$70,000 - $79,999",5,5.0
-OK,Household income,"$80,000 - $99,999",7,7.0
+OH,Household income,Prefer not to say,4,4.0
+OK,Household income,"Less than $10,000",3,3.0
+OK,Household income,"$10,000 - $19,999",12,12.0
+OK,Household income,"$20,000 - $29,999",14,14.0
+OK,Household income,"$30,000 - $39,999",13,13.0
+OK,Household income,"$40,000 - $49,999",5,5.0
+OK,Household income,"$50,000 - $59,999",6,6.0
+OK,Household income,"$60,000 - $69,999",3,3.0
+OK,Household income,"$70,000 - $79,999",7,7.0
+OK,Household income,"$80,000 - $99,999",6,6.0
 OK,Household income,"$100,000 - $119,999",6,6.0
-OK,Household income,"$120,000 - $149,999",7,7.0
-OK,Household income,"$150,000 - $199,999",6,6.0
+OK,Household income,"$120,000 - $149,999",13,13.0
+OK,Household income,"$150,000 - $199,999",4,4.0
 OK,Household income,"$200,000 - $249,999",2,2.0
-OK,Household income,"$250,000 - $349,999",4,4.0
+OK,Household income,"$250,000 - $349,999",2,2.0
 OK,Household income,"$350,000 - $499,999",0,0.0
 OK,Household income,"$500,000 or more",0,0.0
-OK,Household income,Prefer not to say,5,5.0
-OR,Household income,"Less than $10,000",3,3.0
-OR,Household income,"$10,000 - $19,999",1,1.0
-OR,Household income,"$20,000 - $29,999",13,13.0
-OR,Household income,"$30,000 - $39,999",9,9.0
-OR,Household income,"$40,000 - $49,999",9,9.0
-OR,Household income,"$50,000 - $59,999",8,8.0
-OR,Household income,"$60,000 - $69,999",5,5.0
-OR,Household income,"$70,000 - $79,999",7,7.0
-OR,Household income,"$80,000 - $99,999",16,16.0
-OR,Household income,"$100,000 - $119,999",9,9.0
-OR,Household income,"$120,000 - $149,999",6,6.0
-OR,Household income,"$150,000 - $199,999",4,4.0
-OR,Household income,"$200,000 - $249,999",2,2.0
+OK,Household income,Prefer not to say,4,4.0
+OR,Household income,"Less than $10,000",4,4.0
+OR,Household income,"$10,000 - $19,999",4,4.0
+OR,Household income,"$20,000 - $29,999",8,8.0
+OR,Household income,"$30,000 - $39,999",11,11.0
+OR,Household income,"$40,000 - $49,999",11,11.0
+OR,Household income,"$50,000 - $59,999",9,9.0
+OR,Household income,"$60,000 - $69,999",3,3.0
+OR,Household income,"$70,000 - $79,999",5,5.0
+OR,Household income,"$80,000 - $99,999",19,19.0
+OR,Household income,"$100,000 - $119,999",5,5.0
+OR,Household income,"$120,000 - $149,999",8,8.0
+OR,Household income,"$150,000 - $199,999",3,3.0
+OR,Household income,"$200,000 - $249,999",1,1.0
 OR,Household income,"$250,000 - $349,999",2,2.0
 OR,Household income,"$350,000 - $499,999",0,0.0
 OR,Household income,"$500,000 or more",0,0.0
-OR,Household income,Prefer not to say,6,6.0
-RI,Household income,"Less than $10,000",2,2.0
-RI,Household income,"$10,000 - $19,999",8,8.0
-RI,Household income,"$20,000 - $29,999",6,6.0
-RI,Household income,"$30,000 - $39,999",9,9.0
-RI,Household income,"$40,000 - $49,999",9,9.0
-RI,Household income,"$50,000 - $59,999",14,14.0
-RI,Household income,"$60,000 - $69,999",4,4.0
-RI,Household income,"$70,000 - $79,999",9,9.0
-RI,Household income,"$80,000 - $99,999",16,16.0
-RI,Household income,"$100,000 - $119,999",1,1.0
-RI,Household income,"$120,000 - $149,999",4,4.0
-RI,Household income,"$150,000 - $199,999",4,4.0
+OR,Household income,Prefer not to say,7,7.0
+RI,Household income,"Less than $10,000",0,0.0
+RI,Household income,"$10,000 - $19,999",2,2.0
+RI,Household income,"$20,000 - $29,999",5,5.0
+RI,Household income,"$30,000 - $39,999",8,8.0
+RI,Household income,"$40,000 - $49,999",5,5.0
+RI,Household income,"$50,000 - $59,999",15,15.0
+RI,Household income,"$60,000 - $69,999",11,11.0
+RI,Household income,"$70,000 - $79,999",10,10.0
+RI,Household income,"$80,000 - $99,999",8,8.0
+RI,Household income,"$100,000 - $119,999",4,4.0
+RI,Household income,"$120,000 - $149,999",2,2.0
+RI,Household income,"$150,000 - $199,999",8,8.0
 RI,Household income,"$200,000 - $249,999",1,1.0
 RI,Household income,"$250,000 - $349,999",0,0.0
 RI,Household income,"$350,000 - $499,999",0,0.0
 RI,Household income,"$500,000 or more",0,0.0
-RI,Household income,Prefer not to say,13,13.0
-SC,Household income,"Less than $10,000",9,9.0
-SC,Household income,"$10,000 - $19,999",4,4.0
-SC,Household income,"$20,000 - $29,999",11,11.0
-SC,Household income,"$30,000 - $39,999",8,8.0
-SC,Household income,"$40,000 - $49,999",8,8.0
-SC,Household income,"$50,000 - $59,999",2,2.0
-SC,Household income,"$60,000 - $69,999",4,4.0
-SC,Household income,"$70,000 - $79,999",7,7.0
-SC,Household income,"$80,000 - $99,999",13,13.0
-SC,Household income,"$100,000 - $119,999",6,6.0
-SC,Household income,"$120,000 - $149,999",8,8.0
-SC,Household income,"$150,000 - $199,999",5,5.0
-SC,Household income,"$200,000 - $249,999",0,0.0
-SC,Household income,"$250,000 - $349,999",4,4.0
+RI,Household income,Prefer not to say,21,21.0
+SC,Household income,"Less than $10,000",1,1.0
+SC,Household income,"$10,000 - $19,999",10,10.0
+SC,Household income,"$20,000 - $29,999",10,10.0
+SC,Household income,"$30,000 - $39,999",12,12.0
+SC,Household income,"$40,000 - $49,999",5,5.0
+SC,Household income,"$50,000 - $59,999",4,4.0
+SC,Household income,"$60,000 - $69,999",7,7.0
+SC,Household income,"$70,000 - $79,999",6,6.0
+SC,Household income,"$80,000 - $99,999",12,12.0
+SC,Household income,"$100,000 - $119,999",8,8.0
+SC,Household income,"$120,000 - $149,999",6,6.0
+SC,Household income,"$150,000 - $199,999",3,3.0
+SC,Household income,"$200,000 - $249,999",4,4.0
+SC,Household income,"$250,000 - $349,999",3,3.0
 SC,Household income,"$350,000 - $499,999",0,0.0
 SC,Household income,"$500,000 or more",0,0.0
-SC,Household income,Prefer not to say,11,11.0
+SC,Household income,Prefer not to say,9,9.0
 SD,Household income,"Less than $10,000",0,0.0
-SD,Household income,"$10,000 - $19,999",6,6.0
-SD,Household income,"$20,000 - $29,999",3,3.0
-SD,Household income,"$30,000 - $39,999",4,4.0
+SD,Household income,"$10,000 - $19,999",4,4.0
+SD,Household income,"$20,000 - $29,999",6,6.0
+SD,Household income,"$30,000 - $39,999",6,6.0
 SD,Household income,"$40,000 - $49,999",5,5.0
-SD,Household income,"$50,000 - $59,999",1,1.0
-SD,Household income,"$60,000 - $69,999",16,16.0
+SD,Household income,"$50,000 - $59,999",3,3.0
+SD,Household income,"$60,000 - $69,999",22,22.0
 SD,Household income,"$70,000 - $79,999",4,4.0
-SD,Household income,"$80,000 - $99,999",19,19.0
-SD,Household income,"$100,000 - $119,999",8,8.0
+SD,Household income,"$80,000 - $99,999",16,16.0
+SD,Household income,"$100,000 - $119,999",4,4.0
 SD,Household income,"$120,000 - $149,999",10,10.0
 SD,Household income,"$150,000 - $199,999",8,8.0
-SD,Household income,"$200,000 - $249,999",3,3.0
+SD,Household income,"$200,000 - $249,999",0,0.0
 SD,Household income,"$250,000 - $349,999",0,0.0
 SD,Household income,"$350,000 - $499,999",0,0.0
 SD,Household income,"$500,000 or more",0,0.0
-SD,Household income,Prefer not to say,13,13.0
-TN,Household income,"Less than $10,000",6,6.0
-TN,Household income,"$10,000 - $19,999",6,6.0
-TN,Household income,"$20,000 - $29,999",11,11.0
-TN,Household income,"$30,000 - $39,999",16,16.0
+SD,Household income,Prefer not to say,12,12.0
+TN,Household income,"Less than $10,000",5,5.0
+TN,Household income,"$10,000 - $19,999",5,5.0
+TN,Household income,"$20,000 - $29,999",15,15.0
+TN,Household income,"$30,000 - $39,999",13,13.0
 TN,Household income,"$40,000 - $49,999",7,7.0
-TN,Household income,"$50,000 - $59,999",4,4.0
+TN,Household income,"$50,000 - $59,999",5,5.0
 TN,Household income,"$60,000 - $69,999",7,7.0
-TN,Household income,"$70,000 - $79,999",5,5.0
-TN,Household income,"$80,000 - $99,999",13,13.0
-TN,Household income,"$100,000 - $119,999",5,5.0
-TN,Household income,"$120,000 - $149,999",5,5.0
-TN,Household income,"$150,000 - $199,999",4,4.0
+TN,Household income,"$70,000 - $79,999",8,8.0
+TN,Household income,"$80,000 - $99,999",10,10.0
+TN,Household income,"$100,000 - $119,999",8,8.0
+TN,Household income,"$120,000 - $149,999",2,2.0
+TN,Household income,"$150,000 - $199,999",6,6.0
 TN,Household income,"$200,000 - $249,999",1,1.0
-TN,Household income,"$250,000 - $349,999",2,2.0
+TN,Household income,"$250,000 - $349,999",0,0.0
 TN,Household income,"$350,000 - $499,999",0,0.0
 TN,Household income,"$500,000 or more",0,0.0
 TN,Household income,Prefer not to say,8,8.0
 TX,Household income,"Less than $10,000",2,2.0
-TX,Household income,"$10,000 - $19,999",2,2.0
-TX,Household income,"$20,000 - $29,999",12,12.0
-TX,Household income,"$30,000 - $39,999",7,7.0
-TX,Household income,"$40,000 - $49,999",8,8.0
-TX,Household income,"$50,000 - $59,999",7,7.0
-TX,Household income,"$60,000 - $69,999",6,6.0
+TX,Household income,"$10,000 - $19,999",3,3.0
+TX,Household income,"$20,000 - $29,999",8,8.0
+TX,Household income,"$30,000 - $39,999",9,9.0
+TX,Household income,"$40,000 - $49,999",11,11.0
+TX,Household income,"$50,000 - $59,999",8,8.0
+TX,Household income,"$60,000 - $69,999",2,2.0
 TX,Household income,"$70,000 - $79,999",4,4.0
-TX,Household income,"$80,000 - $99,999",10,10.0
-TX,Household income,"$100,000 - $119,999",10,10.0
-TX,Household income,"$120,000 - $149,999",7,7.0
-TX,Household income,"$150,000 - $199,999",4,4.0
-TX,Household income,"$200,000 - $249,999",5,5.0
-TX,Household income,"$250,000 - $349,999",2,2.0
+TX,Household income,"$80,000 - $99,999",7,7.0
+TX,Household income,"$100,000 - $119,999",11,11.0
+TX,Household income,"$120,000 - $149,999",8,8.0
+TX,Household income,"$150,000 - $199,999",10,10.0
+TX,Household income,"$200,000 - $249,999",3,3.0
+TX,Household income,"$250,000 - $349,999",1,1.0
 TX,Household income,"$350,000 - $499,999",0,0.0
-TX,Household income,"$500,000 or more",1,1.0
-TX,Household income,Prefer not to say,13,13.0
-VA,Household income,"Less than $10,000",3,3.0
+TX,Household income,"$500,000 or more",2,2.0
+TX,Household income,Prefer not to say,11,11.0
+VA,Household income,"Less than $10,000",2,2.0
 VA,Household income,"$10,000 - $19,999",4,4.0
-VA,Household income,"$20,000 - $29,999",8,8.0
-VA,Household income,"$30,000 - $39,999",8,8.0
-VA,Household income,"$40,000 - $49,999",5,5.0
-VA,Household income,"$50,000 - $59,999",0,0.0
-VA,Household income,"$60,000 - $69,999",6,6.0
+VA,Household income,"$20,000 - $29,999",7,7.0
+VA,Household income,"$30,000 - $39,999",6,6.0
+VA,Household income,"$40,000 - $49,999",4,4.0
+VA,Household income,"$50,000 - $59,999",7,7.0
+VA,Household income,"$60,000 - $69,999",11,11.0
 VA,Household income,"$70,000 - $79,999",6,6.0
-VA,Household income,"$80,000 - $99,999",10,10.0
+VA,Household income,"$80,000 - $99,999",8,8.0
 VA,Household income,"$100,000 - $119,999",11,11.0
-VA,Household income,"$120,000 - $149,999",13,13.0
-VA,Household income,"$150,000 - $199,999",4,4.0
-VA,Household income,"$200,000 - $249,999",2,2.0
+VA,Household income,"$120,000 - $149,999",6,6.0
+VA,Household income,"$150,000 - $199,999",9,9.0
+VA,Household income,"$200,000 - $249,999",3,3.0
 VA,Household income,"$250,000 - $349,999",2,2.0
 VA,Household income,"$350,000 - $499,999",1,1.0
-VA,Household income,"$500,000 or more",3,3.0
-VA,Household income,Prefer not to say,14,14.0
-WV,Household income,"Less than $10,000",8,8.0
-WV,Household income,"$10,000 - $19,999",15,15.0
-WV,Household income,"$20,000 - $29,999",12,12.0
-WV,Household income,"$30,000 - $39,999",19,19.0
-WV,Household income,"$40,000 - $49,999",3,3.0
+VA,Household income,"$500,000 or more",2,2.0
+VA,Household income,Prefer not to say,11,11.0
+WV,Household income,"Less than $10,000",5,5.0
+WV,Household income,"$10,000 - $19,999",16,16.0
+WV,Household income,"$20,000 - $29,999",15,15.0
+WV,Household income,"$30,000 - $39,999",13,13.0
+WV,Household income,"$40,000 - $49,999",5,5.0
 WV,Household income,"$50,000 - $59,999",8,8.0
-WV,Household income,"$60,000 - $69,999",9,9.0
-WV,Household income,"$70,000 - $79,999",2,2.0
-WV,Household income,"$80,000 - $99,999",10,10.0
-WV,Household income,"$100,000 - $119,999",3,3.0
+WV,Household income,"$60,000 - $69,999",16,16.0
+WV,Household income,"$70,000 - $79,999",4,4.0
+WV,Household income,"$80,000 - $99,999",6,6.0
+WV,Household income,"$100,000 - $119,999",1,1.0
 WV,Household income,"$120,000 - $149,999",1,1.0
 WV,Household income,"$150,000 - $199,999",3,3.0
-WV,Household income,"$200,000 - $249,999",1,1.0
+WV,Household income,"$200,000 - $249,999",0,0.0
 WV,Household income,"$250,000 - $349,999",0,0.0
 WV,Household income,"$350,000 - $499,999",0,0.0
 WV,Household income,"$500,000 or more",0,0.0
-WV,Household income,Prefer not to say,6,6.0
+WV,Household income,Prefer not to say,7,7.0
 WY,Household income,"Less than $10,000",11,11.0
 WY,Household income,"$10,000 - $19,999",6,6.0
-WY,Household income,"$20,000 - $29,999",7,7.0
-WY,Household income,"$30,000 - $39,999",5,5.0
+WY,Household income,"$20,000 - $29,999",2,2.0
+WY,Household income,"$30,000 - $39,999",3,3.0
 WY,Household income,"$40,000 - $49,999",3,3.0
-WY,Household income,"$50,000 - $59,999",10,10.0
-WY,Household income,"$60,000 - $69,999",7,7.0
-WY,Household income,"$70,000 - $79,999",1,1.0
-WY,Household income,"$80,000 - $99,999",24,24.0
-WY,Household income,"$100,000 - $119,999",5,5.0
-WY,Household income,"$120,000 - $149,999",3,3.0
+WY,Household income,"$50,000 - $59,999",8,8.0
+WY,Household income,"$60,000 - $69,999",10,10.0
+WY,Household income,"$70,000 - $79,999",3,3.0
+WY,Household income,"$80,000 - $99,999",25,25.0
+WY,Household income,"$100,000 - $119,999",9,9.0
+WY,Household income,"$120,000 - $149,999",2,2.0
 WY,Household income,"$150,000 - $199,999",15,15.0
 WY,Household income,"$200,000 - $249,999",2,2.0
 WY,Household income,"$250,000 - $349,999",0,0.0
 WY,Household income,"$350,000 - $499,999",0,0.0
 WY,Household income,"$500,000 or more",0,0.0
 WY,Household income,Prefer not to say,1,1.0
-AK,Party identification,Strong Dem,3,3.0
-AK,Party identification,Weak Dem,1,1.0
-AK,Party identification,Lean Dem,25,25.0
-AK,Party identification,Independent,38,38.0
-AK,Party identification,Lean Rep,13,13.0
-AK,Party identification,Weak Rep,13,13.0
-AK,Party identification,Strong Rep,7,7.0
+AK,Party identification,Strong Dem,5,5.0
+AK,Party identification,Weak Dem,0,0.0
+AK,Party identification,Lean Dem,23,23.0
+AK,Party identification,Independent,37,37.0
+AK,Party identification,Lean Rep,24,24.0
+AK,Party identification,Weak Rep,1,1.0
+AK,Party identification,Strong Rep,10,10.0
 AK,Party identification,Not sure,0,0.0
-AL,Party identification,Strong Dem,29,29.0
-AL,Party identification,Weak Dem,7,7.0
-AL,Party identification,Lean Dem,1,1.0
-AL,Party identification,Independent,8,8.0
-AL,Party identification,Lean Rep,15,15.0
-AL,Party identification,Weak Rep,10,10.0
-AL,Party identification,Strong Rep,29,29.0
-AL,Party identification,Not sure,1,1.0
-AR,Party identification,Strong Dem,24,24.0
-AR,Party identification,Weak Dem,5,5.0
-AR,Party identification,Lean Dem,3,3.0
-AR,Party identification,Independent,19,19.0
-AR,Party identification,Lean Rep,15,15.0
-AR,Party identification,Weak Rep,9,9.0
-AR,Party identification,Strong Rep,25,25.0
+AL,Party identification,Strong Dem,32,32.0
+AL,Party identification,Weak Dem,4,4.0
+AL,Party identification,Lean Dem,4,4.0
+AL,Party identification,Independent,6,6.0
+AL,Party identification,Lean Rep,14,14.0
+AL,Party identification,Weak Rep,12,12.0
+AL,Party identification,Strong Rep,28,28.0
+AL,Party identification,Not sure,0,0.0
+AR,Party identification,Strong Dem,27,27.0
+AR,Party identification,Weak Dem,7,7.0
+AR,Party identification,Lean Dem,1,1.0
+AR,Party identification,Independent,13,13.0
+AR,Party identification,Lean Rep,18,18.0
+AR,Party identification,Weak Rep,13,13.0
+AR,Party identification,Strong Rep,21,21.0
 AR,Party identification,Not sure,0,0.0
-CO,Party identification,Strong Dem,24,24.0
-CO,Party identification,Weak Dem,6,6.0
-CO,Party identification,Lean Dem,18,18.0
+CO,Party identification,Strong Dem,28,28.0
+CO,Party identification,Weak Dem,7,7.0
+CO,Party identification,Lean Dem,9,9.0
 CO,Party identification,Independent,13,13.0
-CO,Party identification,Lean Rep,19,19.0
+CO,Party identification,Lean Rep,18,18.0
 CO,Party identification,Weak Rep,5,5.0
-CO,Party identification,Strong Rep,15,15.0
-CO,Party identification,Not sure,0,0.0
-DE,Party identification,Strong Dem,24,24.0
-DE,Party identification,Weak Dem,12,12.0
-DE,Party identification,Lean Dem,20,20.0
-DE,Party identification,Independent,9,9.0
-DE,Party identification,Lean Rep,1,1.0
-DE,Party identification,Weak Rep,8,8.0
-DE,Party identification,Strong Rep,18,18.0
-DE,Party identification,Not sure,8,8.0
-FL,Party identification,Strong Dem,25,25.0
-FL,Party identification,Weak Dem,9,9.0
-FL,Party identification,Lean Dem,11,11.0
-FL,Party identification,Independent,17,17.0
-FL,Party identification,Lean Rep,9,9.0
-FL,Party identification,Weak Rep,6,6.0
-FL,Party identification,Strong Rep,21,21.0
-FL,Party identification,Not sure,2,2.0
-GA,Party identification,Strong Dem,28,28.0
-GA,Party identification,Weak Dem,5,5.0
+CO,Party identification,Strong Rep,19,19.0
+CO,Party identification,Not sure,1,1.0
+DE,Party identification,Strong Dem,33,33.0
+DE,Party identification,Weak Dem,18,18.0
+DE,Party identification,Lean Dem,14,14.0
+DE,Party identification,Independent,3,3.0
+DE,Party identification,Lean Rep,4,4.0
+DE,Party identification,Weak Rep,7,7.0
+DE,Party identification,Strong Rep,17,17.0
+DE,Party identification,Not sure,4,4.0
+FL,Party identification,Strong Dem,23,23.0
+FL,Party identification,Weak Dem,4,4.0
+FL,Party identification,Lean Dem,12,12.0
+FL,Party identification,Independent,9,9.0
+FL,Party identification,Lean Rep,12,12.0
+FL,Party identification,Weak Rep,14,14.0
+FL,Party identification,Strong Rep,26,26.0
+FL,Party identification,Not sure,0,0.0
+GA,Party identification,Strong Dem,24,24.0
+GA,Party identification,Weak Dem,12,12.0
 GA,Party identification,Lean Dem,10,10.0
 GA,Party identification,Independent,7,7.0
 GA,Party identification,Lean Rep,11,11.0
-GA,Party identification,Weak Rep,12,12.0
-GA,Party identification,Strong Rep,27,27.0
+GA,Party identification,Weak Rep,6,6.0
+GA,Party identification,Strong Rep,30,30.0
 GA,Party identification,Not sure,0,0.0
-IA,Party identification,Strong Dem,19,19.0
-IA,Party identification,Weak Dem,16,16.0
-IA,Party identification,Lean Dem,10,10.0
-IA,Party identification,Independent,11,11.0
-IA,Party identification,Lean Rep,12,12.0
-IA,Party identification,Weak Rep,8,8.0
+IA,Party identification,Strong Dem,24,24.0
+IA,Party identification,Weak Dem,6,6.0
+IA,Party identification,Lean Dem,14,14.0
+IA,Party identification,Independent,12,12.0
+IA,Party identification,Lean Rep,10,10.0
+IA,Party identification,Weak Rep,10,10.0
 IA,Party identification,Strong Rep,23,23.0
 IA,Party identification,Not sure,1,1.0
-ID,Party identification,Strong Dem,10,10.0
-ID,Party identification,Weak Dem,2,2.0
-ID,Party identification,Lean Dem,12,12.0
-ID,Party identification,Independent,10,10.0
+ID,Party identification,Strong Dem,11,11.0
+ID,Party identification,Weak Dem,1,1.0
+ID,Party identification,Lean Dem,18,18.0
+ID,Party identification,Independent,9,9.0
 ID,Party identification,Lean Rep,21,21.0
-ID,Party identification,Weak Rep,12,12.0
-ID,Party identification,Strong Rep,32,32.0
-ID,Party identification,Not sure,1,1.0
-IL,Party identification,Strong Dem,23,23.0
-IL,Party identification,Weak Dem,9,9.0
-IL,Party identification,Lean Dem,13,13.0
+ID,Party identification,Weak Rep,11,11.0
+ID,Party identification,Strong Rep,27,27.0
+ID,Party identification,Not sure,2,2.0
+IL,Party identification,Strong Dem,26,26.0
+IL,Party identification,Weak Dem,8,8.0
+IL,Party identification,Lean Dem,14,14.0
 IL,Party identification,Independent,11,11.0
-IL,Party identification,Lean Rep,11,11.0
-IL,Party identification,Weak Rep,10,10.0
-IL,Party identification,Strong Rep,20,20.0
-IL,Party identification,Not sure,3,3.0
-KS,Party identification,Strong Dem,19,19.0
-KS,Party identification,Weak Dem,6,6.0
-KS,Party identification,Lean Dem,10,10.0
-KS,Party identification,Independent,22,22.0
-KS,Party identification,Lean Rep,4,4.0
-KS,Party identification,Weak Rep,18,18.0
-KS,Party identification,Strong Rep,21,21.0
+IL,Party identification,Lean Rep,9,9.0
+IL,Party identification,Weak Rep,11,11.0
+IL,Party identification,Strong Rep,21,21.0
+IL,Party identification,Not sure,0,0.0
+KS,Party identification,Strong Dem,10,10.0
+KS,Party identification,Weak Dem,3,3.0
+KS,Party identification,Lean Dem,12,12.0
+KS,Party identification,Independent,18,18.0
+KS,Party identification,Lean Rep,5,5.0
+KS,Party identification,Weak Rep,23,23.0
+KS,Party identification,Strong Rep,29,29.0
 KS,Party identification,Not sure,0,0.0
-KY,Party identification,Strong Dem,17,17.0
-KY,Party identification,Weak Dem,12,12.0
-KY,Party identification,Lean Dem,9,9.0
-KY,Party identification,Independent,10,10.0
-KY,Party identification,Lean Rep,10,10.0
-KY,Party identification,Weak Rep,10,10.0
-KY,Party identification,Strong Rep,32,32.0
+KY,Party identification,Strong Dem,25,25.0
+KY,Party identification,Weak Dem,10,10.0
+KY,Party identification,Lean Dem,13,13.0
+KY,Party identification,Independent,3,3.0
+KY,Party identification,Lean Rep,14,14.0
+KY,Party identification,Weak Rep,12,12.0
+KY,Party identification,Strong Rep,23,23.0
 KY,Party identification,Not sure,0,0.0
-LA,Party identification,Strong Dem,27,27.0
+LA,Party identification,Strong Dem,23,23.0
 LA,Party identification,Weak Dem,7,7.0
-LA,Party identification,Lean Dem,2,2.0
-LA,Party identification,Independent,14,14.0
-LA,Party identification,Lean Rep,9,9.0
-LA,Party identification,Weak Rep,10,10.0
-LA,Party identification,Strong Rep,30,30.0
+LA,Party identification,Lean Dem,1,1.0
+LA,Party identification,Independent,10,10.0
+LA,Party identification,Lean Rep,13,13.0
+LA,Party identification,Weak Rep,13,13.0
+LA,Party identification,Strong Rep,32,32.0
 LA,Party identification,Not sure,1,1.0
-MA,Party identification,Strong Dem,31,31.0
-MA,Party identification,Weak Dem,13,13.0
-MA,Party identification,Lean Dem,20,20.0
-MA,Party identification,Independent,11,11.0
-MA,Party identification,Lean Rep,10,10.0
-MA,Party identification,Weak Rep,5,5.0
-MA,Party identification,Strong Rep,10,10.0
+MA,Party identification,Strong Dem,30,30.0
+MA,Party identification,Weak Dem,9,9.0
+MA,Party identification,Lean Dem,19,19.0
+MA,Party identification,Independent,18,18.0
+MA,Party identification,Lean Rep,8,8.0
+MA,Party identification,Weak Rep,3,3.0
+MA,Party identification,Strong Rep,13,13.0
 MA,Party identification,Not sure,0,0.0
-ME,Party identification,Strong Dem,23,23.0
-ME,Party identification,Weak Dem,5,5.0
+ME,Party identification,Strong Dem,24,24.0
+ME,Party identification,Weak Dem,3,3.0
 ME,Party identification,Lean Dem,11,11.0
-ME,Party identification,Independent,14,14.0
+ME,Party identification,Independent,9,9.0
 ME,Party identification,Lean Rep,16,16.0
-ME,Party identification,Weak Rep,13,13.0
-ME,Party identification,Strong Rep,13,13.0
+ME,Party identification,Weak Rep,21,21.0
+ME,Party identification,Strong Rep,11,11.0
 ME,Party identification,Not sure,5,5.0
 MI,Party identification,Strong Dem,22,22.0
-MI,Party identification,Weak Dem,10,10.0
-MI,Party identification,Lean Dem,13,13.0
-MI,Party identification,Independent,13,13.0
-MI,Party identification,Lean Rep,11,11.0
-MI,Party identification,Weak Rep,7,7.0
-MI,Party identification,Strong Rep,23,23.0
+MI,Party identification,Weak Dem,9,9.0
+MI,Party identification,Lean Dem,9,9.0
+MI,Party identification,Independent,5,5.0
+MI,Party identification,Lean Rep,15,15.0
+MI,Party identification,Weak Rep,10,10.0
+MI,Party identification,Strong Rep,29,29.0
 MI,Party identification,Not sure,1,1.0
-MN,Party identification,Strong Dem,25,25.0
-MN,Party identification,Weak Dem,6,6.0
-MN,Party identification,Lean Dem,9,9.0
-MN,Party identification,Independent,11,11.0
-MN,Party identification,Lean Rep,12,12.0
-MN,Party identification,Weak Rep,9,9.0
-MN,Party identification,Strong Rep,25,25.0
+MN,Party identification,Strong Dem,33,33.0
+MN,Party identification,Weak Dem,5,5.0
+MN,Party identification,Lean Dem,15,15.0
+MN,Party identification,Independent,2,2.0
+MN,Party identification,Lean Rep,8,8.0
+MN,Party identification,Weak Rep,13,13.0
+MN,Party identification,Strong Rep,21,21.0
 MN,Party identification,Not sure,3,3.0
-MS,Party identification,Strong Dem,19,19.0
-MS,Party identification,Weak Dem,14,14.0
-MS,Party identification,Lean Dem,4,4.0
-MS,Party identification,Independent,6,6.0
-MS,Party identification,Lean Rep,14,14.0
-MS,Party identification,Weak Rep,17,17.0
+MS,Party identification,Strong Dem,20,20.0
+MS,Party identification,Weak Dem,10,10.0
+MS,Party identification,Lean Dem,7,7.0
+MS,Party identification,Independent,0,0.0
+MS,Party identification,Lean Rep,21,21.0
+MS,Party identification,Weak Rep,14,14.0
 MS,Party identification,Strong Rep,22,22.0
-MS,Party identification,Not sure,4,4.0
-MT,Party identification,Strong Dem,12,12.0
+MS,Party identification,Not sure,6,6.0
+MT,Party identification,Strong Dem,13,13.0
 MT,Party identification,Weak Dem,3,3.0
-MT,Party identification,Lean Dem,7,7.0
-MT,Party identification,Independent,14,14.0
-MT,Party identification,Lean Rep,14,14.0
-MT,Party identification,Weak Rep,13,13.0
+MT,Party identification,Lean Dem,11,11.0
+MT,Party identification,Independent,16,16.0
+MT,Party identification,Lean Rep,8,8.0
+MT,Party identification,Weak Rep,11,11.0
 MT,Party identification,Strong Rep,35,35.0
-MT,Party identification,Not sure,2,2.0
-NC,Party identification,Strong Dem,27,27.0
+MT,Party identification,Not sure,3,3.0
+NC,Party identification,Strong Dem,35,35.0
 NC,Party identification,Weak Dem,5,5.0
-NC,Party identification,Lean Dem,11,11.0
-NC,Party identification,Independent,11,11.0
-NC,Party identification,Lean Rep,16,16.0
-NC,Party identification,Weak Rep,9,9.0
-NC,Party identification,Strong Rep,20,20.0
-NC,Party identification,Not sure,1,1.0
-NE,Party identification,Strong Dem,13,13.0
-NE,Party identification,Weak Dem,5,5.0
+NC,Party identification,Lean Dem,4,4.0
+NC,Party identification,Independent,3,3.0
+NC,Party identification,Lean Rep,18,18.0
+NC,Party identification,Weak Rep,12,12.0
+NC,Party identification,Strong Rep,23,23.0
+NC,Party identification,Not sure,0,0.0
+NE,Party identification,Strong Dem,12,12.0
+NE,Party identification,Weak Dem,8,8.0
 NE,Party identification,Lean Dem,12,12.0
-NE,Party identification,Independent,14,14.0
-NE,Party identification,Lean Rep,5,5.0
-NE,Party identification,Weak Rep,11,11.0
+NE,Party identification,Independent,10,10.0
+NE,Party identification,Lean Rep,9,9.0
+NE,Party identification,Weak Rep,9,9.0
 NE,Party identification,Strong Rep,39,39.0
 NE,Party identification,Not sure,1,1.0
-NH,Party identification,Strong Dem,18,18.0
-NH,Party identification,Weak Dem,6,6.0
-NH,Party identification,Lean Dem,18,18.0
-NH,Party identification,Independent,8,8.0
-NH,Party identification,Lean Rep,24,24.0
-NH,Party identification,Weak Rep,4,4.0
-NH,Party identification,Strong Rep,22,22.0
+NH,Party identification,Strong Dem,23,23.0
+NH,Party identification,Weak Dem,7,7.0
+NH,Party identification,Lean Dem,15,15.0
+NH,Party identification,Independent,9,9.0
+NH,Party identification,Lean Rep,23,23.0
+NH,Party identification,Weak Rep,5,5.0
+NH,Party identification,Strong Rep,18,18.0
 NH,Party identification,Not sure,0,0.0
-NJ,Party identification,Strong Dem,21,21.0
-NJ,Party identification,Weak Dem,10,10.0
-NJ,Party identification,Lean Dem,13,13.0
-NJ,Party identification,Independent,8,8.0
+NJ,Party identification,Strong Dem,30,30.0
+NJ,Party identification,Weak Dem,14,14.0
+NJ,Party identification,Lean Dem,7,7.0
+NJ,Party identification,Independent,5,5.0
 NJ,Party identification,Lean Rep,11,11.0
-NJ,Party identification,Weak Rep,16,16.0
-NJ,Party identification,Strong Rep,21,21.0
+NJ,Party identification,Weak Rep,10,10.0
+NJ,Party identification,Strong Rep,23,23.0
 NJ,Party identification,Not sure,0,0.0
-NM,Party identification,Strong Dem,25,25.0
-NM,Party identification,Weak Dem,4,4.0
-NM,Party identification,Lean Dem,9,9.0
-NM,Party identification,Independent,8,8.0
-NM,Party identification,Lean Rep,11,11.0
+NM,Party identification,Strong Dem,36,36.0
+NM,Party identification,Weak Dem,10,10.0
+NM,Party identification,Lean Dem,14,14.0
+NM,Party identification,Independent,4,4.0
+NM,Party identification,Lean Rep,7,7.0
 NM,Party identification,Weak Rep,6,6.0
-NM,Party identification,Strong Rep,28,28.0
-NM,Party identification,Not sure,9,9.0
-OH,Party identification,Strong Dem,21,21.0
-OH,Party identification,Weak Dem,12,12.0
-OH,Party identification,Lean Dem,9,9.0
-OH,Party identification,Independent,11,11.0
-OH,Party identification,Lean Rep,6,6.0
-OH,Party identification,Weak Rep,9,9.0
-OH,Party identification,Strong Rep,28,28.0
-OH,Party identification,Not sure,4,4.0
-OK,Party identification,Strong Dem,18,18.0
-OK,Party identification,Weak Dem,4,4.0
-OK,Party identification,Lean Dem,12,12.0
-OK,Party identification,Independent,5,5.0
-OK,Party identification,Lean Rep,16,16.0
-OK,Party identification,Weak Rep,9,9.0
-OK,Party identification,Strong Rep,36,36.0
+NM,Party identification,Strong Rep,23,23.0
+NM,Party identification,Not sure,0,0.0
+OH,Party identification,Strong Dem,16,16.0
+OH,Party identification,Weak Dem,15,15.0
+OH,Party identification,Lean Dem,7,7.0
+OH,Party identification,Independent,7,7.0
+OH,Party identification,Lean Rep,15,15.0
+OH,Party identification,Weak Rep,10,10.0
+OH,Party identification,Strong Rep,27,27.0
+OH,Party identification,Not sure,3,3.0
+OK,Party identification,Strong Dem,15,15.0
+OK,Party identification,Weak Dem,6,6.0
+OK,Party identification,Lean Dem,11,11.0
+OK,Party identification,Independent,0,0.0
+OK,Party identification,Lean Rep,15,15.0
+OK,Party identification,Weak Rep,13,13.0
+OK,Party identification,Strong Rep,40,40.0
 OK,Party identification,Not sure,0,0.0
-OR,Party identification,Strong Dem,32,32.0
-OR,Party identification,Weak Dem,11,11.0
-OR,Party identification,Lean Dem,15,15.0
-OR,Party identification,Independent,10,10.0
-OR,Party identification,Lean Rep,10,10.0
-OR,Party identification,Weak Rep,4,4.0
-OR,Party identification,Strong Rep,17,17.0
+OR,Party identification,Strong Dem,26,26.0
+OR,Party identification,Weak Dem,6,6.0
+OR,Party identification,Lean Dem,21,21.0
+OR,Party identification,Independent,7,7.0
+OR,Party identification,Lean Rep,9,9.0
+OR,Party identification,Weak Rep,11,11.0
+OR,Party identification,Strong Rep,19,19.0
 OR,Party identification,Not sure,1,1.0
-RI,Party identification,Strong Dem,22,22.0
+RI,Party identification,Strong Dem,25,25.0
 RI,Party identification,Weak Dem,9,9.0
-RI,Party identification,Lean Dem,15,15.0
-RI,Party identification,Independent,20,20.0
-RI,Party identification,Lean Rep,16,16.0
-RI,Party identification,Weak Rep,7,7.0
-RI,Party identification,Strong Rep,11,11.0
+RI,Party identification,Lean Dem,17,17.0
+RI,Party identification,Independent,21,21.0
+RI,Party identification,Lean Rep,15,15.0
+RI,Party identification,Weak Rep,3,3.0
+RI,Party identification,Strong Rep,10,10.0
 RI,Party identification,Not sure,0,0.0
-SC,Party identification,Strong Dem,15,15.0
-SC,Party identification,Weak Dem,2,2.0
-SC,Party identification,Lean Dem,13,13.0
-SC,Party identification,Independent,12,12.0
-SC,Party identification,Lean Rep,12,12.0
+SC,Party identification,Strong Dem,18,18.0
+SC,Party identification,Weak Dem,6,6.0
+SC,Party identification,Lean Dem,10,10.0
+SC,Party identification,Independent,9,9.0
+SC,Party identification,Lean Rep,18,18.0
 SC,Party identification,Weak Rep,11,11.0
-SC,Party identification,Strong Rep,34,34.0
-SC,Party identification,Not sure,1,1.0
-SD,Party identification,Strong Dem,16,16.0
-SD,Party identification,Weak Dem,2,2.0
+SC,Party identification,Strong Rep,28,28.0
+SC,Party identification,Not sure,0,0.0
+SD,Party identification,Strong Dem,22,22.0
+SD,Party identification,Weak Dem,4,4.0
 SD,Party identification,Lean Dem,4,4.0
-SD,Party identification,Independent,16,16.0
+SD,Party identification,Independent,15,15.0
 SD,Party identification,Lean Rep,10,10.0
-SD,Party identification,Weak Rep,22,22.0
-SD,Party identification,Strong Rep,30,30.0
+SD,Party identification,Weak Rep,17,17.0
+SD,Party identification,Strong Rep,28,28.0
 SD,Party identification,Not sure,0,0.0
-TN,Party identification,Strong Dem,21,21.0
-TN,Party identification,Weak Dem,14,14.0
-TN,Party identification,Lean Dem,8,8.0
-TN,Party identification,Independent,8,8.0
-TN,Party identification,Lean Rep,11,11.0
-TN,Party identification,Weak Rep,10,10.0
-TN,Party identification,Strong Rep,28,28.0
+TN,Party identification,Strong Dem,20,20.0
+TN,Party identification,Weak Dem,8,8.0
+TN,Party identification,Lean Dem,5,5.0
+TN,Party identification,Independent,12,12.0
+TN,Party identification,Lean Rep,13,13.0
+TN,Party identification,Weak Rep,7,7.0
+TN,Party identification,Strong Rep,35,35.0
 TN,Party identification,Not sure,0,0.0
-TX,Party identification,Strong Dem,20,20.0
-TX,Party identification,Weak Dem,7,7.0
-TX,Party identification,Lean Dem,10,10.0
+TX,Party identification,Strong Dem,13,13.0
+TX,Party identification,Weak Dem,10,10.0
+TX,Party identification,Lean Dem,9,9.0
 TX,Party identification,Independent,10,10.0
-TX,Party identification,Lean Rep,6,6.0
-TX,Party identification,Weak Rep,11,11.0
-TX,Party identification,Strong Rep,36,36.0
-TX,Party identification,Not sure,0,0.0
-VA,Party identification,Strong Dem,29,29.0
-VA,Party identification,Weak Dem,5,5.0
-VA,Party identification,Lean Dem,18,18.0
-VA,Party identification,Independent,18,18.0
-VA,Party identification,Lean Rep,9,9.0
-VA,Party identification,Weak Rep,3,3.0
-VA,Party identification,Strong Rep,18,18.0
+TX,Party identification,Lean Rep,22,22.0
+TX,Party identification,Weak Rep,12,12.0
+TX,Party identification,Strong Rep,22,22.0
+TX,Party identification,Not sure,2,2.0
+VA,Party identification,Strong Dem,24,24.0
+VA,Party identification,Weak Dem,6,6.0
+VA,Party identification,Lean Dem,11,11.0
+VA,Party identification,Independent,11,11.0
+VA,Party identification,Lean Rep,10,10.0
+VA,Party identification,Weak Rep,9,9.0
+VA,Party identification,Strong Rep,29,29.0
 VA,Party identification,Not sure,0,0.0
-WV,Party identification,Strong Dem,16,16.0
-WV,Party identification,Weak Dem,7,7.0
-WV,Party identification,Lean Dem,5,5.0
-WV,Party identification,Independent,11,11.0
-WV,Party identification,Lean Rep,16,16.0
-WV,Party identification,Weak Rep,17,17.0
-WV,Party identification,Strong Rep,28,28.0
+WV,Party identification,Strong Dem,17,17.0
+WV,Party identification,Weak Dem,4,4.0
+WV,Party identification,Lean Dem,6,6.0
+WV,Party identification,Independent,8,8.0
+WV,Party identification,Lean Rep,17,17.0
+WV,Party identification,Weak Rep,25,25.0
+WV,Party identification,Strong Rep,23,23.0
 WV,Party identification,Not sure,0,0.0
-WY,Party identification,Strong Dem,11,11.0
+WY,Party identification,Strong Dem,14,14.0
 WY,Party identification,Weak Dem,1,1.0
-WY,Party identification,Lean Dem,6,6.0
-WY,Party identification,Independent,6,6.0
+WY,Party identification,Lean Dem,9,9.0
+WY,Party identification,Independent,4,4.0
 WY,Party identification,Lean Rep,25,25.0
-WY,Party identification,Weak Rep,19,19.0
-WY,Party identification,Strong Rep,32,32.0
+WY,Party identification,Weak Rep,18,18.0
+WY,Party identification,Strong Rep,29,29.0
 WY,Party identification,Not sure,0,0.0
-AK,Ideology,Very liberal,6,6.0
-AK,Ideology,Liberal,20,20.0
-AK,Ideology,Moderate,12,12.0
-AK,Ideology,Conservative,36,36.0
-AK,Ideology,Very conservative,8,8.0
-AK,Ideology,Not sure,18,18.0
-AL,Ideology,Very liberal,17,17.0
-AL,Ideology,Liberal,11,11.0
-AL,Ideology,Moderate,23,23.0
-AL,Ideology,Conservative,24,24.0
-AL,Ideology,Very conservative,24,24.0
+AK,Ideology,Very liberal,11,11.0
+AK,Ideology,Liberal,11,11.0
+AK,Ideology,Moderate,20,20.0
+AK,Ideology,Conservative,28,28.0
+AK,Ideology,Very conservative,10,10.0
+AK,Ideology,Not sure,20,20.0
+AL,Ideology,Very liberal,18,18.0
+AL,Ideology,Liberal,9,9.0
+AL,Ideology,Moderate,24,24.0
+AL,Ideology,Conservative,23,23.0
+AL,Ideology,Very conservative,25,25.0
 AL,Ideology,Not sure,1,1.0
-AR,Ideology,Very liberal,18,18.0
-AR,Ideology,Liberal,12,12.0
-AR,Ideology,Moderate,22,22.0
-AR,Ideology,Conservative,20,20.0
-AR,Ideology,Very conservative,28,28.0
+AR,Ideology,Very liberal,17,17.0
+AR,Ideology,Liberal,7,7.0
+AR,Ideology,Moderate,30,30.0
+AR,Ideology,Conservative,24,24.0
+AR,Ideology,Very conservative,22,22.0
 AR,Ideology,Not sure,0,0.0
-CO,Ideology,Very liberal,20,20.0
-CO,Ideology,Liberal,17,17.0
-CO,Ideology,Moderate,30,30.0
-CO,Ideology,Conservative,23,23.0
-CO,Ideology,Very conservative,7,7.0
-CO,Ideology,Not sure,3,3.0
-DE,Ideology,Very liberal,10,10.0
-DE,Ideology,Liberal,22,22.0
-DE,Ideology,Moderate,29,29.0
-DE,Ideology,Conservative,21,21.0
-DE,Ideology,Very conservative,5,5.0
-DE,Ideology,Not sure,13,13.0
-FL,Ideology,Very liberal,18,18.0
-FL,Ideology,Liberal,16,16.0
-FL,Ideology,Moderate,34,34.0
-FL,Ideology,Conservative,22,22.0
-FL,Ideology,Very conservative,10,10.0
-FL,Ideology,Not sure,0,0.0
-GA,Ideology,Very liberal,15,15.0
-GA,Ideology,Liberal,12,12.0
-GA,Ideology,Moderate,26,26.0
+CO,Ideology,Very liberal,18,18.0
+CO,Ideology,Liberal,15,15.0
+CO,Ideology,Moderate,32,32.0
+CO,Ideology,Conservative,21,21.0
+CO,Ideology,Very conservative,12,12.0
+CO,Ideology,Not sure,2,2.0
+DE,Ideology,Very liberal,8,8.0
+DE,Ideology,Liberal,28,28.0
+DE,Ideology,Moderate,26,26.0
+DE,Ideology,Conservative,22,22.0
+DE,Ideology,Very conservative,7,7.0
+DE,Ideology,Not sure,9,9.0
+FL,Ideology,Very liberal,15,15.0
+FL,Ideology,Liberal,13,13.0
+FL,Ideology,Moderate,29,29.0
+FL,Ideology,Conservative,25,25.0
+FL,Ideology,Very conservative,14,14.0
+FL,Ideology,Not sure,4,4.0
+GA,Ideology,Very liberal,7,7.0
+GA,Ideology,Liberal,18,18.0
+GA,Ideology,Moderate,31,31.0
 GA,Ideology,Conservative,22,22.0
-GA,Ideology,Very conservative,21,21.0
-GA,Ideology,Not sure,4,4.0
-IA,Ideology,Very liberal,7,7.0
-IA,Ideology,Liberal,18,18.0
-IA,Ideology,Moderate,31,31.0
-IA,Ideology,Conservative,28,28.0
-IA,Ideology,Very conservative,13,13.0
+GA,Ideology,Very conservative,20,20.0
+GA,Ideology,Not sure,2,2.0
+IA,Ideology,Very liberal,11,11.0
+IA,Ideology,Liberal,13,13.0
+IA,Ideology,Moderate,33,33.0
+IA,Ideology,Conservative,25,25.0
+IA,Ideology,Very conservative,15,15.0
 IA,Ideology,Not sure,3,3.0
-ID,Ideology,Very liberal,12,12.0
-ID,Ideology,Liberal,11,11.0
-ID,Ideology,Moderate,20,20.0
-ID,Ideology,Conservative,31,31.0
-ID,Ideology,Very conservative,25,25.0
+ID,Ideology,Very liberal,14,14.0
+ID,Ideology,Liberal,9,9.0
+ID,Ideology,Moderate,23,23.0
+ID,Ideology,Conservative,27,27.0
+ID,Ideology,Very conservative,26,26.0
 ID,Ideology,Not sure,1,1.0
-IL,Ideology,Very liberal,9,9.0
-IL,Ideology,Liberal,26,26.0
-IL,Ideology,Moderate,32,32.0
-IL,Ideology,Conservative,11,11.0
+IL,Ideology,Very liberal,10,10.0
+IL,Ideology,Liberal,22,22.0
+IL,Ideology,Moderate,27,27.0
+IL,Ideology,Conservative,23,23.0
 IL,Ideology,Very conservative,16,16.0
-IL,Ideology,Not sure,6,6.0
-KS,Ideology,Very liberal,9,9.0
-KS,Ideology,Liberal,17,17.0
-KS,Ideology,Moderate,30,30.0
-KS,Ideology,Conservative,30,30.0
-KS,Ideology,Very conservative,14,14.0
-KS,Ideology,Not sure,0,0.0
-KY,Ideology,Very liberal,10,10.0
-KY,Ideology,Liberal,16,16.0
-KY,Ideology,Moderate,26,26.0
-KY,Ideology,Conservative,18,18.0
-KY,Ideology,Very conservative,26,26.0
-KY,Ideology,Not sure,4,4.0
-LA,Ideology,Very liberal,13,13.0
-LA,Ideology,Liberal,9,9.0
-LA,Ideology,Moderate,23,23.0
-LA,Ideology,Conservative,29,29.0
-LA,Ideology,Very conservative,18,18.0
-LA,Ideology,Not sure,8,8.0
-MA,Ideology,Very liberal,16,16.0
-MA,Ideology,Liberal,29,29.0
-MA,Ideology,Moderate,31,31.0
-MA,Ideology,Conservative,10,10.0
-MA,Ideology,Very conservative,9,9.0
-MA,Ideology,Not sure,5,5.0
-ME,Ideology,Very liberal,18,18.0
-ME,Ideology,Liberal,16,16.0
-ME,Ideology,Moderate,31,31.0
+IL,Ideology,Not sure,2,2.0
+KS,Ideology,Very liberal,7,7.0
+KS,Ideology,Liberal,12,12.0
+KS,Ideology,Moderate,26,26.0
+KS,Ideology,Conservative,36,36.0
+KS,Ideology,Very conservative,18,18.0
+KS,Ideology,Not sure,1,1.0
+KY,Ideology,Very liberal,14,14.0
+KY,Ideology,Liberal,23,23.0
+KY,Ideology,Moderate,23,23.0
+KY,Ideology,Conservative,22,22.0
+KY,Ideology,Very conservative,16,16.0
+KY,Ideology,Not sure,2,2.0
+LA,Ideology,Very liberal,9,9.0
+LA,Ideology,Liberal,12,12.0
+LA,Ideology,Moderate,22,22.0
+LA,Ideology,Conservative,33,33.0
+LA,Ideology,Very conservative,23,23.0
+LA,Ideology,Not sure,1,1.0
+MA,Ideology,Very liberal,25,25.0
+MA,Ideology,Liberal,20,20.0
+MA,Ideology,Moderate,33,33.0
+MA,Ideology,Conservative,16,16.0
+MA,Ideology,Very conservative,5,5.0
+MA,Ideology,Not sure,1,1.0
+ME,Ideology,Very liberal,19,19.0
+ME,Ideology,Liberal,18,18.0
+ME,Ideology,Moderate,26,26.0
 ME,Ideology,Conservative,19,19.0
-ME,Ideology,Very conservative,14,14.0
-ME,Ideology,Not sure,2,2.0
-MI,Ideology,Very liberal,17,17.0
-MI,Ideology,Liberal,20,20.0
-MI,Ideology,Moderate,20,20.0
-MI,Ideology,Conservative,20,20.0
-MI,Ideology,Very conservative,18,18.0
-MI,Ideology,Not sure,5,5.0
-MN,Ideology,Very liberal,13,13.0
-MN,Ideology,Liberal,19,19.0
-MN,Ideology,Moderate,31,31.0
-MN,Ideology,Conservative,20,20.0
-MN,Ideology,Very conservative,15,15.0
-MN,Ideology,Not sure,2,2.0
-MS,Ideology,Very liberal,8,8.0
-MS,Ideology,Liberal,11,11.0
-MS,Ideology,Moderate,31,31.0
-MS,Ideology,Conservative,36,36.0
-MS,Ideology,Very conservative,8,8.0
-MS,Ideology,Not sure,6,6.0
-MT,Ideology,Very liberal,5,5.0
-MT,Ideology,Liberal,4,4.0
-MT,Ideology,Moderate,32,32.0
-MT,Ideology,Conservative,19,19.0
+ME,Ideology,Very conservative,17,17.0
+ME,Ideology,Not sure,1,1.0
+MI,Ideology,Very liberal,11,11.0
+MI,Ideology,Liberal,12,12.0
+MI,Ideology,Moderate,31,31.0
+MI,Ideology,Conservative,24,24.0
+MI,Ideology,Very conservative,20,20.0
+MI,Ideology,Not sure,2,2.0
+MN,Ideology,Very liberal,17,17.0
+MN,Ideology,Liberal,23,23.0
+MN,Ideology,Moderate,27,27.0
+MN,Ideology,Conservative,18,18.0
+MN,Ideology,Very conservative,12,12.0
+MN,Ideology,Not sure,3,3.0
+MS,Ideology,Very liberal,7,7.0
+MS,Ideology,Liberal,13,13.0
+MS,Ideology,Moderate,34,34.0
+MS,Ideology,Conservative,32,32.0
+MS,Ideology,Very conservative,10,10.0
+MS,Ideology,Not sure,4,4.0
+MT,Ideology,Very liberal,8,8.0
+MT,Ideology,Liberal,7,7.0
+MT,Ideology,Moderate,33,33.0
+MT,Ideology,Conservative,12,12.0
 MT,Ideology,Very conservative,36,36.0
 MT,Ideology,Not sure,4,4.0
-NC,Ideology,Very liberal,16,16.0
-NC,Ideology,Liberal,14,14.0
-NC,Ideology,Moderate,25,25.0
-NC,Ideology,Conservative,23,23.0
-NC,Ideology,Very conservative,16,16.0
-NC,Ideology,Not sure,6,6.0
-NE,Ideology,Very liberal,6,6.0
+NC,Ideology,Very liberal,12,12.0
+NC,Ideology,Liberal,15,15.0
+NC,Ideology,Moderate,23,23.0
+NC,Ideology,Conservative,27,27.0
+NC,Ideology,Very conservative,21,21.0
+NC,Ideology,Not sure,2,2.0
+NE,Ideology,Very liberal,8,8.0
 NE,Ideology,Liberal,19,19.0
 NE,Ideology,Moderate,21,21.0
-NE,Ideology,Conservative,23,23.0
-NE,Ideology,Very conservative,28,28.0
-NE,Ideology,Not sure,3,3.0
-NH,Ideology,Very liberal,13,13.0
-NH,Ideology,Liberal,16,16.0
-NH,Ideology,Moderate,30,30.0
+NE,Ideology,Conservative,22,22.0
+NE,Ideology,Very conservative,30,30.0
+NE,Ideology,Not sure,0,0.0
+NH,Ideology,Very liberal,14,14.0
+NH,Ideology,Liberal,18,18.0
+NH,Ideology,Moderate,34,34.0
 NH,Ideology,Conservative,15,15.0
-NH,Ideology,Very conservative,22,22.0
-NH,Ideology,Not sure,4,4.0
-NJ,Ideology,Very liberal,14,14.0
-NJ,Ideology,Liberal,11,11.0
-NJ,Ideology,Moderate,38,38.0
-NJ,Ideology,Conservative,23,23.0
+NH,Ideology,Very conservative,17,17.0
+NH,Ideology,Not sure,2,2.0
+NJ,Ideology,Very liberal,11,11.0
+NJ,Ideology,Liberal,23,23.0
+NJ,Ideology,Moderate,33,33.0
+NJ,Ideology,Conservative,21,21.0
 NJ,Ideology,Very conservative,12,12.0
-NJ,Ideology,Not sure,2,2.0
-NM,Ideology,Very liberal,2,2.0
-NM,Ideology,Liberal,10,10.0
-NM,Ideology,Moderate,42,42.0
-NM,Ideology,Conservative,17,17.0
-NM,Ideology,Very conservative,19,19.0
-NM,Ideology,Not sure,10,10.0
-OH,Ideology,Very liberal,10,10.0
-OH,Ideology,Liberal,18,18.0
+NJ,Ideology,Not sure,0,0.0
+NM,Ideology,Very liberal,10,10.0
+NM,Ideology,Liberal,22,22.0
+NM,Ideology,Moderate,40,40.0
+NM,Ideology,Conservative,11,11.0
+NM,Ideology,Very conservative,16,16.0
+NM,Ideology,Not sure,1,1.0
+OH,Ideology,Very liberal,11,11.0
+OH,Ideology,Liberal,15,15.0
 OH,Ideology,Moderate,28,28.0
-OH,Ideology,Conservative,23,23.0
+OH,Ideology,Conservative,25,25.0
 OH,Ideology,Very conservative,17,17.0
 OH,Ideology,Not sure,4,4.0
-OK,Ideology,Very liberal,20,20.0
-OK,Ideology,Liberal,6,6.0
-OK,Ideology,Moderate,25,25.0
-OK,Ideology,Conservative,21,21.0
-OK,Ideology,Very conservative,24,24.0
-OK,Ideology,Not sure,4,4.0
+OK,Ideology,Very liberal,11,11.0
+OK,Ideology,Liberal,11,11.0
+OK,Ideology,Moderate,17,17.0
+OK,Ideology,Conservative,31,31.0
+OK,Ideology,Very conservative,28,28.0
+OK,Ideology,Not sure,2,2.0
 OR,Ideology,Very liberal,17,17.0
-OR,Ideology,Liberal,26,26.0
-OR,Ideology,Moderate,24,24.0
-OR,Ideology,Conservative,18,18.0
+OR,Ideology,Liberal,20,20.0
+OR,Ideology,Moderate,26,26.0
+OR,Ideology,Conservative,23,23.0
 OR,Ideology,Very conservative,12,12.0
-OR,Ideology,Not sure,3,3.0
-RI,Ideology,Very liberal,6,6.0
-RI,Ideology,Liberal,27,27.0
-RI,Ideology,Moderate,36,36.0
-RI,Ideology,Conservative,24,24.0
-RI,Ideology,Very conservative,4,4.0
-RI,Ideology,Not sure,3,3.0
+OR,Ideology,Not sure,2,2.0
+RI,Ideology,Very liberal,9,9.0
+RI,Ideology,Liberal,22,22.0
+RI,Ideology,Moderate,44,44.0
+RI,Ideology,Conservative,15,15.0
+RI,Ideology,Very conservative,6,6.0
+RI,Ideology,Not sure,4,4.0
 SC,Ideology,Very liberal,11,11.0
-SC,Ideology,Liberal,8,8.0
-SC,Ideology,Moderate,30,30.0
-SC,Ideology,Conservative,21,21.0
-SC,Ideology,Very conservative,24,24.0
-SC,Ideology,Not sure,6,6.0
-SD,Ideology,Very liberal,9,9.0
+SC,Ideology,Liberal,12,12.0
+SC,Ideology,Moderate,33,33.0
+SC,Ideology,Conservative,27,27.0
+SC,Ideology,Very conservative,16,16.0
+SC,Ideology,Not sure,1,1.0
+SD,Ideology,Very liberal,13,13.0
 SD,Ideology,Liberal,8,8.0
-SD,Ideology,Moderate,22,22.0
-SD,Ideology,Conservative,29,29.0
-SD,Ideology,Very conservative,25,25.0
-SD,Ideology,Not sure,7,7.0
-TN,Ideology,Very liberal,12,12.0
-TN,Ideology,Liberal,8,8.0
-TN,Ideology,Moderate,32,32.0
-TN,Ideology,Conservative,20,20.0
-TN,Ideology,Very conservative,27,27.0
+SD,Ideology,Moderate,20,20.0
+SD,Ideology,Conservative,24,24.0
+SD,Ideology,Very conservative,27,27.0
+SD,Ideology,Not sure,8,8.0
+TN,Ideology,Very liberal,11,11.0
+TN,Ideology,Liberal,4,4.0
+TN,Ideology,Moderate,31,31.0
+TN,Ideology,Conservative,29,29.0
+TN,Ideology,Very conservative,24,24.0
 TN,Ideology,Not sure,1,1.0
-TX,Ideology,Very liberal,10,10.0
-TX,Ideology,Liberal,8,8.0
-TX,Ideology,Moderate,30,30.0
-TX,Ideology,Conservative,34,34.0
-TX,Ideology,Very conservative,16,16.0
-TX,Ideology,Not sure,2,2.0
-VA,Ideology,Very liberal,11,11.0
-VA,Ideology,Liberal,18,18.0
-VA,Ideology,Moderate,42,42.0
-VA,Ideology,Conservative,15,15.0
-VA,Ideology,Very conservative,11,11.0
+TX,Ideology,Very liberal,7,7.0
+TX,Ideology,Liberal,11,11.0
+TX,Ideology,Moderate,32,32.0
+TX,Ideology,Conservative,24,24.0
+TX,Ideology,Very conservative,20,20.0
+TX,Ideology,Not sure,6,6.0
+VA,Ideology,Very liberal,19,19.0
+VA,Ideology,Liberal,11,11.0
+VA,Ideology,Moderate,30,30.0
+VA,Ideology,Conservative,18,18.0
+VA,Ideology,Very conservative,19,19.0
 VA,Ideology,Not sure,3,3.0
 WV,Ideology,Very liberal,11,11.0
-WV,Ideology,Liberal,12,12.0
-WV,Ideology,Moderate,19,19.0
-WV,Ideology,Conservative,34,34.0
+WV,Ideology,Liberal,8,8.0
+WV,Ideology,Moderate,20,20.0
+WV,Ideology,Conservative,40,40.0
 WV,Ideology,Very conservative,21,21.0
-WV,Ideology,Not sure,3,3.0
-WY,Ideology,Very liberal,5,5.0
-WY,Ideology,Liberal,13,13.0
-WY,Ideology,Moderate,19,19.0
+WV,Ideology,Not sure,0,0.0
+WY,Ideology,Very liberal,7,7.0
+WY,Ideology,Liberal,15,15.0
+WY,Ideology,Moderate,18,18.0
 WY,Ideology,Conservative,43,43.0
-WY,Ideology,Very conservative,20,20.0
+WY,Ideology,Very conservative,17,17.0
 WY,Ideology,Not sure,0,0.0

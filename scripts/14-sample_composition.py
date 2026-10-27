@@ -14,7 +14,7 @@
 #   composition_overall.csv    one row per variable and category
 #   composition_by_state.csv   long format: state, variable, category, n, pct
 #   repeats_by_state.csv       personas, distinct respondents, repeated draws, pool size, Kish n_eff
-#   composition_overall.md     Markdown tables to paste or include in index.qmd
+#   composition_overall.md     Markdown tables, included in index.qmd
 #
 # HOW to read the "expected" column: each state contributes 100 personas, so the expected overall
 # share is the average of the states' weighted CES shares, each state counting equally. A gap
@@ -74,11 +74,12 @@ print(f"{len(personas):,} personas in {personas['state'].nunique()} states "
 #### The pool, built the same way as in script 07 ####
 ces = pd.read_csv(config.CES_FILE, low_memory=False)
 pool = ces[ces["state"].isin(states) & ces["vvweight_post"].notna() & (ces["vvweight_post"] > 0)].copy()
+pool = pool[pool["validated_voter"].astype(str).str.lower() == "true"].copy()   # as in 07: validated voters
 pool["party_id_7"] = pool["party_id_7"].fillna("Not sure")
 pool["ideology"] = pool["ideology"].fillna("Not sure")
 pool["family_income"] = pool["family_income"].fillna("Prefer not to say")
 pool = pool.dropna(subset=["age_group", "education", "gender", "race_5"])
-print(f"Pool: {len(pool):,} CES respondents with vvweight_post in these states")
+print(f"Pool: {len(pool):,} validated 2024 voters with vvweight_post in these states")
 
 
 def categories(var):
@@ -132,20 +133,32 @@ rep = rep.sort_values("pct_repeated", ascending=False)
 rep.to_csv(OUT / "repeats_by_state.csv", index=False)
 
 #### Markdown for index.qmd ####
+# index.qmd includes this file ({{< include >}}), so the tables on the page always match the data.
 per_state_text = str(per_state.min()) if per_state.min() == per_state.max() else f"{per_state.min()} to {per_state.max()}"
-md = [f"{len(personas):,} personas, {per_state_text} in each of "
-      f"{personas['state'].nunique()} states. The expected share is the weighted CES share in each "
-      "state, averaged over states.", ""]
-for var in VARS:
-    md += [f"**{LABELS[var]}**", "", "| Category | Personas | Sample % | Expected % |", "|---|---:|---:|---:|"]
+max_gap = overall["gap_points"].abs().max()
+md = [f"The sample has {len(personas):,} personas, {per_state_text} in each of the "
+      f"{personas['state'].nunique()} states. The expected share is the weighted CES share among "
+      "validated 2024 voters in each state, averaged over states, because every state contributes "
+      f"the same number of personas. On every category, the sample is within {max_gap:.1f} "
+      "percentage points of the expected share.", ""]
+
+
+def table(var):
+    out = [f"**{LABELS[var]}**", "", "| Category | Personas | Sample (%) | Expected (%) |", "|---|---:|---:|---:|"]
     for _, r in overall[overall["variable"] == LABELS[var]].iterrows():
-        md.append(f"| {r['category']} | {r['n_sample']:,} | {r['pct_sample']:.1f} | {r['pct_expected']:.1f} |")
-    md.append("")
+        out.append(f"| {r['category']} | {r['n_sample']:,} | {r['pct_sample']:.1f} | {r['pct_expected']:.1f} |")
+    return out + [""]
+
+
+for left, right in [("gender", "race_5"), ("age_group", "education"), ("party_id_7", "ideology")]:
+    md += ["::: {.columns}", "", '::: {.column width="48%"}'] + table(left) + [":::", "",
+           '::: {.column width="4%"}', ":::", "", '::: {.column width="48%"}'] + table(right) + [":::", "", ":::", ""]
+md += table("family_income")
 md += ["**Repeated draws**", "",
-       f"{int(rep['repeated_draws'].sum()):,} of {len(personas):,} personas "
+       f"Of the {len(personas):,} personas, {int(rep['repeated_draws'].sum()):,} "
        f"({rep['repeated_draws'].sum() / len(personas) * 100:.1f}%) repeat a respondent already drawn "
-       "in the same state. The five states with the most repeats:", "",
-       "| State | Pool | Repeated draws | % repeated |", "|---|---:|---:|---:|"]
+       "in the same state. The five states with the most repeats are shown below.", "",
+       "| State | Pool | Repeated draws | Repeated (%) |", "|---|---:|---:|---:|"]
 for _, r in rep.head(5).iterrows():
     md.append(f"| {r['state']} | {int(r['pool_size']):,} | {int(r['repeated_draws'])} | {r['pct_repeated']:.1f} |")
 (OUT / "composition_overall.md").write_text("\n".join(md) + "\n")

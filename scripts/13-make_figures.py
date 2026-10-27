@@ -5,7 +5,7 @@
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/11-build_forecast.py first. Needs: pip install matplotlib
-# Any other information needed? Run from the project root. Output: docs/figures/forecast_dotplot.png
+# Any other information needed? Run from the project root. Output: figures/run_<RUN>/forecast_dotplot.png
 #
 # WHY a quantile dotplot: people read probabilities from dot counts more accurately than from
 # density curves (Kay et al. 2016). Counting the dots on each side of 50% gives the chance of
@@ -66,7 +66,7 @@ axes[0][0].set_yticklabels(labels, fontsize=8)
 fig.suptitle("Simulated Senate outcomes by state (each dot = 5% of draws; synthetic respondents)",
              x=0.01, ha="left", fontsize=11)
 fig.text(0.01, 0.005, "* independent candidate on the left side. Blue = Democratic, red = Republican. "
-         "Test run with few personas per state: not a forecast.", fontsize=8, ha="left")
+         f"Run {config.RUN}; {config.N_PER_STATE} personas per state.", fontsize=8, ha="left")
 fig.tight_layout(rect=(0, 0.02, 1, 0.96))
 fig.savefig(OUT / "forecast_dotplot.png", dpi=200)
 print(f"Saved {OUT / 'forecast_dotplot.png'}")

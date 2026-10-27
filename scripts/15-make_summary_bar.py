@@ -8,7 +8,7 @@
 # Pre-requisites: Run 11-build_forecast.py; install pandas numpy matplotlib pyarrow.
 # Run from the project root: python scripts/15-make_summary_bar.py
 # Outputs: data/03-results/win_probabilities.csv and
-#          docs/figures/forecast_win_probability_bar.png
+#          figures/run_<RUN>/forecast_win_probability_bar.png
 # Each draw counts once, using its saved winner (including tie-break results).
 # These are simulated win frequencies, not vote shares or calibrated election odds.
 

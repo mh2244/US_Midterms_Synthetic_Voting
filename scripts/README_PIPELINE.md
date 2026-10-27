@@ -25,9 +25,12 @@ Add `.env` to `.gitignore`. The key you pasted in chat is exposed: revoke it at 
 | `08-build_prompts.py` | persona + question (`--designs B,C`, `--news`) | `prompts.parquet` |
 | `09-query_models.py` | asks both models (`--limit 4` first; `--mock` for a dry run) | `responses.parquet` |
 | `10-score_responses.py` | SSR (design B) or parsing (design C) | `scores.parquet`, `scores_with_text.csv` |
-| `11-build_forecast.py` | state shares, 1,000 draws, poll and 2024 comparison | `forecast.parquet`, `state_comparison.csv` |
+| `11-build_forecast.py` | state shares, 1,000 draws, inverse-variance combination with polls (`--combine ivw/shrink/none`) | `forecast.parquet`, `state_comparison.csv`, `ivw_weights.csv` |
 | `12-test_actual_data.py` | tests on real files | prints "All tests passed" |
-| `13-make_figures.py` | quantile dotplot | `docs/figures/forecast_dotplot.png` |
+| `13-make_figures.py` | quantile dotplot | `figures/run_<RUN>/forecast_dotplot.png` |
+| `14-sample_composition.py` | persona sample against the weighted CES pool | `composition/composition_overall.md` (included in index.qmd) |
+| `16-make_crosstabs.py` | synthetic vote by group against the 2024 vote of the same personas | `crosstabs.csv`, `crosstabs.md` (included in index.qmd) |
+| `17-publish_latest.py` | copies the latest news run (figures, crosstabs, headline numbers) to fixed paths | `figures/latest/`, `data/03-results/latest/` (used by index.qmd) |
 
 Outputs go to `data/02-analysis_data/` and `data/03-results/`. `config.py` holds the settings (models, N per state, paths).
 
@@ -74,7 +77,7 @@ Scripts 08-15 always use the selected RUN (default `2026-10-27`):
 
 - `data/02-analysis_data/run_<RUN>/` for prompts, responses and scores.
 - `data/03-results/run_<RUN>/` for forecasts, comparisons and win probabilities.
-- `docs/figures/run_<RUN>/` for both forecast figures.
+- `figures/run_<RUN>/` for both forecast figures (not `docs/`, which Quarto rebuilds).
 
 Candidates and personas remain shared inputs under `data/02-analysis_data/`; news inputs remain under `data/news/`. `RUN=nonews` isolates baseline results in `run_nonews`. Without an environment override, local scripts use `run_2026-10-27`. Dates automatically enable news in 08; `RUN=nonews` disables it, and combining nonews with `--news` is rejected. Prompt IDs contain both a content hash and the RUN suffix; prompts and responses also record a `run` field. Use the same `RUN` for every stage, for example `RUN=2026-10-27 python scripts/08-build_prompts.py --news` followed by `RUN=2026-10-27 python scripts/09-query_models.py`. A news run's 04b summary must carry the same run ID. Previous files are not moved automatically. The workflow uploads run files as an artifact before committing, providing a fallback if pushing fails. Input freezing and voting-model configuration are separate from this path change.
 
