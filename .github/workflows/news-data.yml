@@ -80,7 +80,25 @@ jobs:
       - name: Collect news and assemble persona news
         if: steps.run_info.outputs.run_id != 'nonews'
         run: |
-          python scripts/04-collect_news.py
+          # 04 exits 1 if even one article could not be screened (the model kept returning an
+          # invalid decision for it). Those articles are simply left out, so carry on when the
+          # news was collected in this run and at most 10% of articles failed; 04b then checks
+          # that every source group still has enough articles.
+          touch "$RUNNER_TEMP/news_start"
+          if ! python scripts/04-collect_news.py; then
+            if [ ! data/news/news_screening.csv -nt "$RUNNER_TEMP/news_start" ]; then
+              echo "News was not collected in this run" >&2
+              exit 1
+            fi
+            python - <<'EOF'
+          import sys
+          import pandas as pd
+          d = pd.read_csv("data/news/news_screening.csv", encoding="utf-8-sig")
+          bad = int((d["llm_status"] == "error").sum())
+          print(f"{bad} of {len(d)} articles could not be screened and are left out")
+          sys.exit(1 if bad > 0.10 * len(d) else 0)
+          EOF
+          fi
           python "$SUMMARY_SCRIPT"
           cp data/news/news.csv "data/news/news_${RUN}.csv"
           cp data/news/news_context.csv "data/news/news_context_${RUN}.csv"
