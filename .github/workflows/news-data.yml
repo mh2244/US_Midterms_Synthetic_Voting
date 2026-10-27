@@ -1,10 +1,13 @@
 # Purpose: Full forecast run on the three news days (Oct 27, 29, 31):
 #          collect news -> concatenate nine summaries/persona -> prompts (08) -> model queries (09) -> SSR (10)
-#          -> forecast (11) -> tests (12) -> figures (13, 15) -> commit results.
+#          -> forecast (11: synthetic only, shrinkage, then inverse-variance headline last)
+#          -> figures, map and headline (13, 13b, 15, 15b) -> crosstabs (16) -> tests (12) -> publish latest (17)
+#          -> render the website (Quarto, into docs/) -> commit.
+# Commit rule: model answers are always committed (so a rerun only asks for what is missing);
+# the forecast, figures and website are committed only if every step, including the tests, passed.
 # Needs: repository secret OPENROUTER_API_KEY.
 # Manual run: Actions > Forecast run > Run workflow. Leave run empty for today's
 # Toronto date, or enter nonews for the baseline.
-# Integration pending: paid voting-model settings.
 # RUN selects matching output and commit paths; completed answers are saved even on failure.
 # Disable this workflow before the project deadline.
 
@@ -92,21 +95,49 @@ jobs:
           fi
 
       - name: Query models (09)
-        run: python scripts/09-query_models.py --batch-size 40 --sleep 0
+        # 09 skips prompts that already have an answer, so a retry only sends what is missing
+        # (rate limits, provider errors). It exits with an error if calls are still unanswered.
+        run: |
+          for attempt in 1 2 3; do
+            if python scripts/09-query_models.py --batch-size 40 --sleep 0; then exit 0; fi
+            echo "Attempt $attempt left calls unanswered; trying again in 60 seconds"
+            sleep 60
+          done
+          exit 1
 
       - name: Score answers with SSR (10)
         run: python scripts/10-score_responses.py
 
       - name: Build the forecast (11)
-        run: python scripts/11-build_forecast.py
+        # The two comparison versions first; the inverse-variance headline last, because
+        # scripts 13, 15 and 17 read the files written by the last run of 11.
+        run: |
+          python scripts/11-build_forecast.py --combine none
+          python scripts/11-build_forecast.py --combine shrink
+          python scripts/11-build_forecast.py
+
+      - name: Make figures, map, headline and crosstabs (13, 13b, 15, 15b, 16)
+        run: |
+          python scripts/13-make_figures.py
+          python scripts/13b-make_map.py
+          python scripts/15-make_summary_bar.py
+          python scripts/15b-make_headline.py
+          python scripts/16-make_crosstabs.py
 
       - name: Test the real data (12)
         run: python scripts/12-test_actual_data.py
 
-      - name: Make figures (13, 15)
-        run: |
-          python scripts/13-make_figures.py
-          python scripts/15-make_summary_bar.py
+      - name: Publish this run on the website (17)
+        if: steps.run_info.outputs.run_id != 'nonews'
+        run: python scripts/17-publish_latest.py
+
+      - name: Set up Quarto
+        if: steps.run_info.outputs.run_id != 'nonews'
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render the website into docs/
+        if: steps.run_info.outputs.run_id != 'nonews'
+        run: quarto render
 
       - name: Upload run files (also after a failure)
         if: ${{ always() && steps.run_info.outputs.run_id != '' }}
@@ -118,7 +149,7 @@ jobs:
             data/polling_data/
             data/02-analysis_data/run_${{ steps.run_info.outputs.run_id }}/
             data/03-results/run_${{ steps.run_info.outputs.run_id }}/
-            docs/figures/run_${{ steps.run_info.outputs.run_id }}/
+            figures/run_${{ steps.run_info.outputs.run_id }}/
           if-no-files-found: warn
 
       - name: Commit answers and scores (always, so paid answers are kept)
@@ -139,13 +170,18 @@ jobs:
           git pull --rebase
           git push
 
-      - name: Commit forecast and figures (only if every test passed)
+      - name: Commit forecast, figures and website (only if every test passed)
         if: ${{ success() && steps.run_info.outputs.run_id != '' }}
         run: |
-          for path in "data/03-results/run_${RUN}" "docs/figures/run_${RUN}" includes; do
-            if [ -e "$path" ]; then git add -- "$path"; fi
+          for path in "data/03-results/run_${RUN}" "figures/run_${RUN}" data/03-results/latest figures/latest docs; do
+            if [ -e "$path" ]; then git add -A -- "$path"; fi
           done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
           git commit -m "Forecast for run ${RUN}, tests passed (automatic)"
-          git pull --rebase
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash push --include-untracked -m "Other files for run ${RUN}"
+            trap 'git stash pop' EXIT
+          fi
+          # Generated files: if someone pushed meanwhile, keep this run's version on a conflict
+          git pull --rebase -X theirs
           git push

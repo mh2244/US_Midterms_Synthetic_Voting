@@ -172,4 +172,49 @@ assert draws.nunique() == 1, "States have different numbers of draws"
 races_per_draw = forecast[["model", "draw", "state"]].drop_duplicates().groupby(["model", "draw"]).size()
 assert (races_per_draw + dem_not_up + rep_not_up == 100).all(), "Seats do not add up to 100"
 print("Forecast: all tests passed")
+
+#### Test the combination with polls (script 11, --combine ivw) ####
+ivw_file = config.RUN_RESULTS / "ivw_weights.csv"
+chamber_file = config.RUN_RESULTS / "chamber_summary.csv"
+if chamber_file.exists() and "ivw" in set(pd.read_csv(chamber_file).get("combine", [])):
+    assert ivw_file.exists(), "The forecast used --combine ivw but ivw_weights.csv is missing"
+if ivw_file.exists():
+    ivw = pd.read_csv(ivw_file)
+    # 19. One row per state and model, with no missing inputs
+    assert not ivw.duplicated(["state", "model"]).any(), "A state and model appears twice in the weights"
+    assert len(ivw) == n_races * len(models), "A state and model pair has no weight"
+    assert ivw[["m_star", "t", "combined", "w_synthetic", "var_m", "var_t"]].notna().all().all(), \
+        "Missing value in the inverse-variance combination"
+    # 20. Weights between 0 and 1, variances positive, shares between 0 and 1
+    assert ivw["w_synthetic"].between(0, 1).all(), "Synthetic weight outside 0 to 1"
+    assert (ivw[["var_m", "var_t"]] > 0).all().all(), "A variance is not positive"
+    assert ivw["combined"].between(0, 1).all(), "Combined share outside 0 to 1"
+    # 21. The combined share lies between the two things it averages
+    lo = np.minimum(ivw["m_star"], ivw["t"]) - 1e-6
+    hi = np.maximum(ivw["m_star"], ivw["t"]) + 1e-6
+    assert ivw["combined"].between(lo, hi).all(), "Combined share is not between synthetic and outside estimate"
+    # 22. Polled states use the poll average and unpolled states use 2024 + swing, nothing else
+    assert set(ivw["source"]) <= {"poll", "2024 + swing"}, "Unknown outside estimate"
+    assert ivw.groupby("state")["source"].nunique().eq(1).all(), "Models disagree on whether a state is polled"
+    print("Combination with polls: all tests passed")
+else:
+    print("Combination with polls: skipped (no ivw_weights.csv; run script 11 without --combine)")
+
+#### Test crosstabs (script 16) ####
+cross_file = config.RUN_RESULTS / "crosstabs.csv"
+if cross_file.exists():
+    cross = pd.read_csv(cross_file)
+    each = cross[cross["model"] != "mean of models"]
+    mean = cross[cross["model"] == "mean of models"]
+    # 23. Shares between 0 and 1 and none missing
+    assert each[["share_2026", "lean_left"]].notna().all().all(), "Missing crosstab share"
+    assert each[["share_2026", "lean_left"]].stack().between(0, 1).all(), "Crosstab share outside 0 to 1"
+    # 24. Every model is in every cell, and each variable's groups add up to all personas
+    assert each.groupby(["variable", "category"])["model"].nunique().eq(len(models)).all(), \
+        "A model is missing from a crosstab cell"
+    sums = mean.groupby("variable")["n_personas"].sum()
+    assert sums.eq(len(personas)).all(), "Crosstab groups do not add up to the number of personas"
+    print("Crosstabs: all tests passed")
+else:
+    print("Crosstabs: skipped (run scripts/16-make_crosstabs.py)")
 print("\nAll tests passed.")

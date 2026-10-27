@@ -18,10 +18,16 @@ python scripts/04b-summarize_news.py
 python scripts/08-build_prompts.py --news
 python scripts/09-query_models.py --batch-size 40 --sleep 0
 python scripts/10-score_responses.py
-python scripts/11-build_forecast.py
-python scripts/12-test_actual_data.py
+python scripts/11-build_forecast.py --combine none
+python scripts/11-build_forecast.py --combine shrink
+python scripts/11-build_forecast.py              # inverse-variance headline, run last
 python scripts/13-make_figures.py
+python scripts/13b-make_map.py
 python scripts/15-make_summary_bar.py
+python scripts/15b-make_headline.py
+python scripts/16-make_crosstabs.py
+python scripts/12-test_actual_data.py
+python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```
 
 Planned news dates are October 27, 29 and 31, 2026. Without an override, RUN is
@@ -46,11 +52,15 @@ Design B requires 42,000 voting requests per run, plus screening/embedding.
 - **09:** save raw responses and reuse matching successes. Incomplete runs exit
   with code 1, including an unfinished `--limit` pilot. Keep prompts unchanged
   and rerun 09 to retry remaining work.
-- **10–15:** score, simulate, check and plot. Polls are a comparison unless script
-  11 is run with `--calibrate`. Tests check consistency, not prediction accuracy.
+- **10–16:** score, simulate, plot and test. Script 11 combines the synthetic share
+  with polls (or 2024 + uniform swing) by inverse-variance weights; `--combine
+  shrink` and `--combine none` are kept for comparison. 13b, 15b and 16 write the
+  map, headline and crosstabs. Tests check consistency, not prediction accuracy.
+- **17:** copies the latest news run to `figures/latest/` and
+  `data/03-results/latest/`, which `index.qmd` reads.
 
 Outputs are isolated under `data/02-analysis_data/run_<RUN>/`,
-`data/03-results/run_<RUN>/`, and `docs/figures/run_<RUN>/`. Shared candidates and
+`data/03-results/run_<RUN>/`, and `figures/run_<RUN>/` (not `docs/`, which Quarto rebuilds). Shared candidates and
 personas stay in `data/02-analysis_data/`; news stays in `data/news/`.
 
 ## Useful commands
@@ -70,6 +80,6 @@ certified as valid results.
 
 The workflow refreshes its own polling input, archives a copy as
 `data/03-results/run_<RUN>/polling_input.csv`, uploads artifacts, and attempts to
-commit news, polling inputs, answers and scores even after failure. Forecasts
-and figures are committed only when all preceding steps succeed. Publishing
-the website is a separate step.
+commit news, polling inputs, answers and scores even after failure. Forecasts,
+figures and the rendered website (`docs/`) are committed only when all
+preceding steps, including the tests, succeed.

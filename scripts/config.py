@@ -37,6 +37,11 @@ MODELS = {
     "deepseek": "deepseek/deepseek-v4.1-flash",   # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
     "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
 }
+# Party colours used by every figure: blue for Democrats, red for Republicans, grey for independents
+PARTY_COLOURS = {"Democratic": "#2166ac", "Republican": "#b2182b", "Independent": "#808080"}
+# Names shown on the website (tables and figures), in the same order
+MODEL_LABELS = {"haiku": "Claude Haiku 5.5", "luna": "GPT-6 Luna", "deepseek": "DeepSeek V4.1 Flash",
+                "gemini": "Gemini 3.5 Flash-Lite"}
 
 # Reasoning ("thinking") setting sent with every request (script 09). Hidden reasoning tokens are
 # billed as output, so it is switched off: the answers only need two or three sentences.
@@ -88,7 +93,11 @@ ANALYSIS = SHARED_ANALYSIS
 RESULTS = DATA / "03-results"
 RUN_DIR = ANALYSIS / f"run_{RUN}"
 RUN_RESULTS = RESULTS / f"run_{RUN}"
-FIGURES = Path("docs/figures") / f"run_{RUN}"
+# Figures live outside docs/: docs/ is Quarto's output folder and is rebuilt on every render.
+FIGURES = Path("figures") / f"run_{RUN}"
+# The website shows the latest news run from these fixed paths (filled by script 17).
+LATEST_RESULTS = RESULTS / "latest"
+LATEST_FIGURES = Path("figures") / "latest"
 CES_FILE = DATA / "ces2024_senate_demographics.csv"
 CANDIDATES_RAW = DATA / "senate_candidates_2026.csv"
 NEWS_FILE = DATA / "news" / "news_context.csv"

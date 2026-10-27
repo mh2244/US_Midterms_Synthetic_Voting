@@ -71,3 +71,16 @@ table { font-size: 0.9rem; }
 /* Composition tables placed side by side: slightly smaller text */
 .columns table { font-size: 0.8rem; }
 .columns table th, .columns table td { padding: 0.2rem 0.4rem; }
+/* Crosstabs (scripts/16-make_crosstabs.py): two tables side by side, one block per variable */
+.crosstab-pair { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
+.crosstab-col { flex: 1 1 0; min-width: 18rem; }
+.crosstab { width: 100%; border-collapse: collapse; font-size: 0.76rem;
+            font-variant-numeric: tabular-nums; margin: 0; }
+.crosstab th, .crosstab td { padding: 0.18rem 0.28rem; text-align: right; white-space: nowrap; }
+.crosstab th:first-child, .crosstab td:first-child { text-align: left; }
+.crosstab thead th { font-weight: 700; border-bottom: 2px solid #1a1a1a; vertical-align: bottom; }
+.crosstab tbody + tbody { border-top: 1px solid #1a1a1a; }
+.crosstab tr.ct-head th { background: #f2f2f2; font-weight: 700; text-transform: uppercase;
+                          letter-spacing: 0.05em; font-size: 0.72rem; padding-top: 0.35rem; }
+.crosstab tr.ct-all td { font-weight: 700; }
+.crosstab tbody td { border-bottom: 1px solid #e6e6e6; }
