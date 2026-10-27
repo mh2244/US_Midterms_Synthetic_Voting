@@ -7,8 +7,11 @@
 # License: MIT
 # Pre-requisites: Run scripts/10-score_responses.py first. Needs pyarrow for the parquet file.
 # Any other information needed? Run from the project root.
-#   python scripts/11-build_forecast.py                 <- model only (test-run default)
-#   python scripts/11-build_forecast.py --calibrate     <- also subtract the average gap to polls
+#   python scripts/11-build_forecast.py                   <- headline: inverse-variance combination
+#   python scripts/11-build_forecast.py --combine shrink  <- comparison: shrunk gap + uniform swing
+#   python scripts/11-build_forecast.py --combine none    <- comparison: synthetic voters only
+#   Each run also saves labelled copies (forecast_ivw / _calibrated / _uncalibrated), and scripts
+#   13 and 15 draw whichever ran last, so run the headline (ivw) last.
 #
 # HOW one number per state is built:
 #   1. Average each persona's probabilities over repeats (one row per persona and model).
@@ -19,21 +22,25 @@
 #   personas of a state with replacement N_DRAWS times and recompute the share each time.
 #   This captures persona-sampling error only. With 5 personas per state the spread is huge
 #   (a share near 50% has a standard error of about 22 points), so the test-run forecast is a
-#   check that the code works, NOT a forecast. With 100 personas it is about 5 points.
+#   check that the code works, NOT a forecast. With 100 personas it is about 3 to 4 points
+#   (26 October test run), because SSR probabilities are rarely exactly 0 or 1.
+# HOW polls enter (default --combine ivw): see the comment above the inverse-variance block.
+#   The bootstrap variance is one part of the synthetic variance; the rest is estimated from
+#   how far the bias-corrected synthetic shares fall from the polls.
 # A national error shared by all states is ON by default (config.NATIONAL_SD = 0.03, an
 #   assumption; Gelman et al. 2020; Shirani-Mehr et al. 2018). Rerun with --national-sd 0, 0.02
-#   and 0.04 for the sensitivity table.
-# NOT included yet (say so in the paper): spread between models and repeats, and error in the
-#   poll correction.
+#   and 0.04 for the sensitivity table, and --poll-sd 0.02 and 0.04 for the poll error.
+# NOT included (say so in the paper): spread between models and repeats, uncertainty in the
+#   estimated variances themselves, and correlation between synthetic and poll errors.
 # HOW seats are counted: Nebraska, Idaho and South Dakota have an independent instead of a
 #   Democrat, and Osborn (NE) has said he will not caucus with either party, so independent wins
 #   are counted as their own category, not as Democratic seats. The headline is the chance that
 #   Republicans keep control: with Vice President Vance breaking 50-50 ties, Republicans control
 #   the Senate with 50 or more seats, whichever side the independents join.
-# WHY polls are used only as a check or a correction: the model is biased toward one side
+# WHY polls are combined with, not replaced by, the model: the model is biased toward one side
 # (Pew 2026; Heath & Alexander 2026). Polls are not the truth either, because poll errors are
 # correlated across polls and offices (Shirani-Mehr et al. 2018).
-# LIMIT: the correction assumes the model errs by the same amount in every state.
+# LIMIT: unpolled states lean on 2024 + a uniform swing, which ignores candidate effects there.
 
 
 #### Workspace setup ####
@@ -47,11 +54,16 @@ import config
 ap = argparse.ArgumentParser()
 ap.add_argument("--design", default="B", choices=["B", "C"], help="which prompt design to forecast from")
 ap.add_argument("--draws", type=int, default=config.N_DRAWS)
-ap.add_argument("--calibrate", action="store_true", help="subtract the shrunk average model-minus-poll gap")
+ap.add_argument("--combine", default="ivw", choices=["ivw", "shrink", "none"],
+                help="ivw: inverse-variance weights with polls or 2024 + swing (headline); "
+                     "shrink: subtract the shrunk model-minus-poll gap; none: synthetic only")
+ap.add_argument("--poll-sd", type=float, default=0.03,
+                help="state poll error beyond sampling error, used by --combine ivw (assumption)")
 ap.add_argument("--national-sd", type=float, default=config.NATIONAL_SD,
                 help="SD of an error shared by all states (default in config.py; 0 = states independent)")
 ap.add_argument("--poll-window-days", type=int, default=45)
 args = ap.parse_args()
+args.ivw, args.calibrate = args.combine == "ivw", args.combine == "shrink"
 
 # Seats not up in 2026, checked 2026-10-25: the Senate is 53 R - 47 D (the 47 include King and
 # Sanders, independents who caucus with Democrats). 35 seats are up: 13 held by Democrats and 22
@@ -77,7 +89,7 @@ def poll_averages():
     Uses the last `poll_window_days` before the newest poll in the file; one poll counted once
     (likely-voter version preferred); weighted by sample size."""
     if not config.POLLS_FILE.exists():
-        return pd.DataFrame(columns=["state", "poll_share", "n_polls"])
+        return pd.DataFrame(columns=["state", "poll_share", "n_polls", "n_sample"])
     polls = pd.read_csv(config.POLLS_FILE, encoding="utf-8-sig")
     polls["end"] = pd.to_datetime(polls["end_date"])
     polls = polls[polls["end"] >= polls["end"].max() - pd.Timedelta(days=args.poll_window_days)]
@@ -101,8 +113,8 @@ def poll_averages():
         share = both["pct_l"] / (both["pct_l"] + both["pct_r"])
         weight = both["sample_size"].fillna(600)
         rows.append({"state": state, "poll_share": float(np.average(share, weights=weight)),
-                     "n_polls": len(both)})
-    return pd.DataFrame(rows)
+                     "n_polls": len(both), "n_sample": float(weight.sum())})
+    return pd.DataFrame(rows, columns=["state", "poll_share", "n_polls", "n_sample"])
 
 
 polls_df = poll_averages()
@@ -124,30 +136,110 @@ for model in sorted(per_persona["model"].unique()):
                       "model_share": float(left.mean() / (left.mean() + rep.mean())),
                       "raw_draws": share, "shift": shift})
 
-# Optional correction toward polls
+#### 2024 presidential baseline (CES, validated-vote weights) ####
+# Used for the comparison table and for the uniform swing of unpolled states.
+ces = pd.read_csv(config.CES_FILE, low_memory=False,
+                  usecols=["state", "vvweight_post", "pres_vote_2024"])
+ces = ces[ces["state"].isin(nominees.index) & ces["vvweight_post"].notna()
+          & ces["pres_vote_2024"].isin(["Harris", "Trump"])]
+w = ces.pivot_table(index="state", columns="pres_vote_2024", values="vvweight_post", aggfunc="sum")
+pres = (w["Harris"] / (w["Harris"] + w["Trump"])).rename("pres2024_dem_share").reset_index()
+
+# Correction toward polls (--combine shrink, kept for comparison)
+#   Polled states: gap = model - poll, shrunk toward the mean gap (fewer polls, more shrinkage).
+#   Unpolled states: uniform swing. The average polled state has moved `swing` points from its
+#   2024 presidential result, so the target is pres2024 + swing and gap = model - target.
+#   This keeps each state's own 2024 lean instead of applying one model-wide gap, which had
+#   pushed Kentucky (personas lean Democratic by party ID) to a likely Democratic win.
 gap_table = pd.DataFrame()
 if args.calibrate:
     pt = pd.DataFrame([{k: v for k, v in p.items() if k not in ("raw_draws", "shift")} for p in point])
-    pt = pt.merge(polls_df, on="state", how="left")
+    pt = pt.merge(polls_df, on="state", how="left").merge(pres, on="state", how="left")
     for model, grp in pt.groupby("model"):
         polled = grp.dropna(subset=["poll_share"])
         if len(polled) < 8:
-            print(f"--calibrate skipped for {model}: only {len(polled)} polled states (need 8)")
+            print(f"--combine shrink skipped for {model}: only {len(polled)} polled states (need 8)")
             continue
         gap = polled["model_share"] - polled["poll_share"]
         k = 3.0                                    # placeholder shrinkage strength; try 2 and 5
         lam = polled["n_polls"] / (polled["n_polls"] + k)
         shrunk = lam * gap + (1 - lam) * gap.mean()
         gaps = dict(zip(polled["state"], shrunk))
-        mean_gap = float(gap.mean())
+        swing = float((polled["poll_share"] - polled["pres2024_dem_share"]).mean())
+        unpolled = grp[grp["poll_share"].isna()]
+        swing_gap = unpolled["model_share"] - (unpolled["pres2024_dem_share"] + swing)
+        assert swing_gap.notna().all(), "An unpolled state has no 2024 presidential share"
+        gaps.update(dict(zip(unpolled["state"], swing_gap)))
         for p in point:
             if p["model"] == model:
-                p["gap"] = gaps.get(p["state"], mean_gap)
-        gap_table = pd.concat([gap_table, pd.DataFrame({"model": model, "state": polled["state"], "gap": shrunk})])
+                p["gap"] = gaps[p["state"]]
+        gap_table = pd.concat([gap_table,
+                               pd.DataFrame({"model": model, "state": polled["state"], "gap": shrunk,
+                                             "method": "poll_shrunk", "swing": swing}),
+                               pd.DataFrame({"model": model, "state": unpolled["state"], "gap": swing_gap,
+                                             "method": "uniform_swing", "swing": swing})])
+        print(f"{model}: mean gap to polls {gap.mean():+.3f}; uniform swing from 2024 {swing:+.3f}")
+
+# Inverse-variance combination (--combine ivw, the default and the headline)
+#   Two noisy readings of each state's Democratic-side share are averaged, each weighted by
+#   1 / its variance (the less noisy one counts more):
+#     synthetic  m* = model share - mean gap to polls (the mean gap is the bias, removed first)
+#                var_m = persona bootstrap variance + structural variance of the model
+#     outside    t = poll average in polled states, 2024 presidential share + uniform swing in
+#                unpolled states; var_t = poll variance, or the error of uniform swing
+#     combined = w * t + (1 - w) * m*,  w = var_m / (var_m + var_t),  var = 1 / (1/var_m + 1/var_t)
+#   The structural variance and the error of uniform swing are estimated from the polled states:
+#     var(m* - poll)            = structural + bootstrap + poll   -> solve for structural
+#     var(poll - (2024 + swing)) = swing error + poll              -> solve for swing error
+#   Poll variance = sampling variance s(1-s)/n + args.poll_sd^2 (assumed error beyond sampling).
+#   ASSUMES the errors are independent of each other; draws are normal around the combination.
+weight_table = pd.DataFrame()
+if args.ivw:
+    pt = pd.DataFrame([{"model": p["model"], "state": p["state"], "model_share": p["model_share"],
+                        "var_boot": float(np.var(p["raw_draws"]))} for p in point])
+    pt = pt.merge(polls_df, on="state", how="left").merge(pres, on="state", how="left")
+    pt["var_poll"] = (pt["poll_share"] * (1 - pt["poll_share"]) / pt["n_sample"]) + args.poll_sd ** 2
+    floor = 0.005 ** 2                                   # keeps a variance from being estimated as 0
+    for model, grp in pt.groupby("model"):
+        polled = grp.dropna(subset=["poll_share"])
+        if len(polled) < 8:
+            print(f"--combine ivw skipped for {model}: only {len(polled)} polled states (need 8)")
+            continue
+        grp = grp.copy()
+        mean_gap = float((polled["model_share"] - polled["poll_share"]).mean())
+        swing = float((polled["poll_share"] - polled["pres2024_dem_share"]).mean())
+        grp["m_star"] = grp["model_share"] - mean_gap
+        resid_m = polled["model_share"] - mean_gap - polled["poll_share"]
+        var_struct = max(floor, resid_m.var() - polled["var_boot"].mean() - polled["var_poll"].mean())
+        resid_b = polled["poll_share"] - (polled["pres2024_dem_share"] + swing)
+        var_swing = max(floor, resid_b.var() - polled["var_poll"].mean())
+        grp["var_m"] = grp["var_boot"] + var_struct
+        is_polled = grp["poll_share"].notna()
+        grp["source"] = np.where(is_polled, "poll", "2024 + swing")
+        grp["t"] = np.where(is_polled, grp["poll_share"], grp["pres2024_dem_share"] + swing)
+        grp["var_t"] = np.where(is_polled, grp["var_poll"], var_swing)
+        assert grp[["t", "var_t", "var_m"]].notna().all().all(), "Missing input to --ivw"
+        w = grp["var_m"] / (grp["var_m"] + grp["var_t"])
+        grp["w_synthetic"] = 1 - w
+        grp["combined"] = w * grp["t"] + (1 - w) * grp["m_star"]
+        grp["sd_combined"] = np.sqrt(1 / (1 / grp["var_m"] + 1 / grp["var_t"]))
+        grp["mean_gap"], grp["swing"] = mean_gap, swing
+        grp["sd_struct"], grp["sd_swing"] = np.sqrt(var_struct), np.sqrt(var_swing)
+        lookup = grp.set_index("state")
+        for p in point:
+            if p["model"] == model:
+                r = lookup.loc[p["state"]]
+                p["base_draws"] = r["combined"] + r["sd_combined"] * rng.standard_normal(D)
+        weight_table = pd.concat([weight_table, grp])
+        print(f"{model}: bias (mean gap) {mean_gap:+.3f}; structural sd {np.sqrt(var_struct):.3f}; "
+              f"swing {swing:+.3f}, swing error sd {np.sqrt(var_swing):.3f}; "
+              f"synthetic weight polled {grp.loc[is_polled, 'w_synthetic'].mean():.2f}, "
+              f"unpolled {grp.loc[~is_polled, 'w_synthetic'].mean():.2f}")
 
 out = []
 for p in point:
-    share = np.clip(p["raw_draws"] - p.get("gap", 0.0) + p["shift"], 0, 1)
+    base = p.get("base_draws", p["raw_draws"] - p.get("gap", 0.0))
+    share = np.clip(base + p["shift"], 0, 1)
     race = nominees.loc[p["state"]]
     # An exact 50/50 tie (possible with very few personas) is decided by a coin flip
     win_left = np.where(share == 0.5, rng.random(len(share)) < 0.5, share > 0.5)
@@ -161,12 +253,6 @@ forecast = pd.concat(out, ignore_index=True)
 forecast = forecast[["draw", "state", "model", "party", "share", "winner"]]
 
 #### Comparison table ####
-ces = pd.read_csv(config.CES_FILE, low_memory=False,
-                  usecols=["state", "vvweight_post", "pres_vote_2024"])
-ces = ces[ces["state"].isin(nominees.index) & ces["vvweight_post"].notna()
-          & ces["pres_vote_2024"].isin(["Harris", "Trump"])]
-w = ces.pivot_table(index="state", columns="pres_vote_2024", values="vvweight_post", aggfunc="sum")
-pres = (w["Harris"] / (w["Harris"] + w["Trump"])).rename("pres2024_dem_share").reset_index()
 
 means = forecast[forecast["party"] != "Republican"].groupby(["state", "model"])["share"].mean().rename("forecast_mean")
 comparison = (means.reset_index().pivot(index="state", columns="model", values="forecast_mean").add_prefix("model_")
@@ -187,6 +273,7 @@ chamber = seats.groupby("model").agg(
 chamber["p_rep_control"] = (seats["rep"] >= 50).groupby("model").mean()        # VP breaks 50-50 ties
 chamber["p_dem_51_without_ind"] = (seats["dem"] >= 51).groupby("model").mean()  # no independent needed
 chamber["national_sd"] = args.national_sd
+chamber["combine"] = args.combine
 control = chamber["p_rep_control"]
 
 #### Checks and save ####
@@ -198,8 +285,18 @@ config.write_table(forecast, config.FORECAST_FILE)
 comparison.round(3).to_csv(config.RUN_RESULTS / "state_comparison.csv", index=False)
 polls_df.to_csv(config.RUN_RESULTS / "poll_averages.csv", index=False)
 chamber.round(3).to_csv(config.RUN_RESULTS / "chamber_summary.csv")
+# The files above are what scripts 13 and 15 read (the latest version run). Keep a labelled
+# copy as well, so the uncalibrated and calibrated forecasts can be compared side by side.
+tag = "ivw" if args.ivw else "calibrated" if args.calibrate else "uncalibrated"
+config.write_table(forecast, config.RUN_RESULTS / f"forecast_{tag}.parquet")
+comparison.round(3).to_csv(config.RUN_RESULTS / f"state_comparison_{tag}.csv", index=False)
+chamber.round(3).to_csv(config.RUN_RESULTS / f"chamber_summary_{tag}.csv")
 if len(gap_table):
     gap_table.to_csv(config.RUN_RESULTS / "calibration_gaps.csv", index=False)
+if len(weight_table):
+    keep = ["model", "state", "source", "model_share", "mean_gap", "m_star", "t", "combined",
+            "w_synthetic", "sd_combined", "var_boot", "var_m", "var_t", "sd_struct", "swing", "sd_swing"]
+    weight_table[keep].round(4).to_csv(config.RUN_RESULTS / "ivw_weights.csv", index=False)
 
 print(f"\nSaved {len(forecast):,} rows to {config.FORECAST_FILE}")
 print(f"Saved the comparison table to {config.RUN_RESULTS / 'state_comparison.csv'}")
