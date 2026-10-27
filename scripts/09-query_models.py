@@ -134,6 +134,8 @@ def call_openrouter(key, model_id, prompt_text):
             error = "empty_content"
         elif finish == "length":
             error = "truncated (finish_reason=length)"     # cut off by max_tokens; not scored
+        elif finish == "error":
+            error = "provider error (finish_reason=error)"  # stream broke mid-answer; not scored
         else:
             error = ""
         out.update(response_text=text, model_returned=data.get("model", ""),

@@ -88,7 +88,7 @@ def load_summaries(personas):
 
 
 def news_block(summary):
-    return "Here are some of today's news:\n\n" + summary
+    return "Here are some of today's news stories:\n\n" + summary
 
 
 def candidate_text(race, left_first):
