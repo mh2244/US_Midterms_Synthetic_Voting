@@ -125,12 +125,21 @@ jobs:
       - name: Query models (09)
         # 09 skips prompts that already have an answer, so a retry only sends what is missing
         # (rate limits, provider errors). It exits with an error if calls are still unanswered.
+        # A handful of prompts can keep coming back empty from one model (seen on 27 October: 3 of
+        # 42,000 DeepSeek calls). After three attempts, carry on if at most 0.5% of calls are still
+        # missing; 10 and 11 leave those out, and 12 checks the failure rate per model.
         run: |
           for attempt in 1 2 3; do
-            if python scripts/09-query_models.py --batch-size 40 --sleep 0; then exit 0; fi
+            if python scripts/09-query_models.py --batch-size 40 --sleep 0 2>&1 | tee "$RUNNER_TEMP/09.log"; then exit 0; fi
             echo "Attempt $attempt left calls unanswered; trying again in 60 seconds"
             sleep 60
           done
+          left=$(grep -o "INCOMPLETE: [0-9]* calls" "$RUNNER_TEMP/09.log" | tail -1 | grep -o "[0-9]*" || true)
+          total=$(grep -o "[0-9]* prompts x [0-9]* models x [0-9]* repeats" "$RUNNER_TEMP/09.log" | head -1 | awk '{print $1 * $4 * $7}')
+          if [ -n "$left" ] && [ -n "$total" ] && [ "$left" -le $(( total / 200 )) ]; then
+            echo "$left calls are still unanswered after three attempts; they are left out"
+            exit 0
+          fi
           exit 1
 
       - name: Score answers with SSR (10)
