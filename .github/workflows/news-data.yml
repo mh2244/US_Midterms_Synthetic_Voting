@@ -14,8 +14,13 @@
 name: Forecast run
 
 on:
+  # GitHub can delay or skip a scheduled run (27 October: about four hours late). Two later
+  # times are backups: the "check" job skips a run when that day's forecast is already on main,
+  # and a backup after a failed run picks up where it stopped (news and answers are reused).
   schedule:
     - cron: "13 18 27,29,31 10 *"  # 2:13 pm Toronto on these October dates
+    - cron: "43 19 29,31 10 *"     # 3:43 pm backup
+    - cron: "43 21 29,31 10 *"     # 5:43 pm backup
   workflow_dispatch:
     inputs:
       run:
@@ -34,7 +39,32 @@ env:
   SUMMARY_SCRIPT: scripts/04b-summarize_news.py
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.done.outputs.go }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: data/03-results
+
+      - name: Skip a scheduled run when today's forecast is already done
+        id: done
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          RUN=$(TZ=America/Toronto date +%F)
+          if [ "$EVENT" = "schedule" ] && [ -f "data/03-results/run_${RUN}/chamber_summary.csv" ]; then
+            echo "The forecast for ${RUN} is already on main; nothing to do."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
   forecast:
+    needs: check
+    if: needs.check.outputs.go == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
@@ -68,6 +98,35 @@ jobs:
           echo "RUN=$RUN" >> "$GITHUB_ENV"
           echo "run_id=$RUN" >> "$GITHUB_OUTPUT"
           echo "Run id: $RUN"
+
+      - name: Check OpenRouter credit before spending anything
+        # 27 October stopped halfway when a $10 workspace budget ran out. A full run costs about
+        # $10, so stop here, before any paid call, if the key or account has less than $12 left.
+        # The workspace budget itself is not visible through the API; keep it above $12 too.
+        run: |
+          python - <<'EOF'
+          import os, sys
+          import requests
+          h = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
+          need = 12.0
+          try:
+              key = requests.get("https://openrouter.ai/api/v1/key", headers=h, timeout=30).json()["data"]
+              left = key.get("limit_remaining")
+              print(f"Key limit remaining: {left if left is not None else 'no limit'}")
+              if left is not None and left < need:
+                  sys.exit(f"Only ${left:.2f} left on the key's limit; raise it before running")
+              r = requests.get("https://openrouter.ai/api/v1/credits", headers=h, timeout=30)
+              if r.ok:
+                  d = r.json()["data"]
+                  remaining = d["total_credits"] - d["total_usage"]
+                  print(f"Account credit remaining: ${remaining:.2f}")
+                  if remaining < need:
+                      sys.exit(f"Only ${remaining:.2f} of credit left; add credit before running")
+              else:
+                  print(f"Could not read the account credit (HTTP {r.status_code}); continuing")
+          except (requests.RequestException, KeyError, ValueError) as exc:
+              print(f"Could not check the credit ({type(exc).__name__}); continuing")
+          EOF
 
       - name: Refresh polling data for this forecast
         run: |
