@@ -80,6 +80,14 @@ jobs:
       - name: Collect news and assemble persona news
         if: steps.run_info.outputs.run_id != 'nonews'
         run: |
+          # A rerun on the same day reuses that day's news, so the prompts stay the same and 09
+          # only sends the calls that are still missing (the answers are committed after a failure).
+          if [ -f "data/news/persona_news_summaries_${RUN}.csv" ] && [ -f "data/news/news_context_${RUN}.csv" ]; then
+            echo "Reusing the news already collected for ${RUN}"
+            cp "data/news/news_context_${RUN}.csv" data/news/news_context.csv
+            cp "data/news/persona_news_summaries_${RUN}.csv" data/news/persona_news_summaries.csv
+            exit 0
+          fi
           # 04 exits 1 if even one article could not be screened (the model kept returning an
           # invalid decision for it). Those articles are simply left out, so carry on when the
           # news was collected in this run and at most 10% of articles failed; 04b then checks
