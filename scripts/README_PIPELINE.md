@@ -28,7 +28,9 @@ Add `.env` to `.gitignore`. The key you pasted in chat is exposed: revoke it at 
 | `11-build_forecast.py` | state shares, 1,000 draws, inverse-variance combination with polls (`--combine ivw/shrink/none`) | `forecast.parquet`, `state_comparison.csv`, `ivw_weights.csv` |
 | `12-test_actual_data.py` | tests on real files | prints "All tests passed" |
 | `13-make_figures.py` | quantile dotplot | `figures/run_<RUN>/forecast_dotplot.png` |
+| `13b-make_map.py` | interactive Senate map drawn as SVG from `data/01-raw_data/us-states.json` (from `02b-download_map.py`); hover for candidates, share, chance of winning | `senate_map.md` (included in index.qmd) |
 | `14-sample_composition.py` | persona sample against the weighted CES pool | `composition/composition_overall.md` (included in index.qmd) |
+| `15b-make_headline.py` | headline and seat bar from the pooled draws (Democrats need 51 without independents) | `headline.md`, `figures/run_<RUN>/seat_bar.png` |
 | `16-make_crosstabs.py` | synthetic vote by group against the 2024 vote of the same personas | `crosstabs.csv`, `crosstabs.md` (included in index.qmd) |
 | `17-publish_latest.py` | copies the latest news run (figures, crosstabs, headline numbers) to fixed paths | `figures/latest/`, `data/03-results/latest/` (used by index.qmd) |
 

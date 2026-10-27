@@ -1,6 +1,8 @@
 #### Preamble ####
-# Purpose: Makes the forecast figure for the website: one quantile dotplot per model, with one
-#          row per state. Each dot is 5% of the simulated outcomes (20 dots per state).
+# Purpose: Makes the forecast figure for the website: one quantile dotplot with one row per
+#          state, pooling the four models (each model's 1,000 draws count equally). Each dot is
+#          5% of the simulated outcomes (20 dots per state). The per-model numbers are in the
+#          win-probability table from script 15.
 # Author: (group)
 # Date: 22 October 2026
 # License: MIT
@@ -12,7 +14,7 @@
 # each outcome without a decimal that suggests false precision (Gelman et al. 2020).
 # Assignment rules: blue for Democrats, red for Republicans, no boxplots.
 # LIMIT: a win is coloured by the party that holds the dot's side of 50%. Where the left
-# candidate is an independent (Nebraska, Idaho, South Dakota), the dots are blue-grey instead
+# candidate is an independent (Nebraska, Idaho, South Dakota), the dots are grey instead
 # of blue and the state label says so.
 
 
@@ -27,7 +29,7 @@ import pandas as pd
 
 import config
 
-BLUE, RED, GREY_BLUE = "#2166ac", "#b2182b", "#5b7f95"
+BLUE, RED, GREY = (config.PARTY_COLOURS[k] for k in ("Democratic", "Republican", "Independent"))
 N_DOTS = 20
 OUT = config.FIGURES
 OUT.mkdir(parents=True, exist_ok=True)
@@ -38,35 +40,40 @@ nominees = pd.read_csv(config.NOMINEES_FILE).set_index("state")
 left = forecast[forecast["party"] != "Republican"]          # the left candidate's share
 models = sorted(left["model"].unique())
 
-# Order states from most Republican to most Democratic (average over models)
-order = left.groupby("state")["share"].mean().sort_values().index.tolist()
-
-fig, axes = plt.subplots(1, len(models), figsize=(5.2 * len(models), 0.34 * len(order) + 1.6),
-                         sharey=True, squeeze=False)
+# WHY pooled: with the inverse-variance combination the models agree closely, and four panels
+# side by side were too small to read on the page. Pooling gives one readable panel.
+order = left.groupby("state")["share"].mean().sort_values().index.tolist()   # most Republican first
 q = (np.arange(N_DOTS) + 0.5) / N_DOTS
+win = (left.assign(left_win=left["winner"] != "Republican")
+       .groupby(["state", "model"])["left_win"].mean().groupby("state").mean())  # models count equally
 
-for ax, model in zip(axes[0], models):
-    for row, state in enumerate(order):
-        draws = left[(left["model"] == model) & (left["state"] == state)]["share"].to_numpy()
-        if len(draws) == 0:
-            continue
-        dots = np.quantile(draws, q)
-        left_color = BLUE if nominees.loc[state, "left_party"] == "Democratic" else GREY_BLUE
-        colors = [left_color if d > 0.5 else RED for d in dots]
-        ax.scatter(dots * 100, np.full(N_DOTS, row), c=colors, s=22, linewidths=0)
-    ax.axvline(50, color="#444444", lw=1)
-    ax.set_xlim(0, 100)
-    ax.set_title(model.replace("_", " "), fontsize=11, loc="left")
-    ax.set_xlabel("Left candidate's share of the two-party vote (%)")
-    ax.spines[["top", "right"]].set_visible(False)
-
-labels = [s + ("*" if nominees.loc[s, "left_party"] == "Independent" else "") for s in order]
-axes[0][0].set_yticks(range(len(order)))
-axes[0][0].set_yticklabels(labels, fontsize=8)
-fig.suptitle("Simulated Senate outcomes by state (each dot = 5% of draws; synthetic respondents)",
-             x=0.01, ha="left", fontsize=11)
-fig.text(0.01, 0.005, "* independent candidate on the left side. Blue = Democratic, red = Republican. "
-         f"Run {config.RUN}; {config.N_PER_STATE} personas per state.", fontsize=8, ha="left")
-fig.tight_layout(rect=(0, 0.02, 1, 0.96))
+# Inter is the page's label font; matplotlib uses the first of these it finds, silently
+plt.rcParams.update({"font.family": "sans-serif",
+                     "font.sans-serif": ["Inter", "Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]})
+fig, ax = plt.subplots(figsize=(8, 0.28 * len(order) + 1.4))
+for row, state in enumerate(order):
+    draws = left[left["state"] == state]["share"].to_numpy()
+    dots = np.quantile(draws, q)
+    left_color = BLUE if nominees.loc[state, "left_party"] == "Democratic" else GREY
+    ax.scatter(dots * 100, np.full(N_DOTS, row), c=[left_color if d > 0.5 else RED for d in dots],
+               s=26, linewidths=0, zorder=3)
+    pct = win[state] * 100
+    text = "<1%" if pct < 0.5 else ">99%" if pct > 99.5 else f"{pct:.0f}%"
+    ax.text(101, row, text, va="center", ha="left", fontsize=9, color="#1a1a1a")
+ax.axvline(50, color="#444444", lw=1, zorder=2)
+ax.grid(axis="x", color="#e4e4e4", lw=0.8, zorder=0)
+ax.set_xlim(0, 100)
+ax.set_ylim(-0.7, len(order) - 0.3)
+ax.set_yticks(range(len(order)),
+              [config.STATE_NAME.get(st, st) + ("*" if nominees.loc[st, "left_party"] == "Independent" else "")
+               for st in order], fontsize=9)
+ax.tick_params(axis="y", length=0)
+ax.text(101, len(order) - 0.2, "Chance of a Democratic\nor independent win", va="bottom", ha="left", fontsize=8,
+        color="#555555")
+ax.set_xlabel("Democratic or independent candidate's share of the two-party vote (%)", fontsize=9)
+ax.spines[["top", "right", "left"]].set_visible(False)
+fig.text(0.01, 0.005, "* independent candidate. Blue = Democratic, grey = independent, red = Republican. "
+         f"Run {config.RUN}; four models pooled.", fontsize=8, ha="left", color="#555555")
+fig.tight_layout(rect=(0, 0.02, 0.93, 1))
 fig.savefig(OUT / "forecast_dotplot.png", dpi=200)
 print(f"Saved {OUT / 'forecast_dotplot.png'}")

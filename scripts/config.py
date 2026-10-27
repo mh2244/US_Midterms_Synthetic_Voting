@@ -37,6 +37,11 @@ MODELS = {
     "deepseek": "deepseek/deepseek-v4.1-flash",   # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
     "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
 }
+# Party colours used by every figure: blue for Democrats, red for Republicans, grey for independents
+PARTY_COLOURS = {"Democratic": "#2166ac", "Republican": "#b2182b", "Independent": "#808080"}
+# Names shown on the website (tables and figures), in the same order
+MODEL_LABELS = {"haiku": "Claude Haiku 5.5", "luna": "GPT-6 Luna", "deepseek": "DeepSeek V4.1 Flash",
+                "gemini": "Gemini 3.5 Flash-Lite"}
 
 # Reasoning ("thinking") setting sent with every request (script 09). Hidden reasoning tokens are
 # billed as output, so it is switched off: the answers only need two or three sentences.

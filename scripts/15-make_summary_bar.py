@@ -7,8 +7,9 @@
 # License: MIT
 # Pre-requisites: Run 11-build_forecast.py; install pandas numpy matplotlib pyarrow.
 # Run from the project root: python scripts/15-make_summary_bar.py
-# Outputs: data/03-results/win_probabilities.csv and
-#          figures/run_<RUN>/forecast_win_probability_bar.png
+# Outputs: data/03-results/run_<RUN>/win_probabilities.csv, win_probabilities.md (the table on
+#          the website: one row per race, all models and each model) and
+#          figures/run_<RUN>/forecast_win_probability_bar.png (kept for reference, not on the page)
 # Each draw counts once, using its saved winner (including tie-break results).
 # These are simulated win frequencies, not vote shares or calibrated election odds.
 
@@ -23,7 +24,7 @@ import pandas as pd
 
 import config
 
-BLUE, RED, INDEPENDENT = "#2166ac", "#b2182b", "#5b7f95"
+BLUE, RED, INDEPENDENT = (config.PARTY_COLOURS[k] for k in ("Democratic", "Republican", "Independent"))
 
 
 def summarize(forecast, nominees):
@@ -57,6 +58,32 @@ def summarize(forecast, nominees):
     ).reset_index()
     summary["p_rep_win"] = 1 - summary["p_left_win"]
     return summary.merge(nominees[["state", "left_party"]], on="state", validate="many_to_one")
+
+
+def pct_text(p):
+    """Win chance as a whole per cent; simulated 0 and 100 are shown as <1 and >99."""
+    v = p * 100
+    return "<1" if v < 0.5 else ">99" if v > 99.5 else f"{v:.0f}"
+
+
+def table_md(summary, nominees):
+    """Markdown table: chance the Democratic or independent candidate wins, by race and model."""
+    wide = summary.pivot(index="state", columns="model", values="p_left_win")
+    models = [m for m in config.MODEL_LABELS if m in wide.columns] + \
+             sorted(set(wide.columns) - set(config.MODEL_LABELS))
+    wide["all"] = wide[models].mean(axis=1)            # each model counts equally
+    wide = wide.sort_values("all", ascending=False)
+    races = nominees.set_index("state")
+    head = ["State", "Candidates (left v. Republican)", "All models"] + \
+           [config.MODEL_LABELS.get(m, m) for m in models]
+    lines = ["| " + " | ".join(head) + " |", "|---|---|" + "---:|" * (len(head) - 2)]
+    for state, row in wide.iterrows():
+        r = races.loc[state]
+        left = r["left_name"] + (" (I)" if r["left_party"] == "Independent" else "")
+        cells = [config.STATE_NAME.get(state, state), f"{left} v. {r['rep_name']}",
+                 f"**{pct_text(row['all'])}**"] + [pct_text(row[m]) for m in models]
+        lines.append("| " + " | ".join(cells) + " |")
+    return "\n".join(lines) + "\n"
 
 
 def main():
@@ -101,6 +128,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
     summary.to_csv(config.RUN_RESULTS / "win_probabilities.csv", index=False)
+    (config.RUN_RESULTS / "win_probabilities.md").write_text(table_md(summary, nominees))
     fig.savefig(out / "forecast_win_probability_bar.png", dpi=200)
     plt.close(fig)
     print(f"Saved {config.RUN_RESULTS / 'win_probabilities.csv'}")

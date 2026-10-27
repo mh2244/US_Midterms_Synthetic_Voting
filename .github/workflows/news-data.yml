@@ -1,7 +1,7 @@
 # Purpose: Full forecast run on the three news days (Oct 27, 29, 31):
 #          collect news -> concatenate nine summaries/persona -> prompts (08) -> model queries (09) -> SSR (10)
 #          -> forecast (11: synthetic only, shrinkage, then inverse-variance headline last)
-#          -> figures (13, 15) -> crosstabs (16) -> tests (12) -> publish latest (17)
+#          -> figures, map and headline (13, 13b, 15, 15b) -> crosstabs (16) -> tests (12) -> publish latest (17)
 #          -> render the website (Quarto, into docs/) -> commit.
 # Commit rule: model answers are always committed (so a rerun only asks for what is missing);
 # the forecast, figures and website are committed only if every step, including the tests, passed.
@@ -116,10 +116,12 @@ jobs:
           python scripts/11-build_forecast.py --combine shrink
           python scripts/11-build_forecast.py
 
-      - name: Make figures and crosstabs (13, 15, 16)
+      - name: Make figures, map, headline and crosstabs (13, 13b, 15, 15b, 16)
         run: |
           python scripts/13-make_figures.py
+          python scripts/13b-make_map.py
           python scripts/15-make_summary_bar.py
+          python scripts/15b-make_headline.py
           python scripts/16-make_crosstabs.py
 
       - name: Test the real data (12)

@@ -8,26 +8,17 @@ bibliography: references.bib
 link-citations: true
 ---
 
-## [PARTY] is projected to win with [AMOUNT].
-
-![https://www.politico.com/2024-election/results/senate/](New folder/sample-politico.png)
+<!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py, published by 17. -->
+{{< include data/03-results/latest/headline.md >}}
 
 ## Senate Results
 
-<!-- The two images below are design references only. Delete them (and the folder sample-figures-delete-later) before submission. -->
+{{< include data/03-results/latest/senate_map.md >}}
 
-![From Reuters (https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/)](New folder/sample-reuters.png)
-
-![From NPR (https://apps.npr.org/2024-election-results/senate.html)](New folder/sample-npr-senate-chart.png)
-
-[TO DO: Include a map of the US with the eligible states highlighted by projected result. The map could also show whether the forecasted result is a flip (the Reuters figure above is an exemplar). Include a summary of the battleground states listed by Ballotpedia [@ballotpedia2026], which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]
+[TO DO: Show whether the forecasted result is a flip. Include a summary of the battleground states listed by Ballotpedia [@ballotpedia2026], which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]
 
 <!-- Filled automatically: scripts/17-publish_latest.py copies the latest news run to these paths. -->
-{{< include data/03-results/latest/run_info.md >}}
-
-![Simulated outcomes by state and model. Each dot is 5 per cent of the 1,000 simulated outcomes.](figures/latest/forecast_dotplot.png){fig-alt="Quantile dot plot of the Democratic or independent candidate's share in each of the 35 Senate races, one panel per model."}
-
-![Share of simulated outcomes won by each side, by state and model.](figures/latest/forecast_win_probability_bar.png){fig-alt="Horizontal bars showing, for each state and model, the share of simulated outcomes won by the Democratic or independent candidate and by the Republican."}
+![Simulated vote share by state, with the four models pooled. Each dot is 5 per cent of the simulated outcomes; the number on the right is the share of outcomes the Democratic or independent candidate wins.](figures/latest/forecast_dotplot.png){fig-alt="Quantile dot plot of the Democratic or independent candidate's share of the two-party vote in each of the 35 Senate races, with the chance of winning beside each state."}
 
 ## Crosstabs
 
@@ -52,6 +43,12 @@ Each row pools the personas of all 35 states, weighted by each state's share of 
 ## Models Used
 
 For the full queries, we used [MODEL 1], [MODEL 2], [MODEL 3], and [MODEL 4]. [include test models?] For the test run, we used Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia's Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free).
+
+### Results by model
+
+Chance that the Democratic or independent candidate wins (%), by model. "All models" is the average of the four, each counting equally; (I) marks an independent.
+
+{{< include data/03-results/latest/win_probabilities.md >}}
 
 ## AI Prompts
 
