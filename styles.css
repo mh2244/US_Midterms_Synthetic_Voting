@@ -33,7 +33,7 @@ h1.title { font-family: var(--serif); font-size: 3rem; line-height: 1.1;
 .sectionnav p { margin: 0; }
 .sectionnav a { color: #111; text-decoration: none; margin: 0 0.85rem; white-space: nowrap; }
 .sectionnav a:hover { text-decoration: underline; }
-h2 { scroll-margin-top: 4.5rem; }
+h2, h3 { scroll-margin-top: 4.5rem; }
 
 /* Section headings */
 h2 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700;

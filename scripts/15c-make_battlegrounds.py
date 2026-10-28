@@ -17,7 +17,8 @@
 # Battlegrounds: the 12 races Ballotpedia lists as battlegrounds (Ballotpedia 2026).
 # Categories use the same cut-offs as the map (script 13b): the favoured side's chance of winning
 # is 85% or more = likely, 65% to 85% = leans, 55% to 65% = tilts; under 55% for both = toss-up.
-# A seat is "forecast to change hands" when the favoured side is not the party holding it now.
+# A seat is "forecast to change hands" (Flip = Yes) when the favoured side is not the party holding it now;
+# a toss-up has no favoured side, so its Flip is shown as a dash.
 
 #### Workspace setup ####
 from pathlib import Path
@@ -106,13 +107,13 @@ config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 #### Battleground table ####
 bg = states.loc[BATTLEGROUNDS].sort_values("p_left", ascending=False)
 bg.round(4).to_csv(config.RUN_RESULTS / "battlegrounds.csv")
-md = ["| State | Seat now | Candidates (left v. Republican) | Left share, median (90% interval) | "
-      "Chance left side wins | Forecast |", "|---|---|---|---:|---:|---|"]
+md = ["| State | Seat now | Democratic or independent share, median (90% interval) | "
+      "Chance Democratic or independent wins | Forecast | Flip |", "|---|:---:|---:|---:|---|:---:|"]
 for st, r in bg.iterrows():
-    left_label = r["left_name"] + (" (I)" if r["left_party"] == "Independent" else "")
-    forecast_text = r["rating"] + (f", **{r['change'].replace('Flip', 'flips')}**" if r["change"] else "")
-    md.append(f"| {r['name']} | {SHORT[r['holder']]} | {left_label} v. {r['rep_name']} | "
-              f"{r['share_mid']:.0f}% ({r['share_lo']:.0f} to {r['share_hi']:.0f}) | {pct(r['p_left'])} | {forecast_text} |")
+    name = r["name"] + (" (I)" if r["left_party"] == "Independent" else "")
+    flip = "–" if r["rating"] == "Toss-up" else ("Yes" if r["change"] else "No")
+    md.append(f"| {name} | {SHORT[r['holder']]} | {r['share_mid']:.0f}% ({r['share_lo']:.0f} to {r['share_hi']:.0f}) | "
+              f"{pct(r['p_left'])} | {r['rating']} | {flip} |")
 (config.RUN_RESULTS / "battlegrounds.md").write_text("\n".join(md) + "\n")
 
 #### Seat distribution ####
