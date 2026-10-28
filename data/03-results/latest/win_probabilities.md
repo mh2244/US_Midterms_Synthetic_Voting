@@ -1,8 +1,8 @@
 | State | Candidates (left v. Republican) | All models | Claude Haiku 5.5 | GPT-6 Luna | DeepSeek V4.1 Flash | Gemini 3.5 Flash-Lite |
 |---|---|---:|---:|---:|---:|---:|
-| Rhode Island | Jack Reed v. Raymond McKay | **>99** | >99 | >99 | >99 | >99 |
 | Massachusetts | Ed Markey v. John Deaton | **>99** | >99 | >99 | >99 | >99 |
 | Delaware | Chris Coons v. Michael Katz | **>99** | >99 | >99 | >99 | >99 |
+| Rhode Island | Jack Reed v. Raymond McKay | **>99** | >99 | >99 | >99 | >99 |
 | Oregon | Jeff Merkley v. David Brock Smith | **>99** | >99 | >99 | >99 | >99 |
 | New Mexico | Ben Ray Luján v. Larry Marker | **>99** | >99 | 99 | 99 | >99 |
 | Colorado | John Hickenlooper v. Mark Baisley | **99** | 99 | 98 | 99 | 99 |

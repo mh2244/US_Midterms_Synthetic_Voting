@@ -37,6 +37,10 @@ MODELS = {
     "deepseek": "deepseek/deepseek-v4.1-flash",   # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
     "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
 }
+# OpenRouter list prices, US dollars per million tokens (input, output), checked 2026-10-25;
+# used by scripts/16d-costs.py
+PRICES = {"haiku": (0.10, 0.50), "luna": (0.10, 0.50), "deepseek": (0.30, 1.20), "gemini": (0.30, 2.50)}
+
 # Party colours used by every figure: blue for Democrats, red for Republicans, grey for independents
 PARTY_COLOURS = {"Democratic": "#2166ac", "Republican": "#b2182b", "Independent": "#808080"}
 # Names shown on the website (tables and figures), in the same order

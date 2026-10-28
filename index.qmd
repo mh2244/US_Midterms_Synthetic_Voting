@@ -11,11 +11,26 @@ link-citations: true
 <!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py, published by 17. -->
 {{< include data/03-results/latest/headline.md >}}
 
+<!-- Results line: written by scripts/15c-make_battlegrounds.py, published by 17. -->
+{{< include data/03-results/latest/results_summary.md >}}
+
 ## Senate Results
 
 {{< include data/03-results/latest/senate_map.md >}}
 
-[TO DO: Show whether the forecasted result is a flip. Include a summary of the battleground states listed by Ballotpedia [@ballotpedia2026], which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]
+### Battleground races
+
+<!-- DRAFT (Claude): rewrite in our own words. Table written by scripts/15c-make_battlegrounds.py. -->
+Ballotpedia lists 12 Senate races as battlegrounds [@ballotpedia2026]. The table gives, for each, the party that holds the seat now, the forecast share of the two-party vote for the Democratic or independent candidate with its 90 per cent interval, the share of simulations that candidate wins, and the rating, which uses the same cut-offs as the map. A seat "flips" when the favoured side is not the party holding it now.
+
+{{< include data/03-results/latest/battlegrounds.md >}}
+
+### How many seats each party wins
+
+![Republican seats in the next Senate across all simulations, four models pooled, counting the 31 Republican seats not up in 2026. Red bars are outcomes in which Republicans hold 50 or more seats and keep control with the vice president's vote.](figures/latest/seat_distribution.png){fig-alt="Bar chart of the share of simulations by number of Republican Senate seats, split at 50 seats, with the share of outcomes on each side of the line."}
+
+<!-- DRAFT (Claude): rewrite. -->
+The distribution is wide because races are not independent: the shared national error moves every state in the same direction within a simulation, so the close races tend to fall together. The sources of this spread, and what it leaves out, are set out in Sources of uncertainty under Methods.
 
 <!-- Filled automatically: scripts/17-publish_latest.py copies the latest news run to these paths. -->
 ![Simulated vote share by state, with the four models pooled. Each dot is 5 per cent of the simulated outcomes; the number on the right is the share of outcomes the Democratic or independent candidate wins.](figures/latest/forecast_dotplot.png){fig-alt="Quantile dot plot of the Democratic or independent candidate's share of the two-party vote in each of the 35 Senate races, with the chance of winning beside each state."}
@@ -57,6 +72,13 @@ Each row pools the personas of all 35 states, weighted by each state's share of 
 ## News Summaries
 
 ## API Costs
+
+<!-- DRAFT (Claude): rewrite. Table written by scripts/16d-costs.py from the token counts saved by script 09. -->
+Each run sends 42,000 prompts: 3,500 personas, four models, three repeats. The table gives the calls, tokens, and cost of each run by model, priced at the OpenRouter list prices of 25 October (US dollars per million input and output tokens: Claude Haiku 5.5 and GPT-6 Luna 0.10 and 0.50, DeepSeek V4.1 Flash 0.30 and 1.20, Gemini 3.5 Flash-Lite 0.30 and 2.50), and the time from the first to the last call. DeepSeek is cheaper off-peak, so its cost is an upper bound.
+
+{{< include data/03-results/comparison/costs.md >}}
+
+[NOTE: add the costs that are not in the table, from the OpenRouter activity page: the SSR embeddings (Gemini Embedding 2, about 42,000 answers per run plus the anchor statements), the news screening and summaries (openai/gpt-4.1-nano), the test run on free models, and the total spent. The 27 October run hit the $10 workspace budget and was resumed; its saved answers run from 20:48 to 22:32 UTC.]
 
 ## Internal Validation
 
@@ -158,6 +180,9 @@ Something to note is that SSR was developed for ratings on an ordered scale from
 
 Sampling was conducted by state, and 100 personas were sampled per state. Some states had fewer than 100 respondents with a weight in the 2024 CES data. These were Wyoming (52 validated voters with a weight) and Alaska (76). For consistency, sampling with replacement was used across all 35 states.
 
+<!-- DRAFT (Claude): rewrite. -->
+Post-stratification happens at the sampling step rather than after the answers come back. Within each state, a validated voter's chance of being drawn is proportional to their "vvweight_post", the weight the CES constructs so that its respondents match the characteristics of the validated electorate [@ces2024guide]. Drawing in proportion to that weight means each state's 100 personas reproduce the weighted composition of its 2024 voters in expectation, so the state's synthetic share is the unweighted mean of the persona probabilities, and weighting the answers again would count the weights twice. The frame is therefore the 2024 validated electorate of each state, not the 2026 one; turnout changes between a presidential and a midterm year are not modelled. Every state receives 100 personas whatever its size, which is appropriate because each race is forecast on its own and the seat count comes from the state winners, not from pooling personas across states. The Composition section compares the drawn personas with the weighted CES pool.
+
 ### Prompts and models
 
 Each persona was asked how it would vote in its state's Senate race. Following Murray and Alexander [-@murray2026], we query 4 different models, as different LLMs have different biases. We also save model_returned and the query times, because Bisbee et al. [-@bisbee2024] state that the model behind a name can change even when the name stays the same. Candidate order was randomised for each persona.
@@ -177,6 +202,11 @@ For each state and model, the synthetic Democratic-side share is the mean p(left
 The combination has two steps. First, we removed each model's bias, defined as the mean difference between its synthetic share and the poll average across the polled states. Second, we averaged the bias-corrected synthetic share $m^*$ and the outside estimate $t$ with weights proportional to the inverse of their variances, so that the noisier estimate counts for less: the combined share is $w t + (1 - w) m^*$, with $w = \sigma^2_m / (\sigma^2_m + \sigma^2_t)$, and its variance is $1 / (1/\sigma^2_m + 1/\sigma^2_t)$. The synthetic variance $\sigma^2_m$ is the persona bootstrap variance plus a structural variance, estimated from the polled states as the variance of $m^*$ minus the poll average, less the mean bootstrap and poll variances. The poll variance is the sampling variance $s(1 - s)/n$ plus an assumed $0.03^2$ for error beyond sampling [@shirani-mehr2018]. The variance of the uniform swing is estimated the same way, from how far the polled states fall from their 2024 share plus the swing. Draws are normal around the combined share, and a national error with a standard deviation of 0.03, shared by every state within a draw, is added so that state errors move together [@shirani-mehr2018]. Because the weights are estimated rather than chosen, $1 - w$ also measures how much each model adds once polls are available.
 
 [NOTE: numbers from the 26 October test run; update with the final run. The synthetic weight averaged 0.15 to 0.33 in polled states and 0.27 to 0.52 in unpolled states. Luna had the smallest structural error (standard deviation 0.023) and DeepSeek the largest (0.070). The chance of Republican control was 0.37 to 0.39 across models, against 0.89 to 0.96 from the synthetic voters alone and 0.36 to 0.42 from the shrinkage version.]
+
+### Sources of uncertainty
+
+<!-- DRAFT (Claude): rewrite. -->
+Each simulated outcome combines five sources of error. The first is which personas were drawn, measured by resampling each state's 100 personas. The second is structural model error, the part of the gap between a model and the polls that the bias correction does not remove, estimated from the 25 polled states; it differs by model, from about 0.03 for GPT-6 Luna to 0.07 for DeepSeek V4.1 Flash on 27 October. The third is poll error, which is sampling error plus an assumed 0.03 beyond sampling, and in unpolled states the error of the 2024-plus-swing estimate takes its place. The fourth is the shared national error (standard deviation 0.03), which shifts every state together in a draw and is what makes the seat distribution wide. The fifth is disagreement between models, which enters because the four models are pooled with equal weight rather than averaged into one estimate. Three sources are left out. The bias, the structural variance, and the swing are estimated from the same 25 states and treated as known. Synthetic and poll errors are assumed independent, although both may miss in the same direction. Apart from the national error, state errors are independent, so regional patterns (for example, a miss shared by the Midwest) are not captured. All three omissions make the intervals narrower than they should be. The sensitivity table in What the Synthetic Voters Add shows how far the chance of Republican control moves when the two assumed error sizes change.
 
 We kept two other versions for comparison: the synthetic voters alone, and a shrinkage correction in which each polled state's gap to its polls is shrunk toward the mean gap with strength $k = 3$, and unpolled states take their 2024 share plus the uniform swing. In unpolled states the shrinkage version ignores the synthetic voters entirely, which is the main reason we chose inverse-variance weighting.
 
