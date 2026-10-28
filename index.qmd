@@ -36,6 +36,10 @@ link-citations: true
 
 {{< include data/03-results/comparison/runs.md >}}
 
+**How much the forecast depends on our assumptions.** Two error sizes in the forecast are assumptions rather than estimates: the national error shared by every state, and each state poll's error beyond sampling (both 0.03 in the headline, in bold). Each cell gives the chance that Republicans keep control and the chance that Democrats win 51 seats without independents (per cent), from the inverse-variance forecast of the latest news run with the four models pooled.
+
+{{< include data/03-results/latest/sensitivity.md >}}
+
 [NOTE: write the interpretation here once the 29 and 31 October runs are in.]
 
 ## Crosstabs

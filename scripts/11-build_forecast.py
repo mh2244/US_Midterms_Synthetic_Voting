@@ -45,6 +45,7 @@
 
 #### Workspace setup ####
 import argparse
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -62,6 +63,9 @@ ap.add_argument("--poll-sd", type=float, default=0.03,
 ap.add_argument("--national-sd", type=float, default=config.NATIONAL_SD,
                 help="SD of an error shared by all states (default in config.py; 0 = states independent)")
 ap.add_argument("--poll-window-days", type=int, default=45)
+ap.add_argument("--summary-only", type=Path, default=None,
+                help="append the chamber summary to this csv and save nothing else (for the "
+                     "sensitivity table, scripts/16c-sensitivity.py)")
 args = ap.parse_args()
 args.ivw, args.calibrate = args.combine == "ivw", args.combine == "shrink"
 
@@ -273,12 +277,20 @@ chamber = seats.groupby("model").agg(
 chamber["p_rep_control"] = (seats["rep"] >= 50).groupby("model").mean()        # VP breaks 50-50 ties
 chamber["p_dem_51_without_ind"] = (seats["dem"] >= 51).groupby("model").mean()  # no independent needed
 chamber["national_sd"] = args.national_sd
+chamber["poll_sd"] = args.poll_sd
 chamber["combine"] = args.combine
 control = chamber["p_rep_control"]
 
 #### Checks and save ####
 assert forecast["share"].between(0, 1).all()
 assert np.isclose(forecast.groupby(["draw", "state", "model"])["share"].sum(), 1).all()
+
+if args.summary_only:                  # sensitivity runs: leave the run's real outputs untouched
+    out = args.summary_only
+    out.parent.mkdir(parents=True, exist_ok=True)
+    chamber.round(4).to_csv(out, mode="a", header=not out.exists())
+    print(f"Appended the chamber summary to {out}")
+    raise SystemExit(0)
 
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 config.write_table(forecast, config.FORECAST_FILE)
