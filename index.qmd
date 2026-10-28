@@ -20,6 +20,24 @@ link-citations: true
 <!-- Filled automatically: scripts/17-publish_latest.py copies the latest news run to these paths. -->
 ![Simulated vote share by state, with the four models pooled. Each dot is 5 per cent of the simulated outcomes; the number on the right is the share of outcomes the Democratic or independent candidate wins.](figures/latest/forecast_dotplot.png){fig-alt="Quantile dot plot of the Democratic or independent candidate's share of the two-party vote in each of the 35 Senate races, with the chance of winning beside each state."}
 
+## What the Synthetic Voters Add
+
+<!-- Tables written by scripts/16b-compare_runs.py after each run (data/03-results/comparison/). -->
+
+**Forecast by method, latest news run.** The chance that Republicans keep control and the Republican seats (median and 90% interval) under four ways of building the forecast, with the four models pooled. The last column is the mean absolute difference, in percentage points of the two-party share, between each method's prediction for a polled state and that state's poll average when its own polls are left out. The shrinkage method predicts such a state from its 2024 share plus the uniform swing, so its error equals that of the method with no language model.
+
+{{< include data/03-results/comparison/methods.md >}}
+
+**Effect of the news.** The synthetic voters' share for the Democratic or independent candidate before any correction toward polls, averaged over the 35 states (per cent), for each run, and how far each news day moved it from the run with no news (percentage points).
+
+{{< include data/03-results/comparison/news.md >}}
+
+**Forecast by run.** Headline numbers from the inverse-variance forecast on each news day and in the run with no news.
+
+{{< include data/03-results/comparison/runs.md >}}
+
+[NOTE: write the interpretation here once the 29 and 31 October runs are in.]
+
 ## Crosstabs
 
 Each row pools the personas of all 35 states, weighted by each state's share of validated 2024 voters, and describes the synthetic voters before any correction toward polls (Design B, averaged over three repeats and four models). The synthetic share is the Democratic or independent candidate's share of the two-candidate vote, computed from SSR probabilities. Because SSR rarely gives even a clear answer a probability above 0.9, this share is pulled toward 50 per cent in groups that vote one way, so we also report the share of personas whose answer leaned toward the Democratic or independent candidate (lean left). In the tables, n is the number of personas, synthetic is the SSR share with the lowest and highest of the four models in brackets, Harris is the 2024 presidential vote of the same personas (which the models never saw), and diff. is lean left minus Harris, in percentage points. All values are per cent. Groups marked † have fewer than 30 personas.

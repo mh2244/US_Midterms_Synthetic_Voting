@@ -26,6 +26,7 @@ python scripts/13b-make_map.py
 python scripts/15-make_summary_bar.py
 python scripts/15b-make_headline.py
 python scripts/16-make_crosstabs.py
+python scripts/16b-compare_runs.py
 python scripts/12-test_actual_data.py
 python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```
