@@ -30,8 +30,7 @@ python scripts/16-make_crosstabs.py
 python scripts/16b-compare_runs.py
 python scripts/16c-sensitivity.py
 python scripts/16d-costs.py                  # cost and time per run and model
-python scripts/12-test_actual_data.py
-python scripts/12b-test_actual_schemas.py     # pandera schema tests
+python scripts/12-test_actual_data.py         # pytest + pandera test suite
 python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```
 
@@ -39,8 +38,9 @@ Planned news dates are October 27, 29 and 31, 2026. Without an override, RUN is
 `2026-10-27`. For the baseline, use `export RUN=nonews`, skip 04/04b, and run 08
 without `--news`, followed by the remaining stages. Optional script 14 summarizes
 persona composition and is not part of the forecast workflow. The simulated data
-have two test scripts: `01-test_simulated_data.py` (asserts) and
-`01b-test_simulated_schemas.py` (pandera schemas).
+have their own test suite, `01-test_simulated_data.py`; both suites use the
+pandera schemas in `schemas.py` and run with pytest
+(`python -m pytest scripts/12-test_actual_data.py -v` lists every test).
 
 These commands make paid requests: news uses GPT-4.1 Nano, voting uses four
 models, and SSR uses Gemini Embedding 2. With 3,500 personas and three repeats,
@@ -63,9 +63,9 @@ Design B requires 42,000 voting requests per run, plus screening/embedding.
   with polls (or 2024 + uniform swing) by inverse-variance weights; `--combine
   shrink` and `--combine none` are kept for comparison. 13b, 15b, 15c and 16 write the
   map, headline, battleground table and crosstabs; 16b–16d compare runs, test
-  sensitivity to the assumed errors and tabulate costs. Tests (12 with asserts, 12b with pandera
-  schemas) check consistency, not prediction accuracy; in the workflow 12b, 15c,
-  16b, 16c and 16d only warn on failure, so they cannot block a paid run.
+  sensitivity to the assumed errors and tabulate costs. Tests (12, pytest with pandera schemas)
+  check consistency, not prediction accuracy; in the workflow 15c, 16b, 16c and
+  16d only warn on failure, so they cannot block a paid run.
 - **17:** copies the latest news run to `figures/latest/` and
   `data/03-results/latest/`, which `index.qmd` reads.
 
