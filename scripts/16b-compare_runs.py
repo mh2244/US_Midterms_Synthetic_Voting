@@ -242,6 +242,22 @@ for r in meth.itertuples():
     md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) | {r.loo_error * 100:.1f} |")
 (OUT / "methods.md").write_text("\n".join(md) + "\n")
 
+# Leave-one-out error by model (website, Validation and tests): mean absolute error in points
+# against the hidden poll average, and the share of polled states where the combination is closer
+# than 2024 + uniform swing
+by_model = loo.assign(**{f"e_{k}": (loo[k] - loo["truth"]).abs() * 100 for k in ["synthetic", "ivw", "baseline"]})
+lm = by_model.groupby("model").agg(synthetic=("e_synthetic", "mean"), ivw=("e_ivw", "mean"),
+                                   baseline=("e_baseline", "mean"),
+                                   beats=("e_ivw", lambda e: (e < by_model.loc[e.index, "e_baseline"]).mean()))
+lm = lm.loc[[m for m in config.MODEL_LABELS if m in lm.index]]
+md = [f"| Model | Synthetic voters only | Inverse-variance combination | 2024 + uniform swing | "
+      f"States where the combination is closer than 2024 + swing |", "|---|---:|---:|---:|---:|"]
+for m, r in lm.iterrows():
+    md.append(f"| {config.MODEL_LABELS.get(m, m)} | {r.synthetic:.1f} | {r.ivw:.1f} | {r.baseline:.1f} | "
+              f"{r.beats * 100:.0f}% |")
+md.append(f"| **All models** | {lm.synthetic.mean():.1f} | {lm.ivw.mean():.1f} | {lm.baseline.mean():.1f} | "
+          f"{lm.beats.mean() * 100:.0f}% |")
+(OUT / "leave_one_out.md").write_text("\n".join(md) + "\n")
 (OUT / "latest_run.txt").write_text(label(latest) + "\n")
 
 #### Checks ####

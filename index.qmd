@@ -191,7 +191,10 @@ Each simulated outcome combines five sources of error. The first is which person
 
 #### Leave-one-out check
 
-[NOTE: draft from the 26 October test run; turn into a script and rerun on the final run. Leave-one-out check of the combination: each polled state's poll was hidden in turn, the bias, swing, and variances were re-estimated from the other 24 states, and the hidden poll was predicted three ways. Mean absolute error in the Democratic share: 2024 plus uniform swing 4.8 points, bias-corrected synthetic voters alone 5.8, inverse-variance combination 4.2 (DeepSeek 4.5, Gemini 4.4, Haiku 3.9, Luna 4.1). The combination beat the 2024-plus-swing baseline in 48 to 72 per cent of states, depending on the model. The target is a poll average, not a result, so this measures agreement with polls.]
+<!-- DRAFT (Claude): rewrite. Table written by scripts/16b-compare_runs.py after each run. -->
+With no election results yet, the only check of the combination is against polls. Each of the 25 polled states is hidden in turn; the bias, the uniform swing, and the variances are re-estimated from the other 24 states; and the hidden state's poll average is predicted three ways: from the synthetic voters alone, from 2024 plus the uniform swing, and from the inverse-variance combination. The table gives the mean absolute error, in percentage points of the two-party share, for the latest news run, and the share of polled states where the combination is closer than 2024 plus the swing. The target is a poll average rather than a result, so this measures agreement with polls, not accuracy; the same pooled errors are the last column of the Forecast by method table.
+
+{{< include data/03-results/comparison/leave_one_out.md >}}
 
 #### Tests
 
