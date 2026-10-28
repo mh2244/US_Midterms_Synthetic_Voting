@@ -73,16 +73,15 @@ sub = (f"Democrats win 51 or more seats without independents in {p_dem * 100:.0f
        f"{WORDS.get(n_models, n_models)} language models, combined with polls; run of {day}.")
 
 #### Seat bar ####
-plt.rcParams.update({"font.family": "sans-serif",
-                     "font.sans-serif": ["Inter", "Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]})
+config.use_site_style()            # shared graph theme: scripts/site.mplstyle
 fig, ax = plt.subplots(figsize=(8, 1.5))
 left = 0
 for n, party in [(dem, "Democratic"), (ind, "Independent"), (rep, "Republican")]:
     if n:
         ax.barh(0, n, left=left, height=0.6, color=COL[party], edgecolor="white", linewidth=2)
     left += n
-ax.vlines(50, -0.4, 0.4, color="#1a1a1a", lw=1.5, ls=(0, (3, 2)), zorder=3)
-ax.text(50, 0.44, "50 seats and the vice president", ha="center", va="bottom", fontsize=8, color="#555555")
+ax.vlines(50, -0.4, 0.4, color=config.INK, lw=1.2, ls=(0, (3, 2)), zorder=3)
+ax.text(50, 0.44, "50 seats and the vice president", ha="center", va="bottom", fontsize=8, color=config.MUTED)
 ax.text(0, -0.42, f"Democrats {dem}", ha="left", va="top", fontsize=12, fontweight="bold", color=COL["Democratic"])
 ax.text(100, -0.42, f"Republicans {rep}", ha="right", va="top", fontsize=12, fontweight="bold",
         color=COL["Republican"])

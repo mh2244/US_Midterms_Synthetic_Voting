@@ -117,12 +117,11 @@ for st, r in bg.iterrows():
 (config.RUN_RESULTS / "battlegrounds.md").write_text("\n".join(md) + "\n")
 
 #### Seat distribution ####
-plt.rcParams.update({"font.family": "sans-serif",
-                     "font.sans-serif": ["Inter", "Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]})
+config.use_site_style()            # shared graph theme: scripts/site.mplstyle
 fig, ax = plt.subplots(figsize=(8, 3.2))
 ax.bar(dist.index, dist.values * 100, width=0.82,
        color=[COL["Republican"] if s >= 50 else COL["Democratic"] for s in dist.index])
-ax.axvline(49.5, color="#1a1a1a", lw=1.2, ls=(0, (3, 2)))
+ax.axvline(49.5, color=config.INK, lw=1.2, ls=(0, (3, 2)))
 top = dist.max() * 100
 ax.text(49.3, top * 1.04, f"Republicans below 50:\n{(seats <= 49).mean() * 100:.0f}%", ha="right",
         va="bottom", fontsize=9, color=COL["Democratic"])

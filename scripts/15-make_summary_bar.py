@@ -98,8 +98,7 @@ def main():
     y = np.arange(len(order))
     # Two models per row (larger than four side by side); states in the same order in every panel,
     # most Democratic at the top
-    plt.rcParams.update({"font.family": "sans-serif",
-                         "font.sans-serif": ["Inter", "Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]})
+    config.use_site_style()            # shared graph theme: scripts/site.mplstyle
     ncol = 2
     nrow = int(np.ceil(len(models) / ncol))
     fig, axes = plt.subplots(nrow, ncol, figsize=(10, nrow * (0.22 * len(order) + 1.0) + 0.8),
@@ -134,7 +133,7 @@ def main():
                         Patch(color=RED, label="Republican")], loc="upper center", ncol=3, frameon=False,
                bbox_to_anchor=(0.5, 1.0), fontsize=9.5)
     fig.text(0.01, 0.005, "* Independent candidate. Numbers in the bars are per cent of simulated outcomes. "
-             f"Run {config.RUN}.", fontsize=8, color="#555555")
+             f"Run {config.RUN}.", fontsize=8, color=config.MUTED)
     fig.tight_layout(rect=(0, 0.015, 1, 0.975), h_pad=2.0, w_pad=2.5)
     out = config.FIGURES
     out.mkdir(parents=True, exist_ok=True)

@@ -47,9 +47,7 @@ q = (np.arange(N_DOTS) + 0.5) / N_DOTS
 win = (left.assign(left_win=left["winner"] != "Republican")
        .groupby(["state", "model"])["left_win"].mean().groupby("state").mean())  # models count equally
 
-# Inter is the page's label font; matplotlib uses the first of these it finds, silently
-plt.rcParams.update({"font.family": "sans-serif",
-                     "font.sans-serif": ["Inter", "Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]})
+config.use_site_style()            # shared graph theme: scripts/site.mplstyle
 fig, ax = plt.subplots(figsize=(8, 0.28 * len(order) + 1.4))
 for row, state in enumerate(order):
     draws = left[left["state"] == state]["share"].to_numpy()
@@ -59,9 +57,8 @@ for row, state in enumerate(order):
                s=26, linewidths=0, zorder=3)
     pct = win[state] * 100
     text = "<1%" if pct < 0.5 else ">99%" if pct > 99.5 else f"{pct:.0f}%"
-    ax.text(101, row, text, va="center", ha="left", fontsize=9, color="#1a1a1a")
-ax.axvline(50, color="#444444", lw=1, zorder=2)
-ax.grid(axis="x", color="#e4e4e4", lw=0.8, zorder=0)
+    ax.text(101, row, text, va="center", ha="left", fontsize=9, color=config.INK)
+ax.axvline(50, color=config.INK, lw=1.2, ls=(0, (3, 2)), zorder=2)   # 50% line, as in every figure
 ax.set_xlim(0, 100)
 ax.set_ylim(-0.7, len(order) - 0.3)
 ax.set_yticks(range(len(order)),
@@ -69,11 +66,11 @@ ax.set_yticks(range(len(order)),
                for st in order], fontsize=9)
 ax.tick_params(axis="y", length=0)
 ax.text(101, len(order) - 0.2, "Chance of a Democratic\nor independent win", va="bottom", ha="left", fontsize=8,
-        color="#555555")
+        color=config.MUTED)
 ax.set_xlabel("Democratic or independent candidate's share of the two-party vote (%)", fontsize=9)
 ax.spines[["top", "right", "left"]].set_visible(False)
 fig.text(0.01, 0.005, "* independent candidate. Blue = Democratic, grey = independent, red = Republican. "
-         f"Run {config.RUN}; four models pooled.", fontsize=8, ha="left", color="#555555")
+         f"Run {config.RUN}; four models pooled.", fontsize=8, ha="left", color=config.MUTED)
 fig.tight_layout(rect=(0, 0.02, 0.93, 1))
 fig.savefig(OUT / "forecast_dotplot.png", dpi=200)
 print(f"Saved {OUT / 'forecast_dotplot.png'}")

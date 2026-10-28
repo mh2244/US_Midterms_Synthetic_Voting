@@ -42,8 +42,8 @@ MAP_FILE = Path("data/01-raw_data/us-states.json")
 # Entered by hand from the Senate list on Wikipedia, checked 26 October 2026.
 SENATORS_FILE = Path("data/01-raw_data/senators_not_up_2026.csv")
 COL = config.PARTY_COLOURS
-NO_RACE = "#eeeeee"
-TOSS_UP = "#e8d18c"     # neither side clearly favoured (45% to 55% each); not a party colour
+NO_RACE = config.NO_RACE_COLOUR
+TOSS_UP = config.TOSS_UP_COLOUR     # neither side clearly favoured (45% to 55% each); not a party colour
 LEVELS = [("Likely", 0.85, 0.0), ("Leans", 0.65, 0.45), ("Tilts", 0.55, 0.72)]   # name, floor, tint
 WIDTH, HEIGHT = 960, 500
 
@@ -229,23 +229,23 @@ Four models pooled; run {day}.</p>
 .senate-map svg {{ width: 100%; height: auto; display: block; }}
 .senate-map path {{ stroke: #ffffff; stroke-width: 0.8; stroke-linejoin: round; cursor: pointer; }}
 .senate-map path:hover, .senate-map path:focus {{ stroke: #1a1a1a; stroke-width: 1.6; outline: none; }}
-.map-labels {{ pointer-events: none; font-family: Inter, Helvetica, Arial, sans-serif; font-size: 11px;
+.map-labels {{ pointer-events: none; font-family: var(--sans); font-size: 11px;
               font-weight: 600; text-anchor: middle; dominant-baseline: middle; }}
 .map-labels text[text-anchor="start"] {{ text-anchor: start; }}
 .map-leader {{ stroke: #888888; stroke-width: 0.7; }}
 .map-tip {{ position: absolute; pointer-events: none; background: #ffffff; border: 1px solid #555555;
-           padding: 0.45rem 0.6rem; font-family: Inter, Helvetica, Arial, sans-serif; font-size: 0.8rem;
+           padding: 0.45rem 0.6rem; font-family: var(--sans); font-size: 0.8rem;
            line-height: 1.4; color: #1a1a1a; max-width: 17rem; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }}
 .map-tip b {{ display: block; margin-bottom: 0.15rem; }}
 .map-legend {{ display: flex; flex-wrap: wrap; gap: 0.6rem 2.5rem; justify-content: center;
-              font-family: Inter, Helvetica, Arial, sans-serif; font-size: 0.8rem; margin-top: 0.5rem; }}
+              font-family: var(--sans); font-size: 0.8rem; margin-top: 0.5rem; }}
 .map-col {{ display: flex; flex-direction: column; gap: 0.25rem; min-width: 8rem; }}
 .map-col-head {{ font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.72rem;
                 color: #1a1a1a; margin-bottom: 0.1rem; }}
 .map-key {{ display: flex; align-items: center; gap: 0.4rem; }}
 .map-swatch {{ width: 0.9rem; height: 0.9rem; border-radius: 2px; display: inline-block;
                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }}
-.map-note {{ font-family: Inter, Helvetica, Arial, sans-serif; font-size: 0.8rem; color: #555555;
+.map-note {{ font-family: var(--sans); font-size: 0.8rem; color: #555555;
             text-align: center; margin-top: 0.8rem; }}
 </style>
 <script>

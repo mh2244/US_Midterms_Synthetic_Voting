@@ -43,6 +43,20 @@ PRICES = {"haiku": (0.10, 0.50), "luna": (0.10, 0.50), "deepseek": (0.30, 1.20),
 
 # Party colours used by every figure: blue for Democrats, red for Republicans, grey for independents
 PARTY_COLOURS = {"Democratic": "#2166ac", "Republican": "#b2182b", "Independent": "#808080"}
+# The rest of the palette, shared with styles.css (:root): text, notes, rules, toss-up and no race
+INK, MUTED, RULE = "#1a1a1a", "#555555", "#d9d9d9"
+TOSS_UP_COLOUR, NO_RACE_COLOUR = "#e8d18c", "#eeeeee"
+
+
+def use_site_style():
+    """Graph theme for every figure: registers the page fonts (assets/fonts) and loads
+    scripts/site.mplstyle, so figures made on GitHub Actions match the page."""
+    from matplotlib import font_manager, pyplot as plt
+    for font in (Path(__file__).resolve().parent.parent / "assets" / "fonts").glob("*.ttf"):
+        font_manager.fontManager.addfont(str(font))
+    plt.style.use(Path(__file__).resolve().with_name("site.mplstyle"))
+
+
 # Names shown on the website (tables and figures), in the same order
 MODEL_LABELS = {"haiku": "Claude Haiku 5.5", "luna": "GPT-6 Luna", "deepseek": "DeepSeek V4.1 Flash",
                 "gemini": "Gemini 3.5 Flash-Lite"}
