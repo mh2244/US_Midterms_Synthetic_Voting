@@ -68,9 +68,16 @@ For the full queries, we used [MODEL 1], [MODEL 2], [MODEL 3], and [MODEL 4]. [i
 
 ### Results by model
 
+![Share of simulated outcomes won by each side, by state and model. States are in the same order in every panel, from most to least Democratic across the four models.](figures/latest/forecast_win_probability_bar.png){fig-alt="Four panels, one per model, of horizontal bars splitting each state's simulated outcomes into Democratic or independent wins and Republican wins."}
+
+<details>
+<summary>Table view</summary>
+
 Chance that the Democratic or independent candidate wins (%), by model. "All models" is the average of the four, each counting equally; (I) marks an independent.
 
 {{< include data/03-results/latest/win_probabilities.md >}}
+
+</details>
 
 ## AI Prompts
 
