@@ -79,9 +79,16 @@ For the latest news run, the chance that Republicans keep control and the Republ
 
 ### Effect of the news
 
+![The synthetic voters' share for the Democratic or independent candidate, before any correction toward polls, with no news and on each news day. Left: the mean over the 35 states for each model (one colour each) and for the four models together (black); the vertical axis spans 10 points, so small moves look small. Right: each state's change from the no-news run, the four models pooled; the black bar is the median state.](figures/latest/news_effect.png){fig-alt="Left, a line chart of the mean synthetic share by model across the no-news run and the news days. Right, one dot per state for the change from no news on each news day, with the median marked."}
+
+<details>
+<summary>Table view</summary>
+
 The synthetic voters' share for the Democratic or independent candidate before any correction toward polls, averaged over the 35 states (per cent), for each run, and how far each news day moved it from the run with no news (percentage points).
 
 {{< include data/03-results/comparison/news.md >}}
+
+</details>
 
 ### Forecast by news day
 

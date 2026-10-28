@@ -43,6 +43,9 @@ PRICES = {"haiku": (0.10, 0.50), "luna": (0.10, 0.50), "deepseek": (0.30, 1.20),
 
 # Party colours used by every figure: blue for Democrats, red for Republicans, grey for independents
 PARTY_COLOURS = {"Democratic": "#2166ac", "Republican": "#b2182b", "Independent": "#808080"}
+# One colour per model, for figures that compare models (ColorBrewer Dark2, without its pink and
+# green so that no model colour can be read as a party colour)
+MODEL_COLOURS = {"haiku": "#d95f02", "luna": "#1b9e77", "deepseek": "#7570b3", "gemini": "#a6761d"}
 # The rest of the palette, shared with styles.css (:root): text, notes, rules, toss-up and no race
 INK, MUTED, RULE = "#1a1a1a", "#555555", "#d9d9d9"
 TOSS_UP_COLOUR, NO_RACE_COLOUR = "#e8d18c", "#eeeeee"

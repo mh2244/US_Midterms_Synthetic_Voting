@@ -3,6 +3,7 @@
 #          "What the synthetic voters add" on the website. Three tables:
 #            1. runs.md     the headline numbers for each news day and the no-news baseline
 #            2. news.md     the synthetic voters' share before any poll correction, by model and
+#                           run (also drawn in figures/run_<RUN>/news_effect.png),
 #                           run, and how far each news day moved it from the no-news baseline
 #            3. methods.md  for the latest news run: chance of Republican control and median seats
 #                           under four methods (synthetic only, shrinkage, inverse-variance, and
@@ -122,6 +123,69 @@ for m, r in news.iterrows():
     md.append("| " + " | ".join([name] + cells) + " |")
 (OUT / "news.md").write_text("\n".join(md) + "\n")
 
+#### 2b. Figure: the synthetic share in each setting, and each state's change from no news ####
+# Left: mean over the 35 states for each model (config.MODEL_COLOURS, labelled at the right) and all models (black),
+# in the order no news, 27, 29, 31 October. Right (when the no-news run exists): each state's change
+# from no news, all models pooled, one dot per state. Saved as figures/run_<RUN>/news_effect.png.
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+config.use_site_style()
+order = (["nonews"] if "nonews" in runs else []) + news_runs
+xlab = ["No news" if r == "nonews" else label(r) for r in order]
+per_state = {}
+for run in order:
+    comp = pd.read_csv(config.RESULTS / f"run_{run}" / "state_comparison_uncalibrated.csv").set_index("state")
+    per_state[run] = comp[[c for c in comp.columns if c.startswith("model_")]].mean(axis=1)   # models pooled
+has_base = "nonews" in runs and len(news_runs) > 0
+fig, axes = plt.subplots(1, 2 if has_base else 1, figsize=(9, 3.6) if has_base else (5.5, 3.6),
+                         gridspec_kw={"width_ratios": [1.15, 1]} if has_base else None)
+ax = axes[0] if has_base else axes
+x = np.arange(len(order))
+greys = ["#9a9a9a", "#b8b8b8", "#7c7c7c", "#cfcfcf"]
+markers = ["o", "s", "^", "D"]
+labels = []                                 # (y at the last setting, text, colour)
+for i, m in enumerate([m for m in news.index if m != "all"]):
+    y = news.loc[m, order].to_numpy() * 100
+    colour = config.MODEL_COLOURS.get(m, greys[i % 4])
+    ax.plot(x, y, color=colour, marker=markers[i % 4], ms=4, lw=1.4, zorder=3)   # above the pooled line
+    labels.append([y[-1], config.MODEL_LABELS.get(m, m), colour])
+y = news.loc["all", order].to_numpy() * 100
+ax.plot(x, y, color=config.INK, marker="o", ms=7, lw=3, zorder=2)
+labels.append([y[-1], "All models", None])
+labels.sort(key=lambda t: t[0])             # spread the labels so that none overlap (at least 0.55 points apart)
+for k in range(1, len(labels)):
+    labels[k][0] = max(labels[k][0], labels[k - 1][0] + 0.55)
+for y_lab, text, colour in labels:          # colour None = the pooled line, in black and bold
+    ax.text(x[-1] + 0.12, y_lab, text, va="center", fontsize=8.5 if colour is None else 8,
+            fontweight="bold" if colour is None else "normal", color=config.INK if colour is None else colour)
+mid = news.loc[:, order].to_numpy().mean() * 100
+ax.set_ylim(mid - 5, mid + 5)               # a 10-point window, so small moves look small
+ax.set_xlim(-0.2, len(order) - 1 + 1.4)
+ax.set_xticks(x, xlab)
+ax.set_ylabel("Synthetic Democratic or independent share (%)")
+ax.set_title("Mean over the 35 states")
+if has_base:
+    ax2 = axes[1]
+    days = news_runs
+    for j, run in enumerate(days):
+        d = (per_state[run] - per_state["nonews"]) * 100
+        jitter = np.random.default_rng(j).uniform(-0.12, 0.12, len(d))   # own generator: leaves rng for section 3
+        ax2.scatter(np.full(len(d), j) + jitter, d, s=12, color=config.INK, alpha=0.55, lw=0)
+        ax2.plot([j - 0.25, j + 0.25], [d.median()] * 2, color=config.INK, lw=2)
+    ax2.axhline(0, color=config.INK, lw=1.2, ls=(0, (3, 2)))
+    lim = max(3, float(np.ceil(max(abs((per_state[r] - per_state["nonews"]) * 100).max() for r in days))))
+    ax2.set_ylim(-lim, lim)
+    ax2.set_xlim(-0.6, len(days) - 0.4)
+    ax2.set_xticks(range(len(days)), [label(r) for r in days])
+    ax2.set_ylabel("Change from no news (points)")
+    ax2.set_title("Each state, all models pooled")
+fig.tight_layout()
+config.FIGURES.mkdir(parents=True, exist_ok=True)
+fig.savefig(config.FIGURES / "news_effect.png")
+plt.close(fig)
+
 #### 3. Methods, for the latest news run ####
 res = config.RESULTS / f"run_{latest}"
 methods = []
@@ -177,6 +241,7 @@ md = ["| Method | Republicans keep control (%) | Republican seats, median (90% i
 for r in meth.itertuples():
     md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) | {r.loo_error * 100:.1f} |")
 (OUT / "methods.md").write_text("\n".join(md) + "\n")
+
 (OUT / "latest_run.txt").write_text(label(latest) + "\n")
 
 #### Checks ####
