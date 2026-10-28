@@ -3,6 +3,8 @@ project:
   output-dir: docs
   render:
     - index.qmd
+  resources:
+    - assets/fonts
 
 website:
   title: "Synthetic Voting for the 2026 U.S. Senate Midterm Elections"
@@ -14,7 +16,6 @@ format:
   html:
     theme: default
     css: styles.css
-    mainfont: Georgia
     fontsize: 1.1rem
     toc: false
     page-layout: article

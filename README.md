@@ -5,7 +5,7 @@ This project uses CES survey respondents as synthetic voter personas to study th
 responses are scored and aggregated into simulated state outcomes.
 
 **Current design:** 35 states × 100 personas × 4 voting models × 3 repeats =
-**42,000 voting requests per run**, using Design B. News screening and embedding
+**42,000 voting requests per run**, each a free-text answer scored with SSR. News screening and embedding
 requests are additional. Model-derived scores and simulations are not verified
 individual voting probabilities.
 
@@ -80,8 +80,7 @@ require new answers.
 
 For the **no-news baseline**, set `export RUN=nonews`, skip `04` and `04b`, and
 run `08` without `--news`, followed by `09–15` as above (excluding optional `14`).
-Design B asks for a short first-person voting answer. Optional `--designs B,C`
-also creates the “100 people like you” percentage question and doubles requests.
+Each prompt asks for a short first-person voting answer in free text.
 
 ## How news is used
 

@@ -36,6 +36,10 @@ if config.RUN == "nonews":
     sys.exit(0)
 
 FIGS = ["seat_bar.png", "forecast_dotplot.png", "forecast_win_probability_bar.png"]
+# Copied when present; the sensitivity table (16c) and the battleground summary (15c) are extra
+# and must not block publishing
+OPTIONAL = ["sensitivity.md", "sensitivity.csv", "results_summary.md", "battlegrounds.md", "battlegrounds.csv"]
+OPTIONAL_FIGS = ["seat_distribution.png", "news_effect.png"]
 TABLES = ["headline.md", "headline.json", "senate_map.md", "crosstabs.md", "win_probabilities.md", "chamber_summary.csv", "win_probabilities.csv", "ivw_weights.csv",
           "state_comparison.csv"]
 
@@ -63,6 +67,12 @@ for f in FIGS:
     shutil.copy2(config.FIGURES / f, config.LATEST_FIGURES / f)
 for f in TABLES:
     shutil.copy2(config.RUN_RESULTS / f, config.LATEST_RESULTS / f)
+for f in OPTIONAL:
+    if (config.RUN_RESULTS / f).exists():
+        shutil.copy2(config.RUN_RESULTS / f, config.LATEST_RESULTS / f)
+for f in OPTIONAL_FIGS:
+    if (config.FIGURES / f).exists():
+        shutil.copy2(config.FIGURES / f, config.LATEST_FIGURES / f)
 
 #### Run line for the page ####
 p = chamber["p_rep_control"] * 100

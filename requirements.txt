@@ -7,3 +7,5 @@ sentence-transformers
 python-dotenv>=1.0,<2
 requests==2.34.2
 tqdm>=4.66,<5
+pandera>=0.20
+pytest>=8

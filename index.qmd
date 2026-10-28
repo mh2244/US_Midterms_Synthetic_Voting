@@ -8,49 +8,246 @@ bibliography: references.bib
 link-citations: true
 ---
 
+<!-- Section menu, as on the example site: styled by .sectionnav in styles.css -->
+::: {.sectionnav}
+[Forecast](#forecast) [Senate](#national) [States](#states) [Synthetic voters and polls](#synthetic) [Sample](#sample) [Methods](#methods) [Costs](#costs) [Discussion](#discussion) [Prompts](#prompts)
+:::
+
 <!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py, published by 17. -->
 {{< include data/03-results/latest/headline.md >}}
 
-## Senate Results
+<!-- Results line: written by scripts/15c-make_battlegrounds.py, published by 17. -->
+{{< include data/03-results/latest/results_summary.md >}}
+
+## Forecast {#forecast}
+
+<!-- DRAFT (Claude): rewrite. -->
+The forecast is reported at two levels: first the Senate as a whole, then the 35 races one at a time. Both pool the four models and come from the latest news run.
+
+### National: control of the Senate {#national}
+
+![Republican seats in the next Senate across all simulations, four models pooled, counting the 31 Republican seats not up in 2026. Red bars are outcomes in which Republicans hold 50 or more seats and keep control with the vice president's vote.](figures/latest/seat_distribution.png){fig-alt="Bar chart of the share of simulations by number of Republican Senate seats, split at 50 seats, with the share of outcomes on each side of the line."}
+
+<!-- DRAFT (Claude): rewrite. -->
+The distribution is wide because races are not independent: the shared national error moves every state in the same direction within a simulation, so the close races tend to fall together. The sources of this spread, and what it leaves out, are set out in Sources of uncertainty under Methods.
+
+### State by state {#states}
+
+#### Map
 
 {{< include data/03-results/latest/senate_map.md >}}
 
-[TO DO: Show whether the forecasted result is a flip. Include a summary of the battleground states listed by Ballotpedia [@ballotpedia2026], which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]
+#### Vote share and chance of winning
 
 <!-- Filled automatically: scripts/17-publish_latest.py copies the latest news run to these paths. -->
 ![Simulated vote share by state, with the four models pooled. Each dot is 5 per cent of the simulated outcomes; the number on the right is the share of outcomes the Democratic or independent candidate wins.](figures/latest/forecast_dotplot.png){fig-alt="Quantile dot plot of the Democratic or independent candidate's share of the two-party vote in each of the 35 Senate races, with the chance of winning beside each state."}
 
-## Crosstabs
+#### Battleground races {#battlegrounds}
 
-Each row pools the personas of all 35 states, weighted by each state's share of validated 2024 voters, and describes the synthetic voters before any correction toward polls (Design B, averaged over three repeats and four models). The synthetic share is the Democratic or independent candidate's share of the two-candidate vote, computed from SSR probabilities. Because SSR rarely gives even a clear answer a probability above 0.9, this share is pulled toward 50 per cent in groups that vote one way, so we also report the share of personas whose answer leaned toward the Democratic or independent candidate (lean left). In the tables, n is the number of personas, synthetic is the SSR share with the lowest and highest of the four models in brackets, Harris is the 2024 presidential vote of the same personas (which the models never saw), and diff. is lean left minus Harris, in percentage points. All values are per cent. Groups marked † have fewer than 30 personas.
+<!-- DRAFT (Claude): rewrite in our own words. Table written by scripts/15c-make_battlegrounds.py. -->
+Ballotpedia lists 12 Senate races as battlegrounds [@ballotpedia2026]. The table gives, for each, the party that holds the seat now, the forecast share of the two-party vote for the Democratic or independent candidate with its 90 per cent interval, the share of simulations that candidate wins, and the rating, which uses the same cut-offs as the map. A seat flips when the favoured side is not the party holding it now; toss-ups have no favoured side and are marked with a dash. (I) marks Nebraska, where the main challenger to the Republican is the independent Dan Osborn rather than a Democrat.
 
-{{< include data/03-results/latest/crosstabs.md >}}
+Nine of the 12 battleground seats are held by Republicans; Democrats defend only Georgia, Michigan, and New Hampshire. The close races are therefore mostly on Republican ground, so Democrats can gain seats without putting many of their own at risk. Republicans start with 31 seats not up for election and need 19 more to reach 50; if they gain no Democratic seat, they can lose at most three of the 22 they are defending.
 
-[NOTE: the table updates with each run; these numbers are from the 26 October run, update them with the final run. For every race, age, and income group, the leaning-left share is within 5 points of the 2024 vote of the same personas, and for strong and leaning partisans it is within 2 points, so the models mostly reproduce 2024 partisanship from the persona description. The exceptions are personas who call themselves independents (54 per cent leaning left against 39 per cent for Harris), those unsure of their party (62 against 28), and those without a high-school diploma (44 against 37). The SSR share of strong partisans (85 for strong Democrats, 11 for strong Republicans) understates how one-sided their answers were (99 and 0 leaning left).]
+{{< include data/03-results/latest/battlegrounds.md >}}
 
-## Composition of the persona sample
+#### Each model separately
 
-{{< include data/03-results/composition/composition_overall.md >}}
+![Share of simulated outcomes won by each side, by state and model. States are in the same order in every panel, from most to least Democratic across the four models.](figures/latest/forecast_win_probability_bar.png){fig-alt="Four panels, one per model, of horizontal bars splitting each state's simulated outcomes into Democratic or independent wins and Republican wins."}
 
-## News Summaries
-
-## API Costs
-
-## Internal Validation
-
-[NOTE: draft from the 26 October test run; turn into a script and rerun on the final run. Leave-one-out check of the combination: each polled state's poll was hidden in turn, the bias, swing, and variances were re-estimated from the other 24 states, and the hidden poll was predicted three ways. Mean absolute error in the Democratic share: 2024 plus uniform swing 4.8 points, bias-corrected synthetic voters alone 5.8, inverse-variance combination 4.2 (DeepSeek 4.5, Gemini 4.4, Haiku 3.9, Luna 4.1). The combination beat the 2024-plus-swing baseline in 48 to 72 per cent of states, depending on the model. The target is a poll average, not a result, so this measures agreement with polls.]
-
-## Models Used
-
-For the full queries, we used [MODEL 1], [MODEL 2], [MODEL 3], and [MODEL 4]. [include test models?] For the test run, we used Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia's Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free).
-
-### Results by model
+<details>
+<summary>Table view</summary>
 
 Chance that the Democratic or independent candidate wins (%), by model. "All models" is the average of the four, each counting equally; (I) marks an independent.
 
 {{< include data/03-results/latest/win_probabilities.md >}}
 
-## AI Prompts
+</details>
+
+## Synthetic Voters and Polls {#synthetic}
+
+<!-- DRAFT (Claude): rewrite. -->
+How much the synthetic voters add once polls are included, how much the news changes their answers, and how much the forecast depends on two assumed error sizes. These are national summaries.
+
+<!-- Tables written by scripts/16b-compare_runs.py after each run (data/03-results/comparison/). -->
+
+### Forecast by method
+
+For the latest news run, the chance that Republicans keep control and the Republican seats (median and 90% interval) under four ways of building the forecast, with the four models pooled. The last column is the mean absolute difference, in percentage points of the two-party share, between each method's prediction for a polled state and that state's poll average when its own polls are left out. The shrinkage method predicts such a state from its 2024 share plus the uniform swing, so its error equals that of the method with no language model.
+
+{{< include data/03-results/comparison/methods.md >}}
+
+### Effect of the news
+
+![The synthetic voters' share for the Democratic or independent candidate, before any correction toward polls, with no news and on each news day. Left: the mean over the 35 states for each model (one colour each) and for the four models together (black); the vertical axis spans 10 points, so small moves look small. Right: each state's change from the no-news run, the four models pooled; the black bar is the median state.](figures/latest/news_effect.png){fig-alt="Left, a line chart of the mean synthetic share by model across the no-news run and the news days. Right, one dot per state for the change from no news on each news day, with the median marked."}
+
+<details>
+<summary>Table view</summary>
+
+The synthetic voters' share for the Democratic or independent candidate before any correction toward polls, averaged over the 35 states (per cent), for each run, and how far each news day moved it from the run with no news (percentage points).
+
+{{< include data/03-results/comparison/news.md >}}
+
+</details>
+
+### Forecast by news day
+
+Headline numbers from the inverse-variance forecast on each news day and in the run with no news.
+
+{{< include data/03-results/comparison/runs.md >}}
+
+### Sensitivity to the assumed errors
+
+Two error sizes in the forecast are assumptions rather than estimates: the national error shared by every state, and each state poll's error beyond sampling (both 0.03 in the headline, in bold). Each cell gives the chance that Republicans keep control and the chance that Democrats win 51 seats without independents (per cent), from the inverse-variance forecast of the latest news run with the four models pooled.
+
+{{< include data/03-results/latest/sensitivity.md >}}
+
+[NOTE: write the interpretation here once the 29 and 31 October runs are in.]
+
+## The Synthetic Sample {#sample}
+
+<!-- DRAFT (Claude): rewrite. -->
+Who the 3,500 personas are, and how they answered by group before any correction toward polls.
+
+### Composition
+
+{{< include data/03-results/composition/composition_overall.md >}}
+
+### Crosstabs {#crosstabs}
+
+Each row pools the personas of all 35 states, weighted by each state's share of validated 2024 voters, and describes the synthetic voters before any correction toward polls (averaged over three repeats and four models). The synthetic share is the Democratic or independent candidate's share of the two-candidate vote, computed from SSR probabilities. Because SSR rarely gives even a clear answer a probability above 0.9, this share is pulled toward 50 per cent in groups that vote one way, so we also report the share of personas whose answer leaned toward the Democratic or independent candidate (lean left). In the tables, n is the number of personas, synthetic is the SSR share with the lowest and highest of the four models in brackets, Harris is the 2024 presidential vote of the same personas (which the models never saw), and diff. is lean left minus Harris, in percentage points. All values are per cent. Groups marked † have fewer than 30 personas.
+
+{{< include data/03-results/latest/crosstabs.md >}}
+
+[NOTE: the table updates with each run; these numbers are from the 26 October run, update them with the final run. For every race, age, and income group, the leaning-left share is within 5 points of the 2024 vote of the same personas, and for strong and leaning partisans it is within 2 points, so the models mostly reproduce 2024 partisanship from the persona description. The exceptions are personas who call themselves independents (54 per cent leaning left against 39 per cent for Harris), those unsure of their party (62 against 28), and those without a high-school diploma (44 against 37). The SSR share of strong partisans (85 for strong Democrats, 11 for strong Republicans) understates how one-sided their answers were (99 and 0 leaning left).]
+
+## Methods {#methods}
+
+All results were generated from synthetic respondents. These are not survey results. The analysis was carried out in Python (version [X]) [@python], using the packages pandas [@mckinney2010], NumPy [@harris2020], pyarrow [@arrow], requests [@requests], matplotlib [@hunter2007], sentence-transformers [@reimers2019], and, for the tests, pytest [@pytest] and pandera [@bantilan2020]. This page was built with Quarto [@quarto].
+
+### Data
+
+To generate realistic digital twins, we first obtained respondent records from the 2024 Cooperative Election Study (CES), which includes 60,000 US adults [@ces2024guide]. Of these respondents, 38,307 were in one of the 35 states with a 2026 Senate race (33 regular elections and 2 special elections), and 23,025 of that subset were assigned a weight ("vvweight_post"), which we used as the probability of being drawn when sampling personas within each state. We kept the 21,211 of these respondents whom the CES validated as having voted in 2024. According to the 2024 CES Guide, "vvweight_post" is recommended for research that characterizes the opinions, behaviours, or traits of voters, where "vv" stands for "voter validated" [@ces2024guide]. The "post" designation indicates that the respondent is not only matched to a registration record but also completed both the pre-election and post-election waves of the study. We relied on "vvweight_post" because we were interested in voter behaviour, and because the features we chose to construct our personas were taken from both the pre- and post-election questionnaires.
+
+A known limitation of LLM synthetic voting is partisan bias that depends on the model [@murray2026; @pew2026]. As a remedy, we combined the synthetic votes with polling data obtained from PollResults, an open polling data platform that compiles and aggregates polls originally tracked by The New York Times pertaining to the Senate races [@pollresults2026], using inverse-variance weights (see Combining Synthetic Votes with Polls).
+
+### Personas
+
+We built each persona from seven variables: age, education, race, gender, household income, ideology, and party identification. Age was calculated by subtracting each respondent's birth year from 2024 and then sorting the result into four brackets: 18-29, 30-44, 45-64, and 65+. Education had six options: not finishing high school, a high school diploma, some college without a degree, a 2-year college degree, a 4-year college degree, and a post-graduate degree. Race was recorded as "White", "Black", "Hispanic", "Asian", or "Other". Gender was recorded as "man", "woman", "non-binary person", or "other". Household income had 16 brackets, from less than \$10,000 a year to \$500,000 or more, plus a "Prefer not to say" option. Ideology had five options, "Very liberal", "Liberal", "Moderate", "Conservative", and "Very conservative", plus "Not sure". Party identification had seven options, "Strong Democrat", "Weak Democrat", "Lean Democrat", "Independent", "Lean Republican", "Weak Republican", and "Strong Republican", plus "Not sure".
+
+### Sampling and post-stratification
+
+Sampling was conducted by state, and 100 personas were sampled per state. Some states had fewer than 100 respondents with a weight in the 2024 CES data. These were Wyoming (52 validated voters with a weight) and Alaska (76). For consistency, sampling with replacement was used across all 35 states.
+
+<!-- DRAFT (Claude): rewrite. -->
+Post-stratification happens at the sampling step rather than after the answers come back. Within each state, a validated voter's chance of being drawn is proportional to their "vvweight_post", the weight the CES constructs so that its respondents match the characteristics of the validated electorate [@ces2024guide]. Drawing in proportion to that weight means each state's 100 personas reproduce the weighted composition of its 2024 voters in expectation, so the state's synthetic share is the unweighted mean of the persona probabilities, and weighting the answers again would count the weights twice. The frame is therefore the 2024 validated electorate of each state, not the 2026 one; turnout changes between a presidential and a midterm year are not modelled. Every state receives 100 personas whatever its size, which is appropriate because each race is forecast on its own and the seat count comes from the state winners, not from pooling personas across states. The Composition section compares the drawn personas with the weighted CES pool.
+
+### News summaries {#news}
+
+News updates were summarized and taken from Google News with a focus on the following sources, which span the political spectrum: The New York Times, Washington Post, The Wall Street Journal, USA Today, Fox News, New York Post, The Daily Wire, HuffPost, Mother Jones, and Vox. Sources were selected based on both their viewership [CITATION NEEDED: viewership source] and their political leaning.
+
+[NOTE: add the news summaries for each run here, or link to data/news/.]
+
+### Prompts and models
+
+Each persona was asked how it would vote in its state's Senate race. Following Murray and Alexander [-@murray2026], we query 4 different models, as different LLMs have different biases. We also save model_returned and the query times, because Bisbee et al. [-@bisbee2024] state that the model behind a name can change even when the name stays the same. Candidate order was randomised for each persona.
+
+Each persona answered in free text, which was then scored with SSR (see Turning Answers into Voting Probabilities). Every prompt was sent to the following models: [LIST MODELS USED HERE] via OpenRouter, 3 times each, at temperature [INSERT TEMPERATURE]. Below, we record the number of calls that failed or came back empty, by model: [MODEL 1: ], [MODEL 2: ], [MODEL 3: ], and [MODEL 4: ].
+
+For the full queries, we used [MODEL 1], [MODEL 2], [MODEL 3], and [MODEL 4]. [include test models?] For the test run, we used Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia's Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free).
+
+### Turning answers into voting probabilities
+
+#### Why free text: mode collapse
+
+An additional limitation of LLM synthetic voting is mode collapse. This is where an LLM generates responses that concentrate around the mode of the true distribution, which results in synthetic distributions with unrealistically low variance. The consequences include overconfident estimates and inaccurate power calculations [@heath2026]. <!-- DRAFT (Claude): rewrite. --> Heath and Alexander attribute mode collapse to language models' difficulty in producing numeric answers, and find that asking for text and mapping it onto a scale with text embeddings, Semantic Similarity Rating (SSR), improves the fidelity of the response distributions while leaving few parameters to calibrate [@heath2026]; Maier et al. [-@maier2025] introduced the method for purchase-intent ratings. We therefore asked each persona for a two- or three-sentence answer in its own words rather than a number or a choice from a list, and scored that answer with SSR.
+
+The anchors for SSR were adapted from Heath and Alexander [-@heath2026], with statements about vote choice in place of favourability. The five statements are "I will definitely vote for (left)", "I lean toward voting for (left)", "I am undecided, I will vote for someone else, or I will not vote", "I lean toward voting for (right)", and "I will definitely vote for (right)".
+
+For each persona's response, we calculated the cosine similarity between the response embedding and each embedded anchor point, which gave a list of five similarities per response [@heath2026]. Following Heath and Alexander [-@heath2026], we applied min-max normalization to scale the similarities to a 0 to 1 range, followed by a softmax function to turn the normalized similarities into probabilities. However, there are some differences from Heath and Alexander. Their digital twins rate their feelings toward four groups on a 0 to 100 thermometer, whereas ours are asked for their vote choice in a Senate race, so our five statements were modified for candidate choice rather than favourability. In addition, Heath and Alexander put the weights on the five anchors into a Gaussian kernel density estimate, which gives a smooth distribution over 0 to 100. We instead sum the softmax weights into three numbers, p_left, p_rep, and p_other, with no smoothing. We use a temperature of 0.25 and do not fit it on our own data, because we have no individual-level truth to fit against. Currently, Gemini Embedding 2 is the model that we use, but we use it symmetrically, whereas Heath and Alexander use it asymmetrically (confirm with group if we will change it).
+
+Something to note is that SSR was developed for ratings on an ordered scale from 0 to 100 [@heath2026]. Vote choice is not an ordered scale, and our middle anchor is a separate category and not a neutral point, so applying SSR to vote choice is our own adaptation.
+
+#### Semantic Similarity Rating
+
+We used SSR [@maier2025; @heath2026]. We embedded each answer and the five statements written for that race, from "I will definitely vote for [Democrat]" to "I will definitely vote for [Republican]", with an undecided statement in the middle. We took the cosine similarity between the answer and each statement, rescaled the five values to 0 to 1, and applied a softmax with a temperature of 0.25. The two statements on each side were summed, which gives p(left), p(Republican), and p(other) for each answer. Heath and Alexander tested SSR on 0 to 100 ratings, so using it for vote choice is our adaptation. We used Gemini Embedding 2 (google/gemini-embedding-2) through OpenRouter, the model Heath and Alexander used, but in its symmetric mode: answers and statements were embedded the same way, whereas they embedded answers as queries and statements as documents. Answers that were empty or refused were counted and left out.
+
+### Combining synthetic votes with polls
+
+For each state and model, the synthetic Democratic-side share is the mean p(left) divided by the sum of the mean p(left) and the mean p(Republican) over the state's 100 personas, and its sampling spread comes from resampling those personas 1,000 times with replacement. We combined this share with one outside estimate per state. In the 25 states with polls that named both nominees, the outside estimate is the poll average: polls ending within 45 days of the newest poll, one question per poll (likely voters preferred), weighted by sample size. In the 10 states without such polls (Colorado, Delaware, Kentucky, New Jersey, Oklahoma, Oregon, Tennessee, Virginia, West Virginia, and Wyoming, as of 26 October), the outside estimate is the 2024 Harris share of the two-party vote among CES respondents, weighted by "vvweight_post", plus a uniform swing equal to the mean difference between the poll average and that 2024 share across the polled states.
+
+The combination has two steps. First, we removed each model's bias, defined as the mean difference between its synthetic share and the poll average across the polled states. Second, we averaged the bias-corrected synthetic share $m^*$ and the outside estimate $t$ with weights proportional to the inverse of their variances, so that the noisier estimate counts for less: the combined share is $w t + (1 - w) m^*$, with $w = \sigma^2_m / (\sigma^2_m + \sigma^2_t)$, and its variance is $1 / (1/\sigma^2_m + 1/\sigma^2_t)$. The synthetic variance $\sigma^2_m$ is the persona bootstrap variance plus a structural variance, estimated from the polled states as the variance of $m^*$ minus the poll average, less the mean bootstrap and poll variances. The poll variance is the sampling variance $s(1 - s)/n$ plus an assumed $0.03^2$ for error beyond sampling [@shirani-mehr2018]. The variance of the uniform swing is estimated the same way, from how far the polled states fall from their 2024 share plus the swing. Draws are normal around the combined share, and a national error with a standard deviation of 0.03, shared by every state within a draw, is added so that state errors move together [@shirani-mehr2018]. Because the weights are estimated rather than chosen, $1 - w$ also measures how much each model adds once polls are available.
+
+[NOTE: numbers from the 26 October test run; update with the final run. The synthetic weight averaged 0.15 to 0.33 in polled states and 0.27 to 0.52 in unpolled states. Luna had the smallest structural error (standard deviation 0.023) and DeepSeek the largest (0.070). The chance of Republican control was 0.37 to 0.39 across models, against 0.89 to 0.96 from the synthetic voters alone and 0.36 to 0.42 from the shrinkage version.]
+
+We kept two other versions for comparison: the synthetic voters alone, and a shrinkage correction in which each polled state's gap to its polls is shrunk toward the mean gap with strength $k = 3$, and unpolled states take their 2024 share plus the uniform swing. In unpolled states the shrinkage version ignores the synthetic voters entirely, which is the main reason we chose inverse-variance weighting.
+
+### Sources of uncertainty {#uncertainty}
+
+<!-- DRAFT (Claude): rewrite. -->
+Each simulated outcome combines five sources of error. The first is which personas were drawn, measured by resampling each state's 100 personas. The second is structural model error, the part of the gap between a model and the polls that the bias correction does not remove, estimated from the 25 polled states; it differs by model, from about 0.03 for GPT-6 Luna to 0.07 for DeepSeek V4.1 Flash on 27 October. The third is poll error, which is sampling error plus an assumed 0.03 beyond sampling, and in unpolled states the error of the 2024-plus-swing estimate takes its place. The fourth is the shared national error (standard deviation 0.03), which shifts every state together in a draw and is what makes the seat distribution wide. The fifth is disagreement between models, which enters because the four models are pooled with equal weight rather than averaged into one estimate. Three sources are left out. The bias, the structural variance, and the swing are estimated from the same 25 states and treated as known. Synthetic and poll errors are assumed independent, although both may miss in the same direction. Apart from the national error, state errors are independent, so regional patterns (for example, a miss shared by the Midwest) are not captured. All three omissions make the intervals narrower than they should be. The sensitivity table in What the Synthetic Voters Add shows how far the chance of Republican control moves when the two assumed error sizes change.
+
+### Validation and tests
+
+#### Leave-one-out check
+
+<!-- DRAFT (Claude): rewrite. Table written by scripts/16b-compare_runs.py after each run. -->
+With no election results yet, the only check of the combination is against polls. Each of the 25 polled states is hidden in turn; the bias, the uniform swing, and the variances are re-estimated from the other 24 states; and the hidden state's poll average is predicted three ways: from the synthetic voters alone, from 2024 plus the uniform swing, and from the inverse-variance combination. The table gives the mean absolute error, in percentage points of the two-party share, for the latest news run, and the share of polled states where the combination is closer than 2024 plus the swing. The target is a poll average rather than a result, so this measures agreement with polls, not accuracy; the same pooled errors are the last column of the Forecast by method table.
+
+{{< include data/03-results/comparison/leave_one_out.md >}}
+
+#### Tests
+
+As a test run, we used Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia's Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free). Five personas were drawn from each state with repeated sampling, and SSR embedding was conducted using a local embedding model (all-MiniLM-L6-v2).
+
+<!-- DRAFT (Claude): rewrite. -->
+There are two test suites, one for the simulated data (`scripts/01-test_simulated_data.py`, 33 tests) and one for each real run (`scripts/12-test_actual_data.py`, 61 tests). Both are written with pytest and pandera, and both use the same schemas (`scripts/schemas.py`), so the simulated data, which we wrote before any model was queried, set the standard the real data must meet. A schema states, for each table, the type, allowed values, and range of every column, which columns form a unique key, and rules across columns; pandera checks every row and reports all failures at once. The tests after the schemas check what one table cannot: that tables agree with each other. Tests that apply to each model or persona variable are run once per model or variable, so a failure names it.
+
+The tests target the ways a silicon-sampling forecast can go wrong without an error message. For the API responses, every prompt must have been sent to every model three times; each model's share of empty or failed calls must be below 10 per cent; every call must have asked for the configured model, and every answer must have come from that company (a changed model id within the company passes with a warning, since the model behind a name can change [@bisbee2024]); fewer than 1 per cent of answers may stop at the token limit or be shorter than 20 characters; every answered call must record its token counts, which the cost table uses; and all answers must be from the run's own date. For the scores, only answers with status "ok" may have probabilities, and those must lie between 0 and 1 and add up to 1, so a model that did not answer becomes a missing value that is left out rather than a zero that enters the forecast. For the forecast, no share may be missing, the two shares in a race must add up to 1, the winner must be the party with the larger share and on that state's ballot, and every draw must fill exactly 100 seats. For the combination with polls, every weight must be between 0 and 1, every variance positive, and every combined share between the two estimates it averages. We checked that the suite fails when it should by planting four errors in a copy of the 27 October data (a missing probability, probabilities adding to 1.3, race shares adding to more than 1, and answers from another provider); each was caught. In the workflow a failed test stops the forecast and the website from being published, while the paid answers are still saved.
+
+We chose the embedding model by checking SSR against 200 real answers from the full-run models (50 per model, all Florida personas, no news) on 26 October. Keyword rules ("vote for Nixon", "vote for Moody") identified 159 answers with a clear vote, and we counted those that SSR placed on the wrong side of 50 per cent of the two-party share. With the local all-MiniLM-L6-v2 model, 12 of 159 were misplaced, all of them stated Nixon votes that also named Moody ("I'd prefer her over Ashley Moody"), and the Florida Democratic share was 38 per cent. With Gemini Embedding 2, 1 of 159 was misplaced and the share was 41 per cent, so the smaller model understated the Democrat by about three points. Statements that named both candidates ("I will definitely vote for Nixon, not Moody") made both embedders worse (18 and 2 misplaced) by pulling clear answers toward the middle, so we kept single-candidate statements. Neither setup recovered indecision: answers saying they were undecided received an average p(other) of 0.14, and an answer leaning toward a candidate scored almost the same as a definite vote.
+
+### API costs and time {#costs}
+
+<!-- DRAFT (Claude): rewrite. Table written by scripts/16d-costs.py from the token counts saved by script 09. -->
+Each run sends 42,000 prompts: 3,500 personas, four models, three repeats. The table gives the calls, tokens, and cost of each run by model, priced at the OpenRouter list prices of 25 October (US dollars per million input and output tokens: Claude Haiku 5.5 and GPT-6 Luna 0.10 and 0.50, DeepSeek V4.1 Flash 0.30 and 1.20, Gemini 3.5 Flash-Lite 0.30 and 2.50), and the time from the first to the last call. DeepSeek is cheaper off-peak, so its cost is an upper bound.
+
+{{< include data/03-results/comparison/costs.md >}}
+
+[NOTE: add the costs that are not in the table, from the OpenRouter activity page: the SSR embeddings (Gemini Embedding 2, about 42,000 answers per run plus the anchor statements), the news screening and summaries (openai/gpt-4.1-nano), the test run on free models, and the total spent. The 27 October run hit the $10 workspace budget and was resumed; its saved answers run from 20:48 to 22:32 UTC.]
+
+## Discussion {#discussion}
+
+[NOTE: Discussion to write.]
+
+### Limitations
+
+Because polls enter the forecast, the forecast is no longer an independent test of the models. The bias, the structural variance, and the uniform swing are all estimated from the same 25 polled states, so they carry uncertainty of their own that the draws do not include. Inverse-variance weighting assumes that synthetic and poll errors are independent; if both miss in the same direction, the combined interval is too narrow. In the 10 unpolled states, the outside estimate assumes that every state moved the same distance from 2024, which ignores candidate effects, and the synthetic voters, who receive between a quarter and a half of the weight there, bring their own state-specific errors. In Kentucky, where many personas identify as Democrats but describe themselves as conservative, the combined Democratic share stayed several points above the 2024-plus-swing estimate [NOTE: check on the final run]. The 0.03 poll error beyond sampling is an assumption, so we also report results with 0.02 and 0.04. Polls have errors that are correlated across states [@shirani-mehr2018], which the shared national error captures only in part, and relying on one aggregator (PollResults) does not remove them.
+
+In order to apply SSR, we had to flatten the candidate choices in each state to 2 sides to create a scale from Democrat to Republican, or from Independent to Republican, depending on which party the candidates belonged to. As a result, minor candidates and "don't know" answers are not fully reflected in these results.
+
+Due to cost, we could not update the news summaries every day. Instead, news summaries were provided and the models were re-run on October 27th, 29th, and 31st. Murray and Alexander [-@murray2026] found that adding party identification to persona descriptions ultimately reduced the impact that news had on synthetic voting results. Further research could examine how different news diets, or differing amounts of news, affect synthetic voting results.
+
+Our original plan was to take data from multiple pollsters and divide them into a training set and a validation set. We would have used the training set to correct for bias in our model, and then compared the corrected results against aggregated results from the validation set. However, due to time constraints, we were unable to use this approach. We also have no real data to validate our model against, as the 2026 midterms have not yet occurred. As a partial substitute, we held out each polled state's polls in turn (see Internal Validation).
+
+Furthermore, several limitations arise from applying SSR, which Heath and Alexander applied to a scale of 0 to 100 ratings, to vote choice [@heath2026]. There is no fitted temperature, whereas Heath and Alexander fit theirs on their own data. Vote choice is not a scale, and our middle anchor is a separate category. We keep only the left, Republican, and other weights, which loses detail but fits a two-sided forecast.
+
+Finally, the combination could be extended. The bias and the structural variance could be allowed to differ by region or by how competitive a race is, the four models could be weighted against each other rather than reported separately, and the variances could be estimated jointly over the three news days rather than separately for each run.
+
+## References
+
+::: {#refs}
+:::
+
+**Design references** (website design only; not cited in the text)
+
+1. <https://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false>
+2. <https://www.politico.com/2024-election/results/senate/>
+3. <https://apps.npr.org/2024-election-results/senate.html>
+4. <https://newsinteractives.cbc.ca/elections/us/2024/results/>
+5. <https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/>
+
+## Appendix: Prompts {#prompts}
 
 For querying the models, each persona was described with the template below. An example persona description follows it.
 
@@ -66,20 +263,11 @@ Your household income is between $50,000 and $59,999. You are a political indepe
 Your political views are moderate.
 ```
 
-Each persona was then asked one of two questions. In Design B, the persona was asked the question below, where {kind} is "election" or "special election".
+Each persona was then asked the question below, where {kind} is "election" or "special election".
 
 ```text
 In the 2026 U.S. Senate {kind} in {state}, the candidates are {candidates}. How do you plan to vote,
 or do you plan not to vote? Answer in two or three sentences.
-```
-
-In Design C, the persona was asked the following question, where A and B follow the order in which the candidates' names were listed.
-
-```text
-Think of 100 people in {state} who share your background and views. In the 2026 U.S. Senate {kind},
-how many of those 100 would vote for A = {first}, how many for B = {second}, how many for another
-candidate, and how many would not vote? Reply with only JSON in this form:
-{"A": 0, "B": 0, "other": 0, "not_voting": 0}. The four numbers must add up to 100.
 ```
 
 For the news summaries, the following prompt was used.
@@ -98,96 +286,3 @@ Return valid JSON only (no Markdown, no escaped JSON string):
 {"articles":[{"id":0,"national":true,"election_relevant":true,"topic":"policy",
 "reason":"brief explanation","paragraph":"Short factual paragraph."}]}
 ```
-
-## Methods
-
-All results were generated from synthetic respondents. These are not survey results. The analysis was carried out in Python (version [X]) [@python], using the packages pandas [@mckinney2010], NumPy [@harris2020], pyarrow [@arrow], requests [@requests], matplotlib [@hunter2007], and sentence-transformers [@reimers2019]. This page was built with Quarto [@quarto].
-
-### Data
-
-To generate realistic digital twins, we first obtained respondent records from the 2024 Cooperative Election Study (CES), which includes 60,000 US adults [@ces2024guide]. Of these respondents, 38,307 were in one of the 35 states with a 2026 Senate race (33 regular elections and 2 special elections), and 23,025 of that subset were assigned a weight ("vvweight_post"), which we used as the probability of being drawn when sampling personas within each state. We kept the 21,211 of these respondents whom the CES validated as having voted in 2024. According to the 2024 CES Guide, "vvweight_post" is recommended for research that characterizes the opinions, behaviours, or traits of voters, where "vv" stands for "voter validated" [@ces2024guide]. The "post" designation indicates that the respondent is not only matched to a registration record but also completed both the pre-election and post-election waves of the study. We relied on "vvweight_post" because we were interested in voter behaviour, and because the features we chose to construct our personas were taken from both the pre- and post-election questionnaires.
-
-A known limitation of LLM synthetic voting is partisan bias that depends on the model [@murray2026; @pew2026]. As a remedy, we combined the synthetic votes with polling data obtained from PollResults, an open polling data platform that compiles and aggregates polls originally tracked by The New York Times pertaining to the Senate races [@pollresults2026], using inverse-variance weights (see Combining Synthetic Votes with Polls).
-
-News updates were summarized and taken from Google News with a focus on the following sources, which span the political spectrum: The New York Times, Washington Post, The Wall Street Journal, USA Today, Fox News, New York Post, The Daily Wire, HuffPost, Mother Jones, and Vox. Sources were selected based on both their viewership [CITATION NEEDED: viewership source] and their political leaning.
-
-### Personas
-
-We built each persona from seven variables: age, education, race, gender, household income, ideology, and party identification. Age was calculated by subtracting each respondent's birth year from 2024 and then sorting the result into four brackets: 18-29, 30-44, 45-64, and 65+. Education had six options: not finishing high school, a high school diploma, some college without a degree, a 2-year college degree, a 4-year college degree, and a post-graduate degree. Race was recorded as "White", "Black", "Hispanic", "Asian", or "Other". Gender was recorded as "man", "woman", "non-binary person", or "other". Household income had 16 brackets, from less than \$10,000 a year to \$500,000 or more, plus a "Prefer not to say" option. Ideology had five options, "Very liberal", "Liberal", "Moderate", "Conservative", and "Very conservative", plus "Not sure". Party identification had seven options, "Strong Democrat", "Weak Democrat", "Lean Democrat", "Independent", "Lean Republican", "Weak Republican", and "Strong Republican", plus "Not sure".
-
-### Mode Collapse
-
-An additional limitation of LLM synthetic voting is mode collapse. This is where an LLM generates responses that concentrate around the mode of the true distribution, which results in synthetic distributions with unrealistically low variance. The consequences include overconfident estimates and inaccurate power calculations [@heath2026]. As such, we used Semantic Similarity Rating (SSR).
-
-The anchors for SSR were adapted from Heath and Alexander [-@heath2026], with statements about vote choice in place of favourability. The five statements are "I will definitely vote for (left)", "I lean toward voting for (left)", "I am undecided, I will vote for someone else, or I will not vote", "I lean toward voting for (right)", and "I will definitely vote for (right)".
-
-For each persona's response, we calculated the cosine similarity between the response embedding and each embedded anchor point, which gave a list of five similarities per response [@heath2026]. Following Heath and Alexander [-@heath2026], we applied min-max normalization to scale the similarities to a 0 to 1 range, followed by a softmax function to turn the normalized similarities into probabilities. However, there are some differences from Heath and Alexander. Their digital twins rate their feelings toward four groups on a 0 to 100 thermometer, whereas ours are asked for their vote choice in a Senate race, so our five statements were modified for candidate choice rather than favourability. In addition, Heath and Alexander put the weights on the five anchors into a Gaussian kernel density estimate, which gives a smooth distribution over 0 to 100. We instead sum the softmax weights into three numbers, p_left, p_rep, and p_other, with no smoothing. We use a temperature of 0.25 and do not fit it on our own data, because we have no individual-level truth to fit against. Currently, Gemini Embedding 2 is the model that we use, but we use it symmetrically, whereas Heath and Alexander use it asymmetrically (confirm with group if we will change it).
-
-Something to note is that SSR was developed for ratings on an ordered scale from 0 to 100 [@heath2026]. Vote choice is not an ordered scale, and our middle anchor is a separate category and not a neutral point, so applying SSR to vote choice is our own adaptation.
-
-### Sampling
-
-Sampling was conducted by state, and 100 personas were sampled per state. Some states had fewer than 100 respondents with a weight in the 2024 CES data. These were Wyoming (52 validated voters with a weight) and Alaska (76). For consistency, sampling with replacement was used across all 35 states.
-
-### Prompts and models
-
-Each persona was asked how it would vote in its state's Senate race. Following Murray and Alexander [-@murray2026], we query 4 different models, as different LLMs have different biases. We also save model_returned and the query times, because Bisbee et al. [-@bisbee2024] state that the model behind a name can change even when the name stays the same. Candidate order was randomised for each persona.
-
-Design B asked the persona to provide a free-text answer, which was then sent to our embedding model. Every prompt was sent to the following models: [LIST MODELS USED HERE] via OpenRouter, 3 times each, at temperature [INSERT TEMPERATURE]. Below, we record the number of calls that failed or came back empty, by model: [MODEL 1: ], [MODEL 2: ], [MODEL 3: ], and [MODEL 4: ].
-
-A second design, Design C, asked the persona to think of 100 people in its state who share its background and views, and to say how many of those 100 would vote for each of the two main candidates, how many for another candidate, and how many would not vote. The four numbers they give must add up to 100, and the full wording is in the AI Prompts section. We implemented this design because Heath and Alexander compare SSR against a numeric prompt on a 0 to 100 scale [@heath2026]. Since Senate vote choice is divided into distinct categories, asking for numbers out of 100 gives us a numerical scale, which lets us compare Design B (free text scored with SSR) with a direct numeric design in the same way.
-
-### Turning Answers into Voting Probabilities
-
-For Design B, we used SSR [@maier2025; @heath2026]. We embedded each answer and the five statements written for that race, from "I will definitely vote for [Democrat]" to "I will definitely vote for [Republican]", with an undecided statement in the middle. We took the cosine similarity between the answer and each statement, rescaled the five values to 0 to 1, and applied a softmax with a temperature of 0.25. The two statements on each side were summed, which gives p(left), p(Republican), and p(other) for each answer. Heath and Alexander tested SSR on 0 to 100 ratings, so using it for vote choice is our adaptation. We used Gemini Embedding 2 (google/gemini-embedding-2) through OpenRouter, the model Heath and Alexander used, but in its symmetric mode: answers and statements were embedded the same way, whereas they embedded answers as queries and statements as documents. For Design C, we parsed the percentages and rescaled totals between 90 and 110 to 100. Answers that were empty, refused, or could not be parsed were counted and left out.
-
-### Combining Synthetic Votes with Polls
-
-For each state and model, the synthetic Democratic-side share is the mean p(left) divided by the sum of the mean p(left) and the mean p(Republican) over the state's 100 personas, and its sampling spread comes from resampling those personas 1,000 times with replacement. We combined this share with one outside estimate per state. In the 25 states with polls that named both nominees, the outside estimate is the poll average: polls ending within 45 days of the newest poll, one question per poll (likely voters preferred), weighted by sample size. In the 10 states without such polls (Colorado, Delaware, Kentucky, New Jersey, Oklahoma, Oregon, Tennessee, Virginia, West Virginia, and Wyoming, as of 26 October), the outside estimate is the 2024 Harris share of the two-party vote among CES respondents, weighted by "vvweight_post", plus a uniform swing equal to the mean difference between the poll average and that 2024 share across the polled states.
-
-The combination has two steps. First, we removed each model's bias, defined as the mean difference between its synthetic share and the poll average across the polled states. Second, we averaged the bias-corrected synthetic share $m^*$ and the outside estimate $t$ with weights proportional to the inverse of their variances, so that the noisier estimate counts for less: the combined share is $w t + (1 - w) m^*$, with $w = \sigma^2_m / (\sigma^2_m + \sigma^2_t)$, and its variance is $1 / (1/\sigma^2_m + 1/\sigma^2_t)$. The synthetic variance $\sigma^2_m$ is the persona bootstrap variance plus a structural variance, estimated from the polled states as the variance of $m^*$ minus the poll average, less the mean bootstrap and poll variances. The poll variance is the sampling variance $s(1 - s)/n$ plus an assumed $0.03^2$ for error beyond sampling [@shirani-mehr2018]. The variance of the uniform swing is estimated the same way, from how far the polled states fall from their 2024 share plus the swing. Draws are normal around the combined share, and a national error with a standard deviation of 0.03, shared by every state within a draw, is added so that state errors move together [@shirani-mehr2018]. Because the weights are estimated rather than chosen, $1 - w$ also measures how much each model adds once polls are available.
-
-[NOTE: numbers from the 26 October test run; update with the final run. The synthetic weight averaged 0.15 to 0.33 in polled states and 0.27 to 0.52 in unpolled states. Luna had the smallest structural error (standard deviation 0.023) and DeepSeek the largest (0.070). The chance of Republican control was 0.37 to 0.39 across models, against 0.89 to 0.96 from the synthetic voters alone and 0.36 to 0.42 from the shrinkage version.]
-
-We kept two other versions for comparison: the synthetic voters alone, and a shrinkage correction in which each polled state's gap to its polls is shrunk toward the mean gap with strength $k = 3$, and unpolled states take their 2024 share plus the uniform swing. In unpolled states the shrinkage version ignores the synthetic voters entirely, which is the main reason we chose inverse-variance weighting.
-
-### Testing and Checks
-
-As a test run, we used Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia's Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free). Five personas were drawn from each state with repeated sampling, and SSR embedding was conducted using a local embedding model (all-MiniLM-L6-v2).
-
-We also ran a simulation to understand how our final dataset would be constructed, with tests to evaluate its quality and legitimacy. For the candidates, we checked that each of the 35 races had 2 main candidates. For the personas, we checked that all labels and group designations followed the master list of options for each demographic category, that each state had the same number of personas with one ID each, that a repeated CES respondent stayed in one state and had identical answers each time, that there were no missing values, and that the 2024 presidential vote was not in the persona text. For the responses, we checked that the share of empty or failed answers per model was below the limit of 0.10, that every prompt was answered once per model and repeat, that there was one row per persona and design, and that each prompt named both candidates of its race. For the scores, we checked that probabilities were between 0 and 1 and added up to 1 where they existed, that only rows with status "ok" had probabilities and every row had a status, and that every state had at least one scored persona for every model (Design B).
-
-For the test forecast, we checked that each race, draw, and model had one winner and that it was the party with the larger share. We also checked that there were no missing shares, that all shares were between 0 and 1 and added up to 1, that the winner was a party running in that race (the left party of the state, or Republican), that every draw filled 100 seats, and that every state and model had the same number of draws.
-
-News summaries were obtained for the dates of October 27th, 29th, and 31st.
-
-We chose the embedding model by checking SSR against 200 real answers from the full-run models (50 per model, all Florida personas, no news) on 26 October. Keyword rules ("vote for Nixon", "vote for Moody") identified 159 answers with a clear vote, and we counted those that SSR placed on the wrong side of 50 per cent of the two-party share. With the local all-MiniLM-L6-v2 model, 12 of 159 were misplaced, all of them stated Nixon votes that also named Moody ("I'd prefer her over Ashley Moody"), and the Florida Democratic share was 38 per cent. With Gemini Embedding 2, 1 of 159 was misplaced and the share was 41 per cent, so the smaller model understated the Democrat by about three points. Statements that named both candidates ("I will definitely vote for Nixon, not Moody") made both embedders worse (18 and 2 misplaced) by pulling clear answers toward the middle, so we kept single-candidate statements. Neither setup recovered indecision: answers saying they were undecided received an average p(other) of 0.14, and an answer leaning toward a candidate scored almost the same as a definite vote.
-
-## Discussion
-
-## Limitations
-
-Because polls enter the forecast, the forecast is no longer an independent test of the models. The bias, the structural variance, and the uniform swing are all estimated from the same 25 polled states, so they carry uncertainty of their own that the draws do not include. Inverse-variance weighting assumes that synthetic and poll errors are independent; if both miss in the same direction, the combined interval is too narrow. In the 10 unpolled states, the outside estimate assumes that every state moved the same distance from 2024, which ignores candidate effects, and the synthetic voters, who receive between a quarter and a half of the weight there, bring their own state-specific errors. In Kentucky, where many personas identify as Democrats but describe themselves as conservative, the combined Democratic share stayed several points above the 2024-plus-swing estimate [NOTE: check on the final run]. The 0.03 poll error beyond sampling is an assumption, so we also report results with 0.02 and 0.04. Polls have errors that are correlated across states [@shirani-mehr2018], which the shared national error captures only in part, and relying on one aggregator (PollResults) does not remove them.
-
-In order to apply SSR, we had to flatten the candidate choices in each state to 2 sides to create a scale from Democrat to Republican, or from Independent to Republican, depending on which party the candidates belonged to. As a result, minor candidates and "don't know" answers are not fully reflected in these results.
-
-Due to cost, we could not update the news summaries every day. Instead, news summaries were provided and the models were re-run on October 27th, 29th, and 31st. Murray and Alexander [-@murray2026] found that adding party identification to persona descriptions ultimately reduced the impact that news had on synthetic voting results. Further research could examine how different news diets, or differing amounts of news, affect synthetic voting results.
-
-Our original plan was to take data from multiple pollsters and divide them into a training set and a validation set. We would have used the training set to correct for bias in our model, and then compared the corrected results against aggregated results from the validation set. However, due to time constraints, we were unable to use this approach. We also have no real data to validate our model against, as the 2026 midterms have not yet occurred. As a partial substitute, we held out each polled state's polls in turn (see Internal Validation).
-
-Furthermore, several limitations arise from applying SSR, which Heath and Alexander applied to a scale of 0 to 100 ratings, to vote choice [@heath2026]. There is no fitted temperature, whereas Heath and Alexander fit theirs on their own data. Vote choice is not a scale, and our middle anchor is a separate category. We keep only the left, Republican, and other weights, which loses detail but fits a two-sided forecast. SSR is meant to address the mode collapse problem, and we can test this by comparing Design B with Design C.
-
-Finally, the combination could be extended. The bias and the structural variance could be allowed to differ by region or by how competitive a race is, the four models could be weighted against each other rather than reported separately, and the variances could be estimated jointly over the three news days rather than separately for each run.
-
-## References
-
-::: {#refs}
-:::
-
-**Design references** (website design only; not cited in the text)
-
-1. <https://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false>
-2. <https://www.politico.com/2024-election/results/senate/>
-3. <https://apps.npr.org/2024-election-results/senate.html>
-4. <https://newsinteractives.cbc.ca/elections/us/2024/results/>
-5. <https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/>

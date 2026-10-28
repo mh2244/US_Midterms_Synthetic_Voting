@@ -208,10 +208,8 @@ for _, r in rep.head(5).iterrows():
 
 #### Figure ####
 # Two columns of panels; in each panel the black bar is the sample, the grey bar the expected share.
-INK, GREY = "#1a1a1a", "#b3b3b3"
-plt.rcParams.update({"font.family": "sans-serif",
-                     "font.sans-serif": ["Inter", "Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"],
-                     "font.size": 9})
+INK, GREY = config.INK, "#b3b3b3"
+config.use_site_style()            # shared graph theme: scripts/site.mplstyle
 fig_data = overall.copy()
 inc = fig_data["variable"] == LABELS["family_income"]
 fig_data.loc[inc, "category"] = fig_data.loc[inc, "category"].map(INCOME_BAND)
@@ -234,7 +232,6 @@ for i, (ax, var) in enumerate(zip(axes.flat, order)):
     ax.set_xticks(np.arange(0, xmax + 0.1, 25), [f"{v:.0f}%" for v in np.arange(0, xmax + 0.1, 25)])
     ax.set_title(LABELS[var].replace(" (not in the prompt)", "\n(not in the prompt)"), loc="left",
                  fontsize=10, fontweight="bold")
-    ax.grid(axis="x", color="#e4e4e4", lw=0.8)
     ax.set_axisbelow(True)
     ax.tick_params(length=0)
     ax.spines[["top", "right", "left"]].set_visible(False)

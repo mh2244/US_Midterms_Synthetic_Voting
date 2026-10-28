@@ -1,220 +1,406 @@
 #### Preamble ####
-# Purpose: Tests the REAL (non-simulated) candidates, personas, prompts, model answers, scores
-#          and forecast. It follows the style of scripts/01-test_simulated_data.py.
-# Author: (group)
-# Date: 22 October 2026
+# Purpose: Test suite for the REAL candidates, personas, prompts, model answers (the API
+#          responses), scores, forecast and combination with polls of one run, written with
+#          pytest (the standard Python test framework, the counterpart of R's testthat) and
+#          pandera (data validation, the counterpart of validate and pointblank). The simulated
+#          data have their own suite in scripts/01-test_simulated_data.py; both use the schemas in
+#          scripts/schemas.py, so the simulated and the real data meet the same rules.
+# Author: Kexin (Coco) Liu, from the group's assert version of 22 October
+# Date: 27 October 2026
 # License: MIT
-# Pre-requisites: Run scripts 06 to 11 first (script 09 can be run with --mock).
-# Any other information needed? Run from the project root:  python scripts/12-test_actual_data.py
-#   Each test is an `assert`. If one fails, the script stops and prints the message after the
-#   comma. Fix the data (or the earlier script), not the test.
+# Pre-requisites: Run scripts 06 to 11 for this RUN (and 16 for the crosstab tests).
+#   pip install pytest pandera (in requirements.txt).
+# Any other information needed? Run from the project root, either way:
+#   python scripts/12-test_actual_data.py                    (what GitHub Actions runs)
+#   python -m pytest scripts/12-test_actual_data.py -v       (one line per test)
+#   RUN selects the run, as in every script (export RUN=2026-10-27, or RUN=nonews).
+#   Every test has a docstring saying what it checks and why. If one fails, fix the data or the
+#   earlier script, not the test. In the workflow a failure stops the forecast and the website
+#   from being published, while the paid answers are still saved.
 #
-# WHY separate tests for actual data: the assignment asks for test suites for both simulated
-# and actual data, covering missing answers and shares that do not add up to 100%.
-
+# HOW the tests are organized
+#   1. Schemas          one test per table, using scripts/schemas.py
+#   2. Candidates and personas
+#   3. Prompts          one per persona, from this run, naming both candidates
+#   4. API responses    complete, from the requested model, not truncated, with tokens and times
+#   5. Scores           every call scored, every state scored by every model
+#   6. Forecast         the winner has the larger share, 100 seats per draw
+#   7. Combination with polls (script 11, --combine ivw) and the chamber summary
+#   8. Crosstabs (script 16)
 
 #### Workspace setup ####
+import sys
+import warnings
+
 import numpy as np
 import pandas as pd
+import pytest
 
 import config
+import schemas as S
 
-nominees = pd.read_csv(config.NOMINEES_FILE)
-personas = config.read_table(config.PERSONAS_FILE)
-prompts = config.read_table(config.PROMPTS_FILE)
-responses = config.read_table(config.RESPONSES_FILE)
-scores = config.read_table(config.SCORES_FILE)
-forecast = config.read_table(config.FORECAST_FILE)
-print(f"Testing run {config.RUN}")
+N_RACES = 35
+DEM_NOT_UP, REP_NOT_UP = 34, 31          # seats not up in 2026, as in script 11
+MODELS = list(config.MODELS)
+MAX_PROBLEM_RATE = 0.10                  # largest share of empty or failed answers accepted per model
+MAX_TRUNCATED_RATE = 0.01                # largest share of answers cut off at the token limit, per model
+MAX_SHORT_RATE = 0.01                    # largest share of scored answers under 20 characters, per model
+KEYS = ["draw", "state", "model"]
+CALL = ["prompt_id", "model", "repeat"]   # identifies one API call
 
-#### Settings used by the tests ####
-n_races = 35
-dem_not_up = 34          # seats not up in 2026 (same numbers as the simulation; check them)
-rep_not_up = 31
-max_problem_rate = 0.10  # largest share of empty or failed answers we accept per model
 
-allowed_labels = {
-    "age_group": ["18-29", "30-44", "45-64", "65+"],
-    "family_income": [
-        "Less than $10,000", "$10,000 - $19,999", "$20,000 - $29,999",
-        "$30,000 - $39,999", "$40,000 - $49,999", "$50,000 - $59,999",
-        "$60,000 - $69,999", "$70,000 - $79,999", "$80,000 - $99,999",
-        "$100,000 - $119,999", "$120,000 - $149,999", "$150,000 - $199,999",
-        "$200,000 - $249,999", "$250,000 - $349,999", "$350,000 - $499,999",
-        "$500,000 or more", "Prefer not to say"],
-    "education": ["No HS", "HS grad", "Some college", "2-year", "4-year", "Post-grad"],
-    "gender": ["Man", "Woman", "Non-binary", "Other"],
-    "race_5": ["White", "Black", "Hispanic", "Asian", "Other"],
-    "party_id_7": ["Strong Dem", "Weak Dem", "Lean Dem", "Independent",
-                   "Lean Rep", "Weak Rep", "Strong Rep", "Not sure"],
-    "ideology": ["Very liberal", "Liberal", "Moderate", "Conservative",
-                 "Very conservative", "Not sure"],
-}
-models = sorted(responses["model"].unique())
-n_per_state = personas.groupby("state").size().iloc[0]
+#### Data (read once for the whole suite) ####
+@pytest.fixture(scope="module")
+def nominees():
+    return pd.read_csv(config.NOMINEES_FILE)
 
-#### Test candidates ####
-# 1. 35 races, one row each, with two different names
-assert len(nominees) == n_races and nominees["state"].is_unique, "Expected 35 races, one row per state"
-assert nominees[["left_name", "rep_name"]].notna().all().all(), "A race has no left or Republican name"
-assert (nominees["left_name"] != nominees["rep_name"]).all(), "Left and Republican name are the same"
 
-# 2. Labels
-assert nominees["race_type"].isin(["regular", "special"]).all(), "Unexpected race_type"
-assert (nominees["race_type"] == "special").sum() == 2, "Expected 2 special elections (FL, OH)"
-assert nominees["left_party"].isin(["Democratic", "Independent"]).all(), "Unexpected left_party"
+@pytest.fixture(scope="module")
+def personas():
+    return config.read_table(config.PERSONAS_FILE)
 
-print("Candidates: all tests passed")
 
-#### Test personas ####
-# 3. Same number of personas in every state, one id each
-assert set(personas["state"]) == set(nominees["state"]), "Personas and races cover different states"
-assert (personas.groupby("state").size() == n_per_state).all(), "States have different numbers of personas"
-assert personas["persona_id"].is_unique, "Duplicate persona_id"
+@pytest.fixture(scope="module")
+def prompts():
+    return config.read_table(config.PROMPTS_FILE)
 
-# 4. A repeated CES respondent stays in one state and has identical answers each time
-assert (personas.groupby("caseid")["state"].nunique() == 1).all(), "A caseid appears in two states"
-for column in allowed_labels:
-    assert (personas.groupby("caseid")[column].nunique() == 1).all(), "A repeated caseid differs in " + column
-print("Personas that repeat an earlier draw:", int(personas.duplicated("caseid").sum()), "of", len(personas))
 
-# 5. No missing values; only allowed labels
-assert personas[list(allowed_labels)].notna().all().all(), "Missing value in a persona variable"
-for column in allowed_labels:
-    assert personas[column].isin(allowed_labels[column]).all(), "Unexpected label in " + column
+@pytest.fixture(scope="module")
+def responses():
+    r = config.read_table(config.RESPONSES_FILE)
+    r["error"] = r["error"].fillna("")
+    r["response_text"] = r["response_text"].fillna("")
+    return r
 
-# 6. The 2024 presidential vote is not in the persona text
-assert not personas["persona_text"].str.contains("Trump|Harris|president", case=False).any(), \
-    "Presidential vote leaked into persona_text"
-print("Personas: all tests passed")
 
-#### Test prompts ####
-# 7. One row per persona and design; each prompt names both candidates of its race
-assert prompts["prompt_id"].is_unique, "Duplicate prompt_id"
-assert set(prompts["persona_id"]) == set(personas["persona_id"]), "Prompts and personas differ"
-merged = prompts.merge(nominees, on="state")
-names_ok = merged.apply(lambda r: r["left_name"] in r["prompt_text"] and r["rep_name"] in r["prompt_text"], axis=1)
-assert names_ok.all(), "A prompt does not name both candidates of its race"
-print("Prompts: all tests passed")
+@pytest.fixture(scope="module")
+def scores():
+    return config.read_table(config.SCORES_FILE)
 
-#### Test responses ####
-# 8. Complete grid: every prompt answered once per model and repeat
-n_repeats = responses["repeat"].nunique()
-assert len(responses) == len(prompts) * len(models) * n_repeats, "Wrong number of responses"
-# Every prompt and answer belongs to this run (runs must never mix)
-assert prompts["run"].eq(config.RUN).all(), "Prompt run field does not match"
-assert responses["run"].eq(config.RUN).all(), "Response run field does not match"
-assert prompts["prompt_id"].str.endswith("|" + config.RUN).all(), "A prompt from another run"
-assert responses["prompt_id"].str.endswith("|" + config.RUN).all(), "An answer from another run"
-assert set(responses["prompt_id"]) <= set(prompts["prompt_id"]), "An answer has no matching prompt"
-# Dated runs must contain news; the baseline must not
-assert prompts["news"].eq(config.NEWS_RUN).all(), "News setting does not match the run"
-assert not responses.duplicated(["prompt_id", "model", "repeat"]).any(), "A prompt was answered twice"
 
-# 9. Share of empty or failed answers per model is below the limit
-responses["error"] = responses["error"].fillna("")
-problem = ((responses["response_text"].fillna("").str.strip() == "") | (responses["error"] != ""))
-problem_rate = problem.groupby(responses["model"]).mean()
-print("Empty or failed answer rate by model:")
-print(problem_rate.round(3))
-assert (problem_rate < max_problem_rate).all(), "A model has too many empty or failed answers"
+@pytest.fixture(scope="module")
+def scored_text(scores, responses):
+    """Each scored answer with its text."""
+    return scores[CALL + ["status"]].merge(responses[CALL + ["response_text"]], on=CALL)
 
-# 10. The exact model id and query time were saved
-assert responses["model_returned"].fillna("").ne("").all() or responses["error"].ne("").any(), "model_returned missing"
-assert responses["queried_at_utc"].notna().all(), "queried_at_utc missing"
-print("Responses: all tests passed")
 
-#### Test scores ####
-# 11. Probabilities are between 0 and 1 and add up to 1 where they exist
-ok = scores[scores["p_left"].notna()]
-assert ok[["p_left", "p_rep", "p_other"]].ge(0).all().all(), "Negative probability"
-assert np.isclose(ok[["p_left", "p_rep", "p_other"]].sum(axis=1), 1).all(), "Probabilities do not add up to 1"
+@pytest.fixture(scope="module")
+def forecast():
+    return config.read_table(config.FORECAST_FILE)
 
-# 12. Only rows with status "ok" have probabilities, and every row has a status
-assert scores["status"].isin(["ok", "refusal", "empty", "error", "bad_shares"]).all(), "Unexpected status"
-assert (scores.loc[scores["status"] != "ok", "p_left"].isna()).all(), "A row that is not ok has a probability"
-assert (scores.loc[scores["status"] == "ok", "p_left"].notna()).all(), "An ok row has no probability"
 
-# 13. Every state has at least one scored persona for every model (design B)
-counts = scores[(scores["design"] == "B") & scores["p_left"].notna()].groupby(["state", "model"]).size()
-assert len(counts) == n_races * len(models), "A state and model pair has no scored answers"
-print("Scores: all tests passed")
+@pytest.fixture(scope="module")
+def n_per_state(personas):
+    return int(personas.groupby("state").size().iloc[0])
 
-#### Test forecast ####
-keys = ["draw", "state", "model"]
 
-# 14. No missing shares; all between 0 and 1; shares add up to 1
-assert forecast["share"].notna().all(), "Missing share in forecast"
-assert forecast["share"].between(0, 1).all(), "Share outside 0 to 1"
-assert np.isclose(forecast.groupby(keys)["share"].sum(), 1).all(), "Shares do not add up to 1"
+@pytest.fixture(scope="module")
+def n_repeats(responses):
+    return int(responses["repeat"].nunique())
 
-# 15. One winner per race, draw and model, and it is the party with the larger share
-assert (forecast.groupby(keys)["winner"].nunique() == 1).all(), "More than one winner"
-#     (exact 50/50 ties are decided by a coin flip in script 11, so they are skipped here)
-untied = forecast.groupby(keys)["share"].transform("nunique") > 1
-top_rows = forecast[untied]
-top = top_rows.loc[top_rows.groupby(keys)["share"].idxmax()]
-assert (top["party"] == top["winner"]).all(), "Winner is not the party with the largest share"
-print("Exact ties handled by coin flip:", int((~untied).sum() // 2))
 
-# 16. The winner is a party running in that race (the left party of the state, or Republican)
-allowed = nominees.set_index("state")["left_party"]
-winners = forecast[["state", "winner"]].drop_duplicates()
-assert winners.apply(lambda r: r["winner"] in (allowed[r["state"]], "Republican"), axis=1).all(), \
-    "Winner is not running in that state"
+def answered(responses, model):
+    """One model's calls that came back without an error."""
+    return responses[(responses["error"] == "") & (responses["model"] == model)]
 
-# 17. Every state and model has the same number of draws
-draws = forecast.groupby(["state", "model"])["draw"].nunique()
-assert len(draws) == n_races * len(models), "A state and model pair is missing"
-assert draws.nunique() == 1, "States have different numbers of draws"
 
-# 18. Every draw fills 100 seats
-races_per_draw = forecast[["model", "draw", "state"]].drop_duplicates().groupby(["model", "draw"]).size()
-assert (races_per_draw + dem_not_up + rep_not_up == 100).all(), "Seats do not add up to 100"
-print("Forecast: all tests passed")
+#### 1. Schemas ####
+def test_schema_nominees(nominees):
+    """Races: 35 known states, one row each, two different names, 2 special elections."""
+    S.validate(S.nominees_schema(list(config.STATE_ABBR.values()), N_RACES), nominees)
 
-#### Test the combination with polls (script 11, --combine ivw) ####
-ivw_file = config.RUN_RESULTS / "ivw_weights.csv"
-chamber_file = config.RUN_RESULTS / "chamber_summary.csv"
-if chamber_file.exists() and "ivw" in set(pd.read_csv(chamber_file).get("combine", [])):
-    assert ivw_file.exists(), "The forecast used --combine ivw but ivw_weights.csv is missing"
-if ivw_file.exists():
-    ivw = pd.read_csv(ivw_file)
-    # 19. One row per state and model, with no missing inputs
-    assert not ivw.duplicated(["state", "model"]).any(), "A state and model appears twice in the weights"
-    assert len(ivw) == n_races * len(models), "A state and model pair has no weight"
-    assert ivw[["m_star", "t", "combined", "w_synthetic", "var_m", "var_t"]].notna().all().all(), \
-        "Missing value in the inverse-variance combination"
-    # 20. Weights between 0 and 1, variances positive, shares between 0 and 1
-    assert ivw["w_synthetic"].between(0, 1).all(), "Synthetic weight outside 0 to 1"
-    assert (ivw[["var_m", "var_t"]] > 0).all().all(), "A variance is not positive"
-    assert ivw["combined"].between(0, 1).all(), "Combined share outside 0 to 1"
-    # 21. The combined share lies between the two things it averages
+
+def test_schema_personas(personas, nominees, n_per_state):
+    """Personas: unique ids, only allowed labels, the same number in every state, a persona text,
+    and no CES weight left behind (so nobody is weighted twice)."""
+    S.validate(S.personas_schema(list(nominees["state"]), n_per_state, with_text=True), personas)
+
+
+def test_schema_prompts(prompts, personas):
+    """Prompts: unique ids, all from this run, with or without news as the run requires."""
+    schema = S.pa.DataFrameSchema({
+        "prompt_id": S.pa.Column(str, S.pa.Check.str_endswith("|" + config.RUN), unique=True),
+        "run": S.pa.Column(str, S.pa.Check.eq(config.RUN)),
+        "persona_id": S.pa.Column(str, S.pa.Check.isin(list(personas["persona_id"]))),
+        "news": S.pa.Column(bool, S.pa.Check.eq(config.NEWS_RUN)),
+        "prompt_text": S.pa.Column(str, S.pa.Check.str_length(min_value=100)),
+    })
+    S.validate(schema, prompts)
+
+
+def test_schema_responses(responses, personas, n_repeats):
+    """API responses: one row per prompt, model and repeat; known models; this run only;
+    non-negative token counts; a query time in ISO format."""
+    schema = S.pa.DataFrameSchema({
+        "prompt_id": S.pa.Column(str, S.pa.Check.str_endswith("|" + config.RUN)),
+        "run": S.pa.Column(str, S.pa.Check.eq(config.RUN)),
+        "persona_id": S.pa.Column(str, S.pa.Check.isin(list(personas["persona_id"]))),
+        "model": S.pa.Column(str, S.pa.Check.isin(MODELS)),
+        "repeat": S.pa.Column(int, S.pa.Check.in_range(1, n_repeats)),
+        "input_tokens": S.pa.Column(float, S.pa.Check.ge(0), nullable=True, coerce=True),
+        "output_tokens": S.pa.Column(float, S.pa.Check.ge(0), nullable=True, coerce=True),
+        "queried_at_utc": S.pa.Column(str, S.pa.Check.str_matches(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}")),
+    }, unique=CALL)
+    S.validate(schema, responses)
+
+
+def test_schema_scores(scores, personas, n_repeats):
+    """Scores: probabilities only for answers with status ok, between 0 and 1, adding up to 1.
+    This is the rule that stops a model that did not answer (an NA) from reaching the forecast."""
+    S.validate(S.scores_schema(MODELS, n_repeats, list(personas["persona_id"])), scores)
+
+
+def test_schema_forecast(forecast, nominees):
+    """Forecast: no missing shares, shares between 0 and 1 adding up to 1 (never above 100%),
+    two rows and one winner per race, draw and model."""
+    S.validate(S.forecast_schema(list(nominees["state"]), MODELS), forecast)
+
+
+#### 2. Candidates and personas ####
+def test_personas_cover_every_race(personas, nominees):
+    """Every race state has personas, and no persona lives in a state without a race."""
+    assert set(personas["state"]) == set(nominees["state"])
+
+
+def test_repeated_respondent_stays_in_one_state(personas):
+    """Sampling is with replacement within a state: a CES respondent may repeat, but in one state only."""
+    assert personas.groupby("caseid")["state"].nunique().eq(1).all(), "A caseid appears in two states"
+
+
+@pytest.mark.parametrize("column", list(S.PERSONA_LABELS))
+def test_repeated_respondent_is_identical(personas, column):
+    """A respondent drawn twice has the same value of every persona variable both times."""
+    assert personas.groupby("caseid")[column].nunique().eq(1).all(), f"A repeated caseid differs in {column}"
+
+
+def test_presidential_vote_not_in_persona_text(personas):
+    """The 2024 presidential vote is kept out of the prompt (it is used to check the answers), so
+    the persona text must not mention it."""
+    assert not personas["persona_text"].str.contains("Trump|Harris|president", case=False).any()
+
+
+#### 3. Prompts ####
+def test_one_prompt_per_persona(prompts, personas):
+    """Every persona has a prompt and every prompt belongs to a persona."""
+    assert set(prompts["persona_id"]) == set(personas["persona_id"])
+
+
+def test_prompt_names_both_candidates(prompts, nominees):
+    """Each prompt names both candidates of its own state's race, so no persona is asked about
+    the wrong race."""
+    m = prompts.merge(nominees, on="state")
+    ok = [a in t and b in t for a, b, t in zip(m["left_name"], m["rep_name"], m["prompt_text"])]
+    assert all(ok), f"{len(ok) - sum(ok)} prompts do not name both candidates"
+
+
+#### 4. API responses ####
+def test_complete_grid(responses, prompts, n_repeats):
+    """Every prompt was sent to every model the planned number of times, once each."""
+    assert n_repeats == config.N_REPEATS, f"{n_repeats} repeats, config says {config.N_REPEATS}"
+    assert sorted(responses["model"].unique()) == sorted(MODELS), "Wrong set of models"
+    assert len(responses) == len(prompts) * len(MODELS) * n_repeats, "Wrong number of responses"
+    assert set(responses["prompt_id"]) <= set(prompts["prompt_id"]), "An answer has no matching prompt"
+
+
+@pytest.mark.parametrize("model", MODELS)
+def test_problem_rate_below_limit(responses, model):
+    """Each model's share of empty or failed calls is below 10%."""
+    r = responses[responses["model"] == model]
+    rate = ((r["response_text"].str.strip() == "") | (r["error"] != "")).mean()
+    assert rate < MAX_PROBLEM_RATE, f"{model}: {rate:.1%} of calls empty or failed"
+
+
+@pytest.mark.parametrize("model", MODELS)
+def test_requested_model_is_the_configured_one(responses, model):
+    """Every call asked OpenRouter for the model id in config.MODELS."""
+    requested = responses.loc[responses["model"] == model, "model_requested"]
+    assert requested.eq(config.MODELS[model]).all(), f"{model}: requested {sorted(set(requested))}"
+
+
+@pytest.mark.parametrize("model", MODELS)
+def test_answer_came_from_the_requested_provider(responses, model):
+    """The model that answered comes from the company requested (the part of the id before "/").
+    If the exact id changed, the test passes with a warning, because a provider can update the
+    model behind a name (Bisbee et al. 2024)."""
+    r = answered(responses, model)
+    provider = config.MODELS[model].split("/")[0]
+    assert r["model_returned"].fillna("").str.startswith(provider + "/").all(), f"{model}: another provider answered"
+    other = sorted(set(r["model_returned"]) - {config.MODELS[model]})
+    if other:
+        warnings.warn(f"{model}: answers also came from {other}")
+
+
+@pytest.mark.parametrize("model", MODELS)
+def test_few_answers_cut_off(responses, model):
+    """Answers that stopped at the token limit (finish_reason "length") may be cut off
+    mid-sentence; fewer than 1% per model."""
+    rate = responses.loc[responses["model"] == model, "finish_reason"].eq("length").mean()
+    assert rate < MAX_TRUNCATED_RATE, f"{model}: {rate:.1%} of answers cut off"
+
+
+@pytest.mark.parametrize("model", MODELS)
+def test_tokens_recorded_for_answered_calls(responses, model):
+    """Every answered call has a positive input token count and an output count, which the cost
+    table (script 16d) relies on."""
+    r = answered(responses, model)
+    assert r["input_tokens"].gt(0).all() and r["output_tokens"].notna().all(), f"{model}: token counts missing"
+
+
+def test_queried_during_this_run(responses):
+    """Answers were collected within three days and, for a news day, not before that day, so
+    answers from another run cannot be mixed in."""
+    t = pd.to_datetime(responses["queried_at_utc"], utc=True)
+    assert t.max() - t.min() < pd.Timedelta(days=3), "Answers span more than three days"
+    if config.RUN != "nonews":
+        assert t.min().date() >= pd.Timestamp(config.RUN).date(), "An answer is older than the run"
+
+
+#### 5. Scores ####
+def test_every_response_is_scored(scores, responses):
+    """Scoring kept every call: a failed call gets a status, it is not dropped."""
+    assert len(scores) == len(responses)
+    assert scores[CALL].merge(responses[CALL], on=CALL).shape[0] == len(responses), "Scores and calls do not match"
+
+
+def test_scored_answers_have_text(scored_text):
+    """An answer counted as ok is never empty, so SSR always scored real text."""
+    assert (scored_text.loc[scored_text["status"] == "ok", "response_text"].str.strip() != "").all()
+
+
+@pytest.mark.parametrize("model", MODELS)
+def test_few_very_short_answers(scored_text, model):
+    """Fewer than 1% of a model's scored answers are under 20 characters: the prompt asks for two
+    or three sentences, and a very short answer is close to a refusal."""
+    ok = scored_text[(scored_text["status"] == "ok") & (scored_text["model"] == model)]
+    rate = ok["response_text"].str.strip().str.len().lt(20).mean()
+    assert rate < MAX_SHORT_RATE, f"{model}: {rate:.1%} of scored answers under 20 characters"
+
+
+@pytest.mark.parametrize("model", MODELS)
+def test_every_state_scored(scores, nominees, model):
+    """Every state has at least one scored persona for the model, so no state share is missing."""
+    counts = scores[(scores["model"] == model) & scores["p_left"].notna()].groupby("state").size()
+    missing = sorted(set(nominees["state"]) - set(counts.index))
+    assert not missing, f"{model}: no scored answers in {missing}"
+
+
+#### 6. Forecast ####
+def test_winner_has_the_larger_share(forecast):
+    """The winner is the party with the larger share (exact 50/50 ties are skipped: script 11
+    breaks them with a coin flip)."""
+    untied = forecast[forecast.groupby(KEYS)["share"].transform("nunique") > 1]
+    top = untied.loc[untied.groupby(KEYS)["share"].idxmax()]
+    assert (top["party"] == top["winner"]).all()
+
+
+def test_winner_is_running_in_that_race(forecast, nominees):
+    """The winner is the state's left party or the Republican, never a party not on the ballot."""
+    left = nominees.set_index("state")["left_party"]
+    w = forecast[["state", "winner"]].drop_duplicates()
+    assert ((w["winner"] == "Republican") | (w["winner"] == w["state"].map(left))).all()
+
+
+def test_same_number_of_draws_everywhere(forecast):
+    """Every state and model has the same number of draws, so seat counts use complete draws."""
+    draws = forecast.groupby(["state", "model"])["draw"].nunique()
+    assert len(draws) == N_RACES * len(MODELS) and draws.nunique() == 1
+
+
+def test_every_draw_fills_the_senate(forecast):
+    """With the 65 seats not up, every draw adds up to exactly 100 senators."""
+    races = forecast[["model", "draw", "state"]].drop_duplicates().groupby(["model", "draw"]).size()
+    assert (races + DEM_NOT_UP + REP_NOT_UP).eq(100).all(), "Seats do not add up to 100"
+
+
+#### 7. Combination with polls and the chamber summary ####
+@pytest.fixture(scope="module")
+def ivw():
+    path = config.RUN_RESULTS / "ivw_weights.csv"
+    if not path.exists():
+        pytest.skip("no ivw_weights.csv; run scripts/11-build_forecast.py without --combine")
+    return pd.read_csv(path)
+
+
+def test_ivw_file_exists_when_used():
+    """If the headline forecast was built with --combine ivw, its weights file must be saved."""
+    chamber = config.RUN_RESULTS / "chamber_summary.csv"
+    if chamber.exists() and "ivw" in set(pd.read_csv(chamber).get("combine", [])):
+        assert (config.RUN_RESULTS / "ivw_weights.csv").exists()
+
+
+def test_schema_ivw_weights(ivw, nominees):
+    """Inverse-variance weights: one row per state and model, no missing input, weights and shares
+    between 0 and 1, positive variances, and one of two outside estimates."""
+    schema = S.pa.DataFrameSchema({
+        "model": S.pa.Column(str, S.pa.Check.isin(MODELS)),
+        "state": S.pa.Column(str, S.pa.Check.isin(list(nominees["state"]))),
+        "source": S.pa.Column(str, S.pa.Check.isin(["poll", "2024 + swing"])),
+        "m_star": S.pa.Column(float),
+        "t": S.pa.Column(float),
+        "combined": S.pa.Column(float, S.prob),
+        "w_synthetic": S.pa.Column(float, S.prob),
+        "var_m": S.pa.Column(float, S.pa.Check.gt(0)),
+        "var_t": S.pa.Column(float, S.pa.Check.gt(0)),
+    }, unique=["model", "state"], checks=S.pa.Check(lambda d: len(d) == N_RACES * len(MODELS),
+                                                    error="a state and model pair has no weight"))
+    S.validate(schema, ivw)
+
+
+def test_combined_share_between_its_inputs(ivw):
+    """A weighted average lies between the two things it averages: the bias-corrected synthetic
+    share and the outside estimate."""
     lo = np.minimum(ivw["m_star"], ivw["t"]) - 1e-6
     hi = np.maximum(ivw["m_star"], ivw["t"]) + 1e-6
-    assert ivw["combined"].between(lo, hi).all(), "Combined share is not between synthetic and outside estimate"
-    # 22. Polled states use the poll average and unpolled states use 2024 + swing, nothing else
-    assert set(ivw["source"]) <= {"poll", "2024 + swing"}, "Unknown outside estimate"
-    assert ivw.groupby("state")["source"].nunique().eq(1).all(), "Models disagree on whether a state is polled"
-    print("Combination with polls: all tests passed")
-else:
-    print("Combination with polls: skipped (no ivw_weights.csv; run script 11 without --combine)")
+    assert ivw["combined"].between(lo, hi).all()
 
-#### Test crosstabs (script 16) ####
-cross_file = config.RUN_RESULTS / "crosstabs.csv"
-if cross_file.exists():
-    cross = pd.read_csv(cross_file)
+
+def test_models_agree_on_which_states_are_polled(ivw):
+    """Whether a state has polls does not depend on the model."""
+    assert ivw.groupby("state")["source"].nunique().eq(1).all()
+
+
+def test_chamber_summary():
+    """Chamber summary: one row per model, chances between 0 and 1, and Republican control and a
+    51-seat Democratic majority together in no more than 100% of draws."""
+    path = config.RUN_RESULTS / "chamber_summary.csv"
+    if not path.exists():
+        pytest.skip("no chamber_summary.csv")
+    schema = S.pa.DataFrameSchema({
+        "model": S.pa.Column(str, S.pa.Check.isin(MODELS), unique=True),
+        "dem_median": S.pa.Column(float, S.pa.Check.in_range(0, 100), coerce=True),
+        "rep_median": S.pa.Column(float, S.pa.Check.in_range(0, 100), coerce=True),
+        "p_rep_control": S.pa.Column(float, S.prob),
+        "p_dem_51_without_ind": S.pa.Column(float, S.prob),
+    }, checks=S.pa.Check(lambda d: (d["p_rep_control"] + d["p_dem_51_without_ind"]).le(1 + 1e-9).all(),
+                         error="the two chances add up to more than 1"))
+    S.validate(schema, pd.read_csv(path))
+
+
+#### 8. Crosstabs ####
+@pytest.fixture(scope="module")
+def cross():
+    path = config.RUN_RESULTS / "crosstabs.csv"
+    if not path.exists():
+        pytest.skip("no crosstabs.csv; run scripts/16-make_crosstabs.py")
+    return pd.read_csv(path)
+
+
+def test_crosstab_shares(cross):
+    """Crosstab shares are present and between 0 and 1."""
+    each = cross[cross["model"] != "mean of models"]
+    assert each[["share_2026", "lean_left"]].notna().all().all()
+    assert each[["share_2026", "lean_left"]].stack().between(0, 1).all()
+
+
+def test_crosstab_groups_complete(cross, personas):
+    """Every model is in every cell, and each variable's groups add up to all the personas."""
     each = cross[cross["model"] != "mean of models"]
     mean = cross[cross["model"] == "mean of models"]
-    # 23. Shares between 0 and 1 and none missing
-    assert each[["share_2026", "lean_left"]].notna().all().all(), "Missing crosstab share"
-    assert each[["share_2026", "lean_left"]].stack().between(0, 1).all(), "Crosstab share outside 0 to 1"
-    # 24. Every model is in every cell, and each variable's groups add up to all personas
-    assert each.groupby(["variable", "category"])["model"].nunique().eq(len(models)).all(), \
-        "A model is missing from a crosstab cell"
-    sums = mean.groupby("variable")["n_personas"].sum()
-    assert sums.eq(len(personas)).all(), "Crosstab groups do not add up to the number of personas"
-    print("Crosstabs: all tests passed")
-else:
-    print("Crosstabs: skipped (run scripts/16-make_crosstabs.py)")
-print("\nAll tests passed.")
+    assert each.groupby(["variable", "category"])["model"].nunique().eq(len(MODELS)).all()
+    assert mean.groupby("variable")["n_personas"].sum().eq(len(personas)).all()
+
+
+#### Run as a script ####
+if __name__ == "__main__":
+    print(f"Testing run {config.RUN}")
+    sys.exit(pytest.main([__file__, "-q", "-rfEw", "-p", "no:cacheprovider"]))
