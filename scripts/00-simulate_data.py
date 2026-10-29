@@ -15,20 +15,21 @@
 
 #### Workspace setup ####
 import os
+
 import numpy as np
 import pandas as pd
 
-np.random.seed(2026)          # same as SEED in config.py
+np.random.seed(2026)  # same as SEED in config.py
 
 os.makedirs("data/00-simulated_data", exist_ok=True)
 
 
 #### Settings ####
-n_per_state = 100             # same as N_PER_STATE in config.py
-models = ["haiku", "luna", "deepseek", "gemini"]   # short model names, same as MODELS in config.py
-n_repeats = 3                 # same as N_REPEATS in config.py
-n_draws = 1000                # same as N_DRAWS in config.py
-national_sd = 0.03            # same as NATIONAL_SD in config.py
+n_per_state = 100  # same as N_PER_STATE in config.py
+models = ["haiku", "luna", "deepseek", "gemini"]  # short model names, same as MODELS in config.py
+n_repeats = 3  # same as N_REPEATS in config.py
+n_draws = 1000  # same as N_DRAWS in config.py
+national_sd = 0.03  # same as NATIONAL_SD in config.py
 
 
 #### Races ####
@@ -37,9 +38,39 @@ national_sd = 0.03            # same as NATIONAL_SD in config.py
 # counted in n_others. We copy that here, including the three races where the left
 # candidate is an Independent (ID, NE, SD) and the races with extra candidates.
 regular_states = [
-    "AL", "AK", "AR", "CO", "DE", "GA", "ID", "IL", "IA", "KS", "KY",
-    "LA", "ME", "MA", "MI", "MN", "MS", "MT", "NE", "NH", "NJ", "NM",
-    "NC", "OK", "OR", "RI", "SC", "SD", "TN", "TX", "VA", "WV", "WY",
+    "AL",
+    "AK",
+    "AR",
+    "CO",
+    "DE",
+    "GA",
+    "ID",
+    "IL",
+    "IA",
+    "KS",
+    "KY",
+    "LA",
+    "ME",
+    "MA",
+    "MI",
+    "MN",
+    "MS",
+    "MT",
+    "NE",
+    "NH",
+    "NJ",
+    "NM",
+    "NC",
+    "OK",
+    "OR",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "VA",
+    "WV",
+    "WY",
 ]
 special_states = ["FL", "OH"]
 all_states = regular_states + special_states
@@ -49,24 +80,38 @@ independent_left = ["ID", "NE", "SD"]
 rows = []
 for state in all_states:
     left_party = "Independent" if state in independent_left else "Democratic"
-    rows.append({
-        "state": state,
-        "race_type": "special" if state in special_states else "regular",
-        "left_name": state + " " + left_party + " candidate",   # fake names
-        "left_party": left_party,
-        "rep_name": state + " Republican candidate",
-        "n_others": np.random.randint(0, 4),
-    })
+    rows.append(
+        {
+            "state": state,
+            "race_type": "special" if state in special_states else "regular",
+            "left_name": state + " " + left_party + " candidate",  # fake names
+            "left_party": left_party,
+            "rep_name": state + " Republican candidate",
+            "n_others": np.random.randint(0, 4),
+        }
+    )
 
 nominees = pd.DataFrame(rows)
 
 # Long version: one row per candidate, like data/02-analysis_data/candidates_clean.csv
 rows = []
 for _, race in nominees.iterrows():
-    rows.append({"state": race["state"], "race_type": race["race_type"],
-                 "name": race["left_name"], "party": race["left_party"]})
-    rows.append({"state": race["state"], "race_type": race["race_type"],
-                 "name": race["rep_name"], "party": "Republican"})
+    rows.append(
+        {
+            "state": race["state"],
+            "race_type": race["race_type"],
+            "name": race["left_name"],
+            "party": race["left_party"],
+        }
+    )
+    rows.append(
+        {
+            "state": race["state"],
+            "race_type": race["race_type"],
+            "name": race["rep_name"],
+            "party": "Republican",
+        }
+    )
 
 candidates = pd.DataFrame(rows)
 
@@ -75,30 +120,40 @@ candidates = pd.DataFrame(rows)
 # Labels copied from the CES columns we use (same as script 07)
 age_groups = ["18-29", "30-44", "45-64", "65+"]
 family_incomes = [
-    "Less than $10,000", "$10,000 - $19,999", "$20,000 - $29,999",
-    "$30,000 - $39,999", "$40,000 - $49,999", "$50,000 - $59,999",
-    "$60,000 - $69,999", "$70,000 - $79,999", "$80,000 - $99,999",
-    "$100,000 - $119,999", "$120,000 - $149,999", "$150,000 - $199,999",
-    "$200,000 - $249,999", "$250,000 - $349,999", "$350,000 - $499,999",
-    "$500,000 or more", "Prefer not to say",
+    "Less than $10,000",
+    "$10,000 - $19,999",
+    "$20,000 - $29,999",
+    "$30,000 - $39,999",
+    "$40,000 - $49,999",
+    "$50,000 - $59,999",
+    "$60,000 - $69,999",
+    "$70,000 - $79,999",
+    "$80,000 - $99,999",
+    "$100,000 - $119,999",
+    "$120,000 - $149,999",
+    "$150,000 - $199,999",
+    "$200,000 - $249,999",
+    "$250,000 - $349,999",
+    "$350,000 - $499,999",
+    "$500,000 or more",
+    "Prefer not to say",
 ]
 educations = ["No HS", "HS grad", "Some college", "2-year", "4-year", "Post-grad"]
 genders = ["Man", "Woman", "Non-binary", "Other"]
 race_groups = ["White", "Black", "Hispanic", "Asian", "Other"]
-ideologies = ["Very liberal", "Liberal", "Moderate", "Conservative",
-              "Very conservative", "Not sure"]
+ideologies = ["Very liberal", "Liberal", "Moderate", "Conservative", "Very conservative", "Not sure"]
 
 # party_id_7 grouped into three "sides". Leaners go with the party they lean to.
 party_labels = {
-    "dem":    ["Strong Dem", "Weak Dem", "Lean Dem"],
-    "rep":    ["Strong Rep", "Weak Rep", "Lean Rep"],
+    "dem": ["Strong Dem", "Weak Dem", "Lean Dem"],
+    "rep": ["Strong Rep", "Weak Rep", "Lean Rep"],
     "middle": ["Independent", "Not sure"],
 }
 
 # Ideology depends on side, so our fake people are plausible
 ideology_probs = {
-    "dem":    [0.25, 0.40, 0.25, 0.04, 0.01, 0.05],
-    "rep":    [0.01, 0.04, 0.25, 0.40, 0.25, 0.05],
+    "dem": [0.25, 0.40, 0.25, 0.04, 0.01, 0.05],
+    "rep": [0.01, 0.04, 0.25, 0.40, 0.25, 0.05],
     "middle": [0.05, 0.10, 0.45, 0.10, 0.05, 0.25],
 }
 
@@ -118,21 +173,23 @@ for state in all_states:
 
     pool_size = np.random.randint(50, 1000)
 
-    for i in range(pool_size):
+    for _i in range(pool_size):
         side = np.random.choice(["dem", "rep", "middle"], p=[p_dem, p_rep, p_mid])
 
-        rows.append({
-            "caseid": caseid,
-            "state": state,
-            "vvweight_post": np.random.uniform(0.1, 3),
-            "age_group": np.random.choice(age_groups, p=[0.15, 0.25, 0.35, 0.25]),
-            "family_income": np.random.choice(family_incomes),
-            "education": np.random.choice(educations, p=[0.05, 0.25, 0.20, 0.10, 0.25, 0.15]),
-            "gender": np.random.choice(genders, p=[0.48, 0.50, 0.01, 0.01]),
-            "race_5": np.random.choice(race_groups, p=[0.65, 0.12, 0.12, 0.05, 0.06]),
-            "party_id_7": np.random.choice(party_labels[side]),
-            "ideology": np.random.choice(ideologies, p=ideology_probs[side]),
-        })
+        rows.append(
+            {
+                "caseid": caseid,
+                "state": state,
+                "vvweight_post": np.random.uniform(0.1, 3),
+                "age_group": np.random.choice(age_groups, p=[0.15, 0.25, 0.35, 0.25]),
+                "family_income": np.random.choice(family_incomes),
+                "education": np.random.choice(educations, p=[0.05, 0.25, 0.20, 0.10, 0.25, 0.15]),
+                "gender": np.random.choice(genders, p=[0.48, 0.50, 0.01, 0.01]),
+                "race_5": np.random.choice(race_groups, p=[0.65, 0.12, 0.12, 0.05, 0.06]),
+                "party_id_7": np.random.choice(party_labels[side]),
+                "ideology": np.random.choice(ideologies, p=ideology_probs[side]),
+            }
+        )
         caseid = caseid + 1
 
 ces_pool = pd.DataFrame(rows)
@@ -171,18 +228,18 @@ personas = personas[["persona_id"] + [c for c in personas.columns if c != "perso
 
 # Average probabilities (p_left, p_rep, p_other) for each side
 base_probs = {
-    "dem":    [0.80, 0.08, 0.12],
-    "rep":    [0.08, 0.80, 0.12],
+    "dem": [0.80, 0.08, 0.12],
+    "rep": [0.08, 0.80, 0.12],
     "middle": [0.35, 0.35, 0.30],
 }
 
 # How often each model's answer cannot be scored. Planted on purpose for the tests.
 # The rates differ by model so the tests can show that they are reported per model.
 status_rates = {
-    "haiku":    {"refusal": 0.03, "empty": 0.01, "error": 0.01},
-    "luna":     {"refusal": 0.02, "empty": 0.01, "error": 0.01},
+    "haiku": {"refusal": 0.03, "empty": 0.01, "error": 0.01},
+    "luna": {"refusal": 0.02, "empty": 0.01, "error": 0.01},
     "deepseek": {"refusal": 0.01, "empty": 0.02, "error": 0.02},
-    "gemini":   {"refusal": 0.01, "empty": 0.04, "error": 0.01},
+    "gemini": {"refusal": 0.01, "empty": 0.04, "error": 0.01},
 }
 
 # Look up which side each party_id_7 label belongs to
@@ -224,19 +281,21 @@ for model in models:
                 labels = [left_party_of[person["state"]], "Republican", "Undecided"]
                 vote_choice = labels[int(np.argmax([p_left, p_rep, p_other]))]
 
-            rows.append({
-                "persona_id": person["persona_id"],
-                "caseid": person["caseid"],
-                "state": person["state"],
-                "design": "B",
-                "model": model,
-                "repeat": repeat,
-                "status": status,
-                "p_left": p_left,
-                "p_rep": p_rep,
-                "p_other": p_other,
-                "vote_choice": vote_choice,
-            })
+            rows.append(
+                {
+                    "persona_id": person["persona_id"],
+                    "caseid": person["caseid"],
+                    "state": person["state"],
+                    "design": "B",
+                    "model": model,
+                    "repeat": repeat,
+                    "status": status,
+                    "p_left": p_left,
+                    "p_rep": p_rep,
+                    "p_other": p_other,
+                    "vote_choice": vote_choice,
+                }
+            )
 
 scores = pd.DataFrame(rows)
 
@@ -265,7 +324,7 @@ for model in models:
         left_party = left_party_of[state]
 
         for draw in range(1, n_draws + 1):
-            idx = np.random.randint(0, len(sub), size=len(sub))   # resample personas
+            idx = np.random.randint(0, len(sub), size=len(sub))  # resample personas
             mean_left = left[idx].mean()
             mean_rep = rep[idx].mean()
             share = mean_left / (mean_left + mean_rep)
@@ -275,10 +334,26 @@ for model in models:
             # continuous probabilities an exact tie practically never happens.
             winner = left_party if share > 0.5 else "Republican"
 
-            rows.append({"draw": draw, "state": state, "model": model,
-                         "party": left_party, "share": share, "winner": winner})
-            rows.append({"draw": draw, "state": state, "model": model,
-                         "party": "Republican", "share": 1 - share, "winner": winner})
+            rows.append(
+                {
+                    "draw": draw,
+                    "state": state,
+                    "model": model,
+                    "party": left_party,
+                    "share": share,
+                    "winner": winner,
+                }
+            )
+            rows.append(
+                {
+                    "draw": draw,
+                    "state": state,
+                    "model": model,
+                    "party": "Republican",
+                    "share": 1 - share,
+                    "winner": winner,
+                }
+            )
 
 forecast = pd.DataFrame(rows)
 

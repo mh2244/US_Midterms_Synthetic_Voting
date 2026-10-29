@@ -15,6 +15,7 @@ Or:  python3 clean_pollresults.py path/to/senate_polls_all.csv
 Uses only the Python standard library. The original download is not modified.
 One output row remains one answer within a poll question, not one entire poll.
 """
+
 import argparse
 import csv
 from datetime import datetime
@@ -57,7 +58,13 @@ def iso_date(value):
 def clean(input_file, output_file):
     with input_file.open(encoding="utf-8-sig", newline="") as file:
         reader = csv.DictReader(file)
-        missing = set(COLUMNS) | {"poll_cycle", "question_stage", "result_candidateName", "result_answer", "poll_url"}
+        missing = set(COLUMNS) | {
+            "poll_cycle",
+            "question_stage",
+            "result_candidateName",
+            "result_answer",
+            "poll_url",
+        }
         missing -= set(reader.fieldnames or [])
         if missing:
             raise ValueError(f"Missing expected input columns: {', '.join(sorted(missing))}")
@@ -70,9 +77,14 @@ def clean(input_file, output_file):
             row = {new: original[old] for old, new in COLUMNS.items()}
             # Preserve non-candidate answers such as Don't know and Would not vote.
             row["response_name"] = original["result_candidateName"] or original["result_answer"]
-            row["source_url"] = next((original.get(key) for key in (
-                "poll_urlTopline", "poll_url", "poll_urlArticle", "poll_urlCrosstab"
-            ) if original.get(key)), "")
+            row["source_url"] = next(
+                (
+                    original.get(key)
+                    for key in ("poll_urlTopline", "poll_url", "poll_urlArticle", "poll_urlCrosstab")
+                    if original.get(key)
+                ),
+                "",
+            )
             for key in ("start_date", "end_date"):
                 row[key] = iso_date(row[key].strip())
             rows.append(row)

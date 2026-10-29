@@ -54,16 +54,23 @@ import requests
 
 import config
 
-URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")   # override is for testing only
+URL = os.environ.get(
+    "OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions"
+)  # override is for testing only
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--models", default=",".join(config.MODELS), help="short names from config.MODELS")
 ap.add_argument("--repeats", type=int, default=config.N_REPEATS)
 ap.add_argument("--limit", type=int, default=None, help="stop after this many new calls")
-ap.add_argument("--sleep", type=float, default=3.2,
-                help="minimum average seconds per call (3.2 = under 20 a minute); use 0 on a paid model")
-ap.add_argument("--batch-size", type=int, default=1,
-                help="send this many requests at the same time (1 = one at a time)")
+ap.add_argument(
+    "--sleep",
+    type=float,
+    default=3.2,
+    help="minimum average seconds per call (3.2 = under 20 a minute); use 0 on a paid model",
+)
+ap.add_argument(
+    "--batch-size", type=int, default=1, help="send this many requests at the same time (1 = one at a time)"
+)
 ap.add_argument("--max-tokens", type=int, default=800)
 ap.add_argument("--mock", action="store_true", help="fake answers, no internet")
 args = ap.parse_args()
@@ -77,17 +84,29 @@ class StopRun(Exception):
 
 def call_openrouter(key, model_id, prompt_text):
     """One chat call. Returns a dict; never raises for ordinary failures."""
-    headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json",
-               "X-Title": "Senate silicon sampling class project"}
-    body = {"model": model_id, "max_tokens": args.max_tokens,
-            "messages": [{"role": "user", "content": prompt_text}]}
+    headers = {
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "X-Title": "Senate silicon sampling class project",
+    }
+    body = {
+        "model": model_id,
+        "max_tokens": args.max_tokens,
+        "messages": [{"role": "user", "content": prompt_text}],
+    }
     settings = getattr(config, "REASONING", None) or {}
     short = {v: k for k, v in config.MODELS.items()}.get(model_id)
     reasoning = settings.get(short, settings.get("default"))
     if reasoning is not None:
-        body["reasoning"] = reasoning   # see config.py: thinking off (or minimal) to save output tokens
-    out = {"response_text": "", "model_returned": "", "input_tokens": None,
-           "output_tokens": None, "finish_reason": "", "error": ""}
+        body["reasoning"] = reasoning  # see config.py: thinking off (or minimal) to save output tokens
+    out = {
+        "response_text": "",
+        "model_returned": "",
+        "input_tokens": None,
+        "output_tokens": None,
+        "finish_reason": "",
+        "error": "",
+    }
     for attempt in range(4):
         try:
             r = requests.post(URL, headers=headers, json=body, timeout=120)
@@ -133,14 +152,19 @@ def call_openrouter(key, model_id, prompt_text):
         if not text:
             error = "empty_content"
         elif finish == "length":
-            error = "truncated (finish_reason=length)"     # cut off by max_tokens; not scored
+            error = "truncated (finish_reason=length)"  # cut off by max_tokens; not scored
         elif finish == "error":
             error = "provider error (finish_reason=error)"  # stream broke mid-answer; not scored
         else:
             error = ""
-        out.update(response_text=text, model_returned=data.get("model", ""),
-                   input_tokens=usage.get("prompt_tokens"), output_tokens=usage.get("completion_tokens"),
-                   finish_reason=finish, error=error)
+        out.update(
+            response_text=text,
+            model_returned=data.get("model", ""),
+            input_tokens=usage.get("prompt_tokens"),
+            output_tokens=usage.get("completion_tokens"),
+            finish_reason=finish,
+            error=error,
+        )
         return out
     return out
 
@@ -179,14 +203,23 @@ def mock_answer(prompt_text, design, model, seed_text):
     if u < 0.12:
         return "I haven't decided yet, and I might not vote at all."
     if side == "left":
-        return (f"I plan to vote for {left_name}, the {left_desc} candidate. "
-                "I agree with that side on most issues." if u < 0.7 else
-                f"I am leaning toward {left_name}, the {left_desc} candidate, though I am not fully sure.")
+        return (
+            f"I plan to vote for {left_name}, the {left_desc} candidate. "
+            "I agree with that side on most issues."
+            if u < 0.7
+            else f"I am leaning toward {left_name}, the {left_desc} candidate, though I am not fully sure."
+        )
     if side == "right":
-        return (f"I will vote for {rep_name}, the Republican candidate. That is who I have supported before."
-                if u < 0.7 else f"I lean toward {rep_name}, the Republican candidate, but I am still thinking.")
-    return (f"I am undecided, but I may lean toward {left_name}." if u < 0.5
-            else f"I am torn, but I may lean toward {rep_name}, the Republican candidate.")
+        return (
+            f"I will vote for {rep_name}, the Republican candidate. That is who I have supported before."
+            if u < 0.7
+            else f"I lean toward {rep_name}, the Republican candidate, but I am still thinking."
+        )
+    return (
+        f"I am undecided, but I may lean toward {left_name}."
+        if u < 0.5
+        else f"I am torn, but I may lean toward {rep_name}, the Republican candidate."
+    )
 
 
 #### Work out what still needs asking ####
@@ -211,10 +244,17 @@ except (FileNotFoundError, OSError):
     kept = pd.DataFrame()
 
 done = set(zip(kept["prompt_id"], kept["model"], kept["repeat"])) if len(kept) else set()
-todo = [(rep, m, p) for rep in range(1, args.repeats + 1) for m in short_names
-        for p in prompts.itertuples() if (p.prompt_id, m, rep) not in done]
-print(f"{len(prompts)} prompts x {len(short_names)} models x {args.repeats} repeats; "
-      f"{len(done)} already answered, {len(todo)} to do")
+todo = [
+    (rep, m, p)
+    for rep in range(1, args.repeats + 1)
+    for m in short_names
+    for p in prompts.itertuples()
+    if (p.prompt_id, m, rep) not in done
+]
+print(
+    f"{len(prompts)} prompts x {len(short_names)} models x {args.repeats} repeats; "
+    f"{len(done)} already answered, {len(todo)} to do"
+)
 required_calls = len(todo)  # count all unfinished work before applying a pilot limit
 if args.limit is not None:
     todo = todo[: args.limit]
@@ -229,14 +269,16 @@ if not args.mock:
 #### Ask ####
 new_rows, errors_in_a_row = [], 0
 FAILED_LOG = config.RUN_DIR / "failed_calls.csv"
-logged = 0                                  # how many of new_rows are already in the failure log
+logged = 0  # how many of new_rows are already in the failure log
 stopped = False
 
 
 def save():
     """Write all answers so far, and append new failed calls to the failure log."""
     global logged
-    frame = pd.concat([kept, pd.DataFrame(new_rows)], ignore_index=True) if len(kept) else pd.DataFrame(new_rows)
+    frame = (
+        pd.concat([kept, pd.DataFrame(new_rows)], ignore_index=True) if len(kept) else pd.DataFrame(new_rows)
+    )
     if len(frame):
         config.write_table(frame, config.RESPONSES_FILE)
     fresh = pd.DataFrame(new_rows[logged:])
@@ -252,9 +294,14 @@ def ask_one(item):
     """Get one result (mock or real) for one to-do item."""
     rep, short, p = item
     if args.mock:
-        result = {"response_text": mock_answer(p.prompt_text, p.design, short, p.prompt_id),
-                  "model_returned": "MOCK-" + config.MODELS[short], "input_tokens": 0,
-                  "output_tokens": 0, "finish_reason": "stop", "error": ""}
+        result = {
+            "response_text": mock_answer(p.prompt_text, p.design, short, p.prompt_id),
+            "model_returned": "MOCK-" + config.MODELS[short],
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "finish_reason": "stop",
+            "error": "",
+        }
         if not result["response_text"]:
             result["error"] = "empty_content"
         return result
@@ -266,25 +313,39 @@ try:
     batch = max(1, args.batch_size)
     with ThreadPoolExecutor(max_workers=batch) as pool:
         for start in range(0, len(todo), batch):
-            chunk = todo[start:start + batch]
+            chunk = todo[start : start + batch]
             t0 = time.time()
-            futures = [pool.submit(ask_one, item) for item in chunk]    # the whole group is sent at once
+            futures = [pool.submit(ask_one, item) for item in chunk]  # the whole group is sent at once
             stop_signal = None
-            for (rep, short, p), fut in zip(chunk, futures):            # results are matched back by position
+            for (rep, short, p), fut in zip(chunk, futures):  # results are matched back by position
                 try:
                     result = fut.result()
                 except StopRun as stop:
-                    stop_signal = stop                                   # keep the answers that did arrive
+                    stop_signal = stop  # keep the answers that did arrive
                     continue
-                except Exception as exc:                                 # never lose the rest of the batch
-                    result = {"response_text": "", "model_returned": "", "input_tokens": None,
-                              "output_tokens": None, "finish_reason": "",
-                              "error": f"unexpected ({type(exc).__name__}): {str(exc)[:150]}"}
-                new_rows.append({
-                    "prompt_id": p.prompt_id, "run": config.RUN, "persona_id": p.persona_id,
-                    "state": p.state, "design": p.design,
-                    "model": short, "model_requested": config.MODELS[short], "repeat": rep,
-                    "queried_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), **result})
+                except Exception as exc:  # never lose the rest of the batch
+                    result = {
+                        "response_text": "",
+                        "model_returned": "",
+                        "input_tokens": None,
+                        "output_tokens": None,
+                        "finish_reason": "",
+                        "error": f"unexpected ({type(exc).__name__}): {str(exc)[:150]}",
+                    }
+                new_rows.append(
+                    {
+                        "prompt_id": p.prompt_id,
+                        "run": config.RUN,
+                        "persona_id": p.persona_id,
+                        "state": p.state,
+                        "design": p.design,
+                        "model": short,
+                        "model_requested": config.MODELS[short],
+                        "repeat": rep,
+                        "queried_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                        **result,
+                    }
+                )
                 real_error = result["error"] and result["error"] != "empty_content"
                 errors_in_a_row = errors_in_a_row + 1 if real_error else 0
                 if errors_in_a_row >= 5 and stop_signal is None:
@@ -297,7 +358,7 @@ try:
                 since_save = 0
             if stop_signal is not None:
                 raise stop_signal
-            if not args.mock:                                            # stay under the per-minute limit
+            if not args.mock:  # stay under the per-minute limit
                 time.sleep(max(0.0, len(chunk) * args.sleep - (time.time() - t0)))
 except StopRun as stop:
     stopped = True
@@ -319,7 +380,9 @@ print(f"Saved to {config.RESPONSES_FILE}")
 completed_calls = sum(not row["error"] and bool(row["response_text"].strip()) for row in new_rows)
 remaining_calls = required_calls - completed_calls
 if stopped or remaining_calls:
-    print(f"INCOMPLETE: {remaining_calls} calls still need successful answers. "
-          "Progress saved; rerun 09 with the same prompts to continue.")
+    print(
+        f"INCOMPLETE: {remaining_calls} calls still need successful answers. "
+        "Progress saved; rerun 09 with the same prompts to continue."
+    )
     sys.exit(1)
 print("COMPLETE: all requested prompts/models/repeats have successful answers.")

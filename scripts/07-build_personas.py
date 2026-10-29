@@ -67,11 +67,20 @@ IDEOLOGY_TEXT = {
     "Very conservative": "Your political views are very conservative.",
     "Not sure": "You are not sure how to describe your political views.",
 }
-RACE_TEXT = {"White": "white", "Black": "Black", "Hispanic": "Hispanic", "Asian": "Asian",
-             "Other": "mixed-race or other-race"}
+RACE_TEXT = {
+    "White": "white",
+    "Black": "Black",
+    "Hispanic": "Hispanic",
+    "Asian": "Asian",
+    "Other": "mixed-race or other-race",
+}
 GENDER_TEXT = {"Man": "man", "Woman": "woman", "Non-binary": "non-binary person", "Other": "person"}
-AGE_TEXT = {"18-29": "aged 18 to 29", "30-44": "aged 30 to 44", "45-64": "aged 45 to 64",
-            "65+": "aged 65 or older"}
+AGE_TEXT = {
+    "18-29": "aged 18 to 29",
+    "30-44": "aged 30 to 44",
+    "45-64": "aged 45 to 64",
+    "65+": "aged 65 or older",
+}
 
 
 def income_text(bracket):
@@ -101,7 +110,7 @@ def persona_text(row):
 def kish_neff(w):
     """Effective sample size (sum of weights)^2 / sum of squared weights."""
     w = np.asarray(w, dtype=float)
-    return float(w.sum() ** 2 / (w ** 2).sum())
+    return float(w.sum() ** 2 / (w**2).sum())
 
 
 #### Build the pool ####
@@ -111,10 +120,12 @@ states = list(nominees["state"])
 ces = pd.read_csv(config.CES_FILE, low_memory=False)
 pool = ces[ces["state"].isin(states) & ces["vvweight_post"].notna() & (ces["vvweight_post"] > 0)].copy()
 n_registered = len(pool)
-pool = pool[pool["validated_voter"].astype(str).str.lower() == "true"].copy()   # 2024 validated voters only
+pool = pool[pool["validated_voter"].astype(str).str.lower() == "true"].copy()  # 2024 validated voters only
 n_start = len(pool)
-print(f"Pool: kept {n_start:,} validated 2024 voters of {n_registered:,} registered respondents "
-      f"({n_registered - n_start:,} non-voters dropped)")
+print(
+    f"Pool: kept {n_start:,} validated 2024 voters of {n_registered:,} registered respondents "
+    f"({n_registered - n_start:,} non-voters dropped)"
+)
 
 # Keep "Not sure" and "Prefer not to say" as categories instead of dropping those people
 pool["party_id_7"] = pool["party_id_7"].fillna("Not sure")
@@ -123,8 +134,10 @@ pool["family_income"] = pool["family_income"].fillna("Prefer not to say")
 
 # Drop the few people missing something we cannot sensibly fill in
 pool = pool.dropna(subset=["age_group", "education", "gender", "race_5"])
-print(f"Pool: {n_start:,} validated voters with vvweight_post in {len(states)} states; "
-      f"{n_start - len(pool)} dropped for missing age/education/gender/race")
+print(
+    f"Pool: {n_start:,} validated voters with vvweight_post in {len(states)} states; "
+    f"{n_start - len(pool)} dropped for missing age/education/gender/race"
+)
 
 #### Draw personas ####
 rng = np.random.default_rng(config.SEED)
@@ -145,7 +158,9 @@ personas["persona_text"] = personas.apply(persona_text, axis=1)
 personas = personas.merge(pd.DataFrame(pool_info), on="state")
 # True when this CES respondent was already drawn earlier for the same state (a repeated draw)
 personas["repeat_draw"] = personas.duplicated(["state", "caseid"])
-personas = personas[["persona_id", "caseid", "state"] + VARS + ["persona_text", "n_pool", "n_eff", "repeat_draw"]]
+personas = personas[
+    ["persona_id", "caseid", "state"] + VARS + ["persona_text", "n_pool", "n_eff", "repeat_draw"]
+]
 
 #### Checks and save ####
 assert personas["persona_id"].is_unique
@@ -153,7 +168,7 @@ assert (personas.groupby("state").size() == args.n).all()
 assert not personas["persona_text"].str.contains("Trump|Harris|president", case=False).any()
 
 config.write_table(personas, config.PERSONAS_FILE)
-personas.to_csv(config.SHARED_ANALYSIS / "personas.csv", index=False)   # easy to open in Excel
+personas.to_csv(config.SHARED_ANALYSIS / "personas.csv", index=False)  # easy to open in Excel
 
 print(f"\nSaved {len(personas)} personas ({args.n} per state) to {config.PERSONAS_FILE}")
 print("States with the thinnest pools (small n_eff means the forecast is weaker there):")

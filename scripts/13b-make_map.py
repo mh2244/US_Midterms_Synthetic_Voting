@@ -43,14 +43,14 @@ MAP_FILE = Path("data/01-raw_data/us-states.json")
 SENATORS_FILE = Path("data/01-raw_data/senators_not_up_2026.csv")
 COL = config.PARTY_COLOURS
 NO_RACE = config.NO_RACE_COLOUR
-TOSS_UP = config.TOSS_UP_COLOUR     # neither side clearly favoured (45% to 55% each); not a party colour
-LEVELS = [("Likely", 0.85, 0.0), ("Leans", 0.65, 0.45), ("Tilts", 0.55, 0.72)]   # name, floor, tint
+TOSS_UP = config.TOSS_UP_COLOUR  # neither side clearly favoured (45% to 55% each); not a party colour
+LEVELS = [("Likely", 0.85, 0.0), ("Leans", 0.65, 0.45), ("Tilts", 0.55, 0.72)]  # name, floor, tint
 WIDTH, HEIGHT = 960, 500
 
 
 def tint(hex_colour, f):
     """Mix a colour with white: f = 0 keeps it, f = 1 gives white."""
-    rgb = [int(hex_colour[i:i + 2], 16) for i in (1, 3, 5)]
+    rgb = [int(hex_colour[i : i + 2], 16) for i in (1, 3, 5)]
     return "#" + "".join(f"{round(c + (255 - c) * f):02x}" for c in rgb)
 
 
@@ -72,6 +72,7 @@ def conic_equal_area(parallels, rotate, centre, scale, translate):
     def project(lon, lat):
         x, y = raw(lon, lat)
         return translate[0] + scale * (x - cx), translate[1] - scale * (y - cy)
+
     return project
 
 
@@ -85,8 +86,20 @@ PROJECT = {
 
 # Small north-eastern states get their label to the right, with a leader line
 CALLOUT = ["VT", "NH", "MA", "RI", "CT", "NJ", "DE", "MD"]
-NUDGE = {"FL": (14, 0), "MI": (8, 14), "LA": (-10, -3), "KY": (6, 2), "ID": (0, 14), "HI": (12, -2),
-         "CA": (-8, 0), "WV": (-3, 3), "VA": (6, 2), "NY": (6, 0), "MN": (-6, 0), "OK": (10, 0)}
+NUDGE = {
+    "FL": (14, 0),
+    "MI": (8, 14),
+    "LA": (-10, -3),
+    "KY": (6, 2),
+    "ID": (0, 14),
+    "HI": (12, -2),
+    "CA": (-8, 0),
+    "WV": (-3, 3),
+    "VA": (6, 2),
+    "NY": (6, 0),
+    "MN": (-6, 0),
+    "OK": (10, 0),
+}
 
 
 def label_point(geometry, project):
@@ -108,8 +121,8 @@ def label_point(geometry, project):
 
 def ink_for(fill):
     """White text on dark fills, near-black on light fills."""
-    r, g, b = (int(fill[i:i + 2], 16) / 255 for i in (1, 3, 5))
-    lum = 0.2126 * r ** 2.2 + 0.7152 * g ** 2.2 + 0.0722 * b ** 2.2
+    r, g, b = (int(fill[i : i + 2], 16) / 255 for i in (1, 3, 5))
+    lum = 0.2126 * r**2.2 + 0.7152 * g**2.2 + 0.0722 * b**2.2
     return "#ffffff" if lum < 0.3 else "#1a1a1a"
 
 
@@ -148,20 +161,25 @@ for state, g in left.groupby("state"):
     l_last, r_last = race["left_name"].split()[-1], race["rep_name"].split()[-1]
     special = " (special election)" if race["race_type"] == "special" else ""
     info[state] = {
-        "category": category, "colour": colour,
-        "tip": (f"<b>{html.escape(config.STATE_NAME.get(state, state))}{special}</b>"
-                f"{html.escape(race['left_name'])} ({race['left_party'][0]}) v. {html.escape(race['rep_name'])} (R)<br>"
-                f"{html.escape(l_last)}'s share: {mid:.0f}% (90% interval {lo:.0f} to {hi:.0f})<br>"
-                f"Chance {html.escape(l_last)} wins: {pct(p_left)}<br>"
-                f"Chance {html.escape(r_last)} wins: {pct(1 - p_left)}"),
+        "category": category,
+        "colour": colour,
+        "tip": (
+            f"<b>{html.escape(config.STATE_NAME.get(state, state))}{special}</b>"
+            f"{html.escape(race['left_name'])} ({race['left_party'][0]}) v. {html.escape(race['rep_name'])} (R)<br>"
+            f"{html.escape(l_last)}'s share: {mid:.0f}% (90% interval {lo:.0f} to {hi:.0f})<br>"
+            f"Chance {html.escape(l_last)} wins: {pct(p_left)}<br>"
+            f"Chance {html.escape(r_last)} wins: {pct(1 - p_left)}"
+        ),
     }
 assert len(info) == len(nominees), "A race is missing from the forecast"
 
 #### SVG ####
 ABBR = {"Democratic": "D", "Republican": "R"}
 sen_table = pd.read_csv(SENATORS_FILE)
-senators = {st: "<br>".join(f"{html.escape(r.senator)} ({ABBR.get(r.party, 'I')})" for r in g.itertuples())
-            for st, g in sen_table.groupby("state")}
+senators = {
+    st: "<br>".join(f"{html.escape(r.senator)} ({ABBR.get(r.party, 'I')})" for r in g.itertuples())
+    for st, g in sen_table.groupby("state")
+}
 assert not set(senators) & set(info), "A state with a 2026 race is listed as having no race"
 shapes = json.loads(MAP_FILE.read_text())["features"]
 paths, labels = [], []
@@ -170,7 +188,7 @@ callouts = {}
 for feature in shapes:
     name = feature["properties"]["name"]
     code = config.STATE_ABBR.get(name)
-    if code is None:                    # Puerto Rico and anything else that is not a state
+    if code is None:  # Puerto Rico and anything else that is not a state
         continue
     drawn.add(code)
     project = PROJECT.get(name, PROJECT["lower48"])
@@ -180,8 +198,10 @@ for feature in shapes:
         sen = senators.get(code)
         assert sen, f"No senators listed for {code} in {SENATORS_FILE}"
         fill, tip = NO_RACE, f"<b>{html.escape(name)}</b>No Senate race in 2026<br>Current senators:<br>{sen}"
-    paths.append(f'<path d="{svg_path(feature["geometry"], project)}" fill="{fill}" '
-                 f'data-tip="{html.escape(tip, quote=True)}" tabindex="0"><title>{html.escape(name)}</title></path>')
+    paths.append(
+        f'<path d="{svg_path(feature["geometry"], project)}" fill="{fill}" '
+        f'data-tip="{html.escape(tip, quote=True)}" tabindex="0"><title>{html.escape(name)}</title></path>'
+    )
     x, y = label_point(feature["geometry"], project)
     if code in CALLOUT:
         callouts[code] = (x, y)
@@ -192,26 +212,39 @@ for feature in shapes:
 for i, code in enumerate(sorted(callouts, key=lambda c: callouts[c][1])):
     x, y = callouts[code]
     ly = 118 + i * 21
-    labels.append(f'<line x1="{x:.1f}" y1="{y:.1f}" x2="903" y2="{ly - 4}" class="map-leader"/>'
-                  f'<text x="908" y="{ly}" fill="#1a1a1a" text-anchor="start">{code}</text>')
+    labels.append(
+        f'<line x1="{x:.1f}" y1="{y:.1f}" x2="903" y2="{ly - 4}" class="map-leader"/>'
+        f'<text x="908" y="{ly}" fill="#1a1a1a" text-anchor="start">{code}</text>'
+    )
 assert set(info) <= drawn, f"No outline for {sorted(set(info) - drawn)}"
 
 # Fixed legend in three columns: Democratic and Republican from deep to light, then the rest.
 # Every category is listed, even if no state falls in it this run.
-columns = [("Democratic", [(lv, f"{lv} Democratic", tint(COL["Democratic"], f)) for lv, _, f in LEVELS]),
-           ("Republican", [(lv, f"{lv} Republican", tint(COL["Republican"], f)) for lv, _, f in LEVELS]),
-           ("Other", [("Toss-up", "Toss-up", TOSS_UP),
-                      ("Independent favoured", "Independent favoured", COL["Independent"]),
-                      ("No race in 2026", "No race", NO_RACE)])]
+columns = [
+    ("Democratic", [(lv, f"{lv} Democratic", tint(COL["Democratic"], f)) for lv, _, f in LEVELS]),
+    ("Republican", [(lv, f"{lv} Republican", tint(COL["Republican"], f)) for lv, _, f in LEVELS]),
+    (
+        "Other",
+        [
+            ("Toss-up", "Toss-up", TOSS_UP),
+            ("Independent favoured", "Independent favoured", COL["Independent"]),
+            ("No race in 2026", "No race", NO_RACE),
+        ],
+    ),
+]
 categories = {cat for _, items in columns for _, cat, _ in items}
 assert {v["category"] for v in info.values()} <= categories, "A state's category is not in the legend"
 swatches = "".join(
     f'<div class="map-col"><div class="map-col-head">{head}</div>'
-    + "".join(f'<div class="map-key"><span class="map-swatch" style="background:{c}"></span>{label}</div>'
-              for label, _, c in items) + "</div>"
-    for head, items in columns)
+    + "".join(
+        f'<div class="map-key"><span class="map-swatch" style="background:{c}"></span>{label}</div>'
+        for label, _, c in items
+    )
+    + "</div>"
+    for head, items in columns
+)
 day = "no news" if config.RUN == "nonews" else config.RUN
-block = f'''```{{=html}}
+block = f"""```{{=html}}
 <div class="senate-map">
 <svg viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-label="Map of the 2026 Senate forecast by state">
 {"".join(paths)}
@@ -268,7 +301,7 @@ Four models pooled; run {day}.</p>
 }})();
 </script>
 ```
-'''
+"""
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 (config.RUN_RESULTS / "senate_map.md").write_text(block)
 print(pd.Series({k: v["category"] for k, v in info.items()}).value_counts().to_string())

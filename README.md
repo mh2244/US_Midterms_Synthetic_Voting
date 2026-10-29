@@ -106,6 +106,15 @@ variables → Actions**). All settings shared across scripts (models, sample siz
 file paths, the run being worked on) are in [`scripts/config.py`](scripts/config.py). Every
 random step uses `config.SEED` (2026), so reruns with the same inputs give the same draws.
 
+**Code style.** All scripts are checked and formatted with [ruff](https://docs.astral.sh/ruff/)
+(settings in [`ruff.toml`](ruff.toml)), the Python counterpart of styler and lintr:
+
+```bash
+pip install ruff
+ruff check scripts/      # unused imports and variables, undefined names, import order
+ruff format scripts/     # one layout for every script
+```
+
 ## Data
 
 | Data | Source | Script | Saved to |

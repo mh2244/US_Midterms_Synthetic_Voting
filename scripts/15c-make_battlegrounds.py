@@ -35,7 +35,7 @@ import config
 BATTLEGROUNDS = ["AK", "FL", "GA", "IA", "ME", "MI", "MT", "NE", "NH", "NC", "OH", "TX"]
 SEATS_FILE = Path("data/01-raw_data/senate_seats_up_2026.csv")
 LEVELS = [("Likely", 0.85), ("Leans", 0.65), ("Tilts", 0.55)]
-DEM_NOT_UP, REP_NOT_UP = 34, 31          # as in script 11
+DEM_NOT_UP, REP_NOT_UP = 34, 31  # as in script 11
 COL = config.PARTY_COLOURS
 SHORT = {"Democratic": "D", "Republican": "R", "Independent": "I"}
 
@@ -68,17 +68,30 @@ for state, g in left.groupby("state"):
         rating = f"{next(n for n, f in LEVELS if p_side >= f)} {side}"
     now = holder[state]
     change = "" if side is None or side == now else f"Flip to {SHORT[side]}"
-    rows.append({"state": state, "name": config.STATE_NAME.get(state, state), "holder": now,
-                 "left_name": race["left_name"], "left_party": race["left_party"], "rep_name": race["rep_name"],
-                 "share_mid": mid, "share_lo": lo, "share_hi": hi, "p_left": p_left,
-                 "rating": rating, "change": change})
+    rows.append(
+        {
+            "state": state,
+            "name": config.STATE_NAME.get(state, state),
+            "holder": now,
+            "left_name": race["left_name"],
+            "left_party": race["left_party"],
+            "rep_name": race["rep_name"],
+            "share_mid": mid,
+            "share_lo": lo,
+            "share_hi": hi,
+            "p_left": p_left,
+            "rating": rating,
+            "change": change,
+        }
+    )
 states = pd.DataFrame(rows).set_index("state")
 assert len(states) == len(nominees), "A race is missing from the forecast"
 
 #### Seats ####
 results = forecast[["model", "draw", "state", "winner"]].drop_duplicates()
-seats = (results.assign(rep=results["winner"] == "Republican").groupby(["model", "draw"])["rep"].sum()
-         + REP_NOT_UP)
+seats = (
+    results.assign(rep=results["winner"] == "Republican").groupby(["model", "draw"])["rep"].sum() + REP_NOT_UP
+)
 dist = seats.value_counts(normalize=True).sort_index()
 
 #### Results line ####
@@ -96,37 +109,64 @@ if len(to_r):
     parts.append(f"Republicans are favoured to gain {names(to_r.index)}, now held by Democrats")
 line = ("; ".join(parts) + ". ") if parts else "No seat is favoured to change hands. "
 if len(toss):
-    line += (f"{names(toss.index)} {'is a toss-up' if len(toss) == 1 else 'are toss-ups'}, with each side "
-             f"given a 45% to 55% chance. ")
+    line += (
+        f"{names(toss.index)} {'is a toss-up' if len(toss) == 1 else 'are toss-ups'}, with each side "
+        f"given a 45% to 55% chance. "
+    )
 p_rep = (seats >= 50).mean()
-line += (f"Across all simulations, Republicans hold 50 or more seats, and so keep control with the vice "
-         f"president's vote, in {p_rep * 100:.0f} per cent.")
+line += (
+    f"Across all simulations, Republicans hold 50 or more seats, and so keep control with the vice "
+    f"president's vote, in {p_rep * 100:.0f} per cent."
+)
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 (config.RUN_RESULTS / "results_summary.md").write_text(line + "\n")
 
 #### Battleground table ####
 bg = states.loc[BATTLEGROUNDS].sort_values("p_left", ascending=False)
 bg.round(4).to_csv(config.RUN_RESULTS / "battlegrounds.csv")
-md = ["| State | Seat now | Democratic or independent share, median (90% interval) | "
-      "Chance Democratic or independent wins | Forecast | Flip |", "|---|:---:|---:|---:|---|:---:|"]
-for st, r in bg.iterrows():
+md = [
+    "| State | Seat now | Democratic or independent share, median (90% interval) | "
+    "Chance Democratic or independent wins | Forecast | Flip |",
+    "|---|:---:|---:|---:|---|:---:|",
+]
+for _st, r in bg.iterrows():
     name = r["name"] + (" (I)" if r["left_party"] == "Independent" else "")
     flip = "–" if r["rating"] == "Toss-up" else ("Yes" if r["change"] else "No")
-    md.append(f"| {name} | {SHORT[r['holder']]} | {r['share_mid']:.0f}% ({r['share_lo']:.0f} to {r['share_hi']:.0f}) | "
-              f"{pct(r['p_left'])} | {r['rating']} | {flip} |")
+    md.append(
+        f"| {name} | {SHORT[r['holder']]} | {r['share_mid']:.0f}% ({r['share_lo']:.0f} to {r['share_hi']:.0f}) | "
+        f"{pct(r['p_left'])} | {r['rating']} | {flip} |"
+    )
 (config.RUN_RESULTS / "battlegrounds.md").write_text("\n".join(md) + "\n")
 
 #### Seat distribution ####
-config.use_site_style()            # shared graph theme: scripts/site.mplstyle
+config.use_site_style()  # shared graph theme: scripts/site.mplstyle
 fig, ax = plt.subplots(figsize=(8, 3.2))
-ax.bar(dist.index, dist.values * 100, width=0.82,
-       color=[COL["Republican"] if s >= 50 else COL["Democratic"] for s in dist.index])
+ax.bar(
+    dist.index,
+    dist.values * 100,
+    width=0.82,
+    color=[COL["Republican"] if s >= 50 else COL["Democratic"] for s in dist.index],
+)
 ax.axvline(49.5, color=config.INK, lw=1.2, ls=(0, (3, 2)))
 top = dist.max() * 100
-ax.text(49.3, top * 1.04, f"Republicans below 50:\n{(seats <= 49).mean() * 100:.0f}%", ha="right",
-        va="bottom", fontsize=9, color=COL["Democratic"])
-ax.text(49.7, top * 1.04, f"Republicans 50 or more\n(control): {p_rep * 100:.0f}%", ha="left", va="bottom", fontsize=9,
-        color=COL["Republican"])
+ax.text(
+    49.3,
+    top * 1.04,
+    f"Republicans below 50:\n{(seats <= 49).mean() * 100:.0f}%",
+    ha="right",
+    va="bottom",
+    fontsize=9,
+    color=COL["Democratic"],
+)
+ax.text(
+    49.7,
+    top * 1.04,
+    f"Republicans 50 or more\n(control): {p_rep * 100:.0f}%",
+    ha="left",
+    va="bottom",
+    fontsize=9,
+    color=COL["Republican"],
+)
 ax.set_ylim(0, top * 1.35)
 ax.set_xlabel("Republican seats in the next Senate", fontsize=9)
 ax.set_ylabel("Share of simulations (%)", fontsize=9)

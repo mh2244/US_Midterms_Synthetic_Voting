@@ -35,8 +35,8 @@
 
 #### Workspace setup ####
 import argparse
-import json
 import hashlib
+import json
 import os
 import re
 import shutil
@@ -57,12 +57,15 @@ args = ap.parse_args()
 
 REFUSAL = re.compile(
     r"\b(as an ai|i('m| am) (sorry|unable)|i (cannot|can't) (take a side|answer (that|this)|provide an opinion|"
-    r"share (my|an) opinion|participate))\b", re.I)
+    r"share (my|an) opinion|participate))\b",
+    re.I,
+)
 
 
 #### Embedders ####
 def embed_local(texts, as_query=False):
-    from sentence_transformers import SentenceTransformer     # imported here so it is optional
+    from sentence_transformers import SentenceTransformer  # imported here so it is optional
+
     model = SentenceTransformer(config.LOCAL_EMBED_MODEL)
     return np.asarray(model.encode(texts, normalize_embeddings=True))
 
@@ -81,9 +84,10 @@ def embed_openrouter(texts, as_query=False, chunk=100):
     pieces = []
     EMBED_CACHE.mkdir(parents=True, exist_ok=True)
     for start in range(0, len(texts), chunk):
-        part = texts[start:start + chunk]
-        tag = hashlib.sha1(json.dumps([config.OPENROUTER_EMBED_MODEL, config.EMBED_DIMENSIONS, part])
-                           .encode()).hexdigest()
+        part = texts[start : start + chunk]
+        tag = hashlib.sha1(
+            json.dumps([config.OPENROUTER_EMBED_MODEL, config.EMBED_DIMENSIONS, part]).encode()
+        ).hexdigest()
         cached = EMBED_CACHE / f"{tag}.npy"
         if cached.exists():
             pieces.append(np.load(cached))
@@ -93,13 +97,14 @@ def embed_openrouter(texts, as_query=False, chunk=100):
             body["dimensions"] = config.EMBED_DIMENSIONS
         for attempt in range(4):
             try:
-                r = requests.post(EMBED_URL,
-                                  headers={"Authorization": f"Bearer {key}"}, json=body, timeout=120)
+                r = requests.post(
+                    EMBED_URL, headers={"Authorization": f"Bearer {key}"}, json=body, timeout=120
+                )
                 if r.status_code == 200:
                     break
                 problem = f"HTTP {r.status_code}: {r.text[:300]}"
                 if r.status_code in (400, 401, 402):
-                    raise SystemExit(f"Embedding request refused ({problem})")   # retrying cannot help
+                    raise SystemExit(f"Embedding request refused ({problem})")  # retrying cannot help
             except requests.RequestException as exc:
                 problem = f"network: {exc}"
             time.sleep(10 * (attempt + 1))
@@ -126,15 +131,17 @@ def embed_mock(texts, as_query=False, dim=512):
 
 EMBED = {"local": embed_local, "openrouter": embed_openrouter, "mock": embed_mock}[args.embedder]
 EMBED_CACHE = Path(".cache") / "embeddings" / f"run_{config.RUN}"
-EMBED_URL = os.environ.get("OPENROUTER_EMBED_URL", "https://openrouter.ai/api/v1/embeddings")  # override: tests only
+EMBED_URL = os.environ.get(
+    "OPENROUTER_EMBED_URL", "https://openrouter.ai/api/v1/embeddings"
+)  # override: tests only
 
 
 def ssr_probabilities(sims, temperature):
     """Five similarities -> five probabilities. Example:
-        ssr_probabilities([0.2, 0.5, 0.3, 0.1, 0.0], 0.25)"""
+    ssr_probabilities([0.2, 0.5, 0.3, 0.1, 0.0], 0.25)"""
     s = np.asarray(sims, dtype=float)
     spread = s.max() - s.min()
-    s = (s - s.min()) / spread if spread > 0 else np.zeros_like(s)   # min-max to 0-1
+    s = (s - s.min()) / spread if spread > 0 else np.zeros_like(s)  # min-max to 0-1
     z = np.exp(s / temperature)
     return z / z.sum()
 
@@ -195,9 +202,11 @@ if is_b.any():
     anchor_rows = {s: anchors_for(nominees.loc[s]) for s in responses.loc[is_b, "state"].unique()}
     all_anchor_text = sorted({a for lst in anchor_rows.values() for a in lst})
     answer_texts = sorted(set(texts))
-    print(f"Embedding {len(answer_texts)} unique answers and {len(all_anchor_text)} anchors "
-          f"with the '{args.embedder}' embedder ...")
-    answer_vecs = dict(zip(answer_texts, EMBED(answer_texts, as_query=True)))        # answers = queries
+    print(
+        f"Embedding {len(answer_texts)} unique answers and {len(all_anchor_text)} anchors "
+        f"with the '{args.embedder}' embedder ..."
+    )
+    answer_vecs = dict(zip(answer_texts, EMBED(answer_texts, as_query=True)))  # answers = queries
     anchor_vecs = dict(zip(all_anchor_text, EMBED(all_anchor_text, as_query=False)))  # anchors = documents
 
     for idx, row in responses[is_b].iterrows():
@@ -218,11 +227,16 @@ for idx, row in responses[(responses["design"] == "C") & (responses["status"] ==
 labels = responses[["p_left", "p_rep", "p_other"]].to_numpy()
 best = np.array([np.nan if np.isnan(r).any() else int(np.argmax(r)) for r in labels])
 left_party = responses["state"].map(nominees["left_party"])
-responses["vote_choice"] = pd.Series(best).map({0: "left", 1: "Republican", 2: "Undecided"}).where(~np.isnan(best))
+responses["vote_choice"] = (
+    pd.Series(best).map({0: "left", 1: "Republican", 2: "Undecided"}).where(~np.isnan(best))
+)
 responses.loc[responses["vote_choice"] == "left", "vote_choice"] = left_party
 responses["ssr_temperature"] = args.temperature
-responses["embedder"] = {"local": config.LOCAL_EMBED_MODEL, "openrouter": config.OPENROUTER_EMBED_MODEL,
-                         "mock": "mock"}[args.embedder]
+responses["embedder"] = {
+    "local": config.LOCAL_EMBED_MODEL,
+    "openrouter": config.OPENROUTER_EMBED_MODEL,
+    "mock": "mock",
+}[args.embedder]
 
 #### Checks and save ####
 scored = responses[responses["p_left"].notna()]
@@ -231,10 +245,11 @@ assert np.isclose(sums, 1).all(), "Probabilities do not add up to 1"
 
 config.write_table(responses.drop(columns=["response_text"]), config.SCORES_FILE)
 responses[["prompt_id", "model", "repeat", "status", "response_text", "p_left", "p_rep", "p_other"]].to_csv(
-    config.RUN_DIR / "scores_with_text.csv", index=False)   # open this and READ the answers
+    config.RUN_DIR / "scores_with_text.csv", index=False
+)  # open this and READ the answers
 
 print(f"\nSaved {len(responses)} rows to {config.SCORES_FILE}")
-shutil.rmtree(EMBED_CACHE, ignore_errors=True)       # scores are saved, so the cache is no longer needed
+shutil.rmtree(EMBED_CACHE, ignore_errors=True)  # scores are saved, so the cache is no longer needed
 print("\nStatus by model and design (anything but 'ok' is not scored):")
 print(pd.crosstab([responses["design"], responses["model"]], responses["status"]).to_string())
 print("\nMean probabilities by model and design:")

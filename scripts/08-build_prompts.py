@@ -34,7 +34,9 @@ import config
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--designs", default="B", help="comma list from B,C")
-ap.add_argument("--news", action="store_true", help="include nine existing news summaries per persona from script 04b")
+ap.add_argument(
+    "--news", action="store_true", help="include nine existing news summaries per persona from script 04b"
+)
 args = ap.parse_args()
 if args.news and not config.NEWS_RUN:
     ap.error("RUN=nonews cannot be combined with --news")
@@ -54,8 +56,17 @@ def load_summaries(personas):
     if not config.NEWS_SUMMARIES_FILE.exists():
         raise ValueError("Run scripts/04b-summarize_news.py first to generate persona summaries")
     summaries = pd.read_csv(config.NEWS_SUMMARIES_FILE, encoding="utf-8-sig", dtype=str).fillna("")
-    required = {"persona_id", "status", "summary", "persona_hash", "news_file_hash",
-                "request_hash", "articles_json", "run_id", "summary_method"}
+    required = {
+        "persona_id",
+        "status",
+        "summary",
+        "persona_hash",
+        "news_file_hash",
+        "request_hash",
+        "articles_json",
+        "run_id",
+        "summary_method",
+    }
     if not required <= set(summaries.columns):
         raise ValueError("Summary file is missing required columns; rerun script 04b")
     if summaries["persona_id"].duplicated().any():
@@ -67,9 +78,13 @@ def load_summaries(personas):
         if pid not in summaries.index:
             raise ValueError(f"Missing summary for {pid}; rerun script 04b")
         row = summaries.loc[pid]
-        person_hash = hashlib.sha256(json.dumps(
-            {k: str(person[k]) for k in ("persona_id", "state", "persona_text")},
-            sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        person_hash = hashlib.sha256(
+            json.dumps(
+                {k: str(person[k]) for k in ("persona_id", "state", "persona_text")},
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode()
+        ).hexdigest()
         if row["summary_method"] != "concatenate_v1":
             raise ValueError(f"Old LLM summary for {pid}; rerun script 04b to concatenate the nine items")
         articles = json.loads(row["articles_json"])
@@ -101,21 +116,26 @@ def candidate_text(race, left_first):
 
 def question_b(race, left_first):
     kind = "special election" if race["race_type"] == "special" else "election"
-    return (f"In the 2026 U.S. Senate {kind} in {race['state_name']}, the candidates are "
-            f"{candidate_text(race, left_first)}. How do you plan to vote, or do you plan not to vote? "
-            "Answer in two or three sentences.")
+    return (
+        f"In the 2026 U.S. Senate {kind} in {race['state_name']}, the candidates are "
+        f"{candidate_text(race, left_first)}. How do you plan to vote, or do you plan not to vote? "
+        "Answer in two or three sentences."
+    )
 
 
 def question_c(race, left_first):
     """Percentages question. A and B follow the order in which the names are listed."""
-    first, second = ((race["left_name"], race["rep_name"]) if left_first
-                     else (race["rep_name"], race["left_name"]))
+    first, second = (
+        (race["left_name"], race["rep_name"]) if left_first else (race["rep_name"], race["left_name"])
+    )
     kind = "special election" if race["race_type"] == "special" else "election"
-    return (f"Think of 100 people in {race['state_name']} who share your background and views. "
-            f"In the 2026 U.S. Senate {kind}, how many of those 100 would vote for A = {first}, "
-            f"how many for B = {second}, how many for another candidate, and how many would not vote? "
-            'Reply with only JSON in this form: {"A": 0, "B": 0, "other": 0, "not_voting": 0}. '
-            "The four numbers must add up to 100.")
+    return (
+        f"Think of 100 people in {race['state_name']} who share your background and views. "
+        f"In the 2026 U.S. Senate {kind}, how many of those 100 would vote for A = {first}, "
+        f"how many for B = {second}, how many for another candidate, and how many would not vote? "
+        'Reply with only JSON in this form: {"A": 0, "B": 0, "other": 0, "not_voting": 0}. '
+        "The four numbers must add up to 100."
+    )
 
 
 #### Build ####
@@ -130,7 +150,7 @@ except ValueError as exc:
 rows = []
 for _, p in personas.iterrows():
     race = nominees.loc[p["state"]].copy()
-    left_first = bool(rng.integers(0, 2))    # one random order per persona, kept for all designs
+    left_first = bool(rng.integers(0, 2))  # one random order per persona, kept for all designs
     summary = summaries.loc[p["persona_id"]] if args.news else None
     news_context = news_block(summary["summary"]) if summary is not None else ""
     for design in designs:
@@ -141,14 +161,20 @@ for _, p in personas.iterrows():
         parts += [p["persona_text"], question]
         prompt_text = "\n\n".join(parts)
         prompt_hash = hashlib.sha256(prompt_text.encode()).hexdigest()
-        rows.append({
-            "prompt_id": f"{p['persona_id']}|{design}|news{int(args.news)}|{prompt_hash}|{config.RUN}",
-            "run": config.RUN, "persona_id": p["persona_id"], "state": p["state"], "design": design,
-            "news": bool(args.news), "left_first": left_first,
-            "news_summary_id": summary["request_hash"] if summary is not None else "",
-            "news_articles_json": summary["articles_json"] if summary is not None else "",
-            "prompt_text": prompt_text,
-        })
+        rows.append(
+            {
+                "prompt_id": f"{p['persona_id']}|{design}|news{int(args.news)}|{prompt_hash}|{config.RUN}",
+                "run": config.RUN,
+                "persona_id": p["persona_id"],
+                "state": p["state"],
+                "design": design,
+                "news": bool(args.news),
+                "left_first": left_first,
+                "news_summary_id": summary["request_hash"] if summary is not None else "",
+                "news_articles_json": summary["articles_json"] if summary is not None else "",
+                "prompt_text": prompt_text,
+            }
+        )
 
 prompts = pd.DataFrame(rows)
 
@@ -157,7 +183,9 @@ assert prompts["prompt_id"].is_unique
 assert prompts["news"].eq(args.news).all()
 assert prompts["prompt_text"].str.len().gt(100).all()
 # News summaries may name politicians, so only the persona text is checked for the 2024 vote
-assert not personas["persona_text"].str.contains("Trump|Harris", case=False).any(), "2024 vote leaked into a persona"
+assert not personas["persona_text"].str.contains("Trump|Harris", case=False).any(), (
+    "2024 vote leaked into a persona"
+)
 
 config.write_table(prompts, config.PROMPTS_FILE)
 print(f"Saved {len(prompts)} prompts ({', '.join(designs)}; news={args.news}) to {config.PROMPTS_FILE}")

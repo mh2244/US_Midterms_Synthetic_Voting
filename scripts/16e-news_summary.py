@@ -23,11 +23,22 @@ NEWS_DAYS = ["2026-10-27", "2026-10-29", "2026-10-31"]
 NEWS = Path("data/news")
 OUT = config.RESULTS / "comparison"
 GROUPS = {"left_leaning": "Left-leaning", "newspapers": "Newspapers", "right_leaning": "Right-leaning"}
-TOPICS = {"policy": "Policy", "foreign_policy": "Foreign policy", "law": "Law and courts", "elections": "Elections",
-          "voting_rules": "Voting rules", "healthcare": "Health care", "economy": "Economy",
-          "immigration": "Immigration", "taxation": "Taxes", "energy": "Energy", "education": "Education",
-          "national_security": "National security", "other": "Other"}
-EXAMPLE_PERSONA = "MI_1"                 # a persona in a battleground state; any id works
+TOPICS = {
+    "policy": "Policy",
+    "foreign_policy": "Foreign policy",
+    "law": "Law and courts",
+    "elections": "Elections",
+    "voting_rules": "Voting rules",
+    "healthcare": "Health care",
+    "economy": "Economy",
+    "immigration": "Immigration",
+    "taxation": "Taxes",
+    "energy": "Energy",
+    "education": "Education",
+    "national_security": "National security",
+    "other": "Other",
+}
+EXAMPLE_PERSONA = "MI_1"  # a persona in a battleground state; any id works
 
 
 def day(run):
@@ -40,8 +51,15 @@ assert runs, "No news run yet"
 ctx = {r: pd.read_csv(NEWS / f"news_context_{r}.csv") for r in runs}
 
 #### Table 1: articles kept by source group and outlet ####
-counts = pd.concat({day(r): c.groupby(["diet", "outlet"]).size() for r, c in ctx.items()}, axis=1).fillna(0).astype(int)
-md = ["| Source group | Outlet | " + " | ".join(counts.columns) + " |", "|---|---|" + "---:|" * len(counts.columns)]
+counts = (
+    pd.concat({day(r): c.groupby(["diet", "outlet"]).size() for r, c in ctx.items()}, axis=1)
+    .fillna(0)
+    .astype(int)
+)
+md = [
+    "| Source group | Outlet | " + " | ".join(counts.columns) + " |",
+    "|---|---|" + "---:|" * len(counts.columns),
+]
 for group, label in GROUPS.items():
     if group not in counts.index.get_level_values(0):
         continue
@@ -53,7 +71,9 @@ md.append("| **All** | | " + " | ".join(f"**{v:,}**" for v in counts.sum()) + " 
 table_outlets = "\n".join(md)
 
 #### Table 2: topics of the kept articles (per cent of each run's articles) ####
-topics = pd.concat({day(r): c["topic"].value_counts(normalize=True) * 100 for r, c in ctx.items()}, axis=1).fillna(0)
+topics = pd.concat(
+    {day(r): c["topic"].value_counts(normalize=True) * 100 for r, c in ctx.items()}, axis=1
+).fillna(0)
 topics = topics.sort_values(topics.columns[-1], ascending=False)
 md = ["| Topic | " + " | ".join(topics.columns) + " |", "|---|" + "---:|" * len(topics.columns)]
 for t, row in topics.iterrows():
@@ -80,9 +100,9 @@ text = f"""**Articles kept, by outlet.** Number of articles that passed the scre
 {table_topics}
 
 <details>
-<summary>Example: the news block of one persona ({config.STATE_NAME.get(ex['state'], ex['state'])}, {day(latest)})</summary>
+<summary>Example: the news block of one persona ({config.STATE_NAME.get(ex["state"], ex["state"])}, {day(latest)})</summary>
 
-Each of the {n_personas:,} personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published {pubs.min():%-d %B %H:%M} to {pubs.max():%-d %B %H:%M} UTC). This is the block persona {ex['persona_id']} read before answering, word for word.
+Each of the {n_personas:,} personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published {pubs.min():%-d %B %H:%M} to {pubs.max():%-d %B %H:%M} UTC). This is the block persona {ex["persona_id"]} read before answering, word for word.
 
 {example}
 
@@ -93,5 +113,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 #### Checks ####
 assert (counts.sum() > 0).all(), "A news run kept no articles"
-assert all(len(json.loads(a)) == 9 for a in summaries["articles_json"]), "A persona did not receive nine paragraphs"
+assert all(len(json.loads(a)) == 9 for a in summaries["articles_json"]), (
+    "A persona did not receive nine paragraphs"
+)
 print(text)

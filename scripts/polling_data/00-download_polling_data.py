@@ -15,6 +15,7 @@ API documentation: https://pollresults.org/api/
 Data provider: PollResults.org, using New York Times polling data (CC BY 4.0).
 Downloading data does not independently verify the underlying poll reports.
 """
+
 import csv
 import json
 import subprocess
@@ -25,7 +26,7 @@ from urllib.parse import urlencode
 
 API = "https://api.pollresults.org/v1.0/politics/results/senate"
 ROOT = Path(__file__).resolve().parents[2] / "data"
-RAW_DIR = ROOT / "01-raw_data" / "polls" / "pollresults"      # one timestamped folder per download
+RAW_DIR = ROOT / "01-raw_data" / "polls" / "pollresults"  # one timestamped folder per download
 
 
 def get_page(cursor=None):
@@ -33,11 +34,25 @@ def get_page(cursor=None):
     if cursor:
         params["cursor"] = cursor
     url = API + "?" + urlencode(params)
-    response = subprocess.run([
-        "curl", "-L", "--fail", "--silent", "--show-error",
-        "--connect-timeout", "15", "--max-time", "60",
-        "--retry", "2", "--retry-delay", "2", url,
-    ], capture_output=True)
+    response = subprocess.run(
+        [
+            "curl",
+            "-L",
+            "--fail",
+            "--silent",
+            "--show-error",
+            "--connect-timeout",
+            "15",
+            "--max-time",
+            "60",
+            "--retry",
+            "2",
+            "--retry-delay",
+            "2",
+            url,
+        ],
+        capture_output=True,
+    )
     if response.returncode:
         raise RuntimeError(response.stderr.decode("utf-8", errors="replace").strip())
     data = json.loads(response.stdout)
@@ -64,8 +79,12 @@ def save_csv(path, rows, columns):
         writer = csv.DictWriter(file, fieldnames=columns)
         writer.writeheader()
         for row in rows:
-            writer.writerow({k: json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict))
-                             else v for k, v in row.items()})
+            writer.writerow(
+                {
+                    k: json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict)) else v
+                    for k, v in row.items()
+                }
+            )
 
 
 def main():
@@ -86,7 +105,9 @@ def main():
         for poll in page["results"]:
             poll_id = poll.get("pollId")
             if not poll_id or poll_id in seen_ids:
-                raise ValueError("Missing or repeated poll ID. Collection stopped instead of silently dropping data.")
+                raise ValueError(
+                    "Missing or repeated poll ID. Collection stopped instead of silently dropping data."
+                )
             seen_ids.add(poll_id)
             polls.append(poll)
         print(f"Page {page_number}: collected {len(polls)} / {expected_total} polls.", flush=True)
@@ -100,10 +121,15 @@ def main():
 
     if expected_total is None or len(polls) != expected_total:
         raise ValueError(f"Incomplete download: expected {expected_total}, received {len(polls)}.")
-    metadata.update(api_url=API, collected_at_utc=started.isoformat(),
-                    completed_at_utc=datetime.now(timezone.utc).isoformat(), pages=page_number)
+    metadata.update(
+        api_url=API,
+        collected_at_utc=started.isoformat(),
+        completed_at_utc=datetime.now(timezone.utc).isoformat(),
+        pages=page_number,
+    )
     (folder / "senate_polls_complete.json").write_text(
-        json.dumps({"metadata": metadata, "results": polls}, ensure_ascii=False, indent=2), encoding="utf-8")
+        json.dumps({"metadata": metadata, "results": polls}, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     rows = flatten(polls)
     columns = list(dict.fromkeys(key for row in rows for key in row))
     save_csv(folder / "senate_polls_all.csv", rows, columns)

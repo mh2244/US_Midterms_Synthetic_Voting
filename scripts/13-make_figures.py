@@ -19,9 +19,9 @@
 
 
 #### Workspace setup ####
-from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
@@ -37,40 +37,70 @@ OUT.mkdir(parents=True, exist_ok=True)
 forecast = config.read_table(config.FORECAST_FILE)
 print(f"Figure from run {config.RUN}")
 nominees = pd.read_csv(config.NOMINEES_FILE).set_index("state")
-left = forecast[forecast["party"] != "Republican"]          # the left candidate's share
+left = forecast[forecast["party"] != "Republican"]  # the left candidate's share
 models = sorted(left["model"].unique())
 
 # WHY pooled: with the inverse-variance combination the models agree closely, and four panels
 # side by side were too small to read on the page. Pooling gives one readable panel.
-order = left.groupby("state")["share"].mean().sort_values().index.tolist()   # most Republican first
+order = left.groupby("state")["share"].mean().sort_values().index.tolist()  # most Republican first
 q = (np.arange(N_DOTS) + 0.5) / N_DOTS
-win = (left.assign(left_win=left["winner"] != "Republican")
-       .groupby(["state", "model"])["left_win"].mean().groupby("state").mean())  # models count equally
+win = (
+    left.assign(left_win=left["winner"] != "Republican")
+    .groupby(["state", "model"])["left_win"]
+    .mean()
+    .groupby("state")
+    .mean()
+)  # models count equally
 
-config.use_site_style()            # shared graph theme: scripts/site.mplstyle
+config.use_site_style()  # shared graph theme: scripts/site.mplstyle
 fig, ax = plt.subplots(figsize=(8, 0.28 * len(order) + 1.4))
 for row, state in enumerate(order):
     draws = left[left["state"] == state]["share"].to_numpy()
     dots = np.quantile(draws, q)
     left_color = BLUE if nominees.loc[state, "left_party"] == "Democratic" else GREY
-    ax.scatter(dots * 100, np.full(N_DOTS, row), c=[left_color if d > 0.5 else RED for d in dots],
-               s=26, linewidths=0, zorder=3)
+    ax.scatter(
+        dots * 100,
+        np.full(N_DOTS, row),
+        c=[left_color if d > 0.5 else RED for d in dots],
+        s=26,
+        linewidths=0,
+        zorder=3,
+    )
     pct = win[state] * 100
     text = "<1%" if pct < 0.5 else ">99%" if pct > 99.5 else f"{pct:.0f}%"
     ax.text(101, row, text, va="center", ha="left", fontsize=9, color=config.INK)
-ax.axvline(50, color=config.INK, lw=1.2, ls=(0, (3, 2)), zorder=2)   # 50% line, as in every figure
+ax.axvline(50, color=config.INK, lw=1.2, ls=(0, (3, 2)), zorder=2)  # 50% line, as in every figure
 ax.set_xlim(0, 100)
 ax.set_ylim(-0.7, len(order) - 0.3)
-ax.set_yticks(range(len(order)),
-              [config.STATE_NAME.get(st, st) + ("*" if nominees.loc[st, "left_party"] == "Independent" else "")
-               for st in order], fontsize=9)
+ax.set_yticks(
+    range(len(order)),
+    [
+        config.STATE_NAME.get(st, st) + ("*" if nominees.loc[st, "left_party"] == "Independent" else "")
+        for st in order
+    ],
+    fontsize=9,
+)
 ax.tick_params(axis="y", length=0)
-ax.text(101, len(order) - 0.2, "Chance of a Democratic\nor independent win", va="bottom", ha="left", fontsize=8,
-        color=config.MUTED)
+ax.text(
+    101,
+    len(order) - 0.2,
+    "Chance of a Democratic\nor independent win",
+    va="bottom",
+    ha="left",
+    fontsize=8,
+    color=config.MUTED,
+)
 ax.set_xlabel("Democratic or independent candidate's share of the two-party vote (%)", fontsize=9)
 ax.spines[["top", "right", "left"]].set_visible(False)
-fig.text(0.01, 0.005, "* independent candidate. Blue = Democratic, grey = independent, red = Republican. "
-         f"Run {config.RUN}; four models pooled.", fontsize=8, ha="left", color=config.MUTED)
+fig.text(
+    0.01,
+    0.005,
+    "* independent candidate. Blue = Democratic, grey = independent, red = Republican. "
+    f"Run {config.RUN}; four models pooled.",
+    fontsize=8,
+    ha="left",
+    color=config.MUTED,
+)
 fig.tight_layout(rect=(0, 0.02, 0.93, 1))
 fig.savefig(OUT / "forecast_dotplot.png", dpi=200)
 print(f"Saved {OUT / 'forecast_dotplot.png'}")

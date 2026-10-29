@@ -1,12 +1,12 @@
 #### Preamble ####
 # Purpose: Turns the Wikipedia candidate list into one row per race that names the main
 #          "left" candidate (the Democrat, or the leading independent where there is none)
-#          and the Republican. Later scripts put these names in the prompts and anchors. 
+#          and the Republican. Later scripts put these names in the prompts and anchors.
 #          While there are multiple parties (Republican, Democrat, Independent, Liberterian, etc.)
 #          this script compares the senate_candidates_2026.csv to the real polling data to identify
 #          2 sides--SSR requires 1 scale (not Republican to definitely Republican, in our case). from
-#          real polling data, idnetifies the Republican candidate with most vote share and opposition 
-#          /non-Republican with highest vote share as the two main candidates. 
+#          real polling data, idnetifies the Republican candidate with most vote share and opposition
+#          /non-Republican with highest vote share as the two main candidates.
 #           Would be a limitation to mention in our analysis.
 # Author: Maggie, Coco, Amelia.
 # Date: 22 October 2026
@@ -67,7 +67,8 @@ assert raw["state"].notna().all(), "A state name in the candidate file is not re
 # DFL is Minnesota's name for the Democratic party
 raw["party"] = raw["party"].replace({"DFL": "Democratic"})
 raw["party_group"] = raw["party"].where(
-    raw["party"].isin(["Democratic", "Republican", "Independent", "Libertarian"]), "Other")
+    raw["party"].isin(["Democratic", "Republican", "Independent", "Libertarian"]), "Other"
+)
 
 counts = poll_mentions()
 rows, warnings = [], []
@@ -104,20 +105,30 @@ for state, group in raw.groupby("state", sort=False):
     others = group[~group["name"].map(last_name).isin(skip) & (group["party"] != "Republican")]
     others = others[~((others["party"] == "Democratic") & (left_party == "Democratic"))]
 
-    rows.append({
-        "state": state, "state_name": config.STATE_NAME[state], "race_type": race_type,
-        "left_name": left_name, "left_party": left_party, "rep_name": rep_name,
-        "other_names": "; ".join(f"{n} ({p})" for n, p in zip(others["name"], others["party"])),
-        "n_others": len(others),
-    })
+    rows.append(
+        {
+            "state": state,
+            "state_name": config.STATE_NAME[state],
+            "race_type": race_type,
+            "left_name": left_name,
+            "left_party": left_party,
+            "rep_name": rep_name,
+            "other_names": "; ".join(f"{n} ({p})" for n, p in zip(others["name"], others["party"])),
+            "n_others": len(others),
+        }
+    )
 
 nominees = pd.DataFrame(rows)
 
 # Long file with the same columns as the simulated candidates file
 long_rows = []
 for _, r in nominees.iterrows():
-    long_rows.append({"state": r["state"], "race_type": r["race_type"], "name": r["left_name"], "party": r["left_party"]})
-    long_rows.append({"state": r["state"], "race_type": r["race_type"], "name": r["rep_name"], "party": "Republican"})
+    long_rows.append(
+        {"state": r["state"], "race_type": r["race_type"], "name": r["left_name"], "party": r["left_party"]}
+    )
+    long_rows.append(
+        {"state": r["state"], "race_type": r["race_type"], "name": r["rep_name"], "party": "Republican"}
+    )
 candidates_clean = pd.DataFrame(long_rows)
 
 
@@ -125,15 +136,18 @@ candidates_clean = pd.DataFrame(long_rows)
 if counts:
     polls = pd.read_csv(config.POLLS_FILE, encoding="utf-8-sig")
     polls = polls[(polls["end_date"] >= "2026-09-01") & polls["party"].isin(["DEM", "REP"])]
-    known = {(r["state"], last_name(n)) for _, r in nominees.iterrows()
-             for n in (r["left_name"], r["rep_name"])}
+    known = {
+        (r["state"], last_name(n)) for _, r in nominees.iterrows() for n in (r["left_name"], r["rep_name"])
+    }
     seen = polls[~polls["response_name"].str.contains("Generic", na=False)]
     seen = seen.groupby(["state", "response_name"]).size().reset_index(name="rows")
     seen = seen[seen["rows"] >= 3]
     for _, r in seen.iterrows():
         if (r["state"], last_name(r["response_name"])) not in known:
-            warnings.append(f"{r['state']}: recent polls name {r['response_name']} "
-                            f"({r['rows']} rows), who is not our nominee. Check the candidate file")
+            warnings.append(
+                f"{r['state']}: recent polls name {r['response_name']} "
+                f"({r['rows']} rows), who is not our nominee. Check the candidate file"
+            )
 
 
 #### Save ####
@@ -143,7 +157,9 @@ candidates_clean.to_csv(config.CANDIDATES_CLEAN, index=False)
 
 assert nominees["state"].nunique() == 35, "Expected 35 races"
 print(f"Saved {len(nominees)} races to {config.NOMINEES_FILE}\n")
-print(nominees[["state", "race_type", "left_name", "left_party", "rep_name", "n_others"]].to_string(index=False))
+print(
+    nominees[["state", "race_type", "left_name", "left_party", "rep_name", "n_others"]].to_string(index=False)
+)
 print("\nWARNINGS (check each on Ballotpedia, then edit OVERRIDES at the top of this script):")
 for w in warnings:
     print("  -", w)

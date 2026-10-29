@@ -13,14 +13,14 @@
 # Each draw counts once, using its saved winner (including tie-break results).
 # These are simulated win frequencies, not vote shares or calibrated election odds.
 
-from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
+from matplotlib.patches import Patch
 
 import config
 
@@ -42,7 +42,9 @@ def summarize(forecast, nominees):
     groups = forecast.groupby(keys)
     if not groups.size().eq(2).all() or not groups["winner"].nunique().eq(1).all():
         raise ValueError("Each draw must contain two party rows and one consistent winner")
-    checked = forecast.merge(nominees[["state", "left_party"]], on="state", how="left", validate="many_to_one")
+    checked = forecast.merge(
+        nominees[["state", "left_party"]], on="state", how="left", validate="many_to_one"
+    )
     if checked["left_party"].isna().any():
         raise ValueError("Forecast state missing from nominees")
     if not checked["left_party"].isin(["Democratic", "Independent"]).all():
@@ -53,9 +55,11 @@ def summarize(forecast, nominees):
         raise ValueError("Forecast winner does not match the candidate table")
     draws = checked.drop_duplicates(keys).copy()
     draws["left_win"] = draws["winner"].eq(draws["left_party"])
-    summary = draws.groupby(["state", "model"]).agg(
-        n_draws=("draw", "size"), p_left_win=("left_win", "mean")
-    ).reset_index()
+    summary = (
+        draws.groupby(["state", "model"])
+        .agg(n_draws=("draw", "size"), p_left_win=("left_win", "mean"))
+        .reset_index()
+    )
     summary["p_rep_win"] = 1 - summary["p_left_win"]
     return summary.merge(nominees[["state", "left_party"]], on="state", validate="many_to_one")
 
@@ -69,19 +73,24 @@ def pct_text(p):
 def table_md(summary, nominees):
     """Markdown table: chance the Democratic or independent candidate wins, by race and model."""
     wide = summary.pivot(index="state", columns="model", values="p_left_win")
-    models = [m for m in config.MODEL_LABELS if m in wide.columns] + \
-             sorted(set(wide.columns) - set(config.MODEL_LABELS))
-    wide["all"] = wide[models].mean(axis=1)            # each model counts equally
+    models = [m for m in config.MODEL_LABELS if m in wide.columns] + sorted(
+        set(wide.columns) - set(config.MODEL_LABELS)
+    )
+    wide["all"] = wide[models].mean(axis=1)  # each model counts equally
     wide = wide.sort_values("all", ascending=False)
     races = nominees.set_index("state")
-    head = ["State", "Candidates (left v. Republican)", "All models"] + \
-           [config.MODEL_LABELS.get(m, m) for m in models]
+    head = ["State", "Candidates (left v. Republican)", "All models"] + [
+        config.MODEL_LABELS.get(m, m) for m in models
+    ]
     lines = ["| " + " | ".join(head) + " |", "|---|---|" + "---:|" * (len(head) - 2)]
     for state, row in wide.iterrows():
         r = races.loc[state]
         left = r["left_name"] + (" (I)" if r["left_party"] == "Independent" else "")
-        cells = [config.STATE_NAME.get(state, state), f"{left} v. {r['rep_name']}",
-                 f"**{pct_text(row['all'])}**"] + [pct_text(row[m]) for m in models]
+        cells = [
+            config.STATE_NAME.get(state, state),
+            f"{left} v. {r['rep_name']}",
+            f"**{pct_text(row['all'])}**",
+        ] + [pct_text(row[m]) for m in models]
         lines.append("| " + " | ".join(cells) + " |")
     return "\n".join(lines) + "\n"
 
@@ -90,19 +99,21 @@ def main():
     forecast = config.read_table(config.FORECAST_FILE)
     nominees = pd.read_csv(config.NOMINEES_FILE)
     summary = summarize(forecast, nominees)
-    models = [m for m in config.MODEL_LABELS if m in set(summary["model"])] + \
-        sorted(set(summary["model"]) - set(config.MODEL_LABELS))
+    models = [m for m in config.MODEL_LABELS if m in set(summary["model"])] + sorted(
+        set(summary["model"]) - set(config.MODEL_LABELS)
+    )
     order = summary.groupby("state")["p_left_win"].mean().sort_values(ascending=False).index
     parties = nominees.set_index("state")["left_party"]
     labels = [config.STATE_NAME.get(s, s) + ("*" if parties[s] == "Independent" else "") for s in order]
     y = np.arange(len(order))
     # Two models per row (larger than four side by side); states in the same order in every panel,
     # most Democratic at the top
-    config.use_site_style()            # shared graph theme: scripts/site.mplstyle
+    config.use_site_style()  # shared graph theme: scripts/site.mplstyle
     ncol = 2
     nrow = int(np.ceil(len(models) / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(10, nrow * (0.22 * len(order) + 1.0) + 0.8),
-                             sharex=True, squeeze=False)
+    fig, axes = plt.subplots(
+        nrow, ncol, figsize=(10, nrow * (0.22 * len(order) + 1.0) + 0.8), sharex=True, squeeze=False
+    )
     for ax, model in zip(axes.flat, models):
         values = summary[summary["model"] == model].set_index("state").reindex(order)
         available = values["p_left_win"].notna().to_numpy()
@@ -114,8 +125,15 @@ def main():
             if value >= 10:
                 ax.text(value / 2, pos, f"{value:.0f}", ha="center", va="center", color="white", fontsize=7.5)
             if 100 - value >= 10:
-                ax.text((value + 100) / 2, pos, f"{100 - value:.0f}", ha="center", va="center", color="white",
-                        fontsize=7.5)
+                ax.text(
+                    (value + 100) / 2,
+                    pos,
+                    f"{100 - value:.0f}",
+                    ha="center",
+                    va="center",
+                    color="white",
+                    fontsize=7.5,
+                )
         for pos in y[~available]:
             ax.text(50, pos, "No forecast", ha="center", va="center", fontsize=7.5, color="gray")
         ax.set_xticks([0, 25, 50, 75, 100])
@@ -127,13 +145,27 @@ def main():
         ax.spines[["top", "right", "left"]].set_visible(False)
     for ax in axes[-1]:
         ax.set_xlabel("Share of simulated outcomes won (%)", fontsize=9)
-    for ax in axes.flat[len(models):]:
+    for ax in axes.flat[len(models) :]:
         ax.set_visible(False)
-    fig.legend(handles=[Patch(color=BLUE, label="Democratic"), Patch(color=INDEPENDENT, label="Independent*"),
-                        Patch(color=RED, label="Republican")], loc="upper center", ncol=3, frameon=False,
-               bbox_to_anchor=(0.5, 1.0), fontsize=9.5)
-    fig.text(0.01, 0.005, "* Independent candidate. Numbers in the bars are per cent of simulated outcomes. "
-             f"Run {config.RUN}.", fontsize=8, color=config.MUTED)
+    fig.legend(
+        handles=[
+            Patch(color=BLUE, label="Democratic"),
+            Patch(color=INDEPENDENT, label="Independent*"),
+            Patch(color=RED, label="Republican"),
+        ],
+        loc="upper center",
+        ncol=3,
+        frameon=False,
+        bbox_to_anchor=(0.5, 1.0),
+        fontsize=9.5,
+    )
+    fig.text(
+        0.01,
+        0.005,
+        f"* Independent candidate. Numbers in the bars are per cent of simulated outcomes. Run {config.RUN}.",
+        fontsize=8,
+        color=config.MUTED,
+    )
     fig.tight_layout(rect=(0, 0.015, 1, 0.975), h_pad=2.0, w_pad=2.5)
     out = config.FIGURES
     out.mkdir(parents=True, exist_ok=True)

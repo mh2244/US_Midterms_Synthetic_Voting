@@ -38,8 +38,12 @@ import pandas as pd
 import config
 
 LABELS = {
-    "gender": "Gender", "race_5": "Race and ethnicity", "age_group": "Age group",
-    "education": "Education", "party_id_7": "Party identification", "ideology": "Ideology",
+    "gender": "Gender",
+    "race_5": "Race and ethnicity",
+    "age_group": "Age group",
+    "education": "Education",
+    "party_id_7": "Party identification",
+    "ideology": "Ideology",
     "income_band": "Household income",
 }
 ORDER = {
@@ -47,20 +51,34 @@ ORDER = {
     "race_5": ["White", "Black", "Hispanic", "Asian", "Other"],
     "age_group": ["18-29", "30-44", "45-64", "65+"],
     "education": ["No HS", "HS grad", "Some college", "2-year", "4-year", "Post-grad"],
-    "party_id_7": ["Strong Dem", "Weak Dem", "Lean Dem", "Independent", "Lean Rep", "Weak Rep",
-                   "Strong Rep", "Not sure"],
+    "party_id_7": [
+        "Strong Dem",
+        "Weak Dem",
+        "Lean Dem",
+        "Independent",
+        "Lean Rep",
+        "Weak Rep",
+        "Strong Rep",
+        "Not sure",
+    ],
     "ideology": ["Very liberal", "Liberal", "Moderate", "Conservative", "Very conservative", "Not sure"],
     "income_band": ["Under $50K", "$50K to $100K", "$100K to $200K", "$200K or more", "Prefer not to say"],
 }
-SMALL = 30   # cells with fewer personas are marked
+SMALL = 30  # cells with fewer personas are marked
 
 
 def income_band(x):
     """Collapse the 17 CES income categories into 5 bands, so cells are not tiny."""
     if pd.isna(x) or x == "Prefer not to say":
         return "Prefer not to say"
-    low = float(str(x).replace("Less than ", "0 - ").split(" - ")[0].replace("$", "").replace(",", "")
-                .replace(" or more", ""))
+    low = float(
+        str(x)
+        .replace("Less than ", "0 - ")
+        .split(" - ")[0]
+        .replace("$", "")
+        .replace(",", "")
+        .replace(" or more", "")
+    )
     if low < 50_000:
         return "Under $50K"
     if low < 100_000:
@@ -79,11 +97,17 @@ scores = scores[(scores["design"] == "B") & scores["p_left"].notna()]
 per = scores.groupby(["persona_id", "model"])[["p_left", "p_rep"]].mean().reset_index()
 
 # State weights from the same validated-voter pool as script 07
-ces = pd.read_csv(config.CES_FILE, low_memory=False,
-                  usecols=["caseid", "state", "vvweight_post", "validated_voter", "pres_vote_2024"])
+ces = pd.read_csv(
+    config.CES_FILE,
+    low_memory=False,
+    usecols=["caseid", "state", "vvweight_post", "validated_voter", "pres_vote_2024"],
+)
 states = personas["state"].unique()
-pool = ces[ces["state"].isin(states) & (ces["vvweight_post"] > 0)
-           & (ces["validated_voter"].astype(str).str.lower() == "true")]
+pool = ces[
+    ces["state"].isin(states)
+    & (ces["vvweight_post"] > 0)
+    & (ces["validated_voter"].astype(str).str.lower() == "true")
+]
 state_w = pool.groupby("state")["vvweight_post"].sum()
 personas["w"] = personas["state"].map(state_w) / personas["state"].map(personas.groupby("state").size())
 assert personas["w"].notna().all(), "A persona's state has no weight"
@@ -105,25 +129,44 @@ def lean_left(g):
 
 rows = []
 groups = [("All", "All personas", None)] + [(v, LABELS[v], v) for v in LABELS]
-for var, label, col in groups:
-    cats = ["All personas"] if col is None else \
-        [c for c in ORDER[col] if c in set(personas[col])] + sorted(set(personas[col].dropna()) - set(ORDER[col]))
+for _var, label, col in groups:
+    cats = (
+        ["All personas"]
+        if col is None
+        else [c for c in ORDER[col] if c in set(personas[col])]
+        + sorted(set(personas[col].dropna()) - set(ORDER[col]))
+    )
     for cat in cats:
         sel_p = personas if col is None else personas[personas[col] == cat]
         sel_d = df if col is None else df[df[col] == cat]
         h = sel_p.dropna(subset=["harris"])
         harris = (h["w"] * h["harris"]).sum() / h["w"].sum() if len(h) else np.nan
         for model, g in sel_d.groupby("model"):
-            rows.append({"variable": label, "category": cat, "model": model, "n_personas": len(sel_p),
-                         "n_scored": g["persona_id"].nunique(), "share_2026": cell_share(g),
-                         "lean_left": lean_left(g),
-                         "harris_2024": harris})
+            rows.append(
+                {
+                    "variable": label,
+                    "category": cat,
+                    "model": model,
+                    "n_personas": len(sel_p),
+                    "n_scored": g["persona_id"].nunique(),
+                    "share_2026": cell_share(g),
+                    "lean_left": lean_left(g),
+                    "harris_2024": harris,
+                }
+            )
 tab = pd.DataFrame(rows)
-mean = (tab.groupby(["variable", "category"], sort=False)
-        .agg(n_personas=("n_personas", "first"), share_2026=("share_2026", "mean"),
-             low=("share_2026", "min"), high=("share_2026", "max"), lean_left=("lean_left", "mean"),
-             harris_2024=("harris_2024", "first"))
-        .reset_index())
+mean = (
+    tab.groupby(["variable", "category"], sort=False)
+    .agg(
+        n_personas=("n_personas", "first"),
+        share_2026=("share_2026", "mean"),
+        low=("share_2026", "min"),
+        high=("share_2026", "max"),
+        lean_left=("lean_left", "mean"),
+        harris_2024=("harris_2024", "first"),
+    )
+    .reset_index()
+)
 # Difference = leaning left minus the 2024 Harris share of the same personas. It uses the
 # leaning-left share, not the SSR share, so the pull toward 50 per cent does not show up as change.
 mean["change"] = mean["lean_left"] - mean["harris_2024"]
@@ -132,15 +175,17 @@ mean["change"] = mean["lean_left"] - mean["harris_2024"]
 assert tab["share_2026"].between(0, 1).all(), "A cell share is outside 0 to 1"
 assert tab["harris_2024"].dropna().between(0, 1).all()
 assert tab["lean_left"].between(0, 1).all()
-assert tab.groupby(["variable", "category"])["model"].nunique().eq(tab["model"].nunique()).all(), \
+assert tab.groupby(["variable", "category"])["model"].nunique().eq(tab["model"].nunique()).all(), (
     "A model is missing from a cell"
-for label in LABELS.values():   # every variable's categories add up to all personas
+)
+for label in LABELS.values():  # every variable's categories add up to all personas
     assert mean.loc[mean["variable"] == label, "n_personas"].sum() == len(personas), label
 
 #### Save ####
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 out = pd.concat([tab, mean.assign(model="mean of models")], ignore_index=True)
 out.round(4).to_csv(config.RUN_RESULTS / "crosstabs.csv", index=False)
+
 
 def pct(x):
     return "" if pd.isna(x) else f"{x * 100:.0f}"
@@ -159,31 +204,44 @@ def signed(x):
 # synthetic share with the range across models, leaning left, Harris 2024 and the difference.
 import html as html_lib
 
-HEAD = ("<thead><tr><th>Group</th><th>n</th><th>Synthetic (range)</th><th>Lean left</th>"
-        "<th>Harris</th><th>Diff.</th></tr></thead>")
+HEAD = (
+    "<thead><tr><th>Group</th><th>n</th><th>Synthetic (range)</th><th>Lean left</th>"
+    "<th>Harris</th><th>Diff.</th></tr></thead>"
+)
 
 
 def block(label):
     sub = mean[mean["variable"] == label]
-    rows = [] if label == "All personas" else [f'<tr class="ct-head"><th colspan="6">{html_lib.escape(label)}</th></tr>']
+    rows = (
+        []
+        if label == "All personas"
+        else [f'<tr class="ct-head"><th colspan="6">{html_lib.escape(label)}</th></tr>']
+    )
     for _, r in sub.iterrows():
         mark = " \u2020" if r["n_personas"] < SMALL else ""
         cls = ' class="ct-all"' if label == "All personas" else ""
-        rows.append(f"<tr{cls}><td>{html_lib.escape(r['category'])}{mark}</td><td>{r['n_personas']:,}</td>"
-                    f"<td>{pct(r['share_2026'])} ({pct(r['low'])}\u2013{pct(r['high'])})</td>"
-                    f"<td>{pct(r['lean_left'])}</td><td>{pct(r['harris_2024'])}</td>"
-                    f"<td>{signed(r['change'])}</td></tr>")
+        rows.append(
+            f"<tr{cls}><td>{html_lib.escape(r['category'])}{mark}</td><td>{r['n_personas']:,}</td>"
+            f"<td>{pct(r['share_2026'])} ({pct(r['low'])}\u2013{pct(r['high'])})</td>"
+            f"<td>{pct(r['lean_left'])}</td><td>{pct(r['harris_2024'])}</td>"
+            f"<td>{signed(r['change'])}</td></tr>"
+        )
     return "<tbody>" + "".join(rows) + "</tbody>"
 
 
 left = ["All personas", "Gender", "Race and ethnicity", "Age group", "Education"]
 right = ["Party identification", "Ideology", "Household income"]
 assert set(left + right) == {"All personas", *LABELS.values()}, "A crosstab variable is not placed"
-tables = "".join(f'<div class="crosstab-col"><table class="crosstab">{HEAD}{"".join(block(v) for v in side)}'
-                 "</table></div>" for side in (left, right))
+tables = "".join(
+    f'<div class="crosstab-col"><table class="crosstab">{HEAD}{"".join(block(v) for v in side)}</table></div>'
+    for side in (left, right)
+)
 md = ["```{=html}", f'<div class="crosstab-pair">{tables}</div>', "```"]
 (config.RUN_RESULTS / "crosstabs.md").write_text("\n".join(md) + "\n")
 
 print(f"Saved {config.RUN_RESULTS / 'crosstabs.csv'} and crosstabs.md")
-print(mean.assign(**{c: mean[c].round(3) for c in ["share_2026", "low", "high", "lean_left", "harris_2024", "change"]})
-      .to_string(index=False))
+print(
+    mean.assign(
+        **{c: mean[c].round(3) for c in ["share_2026", "low", "high", "lean_left", "harris_2024", "change"]}
+    ).to_string(index=False)
+)

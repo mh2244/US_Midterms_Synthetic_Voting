@@ -16,8 +16,8 @@ import argparse
 import hashlib
 import json
 import re
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -37,7 +37,9 @@ OUTDATED = re.compile(
     r"|(?<!former )\bVice\s+President\s+(?:Kamala\s+)?Harris\b"
     r"|\bMajority\s+Leader\s+(?:Chuck\s+)?Schumer\b"
     r"|(?<!former )\bSpeaker\s+(?:Nancy\s+)?Pelosi\b"
-    r"|\bPresident-elect\s+Trump\b", re.I)
+    r"|\bPresident-elect\s+Trump\b",
+    re.I,
+)
 
 
 def fingerprint(value):
@@ -64,7 +66,9 @@ def load_news(path):
     flagged = news["prompt_paragraph"].str.contains(OUTDATED)
     if flagged.any():
         out = Path(path).parent / f"flagged_{config.RUN}.csv"
-        news.loc[flagged].assign(reason="outdated fact pattern").to_csv(out, index=False, encoding="utf-8-sig")
+        news.loc[flagged].assign(reason="outdated fact pattern").to_csv(
+            out, index=False, encoding="utf-8-sig"
+        )
         print(f"Removed {int(flagged.sum())} items with outdated facts; listed in {out}")
     news = news.loc[~flagged]
     # Stable order and unique URLs make sampling independent of CSV row ordering.
@@ -72,8 +76,10 @@ def load_news(path):
     counts = news["diet"].value_counts()
     for group in GROUPS:
         if counts.get(group, 0) < 3:
-            raise ValueError(f"Need at least 3 unique articles in {group}; found {counts.get(group, 0)}. "
-                             "Collect more news; no replacement or silent rebalancing is used.")
+            raise ValueError(
+                f"Need at least 3 unique articles in {group}; found {counts.get(group, 0)}. "
+                "Collect more news; no replacement or silent rebalancing is used."
+            )
     news.attrs["file_hash"] = hashlib.sha256(Path(path).read_bytes()).hexdigest()
     return news
 
@@ -96,14 +102,24 @@ def make_plan(personas, news, run_id, seed):
         selected = [selected[int(i)] for i in rng.permutation(9)]
         articles = [{"id": i, **article} for i, article in enumerate(selected, 1)]
         request_hash = fingerprint([SUMMARY_METHOD, articles])
-        plan.append({"persona_id": person["persona_id"], "state": person["state"],
-                     "run_id": run_id, "seed": seed, "persona_hash": person_hash,
-                     "news_pool_hash": pool_hash, "news_file_hash": news.attrs["file_hash"],
-                     "request_hash": request_hash,
-                     "articles_json": json.dumps(articles, ensure_ascii=False),
-                     "summary_method": SUMMARY_METHOD, "status": "ok",
-                     "summary": concatenate_summaries(articles),
-                     "generated_at_utc": datetime.now(timezone.utc).isoformat(), "error": ""})
+        plan.append(
+            {
+                "persona_id": person["persona_id"],
+                "state": person["state"],
+                "run_id": run_id,
+                "seed": seed,
+                "persona_hash": person_hash,
+                "news_pool_hash": pool_hash,
+                "news_file_hash": news.attrs["file_hash"],
+                "request_hash": request_hash,
+                "articles_json": json.dumps(articles, ensure_ascii=False),
+                "summary_method": SUMMARY_METHOD,
+                "status": "ok",
+                "summary": concatenate_summaries(articles),
+                "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+                "error": "",
+            }
+        )
     return plan
 
 
@@ -113,8 +129,7 @@ def concatenate_summaries(articles):
         raise ValueError("Expected nine articles with distinct URLs")
     if any(not str(a["prompt_paragraph"]).strip() for a in articles):
         raise ValueError("Every selected article must have an existing summary")
-    return "\n\n".join(f"[{i}] {article['prompt_paragraph']}"
-                        for i, article in enumerate(articles, 1))
+    return "\n\n".join(f"[{i}] {article['prompt_paragraph']}" for i, article in enumerate(articles, 1))
 
 
 def save(path, rows):
@@ -125,7 +140,9 @@ def save(path, rows):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Select 3/3/3 news items per persona and concatenate their existing summaries; no API calls.")
+    parser = argparse.ArgumentParser(
+        description="Select 3/3/3 news items per persona and concatenate their existing summaries; no API calls."
+    )
     parser.add_argument("--run", default=config.RUN)
     parser.add_argument("--seed", type=int, default=config.SEED)
     parser.add_argument("--out", type=Path, default=config.NEWS_SUMMARIES_FILE)
@@ -139,7 +156,9 @@ def main():
         news = load_news(config.NEWS_FILE)
         rows = make_plan(config.read_table(config.PERSONAS_FILE), news, args.run, args.seed)
         print(f"Personas: {len(rows)}; nine existing summaries per persona; no API calls.")
-        print("Each persona: 3 left_leaning + 3 newspapers + 3 right_leaning; newspapers does not mean neutral.")
+        print(
+            "Each persona: 3 left_leaning + 3 newspapers + 3 right_leaning; newspapers does not mean neutral."
+        )
         if args.dry_run:
             print("Preview for the first persona:\n" + rows[0]["summary"])
             return 0

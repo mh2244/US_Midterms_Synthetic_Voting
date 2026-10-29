@@ -32,14 +32,28 @@ OUT_MD = config.RUN_RESULTS / "sensitivity.md"
 
 #### Run the grid ####
 if OUT_CSV.exists():
-    OUT_CSV.unlink()                          # start fresh; script 11 appends to this file
+    OUT_CSV.unlink()  # start fresh; script 11 appends to this file
 env = {**os.environ, "RUN": config.RUN}
 for nat in NATIONAL:
     for poll in POLL:
         print(f"national SD {nat}, poll SD {poll}", flush=True)
-        subprocess.run([sys.executable, "scripts/11-build_forecast.py", "--combine", "ivw",
-                        "--national-sd", str(nat), "--poll-sd", str(poll), "--summary-only", str(OUT_CSV)],
-                       check=True, env=env, stdout=subprocess.DEVNULL)
+        subprocess.run(
+            [
+                sys.executable,
+                "scripts/11-build_forecast.py",
+                "--combine",
+                "ivw",
+                "--national-sd",
+                str(nat),
+                "--poll-sd",
+                str(poll),
+                "--summary-only",
+                str(OUT_CSV),
+            ],
+            check=True,
+            env=env,
+            stdout=subprocess.DEVNULL,
+        )
 
 #### Table ####
 grid = pd.read_csv(OUT_CSV)
@@ -54,8 +68,10 @@ def cell(nat, poll):
     return f"**{text}**" if (nat, poll) == (config.NATIONAL_SD, 0.03) else text
 
 
-md = ["| National error SD | " + " | ".join(f"Poll error {p:.2f}" for p in POLL) + " |",
-      "|---|" + "---:|" * len(POLL)]
+md = [
+    "| National error SD | " + " | ".join(f"Poll error {p:.2f}" for p in POLL) + " |",
+    "|---|" + "---:|" * len(POLL),
+]
 for nat in NATIONAL:
     md.append(f"| {nat:.2f} | " + " | ".join(cell(nat, p) for p in POLL) + " |")
 OUT_MD.write_text("\n".join(md) + "\n")

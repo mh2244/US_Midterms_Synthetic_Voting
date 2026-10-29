@@ -22,8 +22,12 @@ import pandas as pd
 
 import config
 
-RUNS = {"2026-10-27": "27 October", "2026-10-29": "29 October", "2026-10-31": "31 October",
-        "nonews": "No news (baseline)"}
+RUNS = {
+    "2026-10-27": "27 October",
+    "2026-10-29": "29 October",
+    "2026-10-31": "31 October",
+    "nonews": "No news (baseline)",
+}
 OUT = config.RESULTS / "comparison"
 
 #### Tokens and cost by run and model ####
@@ -38,10 +42,20 @@ for run, name in RUNS.items():
         price_in, price_out = config.PRICES[model]
         tin, tout = g["input_tokens"].fillna(0).sum(), g["output_tokens"].fillna(0).sum()
         ok = (g["error"].fillna("") == "") & (g["response_text"].fillna("").str.strip() != "")
-        rows.append({"run": run, "run_label": name, "model": model, "calls": len(g), "answered": int(ok.sum()),
-                     "input_tokens": int(tin), "output_tokens": int(tout),
-                     "cost_usd": tin / 1e6 * price_in + tout / 1e6 * price_out,
-                     "first_call": g["time"].min(), "last_call": g["time"].max()})
+        rows.append(
+            {
+                "run": run,
+                "run_label": name,
+                "model": model,
+                "calls": len(g),
+                "answered": int(ok.sum()),
+                "input_tokens": int(tin),
+                "output_tokens": int(tout),
+                "cost_usd": tin / 1e6 * price_in + tout / 1e6 * price_out,
+                "first_call": g["time"].min(),
+                "last_call": g["time"].max(),
+            }
+        )
 costs = pd.DataFrame(rows)
 assert len(costs), "No run with model answers yet"
 assert (costs["cost_usd"] >= 0).all() and costs["cost_usd"].notna().all()
@@ -49,16 +63,23 @@ OUT.mkdir(parents=True, exist_ok=True)
 costs.round({"cost_usd": 4}).to_csv(OUT / "costs.csv", index=False)
 
 #### Table ####
-md = ["| Run | Model | Calls (answered) | Input tokens | Output tokens | Cost (US$) |", "|---|---|---:|---:|---:|---:|"]
-for run, g in costs.groupby("run", sort=False):
+md = [
+    "| Run | Model | Calls (answered) | Input tokens | Output tokens | Cost (US$) |",
+    "|---|---|---:|---:|---:|---:|",
+]
+for _run, g in costs.groupby("run", sort=False):
     for r in g.itertuples():
-        md.append(f"| {r.run_label} | {config.MODEL_LABELS.get(r.model, r.model)} | {r.calls:,} ({r.answered:,}) | "
-                  f"{r.input_tokens:,} | {r.output_tokens:,} | {r.cost_usd:,.2f} |")
+        md.append(
+            f"| {r.run_label} | {config.MODEL_LABELS.get(r.model, r.model)} | {r.calls:,} ({r.answered:,}) | "
+            f"{r.input_tokens:,} | {r.output_tokens:,} | {r.cost_usd:,.2f} |"
+        )
     span = g["last_call"].max() - g["first_call"].min()
     hours = span.total_seconds() / 3600 if pd.notna(span) else float("nan")
-    md.append(f"| **{g['run_label'].iloc[0]}, all models** | | **{g['calls'].sum():,} "
-              f"({g['answered'].sum():,})** | **{g['input_tokens'].sum():,}** | **{g['output_tokens'].sum():,}** | "
-              f"**{g['cost_usd'].sum():,.2f}** |")
+    md.append(
+        f"| **{g['run_label'].iloc[0]}, all models** | | **{g['calls'].sum():,} "
+        f"({g['answered'].sum():,})** | **{g['input_tokens'].sum():,}** | **{g['output_tokens'].sum():,}** | "
+        f"**{g['cost_usd'].sum():,.2f}** |"
+    )
     md.append(f"| | *First to last call: {hours:.1f} hours* | | | | |")
 (OUT / "costs.md").write_text("\n".join(md) + "\n")
 print("\n".join(md))

@@ -36,11 +36,11 @@ import schemas as S
 
 SIM = "data/00-simulated_data/"
 N_RACES, N_PER_STATE, N_DRAWS = 35, 100, 1000
-MODELS = list(config.MODELS)              # haiku, luna, deepseek, gemini
+MODELS = list(config.MODELS)  # haiku, luna, deepseek, gemini
 N_REPEATS = 3
-DEM_NOT_UP, REP_NOT_UP = 34, 31            # seats not up in 2026, as in script 11
-MAX_PROBLEM_RATE = 0.10                    # largest share of unscorable answers accepted per model
-MIN_SCORED_PERSONAS = 50                   # fewest scored personas accepted in a state for one model
+DEM_NOT_UP, REP_NOT_UP = 34, 31  # seats not up in 2026, as in script 11
+MAX_PROBLEM_RATE = 0.10  # largest share of unscorable answers accepted per model
+MIN_SCORED_PERSONAS = 50  # fewest scored personas accepted in a state for one model
 KEYS = ["draw", "state", "model"]
 
 
@@ -179,7 +179,9 @@ def test_enough_scored_personas_in_every_state(scores, nominees, model):
     handful of answers."""
     ok = scores[(scores["status"] == "ok") & (scores["model"] == model)]
     counts = ok.groupby("state")["persona_id"].nunique().reindex(nominees["state"], fill_value=0)
-    assert counts.ge(MIN_SCORED_PERSONAS).all(), f"{model}: too few scored personas in {list(counts[counts < 50].index)}"
+    assert counts.ge(MIN_SCORED_PERSONAS).all(), (
+        f"{model}: too few scored personas in {list(counts[counts < 50].index)}"
+    )
 
 
 #### 5. Forecast ####

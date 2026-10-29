@@ -1,0 +1,17 @@
+# Code style for every Python script (the Python counterpart of styler and lintr).
+#   ruff check scripts/ --fix    finds problems (unused imports and variables, undefined names,
+#                                import order) and fixes the safe ones
+#   ruff format scripts/         lays the code out the same way everywhere
+line-length = 110
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "I", "B"]   # pycodestyle, pyflakes, warnings, import order, bugbear
+ignore = [
+    "E501",   # long lines: the formatter wraps code; long strings and comments are left as written
+    "E402",   # imports after matplotlib.use("Agg") are needed for figures without a screen
+    "B905",   # zip() without strict=: the zipped columns come from the same table
+]
+
+[lint.isort]
+known-first-party = ["config", "schemas"]

@@ -40,13 +40,13 @@ import config
 import schemas as S
 
 N_RACES = 35
-DEM_NOT_UP, REP_NOT_UP = 34, 31          # seats not up in 2026, as in script 11
+DEM_NOT_UP, REP_NOT_UP = 34, 31  # seats not up in 2026, as in script 11
 MODELS = list(config.MODELS)
-MAX_PROBLEM_RATE = 0.10                  # largest share of empty or failed answers accepted per model
-MAX_TRUNCATED_RATE = 0.01                # largest share of answers cut off at the token limit, per model
-MAX_SHORT_RATE = 0.01                    # largest share of scored answers under 20 characters, per model
+MAX_PROBLEM_RATE = 0.10  # largest share of empty or failed answers accepted per model
+MAX_TRUNCATED_RATE = 0.01  # largest share of answers cut off at the token limit, per model
+MAX_SHORT_RATE = 0.01  # largest share of scored answers under 20 characters, per model
 KEYS = ["draw", "state", "model"]
-CALL = ["prompt_id", "model", "repeat"]   # identifies one API call
+CALL = ["prompt_id", "model", "repeat"]  # identifies one API call
 
 
 #### Data (read once for the whole suite) ####
@@ -118,29 +118,34 @@ def test_schema_personas(personas, nominees, n_per_state):
 
 def test_schema_prompts(prompts, personas):
     """Prompts: unique ids, all from this run, with or without news as the run requires."""
-    schema = S.pa.DataFrameSchema({
-        "prompt_id": S.pa.Column(str, S.pa.Check.str_endswith("|" + config.RUN), unique=True),
-        "run": S.pa.Column(str, S.pa.Check.eq(config.RUN)),
-        "persona_id": S.pa.Column(str, S.pa.Check.isin(list(personas["persona_id"]))),
-        "news": S.pa.Column(bool, S.pa.Check.eq(config.NEWS_RUN)),
-        "prompt_text": S.pa.Column(str, S.pa.Check.str_length(min_value=100)),
-    })
+    schema = S.pa.DataFrameSchema(
+        {
+            "prompt_id": S.pa.Column(str, S.pa.Check.str_endswith("|" + config.RUN), unique=True),
+            "run": S.pa.Column(str, S.pa.Check.eq(config.RUN)),
+            "persona_id": S.pa.Column(str, S.pa.Check.isin(list(personas["persona_id"]))),
+            "news": S.pa.Column(bool, S.pa.Check.eq(config.NEWS_RUN)),
+            "prompt_text": S.pa.Column(str, S.pa.Check.str_length(min_value=100)),
+        }
+    )
     S.validate(schema, prompts)
 
 
 def test_schema_responses(responses, personas, n_repeats):
     """API responses: one row per prompt, model and repeat; known models; this run only;
     non-negative token counts; a query time in ISO format."""
-    schema = S.pa.DataFrameSchema({
-        "prompt_id": S.pa.Column(str, S.pa.Check.str_endswith("|" + config.RUN)),
-        "run": S.pa.Column(str, S.pa.Check.eq(config.RUN)),
-        "persona_id": S.pa.Column(str, S.pa.Check.isin(list(personas["persona_id"]))),
-        "model": S.pa.Column(str, S.pa.Check.isin(MODELS)),
-        "repeat": S.pa.Column(int, S.pa.Check.in_range(1, n_repeats)),
-        "input_tokens": S.pa.Column(float, S.pa.Check.ge(0), nullable=True, coerce=True),
-        "output_tokens": S.pa.Column(float, S.pa.Check.ge(0), nullable=True, coerce=True),
-        "queried_at_utc": S.pa.Column(str, S.pa.Check.str_matches(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}")),
-    }, unique=CALL)
+    schema = S.pa.DataFrameSchema(
+        {
+            "prompt_id": S.pa.Column(str, S.pa.Check.str_endswith("|" + config.RUN)),
+            "run": S.pa.Column(str, S.pa.Check.eq(config.RUN)),
+            "persona_id": S.pa.Column(str, S.pa.Check.isin(list(personas["persona_id"]))),
+            "model": S.pa.Column(str, S.pa.Check.isin(MODELS)),
+            "repeat": S.pa.Column(int, S.pa.Check.in_range(1, n_repeats)),
+            "input_tokens": S.pa.Column(float, S.pa.Check.ge(0), nullable=True, coerce=True),
+            "output_tokens": S.pa.Column(float, S.pa.Check.ge(0), nullable=True, coerce=True),
+            "queried_at_utc": S.pa.Column(str, S.pa.Check.str_matches(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}")),
+        },
+        unique=CALL,
+    )
     S.validate(schema, responses)
 
 
@@ -224,10 +229,12 @@ def test_answer_came_from_the_requested_provider(responses, model):
     model behind a name (Bisbee et al. 2024)."""
     r = answered(responses, model)
     provider = config.MODELS[model].split("/")[0]
-    assert r["model_returned"].fillna("").str.startswith(provider + "/").all(), f"{model}: another provider answered"
+    assert r["model_returned"].fillna("").str.startswith(provider + "/").all(), (
+        f"{model}: another provider answered"
+    )
     other = sorted(set(r["model_returned"]) - {config.MODELS[model]})
     if other:
-        warnings.warn(f"{model}: answers also came from {other}")
+        warnings.warn(f"{model}: answers also came from {other}", stacklevel=2)
 
 
 @pytest.mark.parametrize("model", MODELS)
@@ -243,7 +250,9 @@ def test_tokens_recorded_for_answered_calls(responses, model):
     """Every answered call has a positive input token count and an output count, which the cost
     table (script 16d) relies on."""
     r = answered(responses, model)
-    assert r["input_tokens"].gt(0).all() and r["output_tokens"].notna().all(), f"{model}: token counts missing"
+    assert r["input_tokens"].gt(0).all() and r["output_tokens"].notna().all(), (
+        f"{model}: token counts missing"
+    )
 
 
 def test_queried_during_this_run(responses):
@@ -259,7 +268,9 @@ def test_queried_during_this_run(responses):
 def test_every_response_is_scored(scores, responses):
     """Scoring kept every call: a failed call gets a status, it is not dropped."""
     assert len(scores) == len(responses)
-    assert scores[CALL].merge(responses[CALL], on=CALL).shape[0] == len(responses), "Scores and calls do not match"
+    assert scores[CALL].merge(responses[CALL], on=CALL).shape[0] == len(responses), (
+        "Scores and calls do not match"
+    )
 
 
 def test_scored_answers_have_text(scored_text):
@@ -331,18 +342,23 @@ def test_ivw_file_exists_when_used():
 def test_schema_ivw_weights(ivw, nominees):
     """Inverse-variance weights: one row per state and model, no missing input, weights and shares
     between 0 and 1, positive variances, and one of two outside estimates."""
-    schema = S.pa.DataFrameSchema({
-        "model": S.pa.Column(str, S.pa.Check.isin(MODELS)),
-        "state": S.pa.Column(str, S.pa.Check.isin(list(nominees["state"]))),
-        "source": S.pa.Column(str, S.pa.Check.isin(["poll", "2024 + swing"])),
-        "m_star": S.pa.Column(float),
-        "t": S.pa.Column(float),
-        "combined": S.pa.Column(float, S.prob),
-        "w_synthetic": S.pa.Column(float, S.prob),
-        "var_m": S.pa.Column(float, S.pa.Check.gt(0)),
-        "var_t": S.pa.Column(float, S.pa.Check.gt(0)),
-    }, unique=["model", "state"], checks=S.pa.Check(lambda d: len(d) == N_RACES * len(MODELS),
-                                                    error="a state and model pair has no weight"))
+    schema = S.pa.DataFrameSchema(
+        {
+            "model": S.pa.Column(str, S.pa.Check.isin(MODELS)),
+            "state": S.pa.Column(str, S.pa.Check.isin(list(nominees["state"]))),
+            "source": S.pa.Column(str, S.pa.Check.isin(["poll", "2024 + swing"])),
+            "m_star": S.pa.Column(float),
+            "t": S.pa.Column(float),
+            "combined": S.pa.Column(float, S.prob),
+            "w_synthetic": S.pa.Column(float, S.prob),
+            "var_m": S.pa.Column(float, S.pa.Check.gt(0)),
+            "var_t": S.pa.Column(float, S.pa.Check.gt(0)),
+        },
+        unique=["model", "state"],
+        checks=S.pa.Check(
+            lambda d: len(d) == N_RACES * len(MODELS), error="a state and model pair has no weight"
+        ),
+    )
     S.validate(schema, ivw)
 
 
@@ -365,14 +381,19 @@ def test_chamber_summary():
     path = config.RUN_RESULTS / "chamber_summary.csv"
     if not path.exists():
         pytest.skip("no chamber_summary.csv")
-    schema = S.pa.DataFrameSchema({
-        "model": S.pa.Column(str, S.pa.Check.isin(MODELS), unique=True),
-        "dem_median": S.pa.Column(float, S.pa.Check.in_range(0, 100), coerce=True),
-        "rep_median": S.pa.Column(float, S.pa.Check.in_range(0, 100), coerce=True),
-        "p_rep_control": S.pa.Column(float, S.prob),
-        "p_dem_51_without_ind": S.pa.Column(float, S.prob),
-    }, checks=S.pa.Check(lambda d: (d["p_rep_control"] + d["p_dem_51_without_ind"]).le(1 + 1e-9).all(),
-                         error="the two chances add up to more than 1"))
+    schema = S.pa.DataFrameSchema(
+        {
+            "model": S.pa.Column(str, S.pa.Check.isin(MODELS), unique=True),
+            "dem_median": S.pa.Column(float, S.pa.Check.in_range(0, 100), coerce=True),
+            "rep_median": S.pa.Column(float, S.pa.Check.in_range(0, 100), coerce=True),
+            "p_rep_control": S.pa.Column(float, S.prob),
+            "p_dem_51_without_ind": S.pa.Column(float, S.prob),
+        },
+        checks=S.pa.Check(
+            lambda d: (d["p_rep_control"] + d["p_dem_51_without_ind"]).le(1 + 1e-9).all(),
+            error="the two chances add up to more than 1",
+        ),
+    )
     S.validate(schema, pd.read_csv(path))
 
 

@@ -15,10 +15,10 @@ from datetime import date
 from pathlib import Path
 
 #### Settings you are likely to change ####
-SEED = 2026               # one seed for every random step, so reruns match
-N_PER_STATE = 100           # personas per state. Test run = 5; the real run was planned at 100
-N_REPEATS = 3             # times each prompt is sent to each model (planned: 3)
-N_DRAWS = 1000            # simulated outcomes per state and model (same as the simulated data)
+SEED = 2026  # one seed for every random step, so reruns match
+N_PER_STATE = 100  # personas per state. Test run = 5; the real run was planned at 100
+N_REPEATS = 3  # times each prompt is sent to each model (planned: 3)
+N_DRAWS = 1000  # simulated outcomes per state and model (same as the simulated data)
 # SD of an error shared by all states in a draw (two-party share). Polls miss in the same
 # direction across states (Shirani-Mehr et al. 2018), and the synthetic voters can lean one way
 # overall. 0.03 (3 points) is an ASSUMPTION; script 11 can be rerun with --national-sd 0 / 0.02 /
@@ -32,10 +32,10 @@ NATIONAL_SD = 0.03
 # Prices per 1M tokens (input / output) on OpenRouter, checked 2026-10-25.
 # The test run (2026-10-21) used poolside/laguna-s-2.1:free and nvidia/nemotron-3-ultra-550b-a55b:free.
 MODELS = {
-    "haiku": "anthropic/claude-haiku-5.5",        # Anthropic, $0.10 / $0.50
-    "luna": "openai/gpt-6-luna",                  # OpenAI, $0.10 / $0.50
-    "deepseek": "deepseek/deepseek-v4.1-flash",   # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
-    "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
+    "haiku": "anthropic/claude-haiku-5.5",  # Anthropic, $0.10 / $0.50
+    "luna": "openai/gpt-6-luna",  # OpenAI, $0.10 / $0.50
+    "deepseek": "deepseek/deepseek-v4.1-flash",  # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
+    "gemini": "google/gemini-3.5-flash-lite",  # Google, $0.30 / $2.50
 }
 # OpenRouter list prices, US dollars per million tokens (input, output), checked 2026-10-25;
 # used by scripts/16d-costs.py
@@ -54,15 +54,21 @@ TOSS_UP_COLOUR, NO_RACE_COLOUR = "#e8d18c", "#eeeeee"
 def use_site_style():
     """Graph theme for every figure: registers the page fonts (assets/fonts) and loads
     scripts/site.mplstyle, so figures made on GitHub Actions match the page."""
-    from matplotlib import font_manager, pyplot as plt
+    from matplotlib import font_manager
+    from matplotlib import pyplot as plt
+
     for font in (Path(__file__).resolve().parent.parent / "assets" / "fonts").glob("*.ttf"):
         font_manager.fontManager.addfont(str(font))
     plt.style.use(Path(__file__).resolve().with_name("site.mplstyle"))
 
 
 # Names shown on the website (tables and figures), in the same order
-MODEL_LABELS = {"haiku": "Claude Haiku 5.5", "luna": "GPT-6 Luna", "deepseek": "DeepSeek V4.1 Flash",
-                "gemini": "Gemini 3.5 Flash-Lite"}
+MODEL_LABELS = {
+    "haiku": "Claude Haiku 5.5",
+    "luna": "GPT-6 Luna",
+    "deepseek": "DeepSeek V4.1 Flash",
+    "gemini": "Gemini 3.5 Flash-Lite",
+}
 
 # Reasoning ("thinking") setting sent with every request (script 09). Hidden reasoning tokens are
 # billed as output, so it is switched off: the answers only need two or three sentences.
@@ -81,15 +87,19 @@ REASONING = {
 # put 1. Every run must use the same embedder. "local" needs: pip install sentence-transformers
 EMBEDDER = "openrouter"
 LOCAL_EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-OPENROUTER_EMBED_MODEL = "google/gemini-embedding-2"   # the model Heath & Alexander used; --embedder openrouter
-                                                      # $0.20 per million tokens (":batch" variant $0.10), 8,192-token limit
-EMBED_DIMENSIONS = None   # e.g. 768 to shrink the vectors (the model allows 128-3072). None = model default (3072)
+OPENROUTER_EMBED_MODEL = (
+    "google/gemini-embedding-2"  # the model Heath & Alexander used; --embedder openrouter
+)
+# $0.20 per million tokens (":batch" variant $0.10), 8,192-token limit
+EMBED_DIMENSIONS = (
+    None  # e.g. 768 to shrink the vectors (the model allows 128-3072). None = model default (3072)
+)
 # Asymmetric embedding (answers as "queries", anchors as "documents"), as in Heath & Alexander 2026.
 # HOW to ask for it through OpenRouter is NOT confirmed: check the Gemini Embedding 2 documentation
 # (task types or text prefixes) and then fill these in. Empty strings = no asymmetric mode.
 EMBED_QUERY_PREFIX = ""
 EMBED_DOC_PREFIX = ""
-SSR_TEMPERATURE = 0.25    # Heath & Alexander Methods use 0.25 (their Results say 0.2)
+SSR_TEMPERATURE = 0.25  # Heath & Alexander Methods use 0.25 (their Results say 0.2)
 
 # Which run the scripts read and write (scripts 08-13 and 15). Each run gets its own folder, so
 # the three news days and the no-news baseline never overwrite or mix with each other.
@@ -97,7 +107,7 @@ SSR_TEMPERATURE = 0.25    # Heath & Alexander Methods use 0.25 (their Results sa
 # "nonews" (baseline, same personas and questions, no news). Change it here, or set it for one
 # command only:   RUN=2026-10-29 python scripts/09-query_models.py
 RUN = os.environ.get("RUN", "2026-10-27").strip()
-NEWS_RUN = RUN != "nonews"          # every dated run includes that day's news; "nonews" does not
+NEWS_RUN = RUN != "nonews"  # every dated run includes that day's news; "nonews" does not
 # Date the news and polls were collected (write it in the paper). For "nonews" it is the date of
 # the first news run, which shares its personas and polls.
 AS_OF = RUN if NEWS_RUN else "2026-10-27"
@@ -119,13 +129,13 @@ FIGURES = Path("figures") / f"run_{RUN}"
 # The website shows the latest news run from these fixed paths (filled by script 17).
 LATEST_RESULTS = RESULTS / "latest"
 LATEST_FIGURES = Path("figures") / "latest"
-RAW = DATA / "01-raw_data"            # inputs as downloaded or entered; never edited by a script
-CES_RAW = RAW / "ces" / "CCES24_Common_OUTPUT_vv_topost_final.csv"   # not in the repo (see README)
+RAW = DATA / "01-raw_data"  # inputs as downloaded or entered; never edited by a script
+CES_RAW = RAW / "ces" / "CCES24_Common_OUTPUT_vv_topost_final.csv"  # not in the repo (see README)
 CES_FILE = SHARED_ANALYSIS / "ces2024_senate_demographics.csv"
 CANDIDATES_RAW = RAW / "senate_candidates_2026.csv"
 NEWS_FILE = DATA / "news" / "news_context.csv"
 NEWS_SUMMARIES_FILE = DATA / "news" / "persona_news_summaries.csv"
-POLLS_RAW = RAW / "polls" / "pollresults"          # one timestamped folder per download
+POLLS_RAW = RAW / "polls" / "pollresults"  # one timestamped folder per download
 POLLS_FILE = SHARED_ANALYSIS / "polls" / "senate_polls_2026_general.csv"
 
 NOMINEES_FILE = SHARED_ANALYSIS / "senate_nominees_2026.csv"
@@ -137,17 +147,55 @@ SCORES_FILE = RUN_DIR / "scores.parquet"
 FORECAST_FILE = RUN_RESULTS / "forecast.parquet"
 
 STATE_ABBR = {
-    "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",
-    "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE", "Florida": "FL", "Georgia": "GA",
-    "Hawaii": "HI", "Idaho": "ID", "Illinois": "IL", "Indiana": "IN", "Iowa": "IA",
-    "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME", "Maryland": "MD",
-    "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
-    "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV",
-    "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY",
-    "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK",
-    "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC",
-    "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX", "Utah": "UT", "Vermont": "VT",
-    "Virginia": "VA", "Washington": "WA", "West Virginia": "WV", "Wisconsin": "WI",
+    "Alabama": "AL",
+    "Alaska": "AK",
+    "Arizona": "AZ",
+    "Arkansas": "AR",
+    "California": "CA",
+    "Colorado": "CO",
+    "Connecticut": "CT",
+    "Delaware": "DE",
+    "Florida": "FL",
+    "Georgia": "GA",
+    "Hawaii": "HI",
+    "Idaho": "ID",
+    "Illinois": "IL",
+    "Indiana": "IN",
+    "Iowa": "IA",
+    "Kansas": "KS",
+    "Kentucky": "KY",
+    "Louisiana": "LA",
+    "Maine": "ME",
+    "Maryland": "MD",
+    "Massachusetts": "MA",
+    "Michigan": "MI",
+    "Minnesota": "MN",
+    "Mississippi": "MS",
+    "Missouri": "MO",
+    "Montana": "MT",
+    "Nebraska": "NE",
+    "Nevada": "NV",
+    "New Hampshire": "NH",
+    "New Jersey": "NJ",
+    "New Mexico": "NM",
+    "New York": "NY",
+    "North Carolina": "NC",
+    "North Dakota": "ND",
+    "Ohio": "OH",
+    "Oklahoma": "OK",
+    "Oregon": "OR",
+    "Pennsylvania": "PA",
+    "Rhode Island": "RI",
+    "South Carolina": "SC",
+    "South Dakota": "SD",
+    "Tennessee": "TN",
+    "Texas": "TX",
+    "Utah": "UT",
+    "Vermont": "VT",
+    "Virginia": "VA",
+    "Washington": "WA",
+    "West Virginia": "WV",
+    "Wisconsin": "WI",
     "Wyoming": "WY",
 }
 STATE_NAME = {code: name for name, code in STATE_ABBR.items()}
@@ -174,6 +222,7 @@ def write_table(df, path):
 def read_table(path):
     """Read the parquet file, or the .csv fallback written by write_table."""
     import pandas as pd
+
     path = Path(path)
     if path.exists():
         return pd.read_parquet(path)
