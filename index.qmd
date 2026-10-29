@@ -1,6 +1,6 @@
 ---
 title: "Synthetic Voting for the 2026 U.S. Senate Midterm Elections"
-subtitle: "[SYNTHETIC VOTE DISCLOSURE STATEMENT. ABSTRACT?]"
+subtitle: "A forecast of all 35 Senate races from synthetic voters: personas built from the 2024 Cooperative Election Study, answered by four large language models and combined with polls. No real person was surveyed."
 date: today
 date-format: long
 format: html
@@ -123,7 +123,7 @@ Each row pools the personas of all 35 states, weighted by each state's share of 
 
 ## Methods {#methods}
 
-All results were generated from synthetic respondents. These are not survey results. The analysis was carried out in Python (version [X]) [@python], using the packages pandas [@mckinney2010], NumPy [@harris2020], pyarrow [@arrow], requests [@requests], matplotlib [@hunter2007], sentence-transformers [@reimers2019], and, for the tests, pytest [@pytest] and pandera [@bantilan2020]. This page was built with Quarto [@quarto].
+All results were generated from synthetic respondents. These are not survey results. The analysis was carried out in Python 3.12 [@python], using the packages pandas [@mckinney2010], NumPy [@harris2020], pyarrow [@arrow], requests [@requests], matplotlib [@hunter2007], sentence-transformers [@reimers2019], and, for the tests, pytest [@pytest] and pandera [@bantilan2020]. This page was built with Quarto [@quarto].
 
 ### Data
 
@@ -144,7 +144,7 @@ Post-stratification happens at the sampling step rather than after the answers c
 
 ### News summaries {#news}
 
-News updates were summarized and taken from Google News with a focus on the following sources, which span the political spectrum: The New York Times, Washington Post, The Wall Street Journal, USA Today, Fox News, New York Post, The Daily Wire, HuffPost, Mother Jones, and Vox. Sources were selected based on both their viewership [CITATION NEEDED: viewership source] and their political leaning.
+News updates were summarized and taken from Google News with a focus on the following sources, which span the political spectrum: The New York Times, Washington Post, The Wall Street Journal, USA Today, Fox News, New York Post, The Daily Wire, HuffPost, Mother Jones, and Vox. Sources were selected based on both their audience size and their audience's political leaning, as measured by Pew Research Center [@pew2025sources].
 
 [NOTE: add the news summaries for each run here, or link to data/news/.]
 
@@ -152,9 +152,7 @@ News updates were summarized and taken from Google News with a focus on the foll
 
 Each persona was asked how it would vote in its state's Senate race. Following Murray and Alexander [-@murray2026], we query 4 different models, as different LLMs have different biases. We also save model_returned and the query times, because Bisbee et al. [-@bisbee2024] state that the model behind a name can change even when the name stays the same. Candidate order was randomised for each persona.
 
-Each persona answered in free text, which was then scored with SSR (see Turning Answers into Voting Probabilities). Every prompt was sent to the following models: [LIST MODELS USED HERE] via OpenRouter, 3 times each, at temperature [INSERT TEMPERATURE]. Below, we record the number of calls that failed or came back empty, by model: [MODEL 1: ], [MODEL 2: ], [MODEL 3: ], and [MODEL 4: ].
-
-For the full queries, we used [MODEL 1], [MODEL 2], [MODEL 3], and [MODEL 4]. [include test models?] For the test run, we used Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia's Nemotron 3 Ultra model (nvidia/nemotron-3-ultra-550b-a55b:free).
+Each persona answered in free text, which was then scored with SSR (see Turning Answers into Voting Probabilities). Every prompt was sent through OpenRouter, three times, to four models from four companies: Claude Haiku 5.5 (anthropic/claude-haiku-5.5), GPT-6 Luna (openai/gpt-6-luna), DeepSeek V4.1 Flash (deepseek/deepseek-v4.1-flash), and Gemini 3.5 Flash-Lite (google/gemini-3.5-flash-lite). We did not set a temperature, so each model ran at its provider's default, and the three repeats differ through ordinary sampling. Answers were capped at 800 tokens, and reasoning was turned off, except for Gemini, which requires it and ran at the minimal level. The number of calls that returned an answer is given, by run and model, in the cost table. Answers that could not be scored were left out: on 27 October, one DeepSeek call reached the token limit without any text, and in the run without news one Claude Haiku answer was a refusal.
 
 ### Turning answers into voting probabilities
 
@@ -218,15 +216,38 @@ Each run sends 42,000 prompts: 3,500 personas, four models, three repeats. The t
 
 ## Discussion {#discussion}
 
-[NOTE: Discussion to write.]
+<!-- DRAFT (Claude): rewrite. -->
+### What the synthetic voters get right, and what they miss
+
+Argyle et al. [-@argyle2023] introduced silicon samples: a language model conditioned on the demographic backstories of real survey respondents, whose answers reproduce the response distributions of many subgroups, a property they called algorithmic fidelity. Our personas show that fidelity at the level of groups. Pooled across states, the share of personas whose answer leaned toward the Democratic or independent candidate is within 5 points of the 2024 Harris vote of the same personas for every age, gender, race, and income group, and within 3 points for strong and leaning partisans, although the models never saw that vote. Fidelity is weakest where the persona carries little partisan signal: self-described independents (52 per cent leaning left against 39 per cent for Harris), personas unsure of their party (69 against 28), and those without a high-school diploma (46 against 37). Group-level fidelity did not produce accurate states. On their own, the synthetic voters gave Republicans a 95 per cent chance of keeping the Senate and missed each hidden poll average by 8.3 points on average, against 4.5 for 2024 plus a uniform swing. This is the gap Bisbee et al. [-@bisbee2024] warned of between aggregate resemblance and errors too large and too systematic for synthetic answers to replace a survey.
+
+<!-- DRAFT (Claude): rewrite. -->
+### Free text and Semantic Similarity Rating
+
+Heath and Alexander [-@heath2026] attribute mode collapse to language models' difficulty in producing numbers and show that free text mapped onto a scale with embeddings recovers more realistic distributions of ratings. Moving the method from a 0 to 100 rating to vote choice exposed two limits. First, SSR compresses clear answers: strong Democrats leaned left in 98 per cent of answers but received an SSR share of 85 per cent, and strong Republicans 0.1 against 10. A softmax over five similarities rarely puts more than 0.9 on one side, so SSR adds spread where the answers have little, the opposite problem to mode collapse. Second, SSR did not detect indecision: in our check of 200 Florida answers, answers that said they were undecided received an average p(other) of 0.14. Both point to the temperature and the anchors, which Heath and Alexander chose for ratings and which we could not refit without individual-level truth.
+
+<!-- DRAFT (Claude): rewrite. -->
+### The news the personas read
+
+Murray and Alexander [-@murray2026] show that analyst choices shape silicon samples and that, once a persona states its party identification, the news it reads changes its answers little. Our runs agree. Adding the 27 October news moved the synthetic share by −0.5 points averaged over the 35 states, and each of the four models moved by between −0.3 and −0.6 points in the same direction. Individual states moved by between about −3 and +2 points, so the news shifted some states but not the forecast as a whole. Gelman et al. [-@gelman2020] argue that a good forecast should be stable from day to day, because most news does not change the fundamentals of a race; for synthetic voters, part of that stability is built in, since every prompt states the persona's party.
+
+<!-- DRAFT (Claude): rewrite. -->
+### Uncertainty and the correlation between states
+
+Gelman et al. [-@gelman2020] stress that swings in vote share are highly correlated across states, so predicting the national swing does most of the work, while small departures from a uniform swing decide close races. Our forecast uses both points: the 10 unpolled states take their 2024 share plus a uniform swing, and a national error with a standard deviation of 0.03, shared by every state within a simulation, makes close races fall together. They also show that the assumed size of the shared error drives the win probability; in their example, a standard deviation of 3 rather than 2 points lowered Biden's chance from 0.875 to 0.77. Our sensitivity table shows the same: without a national error the chance of Republican control is 19 per cent, with 0.03 it is 38 per cent, and across the assumed errors it ranges from 9 to 43 per cent. Following their advice on communicating uncertainty, we round win probabilities to whole per cents, show the state forecasts as a quantile dot plot [@kay2016], and describe outcomes as shares of simulations.
+
+<!-- DRAFT (Claude): rewrite. -->
+### What the synthetic voters add
+
+With polls in the forecast, the inverse-variance weights measure what the synthetic voters contribute: about a fifth of the weight in polled states (between 0.12 and 0.39, mean 0.21) and about a third in unpolled states (between 0.24 and 0.50, mean 0.36), where the alternative is 2024 plus a swing. In the leave-one-out check, the combination missed hidden polls by 4.3 points against 4.5 for 2024 plus a swing and was closer in about half of the polled states. The synthetic voters therefore add a little information, mostly where polls are missing, and only after a bias estimated from polls is removed. In this forecast a silicon sample is not a substitute for polling but a weak and cheap prior: the 27 October run cost US$8.08 for 42,000 answers.
 
 ### Limitations
 
-Because polls enter the forecast, the forecast is no longer an independent test of the models. The bias, the structural variance, and the uniform swing are all estimated from the same 25 polled states, so they carry uncertainty of their own that the draws do not include. Inverse-variance weighting assumes that synthetic and poll errors are independent; if both miss in the same direction, the combined interval is too narrow. In the 10 unpolled states, the outside estimate assumes that every state moved the same distance from 2024, which ignores candidate effects, and the synthetic voters, who receive between a quarter and a half of the weight there, bring their own state-specific errors. In Kentucky, where many personas identify as Democrats but describe themselves as conservative, the combined Democratic share stayed several points above the 2024-plus-swing estimate [NOTE: check on the final run]. The 0.03 poll error beyond sampling is an assumption, so we also report results with 0.02 and 0.04. Polls have errors that are correlated across states [@shirani-mehr2018], which the shared national error captures only in part, and relying on one aggregator (PollResults) does not remove them.
+Because polls enter the forecast, the forecast is no longer an independent test of the models. The bias, the structural variance, and the uniform swing are all estimated from the same 25 polled states, so they carry uncertainty of their own that the draws do not include. Inverse-variance weighting assumes that synthetic and poll errors are independent; if both miss in the same direction, the combined interval is too narrow. In the 10 unpolled states, the outside estimate assumes that every state moved the same distance from 2024, which ignores candidate effects, and the synthetic voters, who receive between a quarter and a half of the weight there, bring their own state-specific errors. In Kentucky, where many personas identify as Democrats but describe themselves as conservative, the combined Democratic share stayed several points above the 2024-plus-swing estimate [NOTE: check on the final run]. The 0.03 poll error beyond sampling is an assumption, so we also report results with 0.02 and 0.04. Polls have errors that are correlated across states [@shirani-mehr2018], which the shared national error captures only in part, and relying on one aggregator (PollResults) does not remove them. Gelman et al. [-@gelman2020] show that too little correlation between states produces implausible state predictions; we include no regional error, so a miss shared by neighbouring states would make our seat distribution too narrow.
 
 In order to apply SSR, we had to flatten the candidate choices in each state to 2 sides to create a scale from Democrat to Republican, or from Independent to Republican, depending on which party the candidates belonged to. As a result, minor candidates and "don't know" answers are not fully reflected in these results.
 
-Due to cost, we could not update the news summaries every day. Instead, news summaries were provided and the models were re-run on October 27th, 29th, and 31st. Murray and Alexander [-@murray2026] found that adding party identification to persona descriptions ultimately reduced the impact that news had on synthetic voting results. Further research could examine how different news diets, or differing amounts of news, affect synthetic voting results.
+We did not set a temperature, so each model ran at its provider's default, which can change; a rerun may therefore not reproduce the exact answers. The news screen is also imperfect: in the example news block, a college football injury report passed as national news. Due to cost, we could not update the news summaries every day. Instead, news summaries were provided and the models were re-run on October 27th, 29th, and 31st. Murray and Alexander [-@murray2026] found that adding party identification to persona descriptions ultimately reduced the impact that news had on synthetic voting results. Further research could examine how different news diets, or differing amounts of news, affect synthetic voting results.
 
 Our original plan was to take data from multiple pollsters and divide them into a training set and a validation set. We would have used the training set to correct for bias in our model, and then compared the corrected results against aggregated results from the validation set. However, due to time constraints, we were unable to use this approach. We also have no real data to validate our model against, as the 2026 midterms have not yet occurred. As a partial substitute, we held out each polled state's polls in turn (see Internal Validation).
 
