@@ -30,6 +30,7 @@ python scripts/16-make_crosstabs.py
 python scripts/16b-compare_runs.py
 python scripts/16c-sensitivity.py
 python scripts/16d-costs.py                  # cost and time per run and model
+python scripts/16e-news_summary.py           # news kept per outlet and topic, example news block
 python scripts/12-test_actual_data.py         # pytest + pandera test suite
 python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```

@@ -146,7 +146,8 @@ Post-stratification happens at the sampling step rather than after the answers c
 
 News updates were summarized and taken from Google News with a focus on the following sources, which span the political spectrum: The New York Times, Washington Post, The Wall Street Journal, USA Today, Fox News, New York Post, The Daily Wire, HuffPost, Mother Jones, and Vox. Sources were selected based on both their audience size and their audience's political leaning, as measured by Pew Research Center [@pew2025sources].
 
-[NOTE: add the news summaries for each run here, or link to data/news/.]
+<!-- Tables written by scripts/16e-news_summary.py after each run; the full articles are in data/news/. -->
+{{< include data/03-results/comparison/news_summary.md >}}
 
 ### Prompts and models
 

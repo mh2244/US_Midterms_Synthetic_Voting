@@ -2,7 +2,7 @@
 #          collect news -> concatenate nine summaries/persona -> prompts (08) -> model queries (09) -> SSR (10)
 #          -> forecast (11: synthetic only, shrinkage, then inverse-variance headline last)
 #          -> figures, map, headline and battlegrounds (13, 13b, 15, 15b, 15c) -> crosstabs (16) -> run comparison (16b)
-#          -> sensitivity (16c) -> costs (16d) -> tests (12) -> publish latest (17)
+#          -> sensitivity (16c) -> costs (16d) -> news summary (16e) -> tests (12) -> publish latest (17)
 #          -> render the website (Quarto, into docs/) -> commit.
 # Commit rule: model answers are always committed (so a rerun only asks for what is missing);
 # the forecast, figures and website are committed only if every step, including the tests, passed.
@@ -225,6 +225,7 @@ jobs:
           python scripts/16b-compare_runs.py || echo "::warning::16b failed; comparison tables were not updated"
           python scripts/16c-sensitivity.py || echo "::warning::16c failed; sensitivity table was not updated"
           python scripts/16d-costs.py || echo "::warning::16d failed; cost table was not updated"
+          python scripts/16e-news_summary.py || echo "::warning::16e failed; news summary was not updated"
 
       - name: Test the real data (12)
         # pytest + pandera suite (scripts/schemas.py); a failure stops publishing, answers are kept
