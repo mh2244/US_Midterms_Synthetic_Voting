@@ -17,6 +17,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | Non-binary | 12 | 0.3 | 0.5 |
 | Other | 5 | 0.1 | 0.2 |
 
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
+
 :::
 
 ::: {.column width="4%"}
@@ -32,6 +36,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | Hispanic | 233 | 6.7 | 6.5 |
 | Asian | 73 | 2.1 | 2.0 |
 | Other | 107 | 3.1 | 3.1 |
+
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
 
 :::
 
@@ -49,6 +57,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | 45-64 | 1,238 | 35.4 | 36.0 |
 | 65+ | 1,028 | 29.4 | 28.5 |
 
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
+
 :::
 
 ::: {.column width="4%"}
@@ -65,6 +77,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | 2-year | 392 | 11.2 | 11.0 |
 | 4-year | 863 | 24.7 | 24.3 |
 | Post-grad | 485 | 13.9 | 13.7 |
+
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
 
 :::
 
@@ -86,6 +102,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | Strong Rep | 853 | 24.4 | 25.0 |
 | Not sure | 34 | 1.0 | 0.8 |
 
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
+
 :::
 
 ::: {.column width="4%"}
@@ -102,6 +122,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | Conservative | 847 | 24.2 | 24.4 |
 | Very conservative | 627 | 17.9 | 18.1 |
 | Not sure | 99 | 2.8 | 3.1 |
+
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
 
 :::
 
@@ -132,6 +156,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | $500,000 or more | 10 | 0.3 | 0.3 |
 | Prefer not to say | 323 | 9.2 | 9.6 |
 
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
+
 :::
 
 ::: {.column width="4%"}
@@ -147,6 +175,10 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 | Third party | 71 | 2.0 | 1.9 |
 | Did not vote for president | 31 | 0.9 | 0.7 |
 | No answer | 30 | 0.9 | 0.7 |
+
+::: {.chart-note}
+Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
+:::
 
 :::
 
@@ -165,3 +197,7 @@ Of the 3,500 personas, 904 (25.8%) repeat a respondent already drawn in the same
 | RI | 127 | 47 | 47.0 |
 | MT | 160 | 44 | 44.0 |
 | DE | 116 | 44 | 44.0 |
+
+::: {.chart-note}
+Pool is the number of eligible CES respondents in the state. Repeated draws count selections after a respondent's first appearance, not duplicate API calls. Sampling with replacement allows one respondent to appear as more than one persona.
+:::

@@ -1,13 +1,46 @@
-/* FONTS: change the two names in :root to try a different pairing (see the list in the chat).
-   The @import line loads the web fonts; if the reader is offline, the fallback fonts are used. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap");
+/* DESIGN SYSTEM, used everywhere on the page and (through scripts/site.mplstyle and config.py) in
+   every figure:
+   - Typefaces: Source Serif 4 for text and headlines, Public Sans for labels, tables, menus and
+     figures. Both are open-source (SIL OFL) and served from assets/fonts, so the page and the
+     figures made on GitHub Actions use the same files.
+   - Palette: party colours from ColorBrewer RdBu (blue #2166ac, red #b2182b), grey for
+     independents; lighter tints of the same two colours for "leans" and "tilts"; a muted sand
+     for toss-ups; near-black text, grey notes, light rules. The same values are in config.py.
+   - Tables: one style for all (top rule, rule under the header, bottom rule, no vertical lines,
+     figures right-aligned in tabular digits).
+   - Layout: one 900px column, section menu fixed at the top, captions below figures, left-aligned. */
+@font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-Regular.ttf") format("truetype");
+             font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-SemiBold.ttf") format("truetype");
+             font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-Bold.ttf") format("truetype");
+             font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-Italic.ttf") format("truetype");
+             font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Public Sans"; src: url("assets/fonts/PublicSans-Regular.ttf") format("truetype");
+             font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Public Sans"; src: url("assets/fonts/PublicSans-SemiBold.ttf") format("truetype");
+             font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Public Sans"; src: url("assets/fonts/PublicSans-Bold.ttf") format("truetype");
+             font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Public Sans"; src: url("assets/fonts/PublicSans-Italic.ttf") format("truetype");
+             font-weight: 400; font-style: italic; font-display: swap; }
+
 :root {
-  --serif: "Newsreader", "Iowan Old Style", Palatino, "Palatino Linotype", Cambria, serif;
-  --sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --serif: "Source Serif 4", Charter, Georgia, serif;
+  --sans: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --ink: #1a1a1a;      /* text, rules at the top and bottom of tables */
+  --muted: #555555;    /* captions, notes */
+  --rule: #d9d9d9;     /* light rules between table rows */
+  --tint: #f2f2f2;     /* group rows in tables */
+  --dem: #2166ac;
+  --rep: #b2182b;
+  --ind: #808080;
+  --toss: #e8d18c;
 }
 
 /* Page: white background, serif text, sans-serif labels */
-body { background: #ffffff; color: #1a1a1a; font-family: var(--serif); }
+body { background: #ffffff; color: var(--ink); font-family: var(--serif); }
 h1, h2, h3, h4, .sectionnav, .estimate-head, .forecast-summary, figcaption, .figure-caption,
 .quarto-title-meta, table, .page-footer, .disclosure {
   font-family: var(--sans);
@@ -17,70 +50,90 @@ h1, h2, h3, h4, .sectionnav, .estimate-head, .forecast-summary, figcaption, .fig
 .quarto-title { text-align: center; margin-bottom: 1.2rem; }
 h1.title { font-family: var(--serif); font-size: 3rem; line-height: 1.1;
            font-weight: 700; margin: 0.4em 0 0.3em; text-align: center; }
-.quarto-title .subtitle { font-style: italic; font-size: 1.25rem; line-height: 1.5; color: #333;
+.quarto-title .subtitle { font-style: italic; font-size: 1.25rem; line-height: 1.5; color: var(--ink);
                           max-width: 40em; margin: 0 auto 0.8em; text-align: center; }
-.quarto-title-meta { justify-content: center; font-size: 0.85rem; color: #555; }
+.quarto-title-meta { justify-content: center; font-size: 0.85rem; color: var(--muted); }
 
 /* Disclosure box */
-.disclosure { border-left: 4px solid #555; background: #f2f2f2; padding: 0.7em 1em;
+.disclosure { border-left: 4px solid var(--muted); background: var(--tint); padding: 0.7em 1em;
               font-size: 0.95rem; margin: 1.2rem 0; }
 
 /* Section menu: uppercase labels between two rules, stays at the top while scrolling */
 .sectionnav { position: sticky; top: 0; z-index: 20; background: #ffffff; text-align: center;
-              border-top: 2px solid #111; border-bottom: 1px solid #111; padding: 0.75rem 0;
+              border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 0.75rem 0;
               margin: 1.8rem 0 1.5rem; text-transform: uppercase; letter-spacing: 0.08em;
               font-size: 0.78rem; font-weight: 700; }
 .sectionnav p { margin: 0; }
-.sectionnav a { color: #111; text-decoration: none; margin: 0 0.85rem; white-space: nowrap; }
+.sectionnav a { color: var(--ink); text-decoration: none; margin: 0 0.85rem; white-space: nowrap; }
 .sectionnav a:hover { text-decoration: underline; }
-h2 { scroll-margin-top: 4.5rem; }
+h2, h3, h4 { scroll-margin-top: 4.5rem; }
 
 /* Section headings */
 h2 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700;
      margin-top: 2.4em; border-bottom: none; }
 h3 { font-size: 1.05rem; font-weight: 700; }
+/* Fourth level (e.g. Map, Battleground races under State by state): smaller, grey */
+h4 { font-size: 0.95rem; font-weight: 600; color: var(--muted); margin-top: 1.8em; }
 
 /* "Latest estimate" row */
+.forecast-date { color: var(--muted); font-family: var(--sans); font-size: 0.85rem;
+                 margin: 1rem 0 0.5rem; }
+.forecast-date p { margin: 0; }
 .estimate-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;
                  gap: 0.4rem; margin-top: 0.5rem; }
 .estimate-head .label { text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700; font-size: 0.85rem; }
-.estimate-head .updated { color: #555; font-size: 0.85rem; }
+.estimate-head .updated { color: var(--muted); font-size: 0.85rem; }
 
 /* Headline and seat bar (made by scripts/15-make_summary_bar.py) */
 .forecast-summary { margin: 0.8rem 0 1.5rem; }
 .forecast-summary .headline { font-size: 1.9rem; font-weight: 700; line-height: 1.2; text-align: center;
                               margin: 0.6rem 0 1.4rem; font-family: var(--serif); }
-.forecast-summary .bar { position: relative; display: flex; height: 34px; border: 2px solid #222; }
+.forecast-summary .bar { position: relative; display: flex; height: 34px; border: 2px solid var(--ink); }
 .forecast-summary .seg { height: 100%; }
 .forecast-summary .line50 { position: absolute; left: 50%; top: -6px; bottom: -6px;
-                            border-left: 2px dashed #222; }
+                            border-left: 2px dashed var(--ink); }
 .forecast-summary .bar-labels { display: flex; justify-content: space-between; align-items: flex-start;
                                 margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em;
                                 font-weight: 700; font-size: 0.95rem; }
 .forecast-summary .bar-labels .num { font-size: 1.9rem; }
-.forecast-summary .bar-labels small { text-transform: none; letter-spacing: 0; font-weight: 400; color: #444; }
+.forecast-summary .bar-labels small { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
 .forecast-summary .bar-labels .right { text-align: right; }
 .forecast-summary .bar-labels .mid { text-align: center; }
-.forecast-summary .bar-note { font-size: 0.82rem; color: #555; margin: 0.4rem 0 0; }
+.forecast-summary .bar-note { font-size: 0.82rem; color: var(--muted); margin: 0.4rem 0 0; }
 
 /* Figures and captions */
-figcaption, .figure-caption { font-size: 0.82rem; color: #555; text-align: left; }
+.chart-note { color: var(--muted); font-family: var(--sans); font-size: 0.82rem;
+              line-height: 1.5; margin: 0.5rem 0 1.5rem; }
+.chart-note p { margin: 0; }
+figcaption, .figure-caption { font-size: 0.82rem; color: var(--muted); text-align: left; }
 table { font-size: 0.9rem; }
 .page-footer { font-size: 0.85rem; }
 
 /* Composition tables placed side by side: slightly smaller text */
-.columns table { font-size: 0.8rem; }
-.columns table th, .columns table td { padding: 0.2rem 0.4rem; }
+main .columns table:not(.crosstab) { font-size: 0.8rem; }
+main .columns table:not(.crosstab) th, main .columns table:not(.crosstab) td { padding: 0.2rem 0.4rem; }
 /* Crosstabs (scripts/16-make_crosstabs.py): two tables side by side, one block per variable */
 .crosstab-pair { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
 .crosstab-col { flex: 1 1 0; min-width: 18rem; }
-.crosstab { width: 100%; border-collapse: collapse; font-size: 0.76rem;
+.crosstab { width: 100%; border-collapse: collapse; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); font-size: 0.76rem;
             font-variant-numeric: tabular-nums; margin: 0; }
 .crosstab th, .crosstab td { padding: 0.18rem 0.28rem; text-align: right; white-space: nowrap; }
 .crosstab th:first-child, .crosstab td:first-child { text-align: left; }
-.crosstab thead th { font-weight: 700; border-bottom: 2px solid #1a1a1a; vertical-align: bottom; }
-.crosstab tbody + tbody { border-top: 1px solid #1a1a1a; }
-.crosstab tr.ct-head th { background: #f2f2f2; font-weight: 700; text-transform: uppercase;
+.crosstab thead th { font-weight: 700; border-bottom: 1px solid var(--ink); vertical-align: bottom; }
+.crosstab tbody + tbody { border-top: 1px solid var(--ink); }
+.crosstab tr.ct-head th { background: var(--tint); font-weight: 700; text-transform: uppercase;
                           letter-spacing: 0.05em; font-size: 0.72rem; padding-top: 0.35rem; }
 .crosstab tr.ct-all td { font-weight: 700; }
-.crosstab tbody td { border-bottom: 1px solid #e6e6e6; }
+.crosstab tbody td { border-bottom: 1px solid var(--rule); }
+
+/* Every other table (markdown tables written by the scripts): the same rules as the crosstabs */
+main table:not(.crosstab) { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums;
+                            border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+                            margin: 0.6rem 0 1.4rem; font-size: 0.85rem; }
+main table:not(.crosstab) thead th { font-weight: 700; border-bottom: 1px solid var(--ink); vertical-align: bottom;
+                                     padding: 0.3rem 0.45rem; background: none; }
+main table:not(.crosstab) td { padding: 0.25rem 0.45rem; border-bottom: 1px solid var(--rule); }
+main table:not(.crosstab) tbody tr:last-child td { border-bottom: none; }
+main table:not(.crosstab) tr, main table:not(.crosstab) td, main table:not(.crosstab) th { background: none !important;
+                                                                                         box-shadow: none !important; }
+main table:not(.crosstab) caption { caption-side: top; color: var(--muted); font-size: 0.8rem; text-align: left; }

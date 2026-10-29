@@ -113,9 +113,10 @@ models = [m for m in config.MODEL_LABELS if m in news.index] + sorted(set(news.i
 news = news.loc[models]
 news.loc["all"] = news.mean()                                                    # each model counts equally
 news.round(4).to_csv(OUT / "news.csv")
+republican_news = 1 - news  # Display only; news.csv retains its original left-share schema.
 head = ["Model"] + [label(r) for r in runs] + ([f"{label(r)} minus no news" for r in news_runs] if "nonews" in runs else [])
 md = ["| " + " | ".join(head) + " |", "|---|" + "---:|" * (len(head) - 1)]
-for m, r in news.iterrows():
+for m, r in republican_news.iterrows():
     name = "**All models**" if m == "all" else config.MODEL_LABELS.get(m, m)
     cells = [pct(r[run]) for run in runs]
     if "nonews" in runs:
@@ -137,7 +138,7 @@ xlab = ["No news" if r == "nonews" else label(r) for r in order]
 per_state = {}
 for run in order:
     comp = pd.read_csv(config.RESULTS / f"run_{run}" / "state_comparison_uncalibrated.csv").set_index("state")
-    per_state[run] = comp[[c for c in comp.columns if c.startswith("model_")]].mean(axis=1)   # models pooled
+    per_state[run] = 1 - comp[[c for c in comp.columns if c.startswith("model_")]].mean(axis=1)   # models pooled
 has_base = "nonews" in runs and len(news_runs) > 0
 fig, axes = plt.subplots(1, 2 if has_base else 1, figsize=(9, 3.6) if has_base else (5.5, 3.6),
                          gridspec_kw={"width_ratios": [1.15, 1]} if has_base else None)
@@ -147,11 +148,11 @@ greys = ["#9a9a9a", "#b8b8b8", "#7c7c7c", "#cfcfcf"]
 markers = ["o", "s", "^", "D"]
 labels = []                                 # (y at the last setting, text, colour)
 for i, m in enumerate([m for m in news.index if m != "all"]):
-    y = news.loc[m, order].to_numpy() * 100
+    y = republican_news.loc[m, order].to_numpy() * 100
     colour = config.MODEL_COLOURS.get(m, greys[i % 4])
     ax.plot(x, y, color=colour, marker=markers[i % 4], ms=4, lw=1.4, zorder=3)   # above the pooled line
     labels.append([y[-1], config.MODEL_LABELS.get(m, m), colour])
-y = news.loc["all", order].to_numpy() * 100
+y = republican_news.loc["all", order].to_numpy() * 100
 ax.plot(x, y, color=config.INK, marker="o", ms=7, lw=3, zorder=2)
 labels.append([y[-1], "All models", None])
 labels.sort(key=lambda t: t[0])             # spread the labels so that none overlap (at least 0.55 points apart)
@@ -160,11 +161,11 @@ for k in range(1, len(labels)):
 for y_lab, text, colour in labels:          # colour None = the pooled line, in black and bold
     ax.text(x[-1] + 0.12, y_lab, text, va="center", fontsize=8.5 if colour is None else 8,
             fontweight="bold" if colour is None else "normal", color=config.INK if colour is None else colour)
-mid = news.loc[:, order].to_numpy().mean() * 100
+mid = republican_news.loc[:, order].to_numpy().mean() * 100
 ax.set_ylim(mid - 5, mid + 5)               # a 10-point window, so small moves look small
 ax.set_xlim(-0.2, len(order) - 1 + 1.4)
 ax.set_xticks(x, xlab)
-ax.set_ylabel("Synthetic Democratic or independent share (%)")
+ax.set_ylabel("Synthetic Republican share (%)")
 ax.set_title("Mean over the 35 states")
 if has_base:
     ax2 = axes[1]

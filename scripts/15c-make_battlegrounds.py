@@ -99,21 +99,20 @@ if len(toss):
     line += (f"{names(toss.index)} {'is a toss-up' if len(toss) == 1 else 'are toss-ups'}, with each side "
              f"given a 45% to 55% chance. ")
 p_rep = (seats >= 50).mean()
-line += (f"Across all simulations, Republicans hold 50 or more seats, and so keep control with the vice "
-         f"president's vote, in {p_rep * 100:.0f} per cent.")
+line += (f"Republicans hold at least 50 seats in {p_rep * 100:.0f} per cent of simulations.")
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 (config.RUN_RESULTS / "results_summary.md").write_text(line + "\n")
 
 #### Battleground table ####
 bg = states.loc[BATTLEGROUNDS].sort_values("p_left", ascending=False)
 bg.round(4).to_csv(config.RUN_RESULTS / "battlegrounds.csv")
-md = ["| State | Seat now | Democratic or independent share, median (90% interval) | "
-      "Chance Democratic or independent wins | Forecast | Flip |", "|---|:---:|---:|---:|---|:---:|"]
+md = ["| State | Seat now | Republican share, median (90% interval) | "
+      "Chance Republican wins | Forecast | Flip |", "|---|:---:|---:|---:|---|:---:|"]
 for st, r in bg.iterrows():
     name = r["name"] + (" (I)" if r["left_party"] == "Independent" else "")
     flip = "–" if r["rating"] == "Toss-up" else ("Yes" if r["change"] else "No")
-    md.append(f"| {name} | {SHORT[r['holder']]} | {r['share_mid']:.0f}% ({r['share_lo']:.0f} to {r['share_hi']:.0f}) | "
-              f"{pct(r['p_left'])} | {r['rating']} | {flip} |")
+    md.append(f"| {name} | {SHORT[r['holder']]} | {100 - r['share_mid']:.0f}% ({100 - r['share_hi']:.0f} to {100 - r['share_lo']:.0f}) | "
+              f"{pct(1 - r['p_left'])} | {r['rating']} | {flip} |")
 (config.RUN_RESULTS / "battlegrounds.md").write_text("\n".join(md) + "\n")
 
 #### Seat distribution ####

@@ -27,7 +27,7 @@ TOPICS = {"policy": "Policy", "foreign_policy": "Foreign policy", "law": "Law an
           "voting_rules": "Voting rules", "healthcare": "Health care", "economy": "Economy",
           "immigration": "Immigration", "taxation": "Taxes", "energy": "Energy", "education": "Education",
           "national_security": "National security", "other": "Other"}
-EXAMPLE_PERSONA = "MI_1"                 # a persona in a battleground state; any id works
+EXAMPLE_PERSONA = "FL_12"                # Actual archived block selected for illustration, not at random
 
 
 def day(run):
@@ -75,14 +75,22 @@ text = f"""**Articles kept, by outlet.** Number of articles that passed the scre
 
 {table_outlets}
 
+::: {{.chart-note}}
+Counts refer to retained articles, not the number shown to each persona. Each persona receives three items from each source group; the newspapers group is not a neutrality rating.
+:::
+
 **What the kept articles were about.** Share of each news day's kept articles by topic (per cent), as labelled by the screening model.
 
 {table_topics}
 
+::: {{.chart-note}}
+Each article has one topic assigned by the screening model. Percentages describe the retained news pool, not the balance of topics in every persona's nine-item selection; rounding may prevent them from adding to 100%.
+:::
+
 <details>
 <summary>Example: the news block of one persona ({config.STATE_NAME.get(ex['state'], ex['state'])}, {day(latest)})</summary>
 
-Each of the {n_personas:,} personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published {pubs.min():%-d %B %H:%M} to {pubs.max():%-d %B %H:%M} UTC). This is the block persona {ex['persona_id']} read before answering, word for word.
+Each of the {n_personas:,} personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published {pubs.min():%-d %B %H:%M} to {pubs.max():%-d %B %H:%M} UTC). For illustration, we selected the archived block for persona {ex['persona_id']}, reproduced word for word. This example was not randomly selected and does not establish the quality of all news blocks.
 
 {example}
 

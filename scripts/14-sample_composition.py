@@ -187,7 +187,8 @@ def table(var):
     out = [f"**{LABELS[var]}**", "", "| Category | Personas | Sample (%) | Expected (%) |", "|---|---:|---:|---:|"]
     for _, r in overall[overall["variable"] == LABELS[var]].iterrows():
         out.append(f"| {r['category']} | {r['n_sample']:,} | {r['pct_sample']:.1f} | {r['pct_expected']:.1f} |")
-    return out + [""]
+    return out + ["", "::: {.chart-note}",
+                  "Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.", ":::", ""]
 
 
 for left, right in [("gender", "race_5"), ("age_group", "education"), ("party_id_7", "ideology")]:
@@ -204,7 +205,9 @@ md += ["**Repeated draws**", "",
        "| State | Pool | Repeated draws | Repeated (%) |", "|---|---:|---:|---:|"]
 for _, r in rep.head(5).iterrows():
     md.append(f"| {r['state']} | {int(r['pool_size']):,} | {int(r['repeated_draws'])} | {r['pct_repeated']:.1f} |")
-(OUT / "composition_overall.md").write_text("\n".join(md) + "\n")
+md += ["", "::: {.chart-note}",
+       "Pool is the number of eligible CES respondents in the state. Repeated draws count selections after a respondent's first appearance, not duplicate API calls. Sampling with replacement allows one respondent to appear as more than one persona.", ":::", ""]
+(OUT / "composition_overall.md").write_text("\n".join(md).rstrip() + "\n")
 
 #### Figure ####
 # Two columns of panels; in each panel the black bar is the sample, the grey bar the expected share.

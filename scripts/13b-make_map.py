@@ -137,7 +137,7 @@ info = {}
 for state, g in left.groupby("state"):
     race = nominees.loc[state]
     p_left = g.assign(w=g["winner"] != "Republican").groupby("model")["w"].mean().mean()
-    lo, mid, hi = np.quantile(g["share"], [0.05, 0.5, 0.95]) * 100
+    lo, mid, hi = np.quantile(1 - g["share"], [0.05, 0.5, 0.95]) * 100
     if max(p_left, 1 - p_left) < LEVELS[-1][1]:
         side, category, colour = None, "Toss-up", TOSS_UP
     else:
@@ -151,7 +151,7 @@ for state, g in left.groupby("state"):
         "category": category, "colour": colour,
         "tip": (f"<b>{html.escape(config.STATE_NAME.get(state, state))}{special}</b>"
                 f"{html.escape(race['left_name'])} ({race['left_party'][0]}) v. {html.escape(race['rep_name'])} (R)<br>"
-                f"{html.escape(l_last)}'s share: {mid:.0f}% (90% interval {lo:.0f} to {hi:.0f})<br>"
+                f"{html.escape(r_last)}'s share: {mid:.0f}% (90% interval {lo:.0f} to {hi:.0f})<br>"
                 f"Chance {html.escape(l_last)} wins: {pct(p_left)}<br>"
                 f"Chance {html.escape(r_last)} wins: {pct(1 - p_left)}"),
     }

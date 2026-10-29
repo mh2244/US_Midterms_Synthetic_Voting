@@ -17,6 +17,10 @@
 | | *Right-leaning, all outlets* | *20* |
 | **All** | | **63** |
 
+::: {.chart-note}
+Counts refer to retained articles, not the number shown to each persona. Each persona receives three items from each source group; the newspapers group is not a neutrality rating.
+:::
+
 **What the kept articles were about.** Share of each news day's kept articles by topic (per cent), as labelled by the screening model.
 
 | Topic | 27 October |
@@ -30,19 +34,23 @@
 | Economy | 3 |
 | Immigration | 3 |
 
+::: {.chart-note}
+Each article has one topic assigned by the screening model. Percentages describe the retained news pool, not the balance of topics in every persona's nine-item selection; rounding may prevent them from adding to 100%.
+:::
+
 <details>
-<summary>Example: the news block of one persona (Michigan, 27 October)</summary>
+<summary>Example: the news block of one persona (Florida, 27 October)</summary>
 
-Each of the 3,500 personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published 26 October 16:21 to 27 October 20:33 UTC). This is the block persona MI_1 read before answering, word for word.
+Each of the 3,500 personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published 26 October 16:21 to 27 October 20:33 UTC). For illustration, we selected the archived block for persona FL_12, reproduced word for word. This example was not randomly selected and does not establish the quality of all news blocks.
 
-1. HuffPost reports: A restaurant owner who hosts Trump has reported that conditions have worsened over the past two years, indicating ongoing economic or social difficulties.
-2. The Washington Post reports: The Trump administration asked Washington state to hold more than 400 ballots, highlighting ongoing federal involvement in election procedures.
-3. The Washington Post reports: The Trump administration can block immigration judges from closing deportation cases, affecting national immigration enforcement policies.
-4. Fox News reports: Mississippi State's quarterback Kamario Taylor is out for the season after facing toe surgery, affecting team performance and raising concerns about athlete health and safety.
-5. HuffPost reports: A judge has ruled that Donald Trump's firing of Prosecutor Maurene Comey was unlawful, affecting ongoing legal processes.
-6. The Daily Wire reports: A scheme involving foreign scammers staged robberies at fast food restaurants and gas stations to facilitate visa applications for illegal residency in the US, raising concerns about immigration security.
-7. The Daily Wire reports: Violent crime rates have reportedly decreased across the United States following a nationwide crackdown, which was associated with policies enacted during President Trump's tenure.
-8. The Washington Post reports: Federal officials have charged an individual accused of damaging the Iwo Jima statue near Quantico, highlighting ongoing issues related to the protection of national monuments and law enforcement responses.
-9. Mother Jones reports: A report describes a costly mistake that has increased the competitiveness of a Republican seat in upcoming elections.
+1. The New York Times reports: State and local election plans include procedures to address potential ICE raids, election monitor misconduct, and attempts to seize votes or machines, highlighting concerns over election security.
+2. New York Post reports: Polls are open in Israel for the country's first election since October 7 attacks, which could impact US foreign policy and regional stability.
+3. The Daily Wire reports: Violent crime rates have reportedly decreased across the United States following a nationwide crackdown, which was associated with policies enacted during President Trump's tenure.
+4. Vox reports: The Supreme Court is considering cases that could influence whether taxpayers fund anti-LGBTQ discrimination, with the majority often ruling in favor of religious conservatives and institutions that refuse service to LGBTQ individuals.
+5. The Washington Post reports: An Illinois man is accused of sending threatening letters containing a white substance to members of Congress, raising concerns about security and safety for federal lawmakers.
+6. The Washington Post reports: Robert White could be ineligible for House delegate unless he resigns before Election Day, which may impact election outcomes and candidate eligibility rules.
+7. HuffPost reports: President Donald Trump has faced criticism over gas prices, with recent data showing that the average price has increased under his administration, prompting debates on energy policy and economic management.
+8. HuffPost reports: Donald Trump has announced a $1 million reward for reporting voter fraud, highlighting ongoing concerns about election integrity.
+9. The Daily Wire reports: Democrats could gain total control of state governments in five battleground states, potentially influencing future national policies and elections.
 
 </details>
