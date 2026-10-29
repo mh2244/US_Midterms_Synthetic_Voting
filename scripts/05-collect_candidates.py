@@ -9,7 +9,7 @@ import requests
 import lxml
 
 URL = "https://en.wikipedia.org/wiki/2026_United_States_Senate_elections"
-OUTPUT_FILE = "data/senate_candidates_2026.csv"
+OUTPUT_FILE = "data/01-raw_data/senate_candidates_2026.csv"
 
 # The 35 states with a Senate race in 2026 (Florida and Ohio are special elections)
 STATES = [

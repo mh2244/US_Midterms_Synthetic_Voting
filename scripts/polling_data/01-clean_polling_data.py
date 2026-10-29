@@ -20,7 +20,9 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2] / "data" / "polling_data"
+ROOT = Path(__file__).resolve().parents[2] / "data"
+RAW_DIR = ROOT / "01-raw_data" / "polls" / "pollresults"
+OUTPUT_FILE = ROOT / "02-analysis_data" / "polls" / "senate_polls_2026_general.csv"
 
 # Keep a compact view with IDs to trace every answer back to the raw data.
 COLUMNS = {
@@ -93,11 +95,12 @@ def main():
     args = parser.parse_args()
     input_file = args.input
     if input_file is None:
-        downloads = sorted((ROOT / "01-raw_data" / "pollresults").glob("*/senate_polls_all.csv"))
+        downloads = sorted(RAW_DIR.glob("*/senate_polls_all.csv"))
         if not downloads:
-            raise FileNotFoundError("Run download_pollresults.py first or pass the input CSV path.")
+            raise FileNotFoundError("Run 00-download_polling_data.py first or pass the input CSV path.")
         input_file = downloads[-1]
-    output_file = ROOT / "02-analysis_data" / "senate_polls_2026_general.csv"
+    output_file = OUTPUT_FILE
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     if input_file.resolve() == output_file.resolve():
         raise ValueError("Input and output paths must be different.")
     print(f"Input: {input_file}")

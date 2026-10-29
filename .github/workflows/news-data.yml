@@ -134,7 +134,7 @@ jobs:
           python scripts/polling_data/00-download_polling_data.py
           python scripts/polling_data/01-clean_polling_data.py
           mkdir -p "data/03-results/run_${RUN}"
-          cp data/polling_data/02-analysis_data/senate_polls_2026_general.csv \
+          cp data/02-analysis_data/polls/senate_polls_2026_general.csv \
              "data/03-results/run_${RUN}/polling_input.csv"
 
       - name: Collect news and assemble persona news
@@ -250,7 +250,8 @@ jobs:
           name: forecast-${{ steps.run_info.outputs.run_id }}
           path: |
             data/news/*.csv
-            data/polling_data/
+            data/01-raw_data/polls/
+            data/02-analysis_data/polls/
             data/02-analysis_data/run_${{ steps.run_info.outputs.run_id }}/
             data/03-results/run_${{ steps.run_info.outputs.run_id }}/
             figures/run_${{ steps.run_info.outputs.run_id }}/
@@ -261,7 +262,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for path in data/news data/polling_data "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}/polling_input.csv"; do
+          for path in data/news data/01-raw_data/polls data/02-analysis_data/polls "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}/polling_input.csv"; do
             if [ -e "$path" ]; then git add -- "$path"; fi
           done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi

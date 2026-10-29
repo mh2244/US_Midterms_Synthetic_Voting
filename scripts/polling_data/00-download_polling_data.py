@@ -24,7 +24,8 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 API = "https://api.pollresults.org/v1.0/politics/results/senate"
-ROOT = Path(__file__).resolve().parents[2] / "data" / "polling_data"
+ROOT = Path(__file__).resolve().parents[2] / "data"
+RAW_DIR = ROOT / "01-raw_data" / "polls" / "pollresults"      # one timestamped folder per download
 
 
 def get_page(cursor=None):
@@ -69,7 +70,7 @@ def save_csv(path, rows, columns):
 
 def main():
     started = datetime.now(timezone.utc)
-    folder = ROOT / "01-raw_data" / "pollresults" / started.strftime("%Y%m%dT%H%M%S%fZ")
+    folder = RAW_DIR / started.strftime("%Y%m%dT%H%M%S%fZ")
     folder.mkdir(parents=True, exist_ok=True)
     polls, seen_ids, seen_cursors = [], set(), set()
     cursor, expected_total, metadata, page_number = None, None, {}, 0

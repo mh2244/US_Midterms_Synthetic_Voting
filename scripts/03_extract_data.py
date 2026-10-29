@@ -54,8 +54,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-DEFAULT_IN = Path("data/CCES24_Common_OUTPUT_vv_topost_final.csv")
-OUT_PATH = Path("data/ces2024_senate_demographics.csv")
+DEFAULT_IN = Path("data/01-raw_data/ces/CCES24_Common_OUTPUT_vv_topost_final.csv")
+OUT_PATH = Path("data/02-analysis_data/ces2024_senate_demographics.csv")
 
 # Columns named in the CES 2024 guide
 DEMOS = ["birthyr", # year respondent was born in
