@@ -8,7 +8,7 @@ link-citations: true
 
 <!-- Section menu, as on the example site: styled by .sectionnav in styles.css -->
 ::: {.sectionnav}
-[In brief](#brief) [Forecast](#forecast) [Sample](#sample) [Synthetic voters and polls](#synthetic) [Evaluation](#evaluation) [Methods](#methods) [Costs](#costs) [Discussion](#discussion) [Prompts](#prompts)
+[How it works](#how) [Forecast](#forecast) [Sample](#sample) [Synthetic voters and polls](#synthetic) [Evaluation](#evaluation) [Methods](#methods) [Costs](#costs) [Discussion](#discussion) [Prompts](#prompts)
 :::
 
 <!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py, published by 17. -->
@@ -17,7 +17,7 @@ link-citations: true
 <!-- Results line: written by scripts/15c-make_battlegrounds.py, published by 17. -->
 {{< include data/03-results/latest/results_summary.md >}}
 
-## In brief {#brief}
+## How the forecast works {#how}
 
 We forecast all 35 Senate races on 3 November 2026 with silicon sampling. In each state, we sampled 100 validated 2024 Cooperative Election Study voters in proportion to their survey weights, described each by age, education, race, gender, income, ideology and party, and gave them nine paragraphs of current news on each news day. Four models from four companies answered each persona three times in free text. We converted each answer into voting probabilities for both sides by comparing it with five anchor statements using Semantic Similarity Rating (SSR). On their own, synthetic voters lean about 6–9 points more Republican than the polls, partly because they reflect their personas’ 2024 votes rather than the shifts since then. To reduce this bias, we subtract each model’s average gap relative to the polls before using its estimates. We then average each state’s corrected share with its poll average or, in the 10 states without polls, with the 2024 result shifted by the average change in the polled states (“2024 plus swing”), giving more weight to whichever estimate is less noisy. We ran 1,000 simulations per model, with an error shared by every state, to obtain the distribution of seats. The synthetic estimates receive less weight than the polls overall and more weight in states without polling, so their contribution to the forecast is concentrated in those states; the forecast rests mainly on the polls.
 
