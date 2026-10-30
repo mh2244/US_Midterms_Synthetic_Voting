@@ -1,21 +1,21 @@
 **Articles kept, by outlet.** Number of articles that passed the screening on each news day.
 
-| Source group | Outlet | 27 October |
-|---|---|---:|
-| Left-leaning | HuffPost | 7 |
-|  | Mother Jones | 1 |
-|  | Vox | 1 |
-| | *Left-leaning, all outlets* | *9* |
-| Newspapers | The New York Times | 11 |
-|  | The Wall Street Journal | 11 |
-|  | The Washington Post | 11 |
-|  | USA Today | 1 |
-| | *Newspapers, all outlets* | *34* |
-| Right-leaning | Fox News | 10 |
-|  | New York Post | 3 |
-|  | The Daily Wire | 7 |
-| | *Right-leaning, all outlets* | *20* |
-| **All** | | **63** |
+| Source group | Outlet | 27 October | 29 October |
+|---|---|---:|---:|
+| Left-leaning | HuffPost | 7 | 10 |
+|  | Mother Jones | 1 | 7 |
+|  | Vox | 1 | 7 |
+| | *Left-leaning, all outlets* | *9* | *24* |
+| Newspapers | The New York Times | 11 | 10 |
+|  | The Wall Street Journal | 11 | 18 |
+|  | The Washington Post | 11 | 13 |
+|  | USA Today | 1 | 5 |
+| | *Newspapers, all outlets* | *34* | *46* |
+| Right-leaning | Fox News | 10 | 11 |
+|  | New York Post | 3 | 6 |
+|  | The Daily Wire | 7 | 14 |
+| | *Right-leaning, all outlets* | *20* | *31* |
+| **All** | | **63** | **101** |
 
 ::: {.chart-note}
 Counts refer to retained articles, not the number shown to each persona. Each persona receives three items from each source group; the newspapers group is not a neutrality rating.
@@ -23,34 +23,35 @@ Counts refer to retained articles, not the number shown to each persona. Each pe
 
 **What the kept articles were about.** Share of each news day's kept articles by topic (per cent), as labelled by the screening model.
 
-| Topic | 27 October |
-|---|---:|
-| Policy | 32 |
-| Foreign policy | 24 |
-| Law and courts | 24 |
-| Elections | 8 |
-| Voting rules | 3 |
-| Health care | 3 |
-| Economy | 3 |
-| Immigration | 3 |
+| Topic | 27 October | 29 October |
+|---|---:|---:|
+| Policy | 32 | 39 |
+| Foreign policy | 24 | 18 |
+| Law and courts | 24 | 11 |
+| Health care | 3 | 9 |
+| Economy | 3 | 8 |
+| Voting rules | 3 | 7 |
+| Elections | 8 | 5 |
+| National security | 0 | 3 |
+| Immigration | 3 | 1 |
 
 ::: {.chart-note}
 Each article has one topic assigned by the screening model. Percentages describe the retained news pool, not the balance of topics in every persona's nine-item selection; rounding may prevent them from adding to 100%.
 :::
 
 <details>
-<summary>Example: the news block of one persona (Florida, 27 October)</summary>
+<summary>Example: the news block of one persona (Florida, 29 October)</summary>
 
-Each of the 3,500 personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published 26 October 16:21 to 27 October 20:33 UTC). For illustration, we selected the archived block for persona FL_12, reproduced word for word. This example was not randomly selected and does not establish the quality of all news blocks.
+Each of the 3,500 personas received nine paragraphs, three from each source group, drawn at random from that day's kept articles (published 28 October 04:22 to 29 October 22:26 UTC). For illustration, we selected the archived block for persona FL_12, reproduced word for word. This example was not randomly selected and does not establish the quality of all news blocks.
 
-1. The New York Times reports: State and local election plans include procedures to address potential ICE raids, election monitor misconduct, and attempts to seize votes or machines, highlighting concerns over election security.
-2. New York Post reports: Polls are open in Israel for the country's first election since October 7 attacks, which could impact US foreign policy and regional stability.
-3. The Daily Wire reports: Violent crime rates have reportedly decreased across the United States following a nationwide crackdown, which was associated with policies enacted during President Trump's tenure.
-4. Vox reports: The Supreme Court is considering cases that could influence whether taxpayers fund anti-LGBTQ discrimination, with the majority often ruling in favor of religious conservatives and institutions that refuse service to LGBTQ individuals.
-5. The Washington Post reports: An Illinois man is accused of sending threatening letters containing a white substance to members of Congress, raising concerns about security and safety for federal lawmakers.
-6. The Washington Post reports: Robert White could be ineligible for House delegate unless he resigns before Election Day, which may impact election outcomes and candidate eligibility rules.
-7. HuffPost reports: President Donald Trump has faced criticism over gas prices, with recent data showing that the average price has increased under his administration, prompting debates on energy policy and economic management.
-8. HuffPost reports: Donald Trump has announced a $1 million reward for reporting voter fraud, highlighting ongoing concerns about election integrity.
-9. The Daily Wire reports: Democrats could gain total control of state governments in five battleground states, potentially influencing future national policies and elections.
+1. Vox reports: Recent concerns about AI spiraling out of control have led to fears over security vulnerabilities, prompting researchers to identify risks in critical systems.
+2. Vox reports: The ghost of Jeffrey Epstein remains a topic in midterm campaign discussions, highlighting concerns about political associations and influence.
+3. The Washington Post reports: A recent study finds that increased education levels are associated with a reduced risk of dementia, which could influence national healthcare strategies and policies aimed at aging populations.
+4. The Daily Wire reports: Army Lt. Gen. Brett Sylvia was dismissed from his position after leaks of sensitive information and failed polygraph tests, marking the second general removal from that role in just over a year, according to the War Department.
+5. The Washington Post reports: The FDA’s oversight on food safety is under scrutiny, which could influence national food regulation policies.
+6. The Wall Street Journal reports: Cuauhtémoc Cárdenas was a leftist leader whose 1988 presidential bid challenged Mexico’s PRI’s long-standing grip on power, contributing to the country's political democratization.
+7. Fox News reports: Mary Peltola, a Democratic Senate candidate in Alaska, dismissed The New York Times' investigation into her campaign as a distraction, highlighting ongoing political debates and campaign strategies at the national level.
+8. Mother Jones reports: A new tool highlights where candidates stand on issues related to data centers, including concerns about electricity bills and water usage, which have national implications for energy and resource management.
+9. The Daily Wire reports: Mary Peltola, a Democratic candidate for Senate in Alaska, accused her opponent of attempting to cheat voters with misleading tactics, highlighting concerns about election integrity.
 
 </details>
