@@ -1,1 +1,1 @@
-Democrats are favoured to gain North Carolina, Alaska and Ohio, now held by Republicans. Iowa and Maine are toss-ups, with each side given a 45% to 55% chance. Across all simulations, Republicans hold 50 or more seats, and so keep control with the vice president's vote, in 38 per cent.
+Democrats are favoured to gain North Carolina, Alaska and Ohio, now held by Republicans. Iowa and Maine are toss-ups, with each side given a 45% to 55% chance. Across all simulations, Republicans hold 50 or more seats, and so keep control with the vice president's vote, in 39 per cent.

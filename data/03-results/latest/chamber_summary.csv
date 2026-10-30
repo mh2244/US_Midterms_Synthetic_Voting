@@ -1,5 +1,5 @@
-model,dem_median,ind_median,rep_median,rep_q05,rep_q95,p_rep_control,p_dem_51_without_ind,national_sd,combine
-deepseek,52.0,0.0,48.0,40.95,56.0,0.377,0.603,0.03,ivw
-gemini,52.0,0.0,48.0,40.0,55.0,0.374,0.606,0.03,ivw
-haiku,52.0,0.0,48.0,40.0,56.0,0.395,0.581,0.03,ivw
-luna,52.0,0.0,48.0,41.0,56.0,0.383,0.602,0.03,ivw
+model,dem_median,ind_median,rep_median,rep_q05,rep_q95,p_rep_control,p_dem_51_without_ind,national_sd,poll_sd,combine
+deepseek,52.0,0.0,48.0,40.95,55.0,0.368,0.606,0.03,0.03,ivw
+gemini,52.0,0.0,48.0,40.0,56.0,0.374,0.611,0.03,0.03,ivw
+haiku,51.0,0.0,48.0,40.0,56.0,0.402,0.566,0.03,0.03,ivw
+luna,51.0,0.0,48.0,40.0,56.0,0.407,0.578,0.03,0.03,ivw
