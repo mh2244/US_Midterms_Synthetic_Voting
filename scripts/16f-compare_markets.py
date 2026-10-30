@@ -1,7 +1,8 @@
 #### Preamble ####
 # Purpose: Sets our forecast beside a prediction market: for each news day, our chance that the
-#          Democratic or independent candidate wins each race (four models pooled) against the
-#          PredictIt price on the same day, plus the chance of Senate control. Following Wang,
+#          Republican candidate wins each race (four models pooled) against the PredictIt price on
+#          the same day, plus the chance of Republican control of the Senate. The Republican side is
+#          used throughout the site because it is the one party contesting every race. Following Wang,
 #          Rothschild, Goel and Gelman (2015), who compared their state forecasts with Betfair and
 #          Intrade because there is no ground truth before the election.
 # Author: Kexin (Coco) Liu
@@ -15,7 +16,8 @@
 #
 # HOW a price becomes a probability: a PredictIt contract pays $1 if it comes true, so its price is
 #   roughly the market's probability. The prices of the two sides add up to a little more than 1
-#   (the market's margin), so the left side's price is divided by the sum of the two sides' prices.
+#   (the market's margin), so the Republican side's price is divided by the sum of the two sides'
+#   prices.
 #   Contracts for anyone else (a third candidate) are left out, as in our two-sided forecast.
 # The market is not ground truth and not independent of the polls, which traders also read; it is
 #   a forecast that combines the polls with other information through trading.
@@ -70,7 +72,7 @@ def side(state, name):
 
 prices["side"] = [side(s, c) for s, c in zip(prices["state"], prices["contract_name"])]
 two = prices[prices["side"] != "other"].pivot_table(index=["state", "date"], columns="side", values="close", aggfunc="sum")
-two["market_p_left"] = two["left"] / (two["left"] + two["rep"])
+two["market_p_rep"] = two["rep"] / (two["left"] + two["rep"])
 two = two.reset_index()
 
 #### Our forecast for each news day ####
@@ -81,21 +83,21 @@ for run in NEWS_DAYS:
     if not path.exists() or m.empty:
         continue
     f = config.read_table(path)
-    left = f[f["party"] != "Republican"].assign(win=lambda d: d["winner"] != "Republican")
-    ours = left.groupby(["state", "model"])["win"].mean().groupby("state").mean()
-    races = m.drop(index="control", errors="ignore").join(ours.rename("ours_p_left"), how="inner")
-    races["difference"] = races["ours_p_left"] - races["market_p_left"]
-    races = races.assign(run=run).reset_index()[["run", "state", "market_p_left", "ours_p_left", "difference"]]
+    rep = f[f["party"] == "Republican"].assign(win=lambda d: d["winner"] == "Republican")
+    ours = rep.groupby(["state", "model"])["win"].mean().groupby("state").mean()
+    races = m.drop(index="control", errors="ignore").join(ours.rename("ours_p_rep"), how="inner")
+    races["difference"] = races["ours_p_rep"] - races["market_p_rep"]
+    races = races.assign(run=run).reset_index()[["run", "state", "market_p_rep", "ours_p_rep", "difference"]]
     rows.append(races)
     chamber = pd.read_csv(config.RESULTS / f"run_{run}" / "chamber_summary.csv")
-    differs = races[(races["ours_p_left"] > 0.5) != (races["market_p_left"] > 0.5)]["state"]
+    differs = races[(races["ours_p_rep"] > 0.5) != (races["market_p_rep"] > 0.5)]["state"]
     summary.append({
         "run": run, "n": len(races),
-        "corr": races["ours_p_left"].corr(races["market_p_left"]),
+        "corr": races["ours_p_rep"].corr(races["market_p_rep"]),
         "mad": races["difference"].abs().mean(),
         "differs": ", ".join(config.STATE_NAME.get(s, s) for s in differs) or "none",
-        "ours_dem_control": 1 - chamber["p_rep_control"].mean(),
-        "market_dem_control": m.loc["control", "market_p_left"] if "control" in m.index else np.nan,
+        "ours_rep_control": chamber["p_rep_control"].mean(),
+        "market_rep_control": m.loc["control", "market_p_rep"] if "control" in m.index else np.nan,
     })
 assert rows, "No news day has both a forecast and a PredictIt price yet"
 table = pd.concat(rows, ignore_index=True)
@@ -116,9 +118,9 @@ def pct(p):
 
 
 md = ["| News day | States | Correlation | Mean absolute difference (points) | Favourite differs | "
-      "Democratic control: ours / market (%) |", "|---|---:|---:|---:|---|---:|"]
+      "Republican control: ours / market (%) |", "|---|---:|---:|---:|---|---:|"]
 for s in summ.itertuples():
-    ctrl = f"{s.ours_dem_control * 100:.0f} / {s.market_dem_control * 100:.0f}" if pd.notna(s.market_dem_control) else "–"
+    ctrl = f"{s.ours_rep_control * 100:.0f} / {s.market_rep_control * 100:.0f}" if pd.notna(s.market_rep_control) else "–"
     md.append(f"| {day(s.run)} | {s.n} | {s.corr:.2f} | {s.mad * 100:.1f} | {s.differs} | {ctrl} |")
 latest = summ["run"].iloc[-1]
 t = table[table["run"] == latest].sort_values("difference")
@@ -126,7 +128,7 @@ md += ["", "<details>", f"<summary>Table view: every race, {day(latest)}</summar
        "| State | Market (%) | Ours (%) | Ours minus market (points) |", "|---|---:|---:|---:|"]
 for r in t.itertuples():
     name = config.STATE_NAME.get(r.state, r.state) + (" (I)" if nominees.loc[r.state, "left_party"] == "Independent" else "")
-    md.append(f"| {name} | {pct(r.market_p_left)} | {pct(r.ours_p_left)} | {signed(r.difference)} |")
+    md.append(f"| {name} | {pct(r.market_p_rep)} | {pct(r.ours_p_rep)} | {signed(r.difference)} |")
 md += ["", "</details>"]
 (OUT / "markets.md").write_text("\n".join(md) + "\n")
 
@@ -135,12 +137,16 @@ config.use_site_style()
 fig, ax = plt.subplots(figsize=(6.2, 6.2))
 ax.fill_between([0, 0.5], 0.5, 1, color="#f2f2f2", lw=0, zorder=0)
 ax.fill_between([0.5, 1], 0, 0.5, color="#f2f2f2", lw=0, zorder=0)
-ax.text(0.02, 0.98, "We favour the left side,\nthe market the Republican", va="top", fontsize=8, color=config.MUTED)
-ax.text(0.98, 0.02, "We favour the Republican,\nthe market the left side", ha="right", fontsize=8, color=config.MUTED)
+ax.text(0.02, 0.98, "We favour the Republican,\nthe market the other side", va="top", fontsize=8, color=config.MUTED)
+ax.text(0.98, 0.02, "We favour the other side,\nthe market the Republican", ha="right", fontsize=8, color=config.MUTED)
 ax.plot([0, 1], [0, 1], color=config.INK, lw=1.2, ls=(0, (3, 2)), zorder=1)
-col = [config.PARTY_COLOURS["Independent"] if nominees.loc[s, "left_party"] == "Independent"
-       else config.PARTY_COLOURS["Democratic"] for s in t["state"]]
-ax.scatter(t["market_p_left"], t["ours_p_left"], s=36, color=col, edgecolor="white", lw=0.6, zorder=3)
+# One ink colour, since a point's position is already the Republican's chance; hollow points mark
+# the three races with an independent instead of a Democrat.
+ind = t["state"].map(nominees["left_party"]).eq("Independent").to_numpy()
+ax.scatter(t["market_p_rep"][~ind], t["ours_p_rep"][~ind], s=36, color=config.INK, edgecolor="white",
+           lw=0.6, zorder=3)
+ax.scatter(t["market_p_rep"][ind], t["ours_p_rep"][ind], s=36, facecolor="white", edgecolor=config.INK,
+           lw=1.2, zorder=3)
 placed = []                               # (x, y, side) of labels so far, to keep them apart
 
 
@@ -149,9 +155,9 @@ def clash(x, y, ha):
     return any(abs(y - py) < 0.03 and left < px2 and px1 < left + 0.2 for px1, px2, py in placed)
 
 
-pts = list(zip(t["market_p_left"], t["ours_p_left"]))
-for r in t[t["difference"].abs() >= LABEL_GAP].sort_values("ours_p_left", ascending=False).itertuples():
-    px, py = r.market_p_left, r.ours_p_left
+pts = list(zip(t["market_p_rep"], t["ours_p_rep"]))
+for r in t[t["difference"].abs() >= LABEL_GAP].sort_values("ours_p_rep", ascending=False).itertuples():
+    px, py = r.market_p_rep, r.ours_p_rep
     for ha, x in (("left", px + 0.015), ("right", px - 0.015)):
         near_point = any(abs(py - qy) < 0.03 and (0 < qx - px < 0.2 if ha == "left" else 0 < px - qx < 0.2)
                          for qx, qy in pts)
@@ -170,8 +176,8 @@ ax.set_xlim(-0.02, 1.02)
 ax.set_ylim(-0.02, 1.02)
 ax.set_xticks(np.linspace(0, 1, 6), [f"{v:.0%}" for v in np.linspace(0, 1, 6)])
 ax.set_yticks(np.linspace(0, 1, 6), [f"{v:.0%}" for v in np.linspace(0, 1, 6)])
-ax.set_xlabel("PredictIt: chance the Democratic or independent candidate wins")
-ax.set_ylabel("Our forecast: chance the Democratic or independent candidate wins")
+ax.set_xlabel("PredictIt: chance the Republican candidate wins")
+ax.set_ylabel("Our forecast: chance the Republican candidate wins")
 ax.set_aspect("equal")
 fig.tight_layout()
 fig_dir = Path("figures") / f"run_{latest}"
@@ -180,7 +186,7 @@ fig.savefig(fig_dir / "market_comparison.png")
 plt.close(fig)
 
 #### Checks ####
-assert table[["market_p_left", "ours_p_left"]].stack().between(0, 1).all()
+assert table[["market_p_rep", "ours_p_rep"]].stack().between(0, 1).all()
 assert table.groupby("run")["state"].nunique().le(len(nominees)).all()
 print("\n".join(md))
 print(f"Saved {OUT / 'markets.md'} and {fig_dir / 'market_comparison.png'}")
