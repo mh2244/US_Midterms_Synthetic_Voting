@@ -114,6 +114,7 @@ random step uses `config.SEED` (2026), so reruns with the same inputs give the s
 | Senate polls | [PollResults](https://pollresults.org/api/) | `polling_data/00`, `01` | raw in `data/01-raw_data/polls/`; cleaned in `data/02-analysis_data/polls/` |
 | Candidates | [Wikipedia, 2026 Senate elections](https://en.wikipedia.org/wiki/2026_United_States_Senate_elections) | `05`, `06` | raw in `data/01-raw_data/`; nominees in `data/02-analysis_data/` |
 | News | RSS/Atom feeds of ten outlets, Google News as a supplement | `04`, `04b` | `data/news/` |
+| Prediction-market prices | [PredictIt](https://www.predictit.org) public API (data from PredictIt; non-commercial use) | `02c` | `data/01-raw_data/markets/` |
 | Seats up in 2026, senators not up | Wikipedia list of current senators, entered by hand (27 October 2026) | — | `data/01-raw_data/` |
 | US state boundaries | public GeoJSON (see the script) | `02b` | `data/01-raw_data/us-states.json` |
 
@@ -143,6 +144,7 @@ same stage. Each script starts with a preamble (purpose, inputs, outputs, how to
 | CES | `02-download_data.py` | Downloads the 2024 CES from Harvard Dataverse |
 | | `02b-download_map.py` | Downloads the US state boundaries for the map |
 | | `03_extract_data.py` | Extracts demographics, weights, validated vote and 2024 vote from the CES |
+| Markets | `02c-download_predictit.py` | Downloads PredictIt's daily prices for all 35 Senate races and for Senate control |
 | News | `04-collect_news.py` | Collects the last 48 hours of articles and screens them with `openai/gpt-4.1-nano` |
 | | `04b-summarize_news.py` | Gives each persona nine paragraphs, three per source group (no model calls) |
 | Candidates | `05-collect_candidates.py` | Scrapes the Wikipedia candidate list |
@@ -165,6 +167,7 @@ same stage. Each script starts with a preamble (purpose, inputs, outputs, how to
 | | `16c-sensitivity.py` | Sensitivity of the headline to the two assumed error sizes |
 | | `16d-costs.py` | Calls, tokens, cost and time per run and model |
 | | `16e-news_summary.py` | Articles kept per outlet and topic, and an example news block |
+| | `16f-compare_markets.py` | Our win probabilities against PredictIt's on each news day (table and figure) |
 | Website | `17-publish_latest.py` | Copies the latest news run to `figures/latest/` and `data/03-results/latest/` |
 | Shared | `config.py`, `site.mplstyle` | Settings and the graph theme used by every figure |
 | Polls | `polling_data/00-download_polling_data.py`, `polling_data/01-clean_polling_data.py` | Download and clean the PollResults Senate polls |
@@ -229,18 +232,99 @@ the website from being published.
 
 ## GitHub Actions
 
-- **Forecast run** ([`news-data.yml`](.github/workflows/news-data.yml)): scheduled at 2:13 pm
-  Toronto time on 27, 29 and 31 October, with backups at 3:43 and 5:43 pm that skip themselves
-  if the day's forecast already exists. It checks the OpenRouter credit, refreshes the polls,
-  collects the news, queries the models, scores, forecasts, tests, publishes the latest run,
-  renders the website and commits the results. Answers are always committed, so paid work is
-  never lost; the forecast and website only if every test passes. It can also be started by hand
-  (**Actions → Forecast run → Run workflow**) with a date or `nonews`.
-- **Polling data** ([`polling-data.yml`](.github/workflows/polling-data.yml)): downloads and
-  cleans the polls daily and uploads them as an artifact.
+Three workflows run on GitHub Actions. The OpenRouter key is stored as a repository secret
+(`OPENROUTER_API_KEY`), never in the code; locally it is read from `.env`, which is in
+`.gitignore`. **Both of our workflows are disabled before the submission deadline**, so that
+nothing changes the submitted version.
 
-The OpenRouter key is a repository secret. **Both workflows are disabled before the submission
-deadline**, so that nothing changes the submitted version.
+| Workflow | File | When it runs | What it does | Commits to `main` |
+|---|---|---|---|---|
+| **Forecast run** | [`news-data.yml`](.github/workflows/news-data.yml) | 2:13 pm Toronto on 27, 29 and 31 October, with backups at 3:43 and 5:43 pm; or by hand with a date or `nonews` | The whole forecast, from polls and news to the rendered website (steps below) | Yes |
+| **Polling data** | [`polling-data.yml`](.github/workflows/polling-data.yml) | Every day at 17:17 UTC; or by hand | Downloads and cleans the Senate polls from PollResults and keeps them as a downloadable artifact | No |
+| **pages build and deployment** | set up by GitHub | After every push to `main` | Publishes the website from `docs/` with GitHub Pages | No |
+
+### What the forecast run does
+
+The run has two jobs. **`check`** stops a scheduled run when that day's forecast is already on
+`main`, so a late or backup schedule never pays for a second run. **`forecast`** (at most six
+hours) then does, in order:
+
+1. Sets the run id: today's Toronto date, or the date or `nonews` given by hand.
+2. Checks the OpenRouter credit and stops, before any paid call, if less than US$12 is left.
+3. Downloads and cleans the polls, and archives the exact poll file used as
+   `data/03-results/run_<RUN>/polling_input.csv`.
+4. Collects and screens the news (`04`) and gives each persona its nine paragraphs (`04b`); a
+   rerun on the same day reuses that day's news, so its prompts match the answers already saved.
+   Skipped for `nonews`.
+5. Builds the prompts (`08`) and queries the four models (`09`), retrying up to three times and
+   reusing every answer already saved.
+6. Scores the answers with SSR (`10`) and builds the forecast three ways (`11`: synthetic only,
+   shrinkage, then the inverse-variance headline).
+7. Makes the figures, map, headline, battleground table, crosstabs, comparisons, costs and news summary
+   (`13` to `16e`); the extra tables only warn if they fail.
+8. Runs the test suite (`12`); a failure stops the run here.
+9. Publishes the run to the `latest` folders (`17`) and renders the website (`quarto render`);
+   skipped for `nonews`.
+10. Uploads every file of the run as an artifact, even after a failure, and commits in two
+    steps: the news, polls, answers and scores always, so that paid work is never lost; the
+    forecast, figures and website only if every step passed.
+
+Runs never overlap: a second run waits until the first has finished (`concurrency`), and GitHub
+keeps at most one run waiting.
+
+### Polling data: every run
+
+All 12 runs succeeded: two started by hand on 19 October, then one on schedule every day from 20
+to 29 October. The schedule is set for 1:17 pm Toronto time; GitHub started the runs between
+2 and 4.5 hours late (3:28 to 5:47 pm), which did not matter for a daily download.
+
+### Forecast run: every run
+
+GitHub does not guarantee scheduled runs: under load it delays them or drops them. Ours were
+delayed by about four hours on 27 October, and on 29 October none of the three scheduled times
+(2:13, 3:43 and 5:43 pm) had started a run by 6:28 pm, so we started the same workflow by hand
+(`workflow_dispatch`). A run started by hand does exactly what a scheduled run does; only the
+start differs. Runs 1 to 9 belong to an earlier version of the workflow, named **News data**,
+that only collected the news. Times are Toronto time, from GitHub's run history.
+
+| Day | Run | How it started | Outcome |
+|---|---|---|---|
+| 19 October | 1 | By hand | Succeeded (first version: news collection only) |
+| 20 to 25 October | 2 to 7 | Daily schedule | 20 October succeeded; 21 to 25 October failed while the news step was being fixed |
+| 25 and 26 October | 8, 9 | By hand | 8 failed; 9 succeeded |
+| 27 October | 10 to 13 | By hand, from 4:07 pm | Failed, each on a different problem (below) |
+| 27 October | 14 | Schedule: due 2:13 pm, arrived 6:09 pm | Cancelled by us: it would have run code from before the fixes |
+| 27 October | 15 | By hand, 6:30 pm | **Succeeded: forecast for 27 October** |
+| 27 October | 16 | By hand, 8:58 pm | **Succeeded: the run without news** (`nonews`) |
+| 29 October | 17 | By hand, 6:28 pm, after no scheduled run had started | **Succeeded at 8:05 pm: the forecast for 29 October** |
+| 29 October | 18 | Schedule: the 2:13 pm run, arrived 6:42 pm | Never ran: GitHub keeps one waiting run per group, so run 19 replaced it in the queue |
+| 29 October | 19 | Schedule: the 3:43 pm backup, arrived 7:33 pm | Did not skip itself (below); ran in full, then failed at the commit, so nothing reached `main`. Kept as a same-day replication |
+| 29 October | 20 | Schedule: the 5:43 pm backup, arrived 9:20 pm | Skipped itself (the check took 7 seconds); no cost |
+| 31 October | | | [TO UPDATE after the third news day] |
+
+**Run 19 on 29 October.** A scheduled run uses the version of `main` from when GitHub created
+it. Run 19 was created at 7:33 pm, before run 17 committed its results at 8:05 pm, so its check
+could not see the finished forecast. It collected the news again and sent all 42,000 calls again
+(about US$6 to US$8). Every step passed, but its commit conflicted with run 17's files for the
+same day, so nothing reached `main` and the reported forecast is run 17's. Its files are kept as
+the run's artifact (`forecast-2026-10-29`). Compared with run 17, it gave a 37.8 against 38.8 per
+cent chance of Republican control and differed by 0.5 points per state on average, with only 33
+of about 100 news articles in common (summary in
+`data/03-results/comparison/replication_2026-10-29.csv`). To stop this on 31 October, the
+workflow is disabled as soon as that day's first run succeeds.
+
+The four failures on 27 October, and what we changed so that later runs do not stop for the
+same reason:
+
+1. **One news article failed to process**, and script `04` stopped the run. It now carries on
+   when at most 10% of articles fail.
+2. **The OpenRouter workspace budget of US$10 was reached** partway through the model queries.
+   We raised the budget, added a credit check before any paid call, and made a rerun reuse the
+   day's news, so that its prompts match the answers already saved.
+3. **Script `08` rejected the reused news as stale**, because git had changed the file's line
+   endings and so its checksum. The workflow now restores the original line endings before reuse.
+4. **Three DeepSeek calls kept coming back empty.** The workflow now retries script `09` three
+   times and then accepts up to 0.5% missing answers instead of stopping; missing answers are left out of the forecast (see Tests).
 
 ## Website and design
 
