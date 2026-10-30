@@ -20,6 +20,8 @@ link-citations: true
 ## In brief {#brief}
 
 <!-- DRAFT (Claude): rewrite. -->
+Maggie rewrite October 10/29: 35 Senate races were forecasted ahead of the election on 3 November 2026 using silicon sampling. For each state, 100 personas were drawn based on 2024 Cooperative Election Study validated voters, in proportion to their survey weights. Each person is described through their age, education level, race, gender, income bracket, ideology, and party identification. On each news day,
+
 We forecast all 35 Senate races of 3 November 2026 with silicon sampling. In each state we drew 100 personas from validated voters in the 2024 Cooperative Election Study, in proportion to their survey weights, described each by seven characteristics (age, education, race, gender, income, ideology and party), and on each news day gave them nine paragraphs of that day's news. Four language models from four companies answered every persona three times in free text, and each answer became a probability of voting for each side through its similarity to five anchor statements (Semantic Similarity Rating, SSR). On their own the synthetic voters sit about 6 to 9 points to the Republican side of the polls, in part because they reproduce the personas' 2024 vote rather than the 2026 shift, so we removed each model's bias, estimated from the 25 states with polls, and averaged the corrected synthetic share with an outside estimate: the poll average where there are polls, and elsewhere the 2024 vote plus the average shift seen in the polled states ("2024 plus swing"). Each estimate is weighted by the inverse of its variance, so the noisier one counts for less, and 1,000 simulations per model, with an error shared by every state, give the distribution of seats. The synthetic voters receive a minority of the weight and add a little information, mostly where polls are missing; the forecast rests mainly on the polls.
 
 ## Forecast {#forecast}
@@ -340,14 +342,6 @@ In the 27 October forecast, the inverse-variance method assigns synthetic estima
 
 ::: {#refs}
 :::
-
-**Design references** (website design only; not cited in the text)
-
-1. <https://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false>
-2. <https://www.politico.com/2024-election/results/senate/>
-3. <https://apps.npr.org/2024-election-results/senate.html>
-4. <https://newsinteractives.cbc.ca/elections/us/2024/results/>
-5. <https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/>
 
 ## Appendix: Prompts {#prompts}
 
