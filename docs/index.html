@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-25">
+<meta name="dcterms.date" content="2026-10-30">
 
 <title>Synthetic Voting for the 2026 U.S. Senate Midterm Elections</title>
 <style>
@@ -64,7 +64,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-092bca3859d04f7afaff4a3903b11d78.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-76a388bf710a83e28ce24c351ac68055.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -94,6 +94,35 @@ div.csl-indent {
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -112,6 +141,7 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Synthetic Voting for the 2026 U.S. Senate Midterm Elections</h1>
+<p class="subtitle lead">[SYNTHETIC VOTE DISCLOSURE STATEMENT. ABSTRACT?]</p>
 </div>
 
 
@@ -122,7 +152,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 25, 2026</p>
+      <p class="date">October 30, 2026</p>
     </div>
   </div>
   
@@ -159,10 +189,6 @@ div.csl-indent {
 </figure>
 </div>
 <p>[TO DO: Include a map of the US with the eligible states highlighted by projected result. The map could also show whether the forecasted result is a flip (the Reuters figure above is an exemplar). Include a summary of the battleground states listed by Ballotpedia <span class="citation" data-cites="ballotpedia2026">(<a href="#ref-ballotpedia2026" role="doc-biblioref">Ballotpedia 2026</a>)</span>, which are Alaska, Florida, Georgia, Iowa, Maine, Michigan, Montana, Nebraska, New Hampshire, North Carolina, Ohio, and Texas. Include a graphic or table with uncertainty measurements.]</p>
-<ul>
-<li><p>In the scripts, there are 2 designs (Design B and Design C–basically it asks the LLM to return the answer in a certain way, which will affect how SSR works). Not sure if we will be able to test both designs, but if not, I believe Design B is preferred.</p></li>
-<li><p>Double-check how references should be done (in a ref.bib file or hyperlink to the source)</p></li>
-</ul>
 </section>
 <section id="crosstabs" class="level2">
 <h2 class="anchored" data-anchor-id="crosstabs">Crosstabs</h2>
@@ -703,7 +729,7 @@ Return valid JSON only (no Markdown, no escaped JSON string):
 </section>
 <section id="turning-answers-into-voting-probabilities" class="level3">
 <h3 class="anchored" data-anchor-id="turning-answers-into-voting-probabilities">Turning Answers into Voting Probabilities</h3>
-<p>For Design B, we used SSR <span class="citation" data-cites="maier2025 heath2026">(<a href="#ref-maier2025" role="doc-biblioref"><span class="nocase">Maier et al.</span> 2025</a>; <a href="#ref-heath2026" role="doc-biblioref">Heath and Alexander 2026</a>)</span>. We embedded each answer and the five statements written for that race, from “I will definitely vote for [Democrat]” to “I will definitely vote for [Republican]”, with an undecided statement in the middle. We took the cosine similarity between the answer and each statement, rescaled the five values to 0 to 1, and applied a softmax with a temperature of 0.25. The two statements on each side were summed, which gives p(left), p(Republican), and p(other) for each answer. Heath and Alexander tested SSR on 0 to 100 ratings, so using it for vote choice is our adaptation. We used [the local all-MiniLM-L6-v2 model / Gemini Embedding 2], [which differs from their asymmetric Gemini setup]. For Design C, we parsed the percentages and rescaled totals between 90 and 110 to 100. Answers that were empty, refused, or could not be parsed were counted and left out.</p>
+<p>For Design B, we used SSR <span class="citation" data-cites="maier2025 heath2026">(<a href="#ref-maier2025" role="doc-biblioref"><span class="nocase">Maier et al.</span> 2025</a>; <a href="#ref-heath2026" role="doc-biblioref">Heath and Alexander 2026</a>)</span>. We embedded each answer and the five statements written for that race, from “I will definitely vote for [Democrat]” to “I will definitely vote for [Republican]”, with an undecided statement in the middle. We took the cosine similarity between the answer and each statement, rescaled the five values to 0 to 1, and applied a softmax with a temperature of 0.25. The two statements on each side were summed, which gives p(left), p(Republican), and p(other) for each answer. Heath and Alexander tested SSR on 0 to 100 ratings, so using it for vote choice is our adaptation. We used Gemini Embedding 2 (google/gemini-embedding-2) through OpenRouter, the model Heath and Alexander used, but in its symmetric mode: answers and statements were embedded the same way, whereas they embedded answers as queries and statements as documents. For Design C, we parsed the percentages and rescaled totals between 90 and 110 to 100. Answers that were empty, refused, or could not be parsed were counted and left out.</p>
 </section>
 <section id="testing-and-checks" class="level3">
 <h3 class="anchored" data-anchor-id="testing-and-checks">Testing and Checks</h3>
@@ -711,6 +737,7 @@ Return valid JSON only (no Markdown, no escaped JSON string):
 <p>We also ran a simulation to understand how our final dataset would be constructed, with tests to evaluate its quality and legitimacy. For the candidates, we checked that each of the 35 races had 2 main candidates. For the personas, we checked that all labels and group designations followed the master list of options for each demographic category, that each state had the same number of personas with one ID each, that a repeated CES respondent stayed in one state and had identical answers each time, that there were no missing values, and that the 2024 presidential vote was not in the persona text. For the responses, we checked that the share of empty or failed answers per model was below the limit of 0.10, that every prompt was answered once per model and repeat, that there was one row per persona and design, and that each prompt named both candidates of its race. For the scores, we checked that probabilities were between 0 and 1 and added up to 1 where they existed, that only rows with status “ok” had probabilities and every row had a status, and that every state had at least one scored persona for every model (Design B).</p>
 <p>For the test forecast, we checked that each race, draw, and model had one winner and that it was the party with the larger share. We also checked that there were no missing shares, that all shares were between 0 and 1 and added up to 1, that the winner was a party running in that race (the left party of the state, or Republican), that every draw filled 100 seats, and that every state and model had the same number of draws.</p>
 <p>News summaries were obtained for the dates of October 27th, 29th, and 31st.</p>
+<p>We chose the embedding model by checking SSR against 200 real answers from the full-run models (50 per model, all Florida personas, no news) on 26 October. Keyword rules (“vote for Nixon”, “vote for Moody”) identified 159 answers with a clear vote, and we counted those that SSR placed on the wrong side of 50 per cent of the two-party share. With the local all-MiniLM-L6-v2 model, 12 of 159 were misplaced, all of them stated Nixon votes that also named Moody (“I’d prefer her over Ashley Moody”), and the Florida Democratic share was 38 per cent. With Gemini Embedding 2, 1 of 159 was misplaced and the share was 41 per cent, so the smaller model understated the Democrat by about three points. Statements that named both candidates (“I will definitely vote for Nixon, not Moody”) made both embedders worse (18 and 2 misplaced) by pulling clear answers toward the middle, so we kept single-candidate statements. Neither setup recovered indecision: answers saying they were undecided received an average p(other) of 0.14, and an answer leaning toward a candidate scored almost the same as a definite vote.</p>
 </section>
 </section>
 <section id="discussion" class="level2">
@@ -723,6 +750,7 @@ Return valid JSON only (no Markdown, no escaped JSON string):
 <p>Due to cost, we could not update the news summaries every day. Instead, news summaries were provided and the models were re-run on October 27th, 29th, and 31st. Murray and Alexander <span class="citation" data-cites="murray2026">(<a href="#ref-murray2026" role="doc-biblioref">2026</a>)</span> found that adding party identification to persona descriptions ultimately reduced the impact that news had on synthetic voting results. Further research could examine how different news diets, or differing amounts of news, affect synthetic voting results.</p>
 <p>Our original plan was to take data from multiple pollsters and divide them into a training set and a validation set. We would have used the training set to correct for bias in our model, and then compared the corrected results against aggregated results from the validation set. However, due to time constraints, we were unable to use this approach. We also have no real data to validate our model against, as the 2026 midterms have not yet occurred.</p>
 <p>Furthermore, several limitations arise from applying SSR, which Heath and Alexander applied to a scale of 0 to 100 ratings, to vote choice <span class="citation" data-cites="heath2026">(<a href="#ref-heath2026" role="doc-biblioref">Heath and Alexander 2026</a>)</span>. There is no fitted temperature, whereas Heath and Alexander fit theirs on their own data. Vote choice is not a scale, and our middle anchor is a separate category. We keep only the left, Republican, and other weights, which loses detail but fits a two-sided forecast. SSR is meant to address the mode collapse problem, and we can test this by comparing Design B with Design C.</p>
+<p>Finally, future iterations of this project could experiment with how polling data and synthetic data are weighted and averaged together to correct for bias. In our project, we applied a placeholder shrinkage strength of <span class="math inline">\(k = 3.0\)</span>.</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
