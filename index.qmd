@@ -8,7 +8,7 @@ link-citations: true
 
 <!-- Section menu, as on the example site: styled by .sectionnav in styles.css -->
 ::: {.sectionnav}
-[Forecast](#forecast) [Synthetic voters and polls](#synthetic) [Evaluation](#evaluation) [Sample](#sample) [Methods](#methods) [Costs](#costs) [Discussion](#discussion) [Prompts](#prompts)
+[In brief](#brief) [Forecast](#forecast) [Sample](#sample) [Synthetic voters and polls](#synthetic) [Evaluation](#evaluation) [Methods](#methods) [Costs](#costs) [Discussion](#discussion) [Prompts](#prompts)
 :::
 
 <!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py, published by 17. -->
@@ -16,6 +16,11 @@ link-citations: true
 
 <!-- Results line: written by scripts/15c-make_battlegrounds.py, published by 17. -->
 {{< include data/03-results/latest/results_summary.md >}}
+
+## In brief {#brief}
+
+<!-- DRAFT (Claude): rewrite. -->
+We forecast all 35 Senate races of 3 November 2026 with silicon sampling. In each state we drew 100 personas from validated voters in the 2024 Cooperative Election Study, in proportion to their survey weights, described each by seven characteristics (age, education, race, gender, income, ideology and party), and on each news day gave them nine paragraphs of that day's news. Four language models from four companies answered every persona three times in free text, and each answer became a probability of voting for each side through its similarity to five anchor statements (Semantic Similarity Rating, SSR). On their own the synthetic voters sit about 6 to 9 points to the Republican side of the polls, in part because they reproduce the personas' 2024 vote rather than the 2026 shift, so we removed each model's bias, estimated from the 25 states with polls, and averaged the corrected synthetic share with an outside estimate: the poll average where there are polls, and elsewhere the 2024 vote plus the average shift seen in the polled states ("2024 plus swing"). Each estimate is weighted by the inverse of its variance, so the noisier one counts for less, and 1,000 simulations per model, with an error shared by every state, give the distribution of seats. The synthetic voters receive a minority of the weight and add a little information, mostly where polls are missing; the forecast rests mainly on the polls.
 
 ## Forecast {#forecast}
 
@@ -66,6 +71,32 @@ Each entry is the percentage of simulations won by the Republican candidate, not
 
 </details>
 
+## The Synthetic Sample {#sample}
+
+<!-- DRAFT (Claude): rewrite. -->
+Who the 3,500 personas are, and how they answered by group before any correction toward polls.
+
+### Composition
+
+{{< include data/03-results/composition/composition_overall.md >}}
+
+::: {.chart-note}
+In the composition chart, compare the black and grey bars within each category. Close agreement means the drawn sample resembles its weighted 2024 CES sampling frame; it does not show that the sample represents the 2026 electorate.
+:::
+
+### Crosstabs {#crosstabs}
+
+<!-- DRAFT (Claude): rewrite. -->
+This table is a check of algorithmic fidelity [@argyle2023], not part of the forecast: it compares each group's synthetic answers, before any correction toward polls, with the 2024 vote the same personas reported, which the models never saw (see [What the synthetic voters get right, and what they miss](#fidelity)).
+
+{{< include data/03-results/latest/crosstabs.md >}}
+
+::: {.chart-note}
+Results average three repeats and four models before polling adjustment, weighting states by their share of validated 2024 voters. n counts personas. “Synthetic” is the SSR two-candidate share; its range is the lowest to highest model estimate, not a confidence interval. “Lean left” counts personas whose average score favours the Democratic or independent candidate. “Harris” describes those same personas’ reported 2024 vote, not their predicted 2026 choice. A dagger marks groups with fewer than 30 personas.
+:::
+
+The table describes the run dated in the forecast headline. Comparing the SSR share with the leaning-left share helps distinguish the scoring method's allocation of probability from the direction of the answers. Agreement with these personas' 2024 votes is a descriptive comparison, not validation of their predicted 2026 choices.
+
 ## Synthetic Voters and Polls {#synthetic}
 
 <!-- DRAFT (Claude): rewrite. -->
@@ -112,8 +143,6 @@ Headline results from the inverse-variance forecast for each news day and the no
 Each cell gives “Republican control / Democratic caucus reaches 51 seats” as percentages, pooling the four models. The Democratic total includes continuing independents Sanders and King but does not rely on new independent winners. An SD of 0.03 means three percentage points of vote share. Rows vary the shared national error and columns vary poll error beyond sampling. Bold marks the headline assumptions; the two control percentages need not sum to 100%.
 :::
 
-<!-- Add a cross-date interpretation after the remaining news runs are complete. -->
-
 ## Evaluation {#evaluation}
 
 <!-- DRAFT (Claude): rewrite. -->
@@ -137,29 +166,6 @@ The idea for this check comes from Wang et al. [-@wang2015], who forecast the 20
 
 ![Our chance that the Democratic or independent candidate wins each race against PredictIt's, on the latest news day. Points on the dashed line are races where the two agree; points in the shaded corners are races where they favour different sides. Grey points are races with an independent instead of a Democrat; states that differ by 8 points or more are named. Data from PredictIt.](figures/latest/market_comparison.png){fig-alt="Scatter plot of 35 Senate races, our forecast win probability against the PredictIt probability, with a 45-degree line and shaded corners where the two favour different sides."}
 
-## The Synthetic Sample {#sample}
-
-<!-- DRAFT (Claude): rewrite. -->
-Who the 3,500 personas are, and how they answered by group before any correction toward polls.
-
-### Composition
-
-{{< include data/03-results/composition/composition_overall.md >}}
-
-::: {.chart-note}
-In the composition chart, compare the black and grey bars within each category. Close agreement means the drawn sample resembles its weighted 2024 CES sampling frame; it does not show that the sample represents the 2026 electorate.
-:::
-
-### Crosstabs {#crosstabs}
-
-{{< include data/03-results/latest/crosstabs.md >}}
-
-::: {.chart-note}
-Results average three repeats and four models before polling adjustment, weighting states by their share of validated 2024 voters. n counts personas. “Synthetic” is the SSR two-candidate share; its range is the lowest to highest model estimate, not a confidence interval. “Lean left” counts personas whose average score favours the Democratic or independent candidate. “Harris” describes those same personas’ reported 2024 vote, not their predicted 2026 choice. A dagger marks groups with fewer than 30 personas.
-:::
-
-The table describes the run dated in the forecast headline. Comparing the SSR share with the leaning-left share helps distinguish the scoring method's allocation of probability from the direction of the answers. Agreement with these personas' 2024 votes is a descriptive comparison, not validation of their predicted 2026 choices.
-
 ## Methods {#methods}
 
 All results were generated from synthetic respondents. These are not survey results. The analysis was carried out in Python 3.12 [@python], using the packages pandas [@mckinney2010], NumPy [@harris2020], pyarrow [@arrow], requests [@requests], matplotlib [@hunter2007], sentence-transformers [@reimers2019], and, for the tests, pytest [@pytest] and pandera [@bantilan2020]. This page was built with Quarto [@quarto].
@@ -167,6 +173,9 @@ All results were generated from synthetic respondents. These are not survey resu
 ### Data
 
 To generate realistic digital twins, we first obtained respondent records from the 2024 Cooperative Election Study (CES), which includes 60,000 US adults [@ces2024guide]. Of these respondents, 38,307 were in one of the 35 states with a 2026 Senate race (33 regular elections and 2 special elections), and 23,025 of that subset were assigned a weight ("vvweight_post"), which we used as the probability of being drawn when sampling personas within each state. We kept the 21,211 of these respondents whom the CES validated as having voted in 2024. According to the 2024 CES Guide, "vvweight_post" is recommended for research that characterizes the opinions, behaviours, or traits of voters, where "vv" stands for "voter validated" [@ces2024guide]. The "post" designation indicates that the respondent is not only matched to a registration record but also completed both the pre-election and post-election waves of the study. We relied on "vvweight_post" because we were interested in voter behaviour, and because the features we chose to construct our personas were taken from both the pre- and post-election questionnaires.
+
+<!-- DRAFT (Claude): rewrite. -->
+The candidates come from the Wikipedia page on the 2026 Senate elections [@wikipedia2026], downloaded on 21 October (`scripts/05-collect_candidates.py`). Because SSR needs one scale per race, `scripts/06-clean_candidates.py` keeps two sides: the Republican and a "left" candidate, who is the Democrat or, in Idaho, Nebraska and South Dakota, where an independent leads the opposition, that independent. Where a side lists several names, the one named most often in polls since 1 August is kept, and we checked every pair by hand against Ballotpedia. In the 25 races with further candidates, the prompt adds "along with other candidates" without naming them.
 
 A known limitation of LLM synthetic voting is partisan bias that depends on the model [@murray2026; @pew2026]. As a remedy, we combined the synthetic votes with polling data obtained from PollResults, an open polling data platform that compiles and aggregates polls originally tracked by The New York Times pertaining to the Senate races [@pollresults2026], using inverse-variance weights (see Combining Synthetic Votes with Polls).
 
@@ -212,7 +221,11 @@ We embed each answer and five candidate-specific anchors using Gemini Embedding 
 
 For each answer, cosine similarity measures its alignment with each anchor's embedding, producing five similarities. We rescale these five values to the range zero to one using min–max normalization, then apply softmax with a temperature of 0.25. Summing the first two anchor weights gives p(left), summing the final two gives p(Republican), and the middle weight gives p(other). Empty answers and refusals are counted and excluded from scoring. We embed answers and anchors in the same way (symmetrically); no query/document-specific prefixes are applied.
 
-These are text-derived probability allocations, not probabilities calibrated against individual voters' actual choices. Unlike an ordered rating scale, candidate choice includes distinct alternatives, and our middle anchor combines indecision, another candidate, and nonvoting. We sum anchor weights into three categories rather than applying a smoothing step. The temperature is fixed rather than fitted to individual voting outcomes, which we do not observe. Assigning some weight to both sides can move a clearly partisan answer's score toward the middle; this is different from measuring variation between personas.
+These are text-derived probability allocations, not probabilities calibrated against individual voters' actual choices. Unlike an ordered rating scale, candidate choice includes distinct alternatives, and our middle anchor combines indecision, another candidate, and nonvoting. We sum anchor weights into three categories rather than applying a smoothing step. The temperature is fixed rather than fitted to individual voting outcomes, which we do not observe, whereas Heath and Alexander [-@heath2026] fit theirs to their own ratings. Assigning some weight to both sides can move a clearly partisan answer's score toward the middle; this is different from measuring variation between personas.
+
+#### Choosing the embedding model
+
+We chose the embedding model by checking SSR against 200 real answers from the full-run models (50 per model, all Florida personas, no news) on 26 October. Keyword rules ("vote for Nixon", "vote for Moody") identified 159 answers with a clear vote, and we counted those that SSR placed on the wrong side of 50 per cent of the two-party share. With the local all-MiniLM-L6-v2 model, 12 of 159 were misplaced, all of them stated Nixon votes that also named Moody ("I'd prefer her over Ashley Moody"), and the Florida Democratic share was 38 per cent. With Gemini Embedding 2, 1 of 159 was misplaced and the share was 41 per cent, so the smaller model understated the Democrat by about three points. Statements that named both candidates ("I will definitely vote for Nixon, not Moody") made both embedders worse (18 and 2 misplaced) by pulling clear answers toward the middle, so we kept single-candidate statements. Neither setup recovered indecision: answers saying they were undecided received an average p(other) of 0.14, and an answer leaning toward a candidate scored almost the same as a definite vote.
 
 ### Combining synthetic votes with polls
 
@@ -238,7 +251,6 @@ There are two test suites, one for the simulated data (`scripts/01-test_simulate
 
 The tests target the ways a silicon-sampling forecast can go wrong without an error message. For the API responses, every prompt must have been sent to every model three times; each model's share of empty or failed calls must be below 10 per cent; every call must have asked for the configured model, and every answer must have come from that company (a changed model id within the company passes with a warning, since the model behind a name can change [@bisbee2024]); fewer than 1 per cent of answers may stop at the token limit or be shorter than 20 characters; every answered call must record its token counts, which the cost table uses; and all answers must be from the run's own date. For the scores, only answers with status "ok" may have probabilities, and those must lie between 0 and 1 and add up to 1, so a model that did not answer becomes a missing value that is left out rather than a zero that enters the forecast. For the forecast, no share may be missing, the two shares in a race must add up to 1, the winner must be the party with the larger share and on that state's ballot, and every draw must fill exactly 100 seats. For the combination with polls, every weight must be between 0 and 1, every variance positive, and every combined share between the two estimates it averages. We checked that the suite fails when it should by planting four errors in a copy of the 27 October data (a missing probability, probabilities adding to 1.3, race shares adding to more than 1, and answers from another provider); each was caught. In the workflow a failed test stops the forecast and the website from being published, while the paid answers are still saved.
 
-We chose the embedding model by checking SSR against 200 real answers from the full-run models (50 per model, all Florida personas, no news) on 26 October. Keyword rules ("vote for Nixon", "vote for Moody") identified 159 answers with a clear vote, and we counted those that SSR placed on the wrong side of 50 per cent of the two-party share. With the local all-MiniLM-L6-v2 model, 12 of 159 were misplaced, all of them stated Nixon votes that also named Moody ("I'd prefer her over Ashley Moody"), and the Florida Democratic share was 38 per cent. With Gemini Embedding 2, 1 of 159 was misplaced and the share was 41 per cent, so the smaller model understated the Democrat by about three points. Statements that named both candidates ("I will definitely vote for Nixon, not Moody") made both embedders worse (18 and 2 misplaced) by pulling clear answers toward the middle, so we kept single-candidate statements. Neither setup recovered indecision: answers saying they were undecided received an average p(other) of 0.14, and an answer leaning toward a candidate scored almost the same as a definite vote.
 
 ### API costs and time {#costs}
 
@@ -272,12 +284,15 @@ Embedding the answers of one run costs about US$0.50 and screening one day's new
 ## Discussion {#discussion}
 
 <!-- DRAFT (Claude): rewrite. -->
-### What the synthetic voters get right, and what they miss
+### What the synthetic voters get right, and what they miss {#fidelity}
 
 Argyle et al. [-@argyle2023] introduced silicon samples: a language model conditioned on the demographic backstories of real survey respondents, whose answers reproduce the response distributions of many subgroups, a property they called algorithmic fidelity. The following subgroup comparisons describe the 27 October run and show some resemblance to the personas’ 2024 voting patterns. Pooled across states, the share of personas whose answer leaned toward the Democratic or independent candidate is within 5 points of the 2024 Harris vote of the same personas for every age, gender, race, and income group, and within 3 points for strong and leaning partisans, although the models never saw that vote. Fidelity is weakest where the persona carries little partisan signal: self-described independents (52 per cent leaning left against 39 per cent for Harris), personas unsure of their party (69 against 28), and those without a high-school diploma (46 against 37). This group-level resemblance did not imply close agreement with state polling benchmarks. On their own, the synthetic voters gave Republicans a 95 per cent chance of keeping the Senate and missed each hidden poll average by 8.3 points on average, against 4.5 for 2024 plus a uniform swing. This is the gap Bisbee et al. [-@bisbee2024] warned of between aggregate resemblance and errors too large and too systematic for synthetic answers to replace a survey.
 
+<!-- DRAFT (Claude): rewrite. Numbers from the 27 October run; update with the rest of the Discussion. -->
+Bisbee et al. [-@bisbee2024] prompted ChatGPT with the characteristics of respondents to the 2016 and 2020 American National Election Studies and asked for feeling-thermometer ratings of 11 groups. Every synthetic mean fell within one standard deviation of the survey's, but the synthetic answers varied far less than the human ones, partisans were more extreme than their human counterparts, and the association between partisanship and the ratings was stronger in the synthetic data than in the survey. Our crosstabs show the same pattern in vote choice. Partisans who do not identify strongly are more uniform than the voters they copy: weak Democrats leaned left 93 per cent of the time against an 87 per cent Harris vote, and weak Republicans 3 against 8 per cent, so the models treat party as more decisive than it is. Bisbee et al. also found that adding partisanship to the prompt made the answers more accurate, which fits our weakest agreement being among personas with no clear party. Our runs show a further problem that their design could not, because they compared the synthetic answers with the same survey the personas came from: the aggregate match can be to the wrong target. Across all personas the share leaning left (45 per cent) equals their 2024 Harris vote (45), but the polls put the Democratic side about 5 points above its 2024 share in the polled states. The models do not make that shift, and it could account for most of their 7- to 9-point gap from the polls. A silicon sample that reproduces the survey it was drawn from can still miss the election it is asked to forecast, which is why the forecast removes the bias using polls rather than relying on the resemblance.
+
 <!-- DRAFT (Claude): rewrite. -->
-### Free text and Semantic Similarity Rating
+### Free text and Semantic Similarity Rating {#ssr-discussion}
 
 Our adaptation of SSR introduces measurement limitations separate from the variation in model answers [@heath2026; @maier2025]. Softmax distributes weight across anchors even for an explicit candidate choice, so a group's SSR share can be less one-sided than the share of its answers leaning toward that candidate. This within-answer allocation should not be interpreted as increased variation between personas or as evidence that mode collapse has been resolved. In the 26 October diagnostic check of 200 Florida answers, responses expressing indecision received an average p(other) of 0.14. That limited check suggests the combined undecided/other/nonvoting anchor may not capture indecision well; it does not establish scoring performance across all states. Both the anchors and the fixed temperature therefore remain sources of measurement uncertainty.
 
@@ -295,28 +310,28 @@ Gelman et al. [-@gelman2020] stress that swings in vote share are highly correla
 Over the week the combined forecast moved little. The 23 polls added to the averages between 27 and 29 October shifted the 25 state poll averages by 0.2 points on average (at most 1.7, in Alabama), and the chance of Republican control moved from 38 to 39 per cent, with the same median and 90% interval of Republican seats; this change is no larger than the difference between two complete runs on the same day. Gelman et al. [-@gelman2020] argue that a forecast should move little from day to day, because most new polls carry little information about the outcome and a forecast that chases each one overstates what has changed. Our forecast is stable largely by construction: the 45-day poll window, weighted by sample size, lets a few new polls change an average only slightly, and the party stated in each prompt keeps the synthetic share in place. Stability is not evidence of accuracy on its own, and the week contained no event large enough to show whether the forecast would move when it should.
 
 <!-- DRAFT (Claude): rewrite. -->
-<!-- DRAFT (Claude): rewrite. -->
 ### Against a prediction market
 
 On 27 October our win probabilities and PredictIt's had a correlation of 0.98 and differed by 5.7 points on average, and both gave Democrats about a two-in-three chance of controlling the Senate (62 against 64 per cent). They favour different sides only in Texas and Maine, the two states where the bias-corrected synthetic voters sat furthest below the polls (40 against 51 per cent in Texas, 44 against 51 in Maine), so the disagreement comes from the synthetic voters, not from the polls. We are more favourable to Democrats than the market in four Republican states, Kentucky, South Carolina, Florida and Mississippi, which includes the Kentucky problem noted under Limitations. In races neither side expects to be close, the market still gives the trailing candidate 2 to 8 per cent where we give 1 per cent or less (Alabama, Idaho, Wyoming, West Virginia, Oklahoma): the long-shot bias that Rothschild [-@rothschild2009] documents and that Wang et al. [-@wang2015] found when comparing their forecasts with Betfair and Intrade, and a sign of the thin trading that Gelman et al. [-@gelman2020] describe in political markets. Because the market and our forecast both draw on the polls, their agreement is weak evidence that either is right; the results on 3 November are the real test.
 
-### What the synthetic voters add
-
-In the 27 October forecast, the inverse-variance method assigns synthetic estimates about a fifth of the weight in polled states (between 0.12 and 0.39, mean 0.21) and about a third in unpolled states (between 0.24 and 0.50, mean 0.36), where the alternative is 2024 plus a swing. In the leave-one-out check, the combination missed hidden polls by 4.3 points against 4.5 for 2024 plus a swing and was closer in about half of the polled states. The synthetic voters therefore add a little information, mostly where polls are missing, and only after a bias estimated from polls is removed. In this forecast a silicon sample is not a substitute for polling but a weak and cheap prior: the 27 October run cost US$8.08 for 42,000 answers.
-
 ### Limitations
 
-Because polls enter the forecast, the forecast is no longer an independent test of the models. The bias, the structural variance, and the uniform swing are all estimated from the same 25 polled states, so they carry uncertainty of their own that the draws do not include. Inverse-variance weighting assumes that synthetic and poll errors are independent; if both miss in the same direction, the combined interval is too narrow. In the 10 unpolled states, the outside estimate assumes that every state moved the same distance from 2024, which ignores candidate effects, and the synthetic voters, who receive between a quarter and a half of the weight there, bring their own state-specific errors. In Kentucky, where many personas identify as Democrats but describe themselves as conservative, the combined Democratic share stayed several points above the 2024-plus-swing estimate in the 27 October run. The 0.03 poll error beyond sampling is an assumption, so we also report results with 0.02 and 0.04. Polls have errors that are correlated across states [@shirani-mehr2018], which the shared national error captures only in part, and relying on one aggregator (PollResults) does not remove them. Gelman et al. [-@gelman2020] show that too little correlation between states produces implausible state predictions; we include no regional error, so a miss shared by neighbouring states would make our seat distribution too narrow.
+<!-- DRAFT (Claude): rewrite. -->
+Because polls enter the forecast, it is not an independent test of the models. The three sources of error left out of the draws (see [Sources of uncertainty](#uncertainty)) all make the intervals too narrow, and the missing regional error may matter most: Gelman et al. [-@gelman2020] show that too little correlation between states produces implausible state predictions, and a miss shared by neighbouring states would make our seat distribution too narrow. In the 10 unpolled states, the outside estimate assumes that every state moved the same distance from 2024, which ignores candidate effects, and the synthetic voters, who receive between a quarter and a half of the weight there, bring their own state-specific errors. In Kentucky, where many personas identify as Democrats but describe themselves as conservative, the combined Democratic share stayed several points above the 2024-plus-swing estimate in the 27 October run. The 0.03 poll error beyond sampling is an assumption, so we also report results with 0.02 and 0.04. Polls have errors that are correlated across states [@shirani-mehr2018], which the shared national error captures only in part, and relying on one aggregator (PollResults) does not remove them.
 
-In order to apply SSR, we had to flatten the candidate choices in each state to 2 sides to create a scale from Democrat to Republican, or from Independent to Republican, depending on which party the candidates belonged to. As a result, minor candidates and "don't know" answers are not fully reflected in these results.
+In order to apply SSR, we had to flatten the candidate choices in each state to 2 sides to create a scale from Democrat to Republican, or from Independent to Republican, depending on which party the candidates belonged to. As a result, minor candidates and "don't know" answers are not fully reflected in these results. The other limits of SSR are set out under [Free text and Semantic Similarity Rating](#ssr-discussion).
 
 We did not set a temperature, so each model ran at its provider's default, which can change; a rerun may therefore not reproduce the exact answers. Due to cost, we could not update the news summaries every day. The news-run schedule is 27, 29, and 31 October; the dated results tables show which runs have been completed. Murray and Alexander [-@murray2026] found that adding party identification to persona descriptions ultimately reduced the impact that news had on synthetic voting results. Further research could examine how different news diets, or differing amounts of news, affect synthetic voting results.
 
-Our original plan was to take data from multiple pollsters and divide them into a training set and a validation set. We would have used the training set to correct for bias in our model, and then compared the corrected results against aggregated results from the validation set. However, due to time constraints, we were unable to use this approach. We also have no real data to validate our model against, as the 2026 midterms have not yet occurred. As partial substitutes, we held out each polled state's polls in turn and compared the forecast with a prediction market (see [Evaluation](#evaluation)).
-
-Furthermore, several limitations arise from applying SSR, which Heath and Alexander applied to a scale of 0 to 100 ratings, to vote choice [@heath2026]. There is no fitted temperature, whereas Heath and Alexander fit theirs on their own data. Vote choice is not a scale, and our middle anchor is a separate category. We keep only the left, Republican, and other weights, which loses detail but fits a two-sided forecast.
+<!-- DRAFT (Claude): rewrite. -->
+We first planned to split the polls into a training set, to estimate the models' bias, and a validation set, to test the corrected forecast. Holding out each polled state's polls in turn does this for every state rather than for one split, and the prediction market gives a second check (see [Evaluation](#evaluation)). Both measure agreement with polls or with traders rather than accuracy, which only the results on 3 November will show.
 
 Finally, the combination could be extended. The bias and the structural variance could be allowed to differ by region or by how competitive a race is, the four models could be weighted against each other rather than reported separately, and the variances could be estimated jointly over the three news days rather than separately for each run.
+
+<!-- DRAFT (Claude): rewrite. -->
+### Conclusion: what the synthetic voters add {#conclusion}
+
+In the 27 October forecast, the inverse-variance method assigns synthetic estimates about a fifth of the weight in polled states (between 0.12 and 0.39, mean 0.21) and about a third in unpolled states (between 0.24 and 0.50, mean 0.36), where the alternative is 2024 plus a swing. In the leave-one-out check, the combination missed hidden polls by 4.3 points against 4.5 for 2024 plus a swing and was closer in about half of the polled states. The synthetic voters therefore add a little information, mostly where polls are missing, and only after a bias estimated from polls is removed. In this forecast a silicon sample is not a substitute for polling but a weak and cheap prior: the 27 October run cost US$8.08 for 42,000 answers. The other results point the same way: the group-level resemblance to the 2024 vote, the agreement with the prediction market and the stability over the week come largely from the party stated in each prompt and from the polls, not from what the models add on their own.
 
 ## References
 
