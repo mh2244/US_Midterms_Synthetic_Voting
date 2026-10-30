@@ -39,7 +39,7 @@ FIGS = ["seat_bar.png", "forecast_dotplot.png", "forecast_win_probability_bar.pn
 # Copied when present; the sensitivity table (16c) and the battleground summary (15c) are extra
 # and must not block publishing
 OPTIONAL = ["sensitivity.md", "sensitivity.csv", "results_summary.md", "battlegrounds.md", "battlegrounds.csv"]
-OPTIONAL_FIGS = ["seat_distribution.png", "news_effect.png"]
+OPTIONAL_FIGS = ["seat_distribution.png", "news_effect.png", "market_comparison.png"]
 TABLES = ["headline.md", "headline.json", "senate_map.md", "crosstabs.md", "win_probabilities.md", "chamber_summary.csv", "win_probabilities.csv", "ivw_weights.csv",
           "state_comparison.csv"]
 

@@ -31,6 +31,8 @@ python scripts/16b-compare_runs.py
 python scripts/16c-sensitivity.py
 python scripts/16d-costs.py                  # cost and time per run and model
 python scripts/16e-news_summary.py           # news kept per outlet and topic, example news block
+python scripts/02c-download_predictit.py      # PredictIt prices (keeps 7 days: run within a week of each news day)
+python scripts/16f-compare_markets.py         # our forecast against PredictIt
 python scripts/12-test_actual_data.py         # pytest + pandera test suite
 python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```
