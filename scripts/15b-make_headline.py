@@ -70,16 +70,16 @@ day = "with no news" if config.RUN == "nonews" else \
     f"{date.fromisoformat(config.RUN).day} {date.fromisoformat(config.RUN):%B %Y}"
 run_label = "No-news baseline" if config.RUN == "nonews" else f"Forecast as of {day}"
 sub = (f"We combine synthetic responses from {WORDS.get(n_models, n_models)} "
-       f"language models with polling data. We forecast the 35 Senate races in 2026. "
-       f"To estimate which party will control the Senate, we add the 65 seats not up for "
-       f"election: {REP_NOT_UP} held by Republicans, 32 by Democrats, and two by "
+       f"language models with polling data to forecast the 35 Senate races in 2026. "
+       f"To estimate which party will control the Senate, we add the 35 race predictions "
+       f"to the 65 seats not up for election: {REP_NOT_UP} held by Republicans, 32 by Democrats, and two by "
        f"independents, Bernie Sanders and Angus King, who caucus with Democrats.\n\n"
        f"Across the simulations, the Democratic caucus reaches the "
        f"51-seat threshold for control without support from newly elected independents in "
        f"{p_dem * 100:.0f} per cent of outcomes. Republicans retain control in "
        f"{p_rep * 100:.0f} per cent. Republicans need 50 seats because the Republican "
-       f"vice president can break a 50–50 tie. The central 90 per cent of simulated Republican seat totals "
-       f"ranges from {q05} to {q95}, showing the uncertainty around the forecast.")
+       f"vice president can break a 50–50 tie. In 90 per cent of our simulations, Republicans win "
+       f"between {q05} and {q95} seats, showing the uncertainty around the forecast.")
 
 #### Seat bar ####
 config.use_site_style()            # shared graph theme: scripts/site.mplstyle
@@ -108,7 +108,7 @@ plt.close(fig)
 #### Save ####
 md = (f"::: {{.forecast-date}}\n{run_label}\n:::\n\n"
       f"## {head}\n\n{sub}\n\n"
-      "![The bar summarises the 100-seat Senate, with each model counting equally. The Democratic caucus includes Sanders and King; a separate independent segment counts only new independent winners. Republican and new-independent totals are medians, and the remaining seats go to the Democratic caucus. These totals are a summary, not a certain outcome.](figures/latest/seat_bar.png)"
+      "![This summary shows all 100 Senate seats, with each model weighted equally. The Democratic caucus includes Sanders and King; any independent seats shown represent newly elected independents. Republican and newly elected independent seat counts are medians, with the remaining seats assigned to the Democratic caucus.](figures/latest/seat_bar.png)"
       '{fig-alt="Horizontal bar of 100 Senate seats split into Democratic caucus, newly elected independent and Republican '
       f'seats ({dem}, {ind} and {rep}), with a dashed line at 50."}}\n')
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)

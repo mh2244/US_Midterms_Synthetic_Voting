@@ -98,8 +98,8 @@ line = ("; ".join(parts) + ". ") if parts else "No seat is favoured to change ha
 if len(toss):
     line += (f"{names(toss.index)} {'is a toss-up' if len(toss) == 1 else 'are toss-ups'}, with each side "
              f"given a 45% to 55% chance. ")
-p_rep = (seats >= 50).mean()
-line += (f"Republicans hold at least 50 seats in {p_rep * 100:.0f} per cent of simulations.")
+line = line.rstrip()                      # the chance of control is already in the headline (15b)
+p_rep = (seats >= 50).mean()              # used for the seat-distribution label below
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 (config.RUN_RESULTS / "results_summary.md").write_text(line + "\n")
 
