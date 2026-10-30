@@ -281,6 +281,9 @@ Embedding the answers of one run costs about US$0.50 and screening one day's new
 
 <!-- Update the billing export and table after the remaining news runs. -->
 
+### Design
+To design the website and figures, we referenced news outlets which reported on the 2024 Senate and presidential elections [@cnn2024; @politico2024; @npr2024; @cbc2024; @reuters2024]. 
+
 ## Discussion {#discussion}
 
 <!-- DRAFT (Claude): rewrite. -->
