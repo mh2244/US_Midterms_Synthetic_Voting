@@ -1,13 +1,13 @@
 state,name,holder,left_name,left_party,rep_name,share_mid,share_lo,share_hi,p_left,rating,change
-NC,North Carolina,Republican,Roy Cooper,Democratic,Michael Whatley,56.465,49.5032,63.3031,0.9372,Likely Democratic,Flip to D
-GA,Georgia,Democratic,Jon Ossoff,Democratic,Mike Collins,55.2378,48.4025,61.7277,0.899,Likely Democratic,
-NH,New Hampshire,Democratic,Chris Pappas,Democratic,John E. Sununu,54.7432,47.9002,61.5091,0.8738,Likely Democratic,
-AK,Alaska,Republican,Mary Peltola,Democratic,Dan Sullivan,52.4414,45.6076,59.0066,0.723,Leans Democratic,Flip to D
-OH,Ohio,Republican,Sherrod Brown,Democratic,Jon Husted,52.2377,45.326,58.8691,0.7075,Leans Democratic,Flip to D
-MI,Michigan,Democratic,Abdul El-Sayed,Democratic,Mike Rogers,50.9719,44.1907,57.6098,0.5978,Tilts Democratic,
-IA,Iowa,Republican,Josh Turek,Democratic,Ashley Hinson,49.7177,42.9884,56.4624,0.4775,Toss-up,
-ME,Maine,Republican,Troy Jackson,Democratic,Susan Collins,49.7073,42.6047,56.3558,0.469,Toss-up,
-TX,Texas,Republican,James Talarico,Democratic,Ken Paxton,49.0776,42.1421,55.6703,0.4092,Tilts Republican,
-NE,Nebraska,Republican,Dan Osborn,Independent,Pete Ricketts,49.0698,42.1137,55.8468,0.4022,Tilts Republican,
-FL,Florida,Republican,Angie Nixon,Democratic,Ashley Moody,47.3864,40.599,54.1143,0.2725,Leans Republican,
-MT,Montana,Republican,Alani Bankhead,Democratic,Kurt Alme,29.4265,22.762,36.3131,0.0,Likely Republican,
+NC,North Carolina,Republican,Roy Cooper,Democratic,Michael Whatley,56.2739,49.398,63.2119,0.9342,Likely Democratic,Flip to D
+GA,Georgia,Democratic,Jon Ossoff,Democratic,Mike Collins,55.114,48.2237,61.9499,0.894,Likely Democratic,
+NH,New Hampshire,Democratic,Chris Pappas,Democratic,John E. Sununu,54.4499,47.527,61.1623,0.8645,Likely Democratic,
+AK,Alaska,Republican,Mary Peltola,Democratic,Dan Sullivan,52.3757,45.4618,59.0705,0.7268,Leans Democratic,Flip to D
+OH,Ohio,Republican,Sherrod Brown,Democratic,Jon Husted,52.0657,45.0923,59.0279,0.6868,Leans Democratic,Flip to D
+MI,Michigan,Democratic,Abdul El-Sayed,Democratic,Mike Rogers,51.2972,44.5793,58.2086,0.63,Tilts Democratic,
+IA,Iowa,Republican,Josh Turek,Democratic,Ashley Hinson,49.7156,42.91,56.3911,0.4735,Toss-up,
+ME,Maine,Republican,Troy Jackson,Democratic,Susan Collins,49.532,42.7946,56.1865,0.4565,Toss-up,
+TX,Texas,Republican,James Talarico,Democratic,Ken Paxton,49.1547,42.2953,56.0261,0.414,Tilts Republican,
+NE,Nebraska,Republican,Dan Osborn,Independent,Pete Ricketts,48.8684,42.1934,55.5776,0.3885,Tilts Republican,
+FL,Florida,Republican,Angie Nixon,Democratic,Ashley Moody,47.383,40.6613,54.0108,0.2568,Leans Republican,
+MT,Montana,Republican,Alani Bankhead,Democratic,Kurt Alme,28.9275,21.7544,35.5714,0.0,Likely Republican,

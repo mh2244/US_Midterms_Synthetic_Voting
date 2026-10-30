@@ -1,5 +1,5 @@
 method,p_dem,p_rep,rep_median,rep_q05,rep_q95,loo_error
-Synthetic voters only,0.0435,0.9515,54,50,59,0.0834
-Shrinkage toward polls,0.5782,0.3958,48,42,55,0.0451
-Inverse-variance combination (headline),0.598,0.3822,48,40,56,0.0426
-2024 + uniform swing (no language model),0.6175,0.357,47,40,56,0.0451
+Synthetic voters only,0.0512,0.9455,54,49,59,0.0814
+Shrinkage toward polls,0.5905,0.3848,48,42,56,0.044
+Inverse-variance combination (headline),0.5903,0.3878,48,40,56,0.0417
+2024 + uniform swing (no language model),0.62,0.3545,47,40,56,0.044

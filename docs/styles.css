@@ -8,7 +8,7 @@
      for toss-ups; near-black text, grey notes, light rules. The same values are in config.py.
    - Tables: one style for all (top rule, rule under the header, bottom rule, no vertical lines,
      figures right-aligned in tabular digits).
-   - Layout: one 900px column, section menu fixed at the top, captions below figures, left-aligned. */
+   - Layout: one 860px column, section menu fixed at the top, captions below figures, left-aligned. */
 @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-Regular.ttf") format("truetype");
              font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-SemiBold.ttf") format("truetype");
@@ -76,9 +76,6 @@ h3 { font-size: 1.05rem; font-weight: 700; }
 h4 { font-size: 0.95rem; font-weight: 600; color: var(--muted); margin-top: 1.8em; }
 
 /* "Latest estimate" row */
-.forecast-date { color: var(--muted); font-family: var(--sans); font-size: 0.85rem;
-                 margin: 1rem 0 0.5rem; }
-.forecast-date p { margin: 0; }
 .estimate-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;
                  gap: 0.4rem; margin-top: 0.5rem; }
 .estimate-head .label { text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700; font-size: 0.85rem; }
@@ -102,9 +99,6 @@ h4 { font-size: 0.95rem; font-weight: 600; color: var(--muted); margin-top: 1.8e
 .forecast-summary .bar-note { font-size: 0.82rem; color: var(--muted); margin: 0.4rem 0 0; }
 
 /* Figures and captions */
-.chart-note { color: var(--muted); font-family: var(--sans); font-size: 0.82rem;
-              line-height: 1.5; margin: 0.5rem 0 1.5rem; }
-.chart-note p { margin: 0; }
 figcaption, .figure-caption { font-size: 0.82rem; color: var(--muted); text-align: left; }
 table { font-size: 0.9rem; }
 .page-footer { font-size: 0.85rem; }
