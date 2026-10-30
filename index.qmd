@@ -21,6 +21,10 @@ link-citations: true
 
 We forecast all 35 Senate races on 3 November 2026 with silicon sampling. In each state, we sampled 100 validated 2024 Cooperative Election Study voters in proportion to their survey weights, described each by age, education, race, gender, income, ideology and party, and gave them nine paragraphs of current news on each news day. Four models from four companies answered each persona three times in free text. We converted each answer into voting probabilities for both sides by comparing it with five anchor statements using Semantic Similarity Rating (SSR). On their own, synthetic voters lean about 6–9 points more Republican than the polls, partly because they reflect their personas’ 2024 votes rather than the shifts since then. To reduce this bias, we subtract each model’s average gap relative to the polls before using its estimates. We then average each state’s corrected share with its poll average or, in the 10 states without polls, with the 2024 result shifted by the average change in the polled states (“2024 plus swing”), giving more weight to whichever estimate is less noisy. We ran 1,000 simulations per model, with an error shared by every state, to obtain the distribution of seats. The synthetic estimates receive less weight than the polls overall and more weight in states without polling, so their contribution to the forecast is concentrated in those states; the forecast rests mainly on the polls.
 
+<!-- Maggie's partial rewrite (29 October), kept when merging with Coco's rewrite above:
+Maggie rewrite October 10/29: 35 Senate races were forecasted ahead of the election on 3 November 2026 using silicon sampling. For each state, 100 personas were drawn based on 2024 Cooperative Election Study validated voters, in proportion to their survey weights. Each person is described through their age, education level, race, gender, income bracket, ideology, and party identification. On each news day,
+-->
+
 ## Forecast {#forecast}
 
 The forecast reports control of the Senate and the outcome of each of the 35 state races, using the latest news run and pooling all four models.
@@ -279,6 +283,9 @@ Embedding the answers of one run costs about US$0.50 and screening one day's new
 
 <!-- Update the billing export and table after the remaining news runs. -->
 
+### Design
+To design the website and figures, we referenced news outlets which reported on the 2024 Senate and presidential elections [@cnn2024; @politico2024; @npr2024; @cbc2024; @reuters2024]. 
+
 ## Discussion {#discussion}
 
 <!-- DRAFT (Claude): rewrite. -->
@@ -335,14 +342,6 @@ In the 27 October forecast, the inverse-variance method assigns synthetic estima
 
 ::: {#refs}
 :::
-
-**Design references** (website design only; not cited in the text)
-
-1. <https://www.cnn.com/election/2024/results/senate?election-data-id=2024-SG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false>
-2. <https://www.politico.com/2024-election/results/senate/>
-3. <https://apps.npr.org/2024-election-results/senate.html>
-4. <https://newsinteractives.cbc.ca/elections/us/2024/results/>
-5. <https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/>
 
 ## Appendix: Prompts {#prompts}
 
