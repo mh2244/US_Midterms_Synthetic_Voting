@@ -152,8 +152,8 @@ for state, g in left.groupby("state"):
         "tip": (f"<b>{html.escape(config.STATE_NAME.get(state, state))}{special}</b>"
                 f"{html.escape(race['left_name'])} ({race['left_party'][0]}) v. {html.escape(race['rep_name'])} (R)<br>"
                 f"{html.escape(r_last)}'s share: {mid:.0f}% (90% interval {lo:.0f} to {hi:.0f})<br>"
-                f"Chance {html.escape(l_last)} wins: {pct(p_left)}<br>"
-                f"Chance {html.escape(r_last)} wins: {pct(1 - p_left)}"),
+                f"{html.escape(l_last)}'s winning probability: {pct(p_left)}<br>"
+                f"{html.escape(r_last)}'s winning probability: {pct(1 - p_left)}"),
     }
 assert len(info) == len(nominees), "A race is missing from the forecast"
 
@@ -210,7 +210,7 @@ swatches = "".join(
     + "".join(f'<div class="map-key"><span class="map-swatch" style="background:{c}"></span>{label}</div>'
               for label, _, c in items) + "</div>"
     for head, items in columns)
-day = "no news" if config.RUN == "nonews" else config.RUN
+day = "no-news" if config.RUN == "nonews" else f"{pd.Timestamp(config.RUN).day} {pd.Timestamp(config.RUN):%B}"
 block = f'''```{{=html}}
 <div class="senate-map">
 <svg viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-label="Map of the 2026 Senate forecast by state">
@@ -220,10 +220,10 @@ block = f'''```{{=html}}
 <div class="map-tip" hidden></div>
 </div>
 <div class="map-legend">{swatches}</div>
-<p class="map-note">Hover over (or tap) a state for the candidates, the forecast share and the chance of
-winning. Chance of winning for the favoured side: likely 85% or more, leans 65% to 85%, tilts 55% to 65%;
-toss-up means each side has a 45% to 55% chance.
-Four models pooled; run {day}.</p>
+<p class="map-note">Hover over (or tap) a state for the candidates, the forecast share and each
+candidate's winning probability. Each rating reflects the favoured side's winning probability: likely
+(85% or more), leans (65% to 85%), tilts (55% to 65%) and toss-up (45% to 55% for each side). Results
+pool the four models and come from the {day} run.</p>
 <style>
 .senate-map {{ position: relative; }}
 .senate-map svg {{ width: 100%; height: auto; display: block; }}
@@ -245,8 +245,8 @@ Four models pooled; run {day}.</p>
 .map-key {{ display: flex; align-items: center; gap: 0.4rem; }}
 .map-swatch {{ width: 0.9rem; height: 0.9rem; border-radius: 2px; display: inline-block;
                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }}
-.map-note {{ font-family: var(--sans); font-size: 0.8rem; color: #555555;
-            text-align: center; margin-top: 0.8rem; }}
+.map-note {{ font-family: var(--sans); font-size: 0.82rem; color: var(--muted);
+            text-align: left; margin-top: 0.8rem; }}   /* same as figcaption in styles.css */
 </style>
 <script>
 (function () {{

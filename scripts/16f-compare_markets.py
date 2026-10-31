@@ -118,14 +118,14 @@ def pct(p):
 
 
 md = ["| News day | States | Correlation | Mean absolute difference (points) | Favourite differs | "
-      "Republican control: ours / market (%) |", "|---|---:|---:|---:|---|---:|"]
+      "Probability of Republican control: ours / market (%) |", "|---|---:|---:|---:|---|---:|"]
 for s in summ.itertuples():
     ctrl = f"{s.ours_rep_control * 100:.0f} / {s.market_rep_control * 100:.0f}" if pd.notna(s.market_rep_control) else "–"
     md.append(f"| {day(s.run)} | {s.n} | {s.corr:.2f} | {s.mad * 100:.1f} | {s.differs} | {ctrl} |")
 latest = summ["run"].iloc[-1]
 t = table[table["run"] == latest].sort_values("difference")
 md += ["", "<details>", f"<summary>Table view: every race, {day(latest)}</summary>", "",
-       "| State | Market (%) | Ours (%) | Ours minus market (points) |", "|---|---:|---:|---:|"]
+       "| State | Market winning probability (%) | Our winning probability (%) | Ours minus market (points) |", "|---|---:|---:|---:|"]
 for r in t.itertuples():
     name = config.STATE_NAME.get(r.state, r.state) + (" (I)" if nominees.loc[r.state, "left_party"] == "Independent" else "")
     md.append(f"| {name} | {pct(r.market_p_rep)} | {pct(r.ours_p_rep)} | {signed(r.difference)} |")
@@ -176,8 +176,8 @@ ax.set_xlim(-0.02, 1.02)
 ax.set_ylim(-0.02, 1.02)
 ax.set_xticks(np.linspace(0, 1, 6), [f"{v:.0%}" for v in np.linspace(0, 1, 6)])
 ax.set_yticks(np.linspace(0, 1, 6), [f"{v:.0%}" for v in np.linspace(0, 1, 6)])
-ax.set_xlabel("PredictIt: chance the Republican candidate wins")
-ax.set_ylabel("Our forecast: chance the Republican candidate wins")
+ax.set_xlabel("PredictIt: Republican winning probability")
+ax.set_ylabel("Our forecast: Republican winning probability")
 ax.set_aspect("equal")
 fig.tight_layout()
 fig_dir = Path("figures") / f"run_{latest}"

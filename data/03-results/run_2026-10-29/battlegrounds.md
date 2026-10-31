@@ -1,5 +1,5 @@
-| State | Seat now | Republican share, median (90% interval) | Chance Republican wins | Forecast | Flip |
-|---|:---:|---:|---:|---|:---:|
+| State | Seat now | Republican share, median (90% interval) | Republican winning probability | Rating | Flip |
+|:---:|:---:|:---:|:---:|:---:|:---:|
 | North Carolina | R | 44% (37 to 51) | 7% | Likely Democratic | Yes |
 | Georgia | D | 45% (38 to 52) | 11% | Likely Democratic | No |
 | New Hampshire | D | 46% (39 to 52) | 14% | Likely Democratic | No |

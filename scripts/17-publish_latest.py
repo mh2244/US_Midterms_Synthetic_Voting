@@ -81,7 +81,7 @@ day = date.fromisoformat(config.RUN)
 when = f"{day.day} {day:%B %Y}"
 pct_range = f"{p.min():.0f} per cent" if round(p.min()) == round(p.max()) else f"{p.min():.0f} to {p.max():.0f} per cent"
 seat_range = f"{seats.min():.0f}" if seats.min() == seats.max() else f"{seats.min():.0f} to {seats.max():.0f}"
-line = (f"Latest run: {when}, with that day's news. Across the {len(chamber)} models, the chance that "
+line = (f"Latest run: {when}, with that day's news. Across the {len(chamber)} models, the probability that "
         f"Republicans control the Senate is {pct_range}, and the median number of Republican seats "
         f"is {seat_range}.")
 (config.LATEST_RESULTS / "run_info.md").write_text(line + "\n")

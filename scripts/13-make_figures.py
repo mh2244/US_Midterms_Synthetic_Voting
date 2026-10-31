@@ -65,7 +65,7 @@ ax.set_yticks(range(len(order)),
               [config.STATE_NAME.get(st, st) + ("*" if nominees.loc[st, "left_party"] == "Independent" else "")
                for st in order], fontsize=9)
 ax.tick_params(axis="y", length=0)
-ax.text(101, len(order) - 0.2, "Chance of a\nRepublican win", va="bottom", ha="left", fontsize=8,
+ax.text(101, len(order) - 0.2, "Republican winning\nprobability", va="bottom", ha="left", fontsize=8,
         color=config.MUTED)
 ax.set_xlabel("Republican candidate's share of the two-party vote (%)", fontsize=9)
 ax.spines[["top", "right", "left"]].set_visible(False)

@@ -74,10 +74,9 @@ sub = (f"We combine synthetic responses from {WORDS.get(n_models, n_models)} "
        f"To estimate which party will control the Senate, we add the 35 race predictions "
        f"to the 65 seats not up for election: {REP_NOT_UP} held by Republicans, 32 by Democrats, and two by "
        f"independents, Bernie Sanders and Angus King, who caucus with Democrats.\n\n"
-       f"Across the simulations, the Democratic caucus reaches the "
-       f"51-seat threshold for control without support from newly elected independents in "
-       f"{p_dem * 100:.0f} per cent of outcomes. Republicans retain control in "
-       f"{p_rep * 100:.0f} per cent. Republicans need 50 seats because the Republican "
+       f"The probability that the Democratic caucus reaches the 51-seat threshold for control, "
+       f"without support from newly elected independents, is {p_dem * 100:.0f} per cent; the "
+       f"probability that Republicans retain control is {p_rep * 100:.0f} per cent. Republicans need 50 seats because the Republican "
        f"vice president can break a 50–50 tie. In 90 per cent of our simulations, Republicans win "
        f"between {q05} and {q95} seats, showing the uncertainty around the forecast.")
 

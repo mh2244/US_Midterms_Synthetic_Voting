@@ -96,7 +96,7 @@ for run in runs:
     rows.append({"run": run, **s})
 by_run = pd.DataFrame(rows)
 by_run.round(4).to_csv(OUT / "runs.csv", index=False)
-md = ["| Run | Democrats win 51+ seats (%) | Republicans keep control (%) | Republican seats, median (90% interval) |",
+md = ["| Run | Probability Democrats win 51+ seats (%) | Probability Republicans keep control (%) | Republican seats, median (90% interval) |",
       "|---|---:|---:|---:|"]
 for r in by_run.itertuples():
     md.append(f"| {label(r.run)} | {pct(r.p_dem)} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) |")
@@ -237,7 +237,7 @@ for m, k in zip(methods, ["synthetic", "shrink", "ivw", "baseline"]):
     m["loo_error"] = err[k]
 meth = pd.DataFrame(methods)
 meth.round(4).to_csv(OUT / "methods.csv", index=False)
-md = ["| Method | Republicans keep control (%) | Republican seats, median (90% interval) | Error against hidden polls (points) |",
+md = ["| Method | Probability Republicans keep control (%) | Republican seats, median (90% interval) | Error against hidden polls (points) |",
       "|---|---:|---:|---:|"]
 for r in meth.itertuples():
     md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) | {r.loo_error * 100:.1f} |")

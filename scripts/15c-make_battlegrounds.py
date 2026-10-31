@@ -97,7 +97,7 @@ if len(to_r):
 line = ("; ".join(parts) + ". ") if parts else "No seat is favoured to change hands. "
 if len(toss):
     line += (f"{names(toss.index)} {'is a toss-up' if len(toss) == 1 else 'are toss-ups'}, with each side "
-             f"given a 45% to 55% chance. ")
+             f"given a winning probability of 45% to 55%. ")
 line = line.rstrip()                      # the chance of control is already in the headline (15b)
 p_rep = (seats >= 50).mean()              # used for the seat-distribution label below
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
@@ -107,7 +107,7 @@ config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 bg = states.loc[BATTLEGROUNDS].sort_values("p_left", ascending=False)
 bg.round(4).to_csv(config.RUN_RESULTS / "battlegrounds.csv")
 md = ["| State | Seat now | Republican share, median (90% interval) | "
-      "Chance Republican wins | Forecast | Flip |", "|---|:---:|---:|---:|---|:---:|"]
+      "Republican winning probability | Rating | Flip |", "|:---:|:---:|:---:|:---:|:---:|:---:|"]   # all centred
 for st, r in bg.iterrows():
     name = r["name"] + (" (I)" if r["left_party"] == "Independent" else "")
     flip = "–" if r["rating"] == "Toss-up" else ("Yes" if r["change"] else "No")
@@ -122,10 +122,12 @@ ax.bar(dist.index, dist.values * 100, width=0.82,
        color=[COL["Republican"] if s >= 50 else COL["Democratic"] for s in dist.index])
 ax.axvline(49.5, color=config.INK, lw=1.2, ls=(0, (3, 2)))
 top = dist.max() * 100
-ax.text(49.3, top * 1.04, f"Republicans below 50:\n{(seats <= 49).mean() * 100:.0f}%", ha="right",
-        va="bottom", fontsize=9, color=COL["Democratic"])
-ax.text(49.7, top * 1.04, f"Republicans 50 or more\n(control): {p_rep * 100:.0f}%", ha="left", va="bottom", fontsize=9,
-        color=COL["Republican"])
+# Each label sits at the centre of its side of the 50-seat line, over the bars it describes.
+lo, hi = dist.index.min() - 0.5, dist.index.max() + 0.5
+ax.text((lo + 49.5) / 2, top * 1.04, f"Republicans lose control\n(49 seats or fewer): {(seats <= 49).mean() * 100:.0f}%",
+        ha="center", va="bottom", fontsize=9, color=COL["Democratic"])
+ax.text((49.5 + hi) / 2, top * 1.04, f"Republicans keep control\n(50 seats or more): {p_rep * 100:.0f}%",
+        ha="center", va="bottom", fontsize=9, color=COL["Republican"])
 ax.set_ylim(0, top * 1.35)
 ax.set_xlabel("Republican seats in the next Senate", fontsize=9)
 ax.set_ylabel("Share of simulations (%)", fontsize=9)
