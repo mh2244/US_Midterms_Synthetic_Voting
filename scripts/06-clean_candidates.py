@@ -31,9 +31,14 @@ import config
 # call him "Dan Sullivan". Nebraska: polls label Dan Osborn (Independent) as the main challenger.
 # Idaho: the polls show David Roth as the Democrat, but he is missing from our candidate file;
 # CHECK THIS before the final run (it is left to the rule below until you do).
+# Montana (fixed 31 October): the rule above picks the Democrat whenever there is one, but here the
+# main challenger is the independent Seth Bodnar (about 31 per cent in polls since mid-September,
+# against 16 for the Democrat Alani Bankhead and 42 for the Republican Kurt Alme). The runs of 27
+# and 29 October used Bankhead; from 31 October Bodnar is the left candidate and Bankhead an other.
 OVERRIDES = {
-    # "AK": {"rep_name": "Dan Sullivan"}, # manually checked--should beOK
+    "AK": {"rep_name": "Dan Sullivan"},   # the name the polls use; this row was already in the file
     # "NE": {"left_name": "Dan Osborn", "left_party": "Independent"},
+    "MT": {"left_name": "Seth Bodnar", "left_party": "Independent"},
 }
 
 
