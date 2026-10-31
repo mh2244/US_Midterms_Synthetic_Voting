@@ -1,6 +1,6 @@
-The sample has 3,500 personas, 100 in each of the 35 states. The expected share is the weighted CES share among validated 2024 voters in each state, averaged over states, because every state contributes the same number of personas. On every category, the sample is within 1.1 percentage points of the expected share.
+The sample contains 3,500 personas, 100 in each of the 35 states. We compare it with the 2024 CES. For each state, we compute the weighted share of validated voters in each group, then average these shares across states, giving each state equal weight because each contributes 100 personas. In every group, the sample is within 1.1 percentage points of the CES.
 
-![Composition of the 3,500 personas (black) against the expected shares from the weighted CES pool (grey). Household income is grouped into seven bands here; the table view has all 17 categories.](figures/composition.png){fig-alt="Paired horizontal bars for gender, race and ethnicity, age, education, party identification, ideology, household income and 2024 presidential vote, comparing the persona sample with the expected shares."}
+![Composition of the 3,500 personas (black) against the weighted 2024 CES (grey). Household income is grouped into seven bands here; the table view has all 17 categories.](figures/composition.png){fig-alt="Paired horizontal bars for gender, race and ethnicity, age, education, party identification, ideology, household income and 2024 presidential vote, comparing the persona sample with the weighted 2024 CES."}
 
 <details>
 <summary>Table view</summary>
@@ -10,16 +10,12 @@ The sample has 3,500 personas, 100 in each of the 35 states. The expected share 
 ::: {.column width="48%"}
 **Gender**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | Man | 1,640 | 46.9 | 46.4 |
 | Woman | 1,843 | 52.7 | 53.0 |
 | Non-binary | 12 | 0.3 | 0.5 |
 | Other | 5 | 0.1 | 0.2 |
-
-::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
 
 :::
 
@@ -29,17 +25,13 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 ::: {.column width="48%"}
 **Race and ethnicity**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | White | 2,725 | 77.9 | 78.9 |
 | Black | 362 | 10.3 | 9.6 |
 | Hispanic | 233 | 6.7 | 6.5 |
 | Asian | 73 | 2.1 | 2.0 |
 | Other | 107 | 3.1 | 3.1 |
-
-::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
 
 :::
 
@@ -50,16 +42,12 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 ::: {.column width="48%"}
 **Age group**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | 18-29 | 468 | 13.4 | 13.5 |
 | 30-44 | 766 | 21.9 | 22.0 |
 | 45-64 | 1,238 | 35.4 | 36.0 |
 | 65+ | 1,028 | 29.4 | 28.5 |
-
-::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
 
 :::
 
@@ -69,7 +57,7 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 ::: {.column width="48%"}
 **Education**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | No HS | 209 | 6.0 | 5.6 |
 | HS grad | 914 | 26.1 | 26.5 |
@@ -77,10 +65,6 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 | 2-year | 392 | 11.2 | 11.0 |
 | 4-year | 863 | 24.7 | 24.3 |
 | Post-grad | 485 | 13.9 | 13.7 |
-
-::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
 
 :::
 
@@ -91,7 +75,7 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 ::: {.column width="48%"}
 **Party identification**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | Strong Dem | 779 | 22.3 | 22.7 |
 | Weak Dem | 245 | 7.0 | 7.1 |
@@ -102,10 +86,6 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 | Strong Rep | 853 | 24.4 | 25.0 |
 | Not sure | 34 | 1.0 | 0.8 |
 
-::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
-
 :::
 
 ::: {.column width="4%"}
@@ -114,7 +94,7 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 ::: {.column width="48%"}
 **Ideology**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | Very liberal | 428 | 12.2 | 12.3 |
 | Liberal | 519 | 14.8 | 14.8 |
@@ -122,10 +102,6 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 | Conservative | 847 | 24.2 | 24.4 |
 | Very conservative | 627 | 17.9 | 18.1 |
 | Not sure | 99 | 2.8 | 3.1 |
-
-::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
 
 :::
 
@@ -136,7 +112,7 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 ::: {.column width="48%"}
 **Household income**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | Less than $10,000 | 119 | 3.4 | 3.8 |
 | $10,000 - $19,999 | 211 | 6.0 | 6.3 |
@@ -156,10 +132,6 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 | $500,000 or more | 10 | 0.3 | 0.3 |
 | Prefer not to say | 323 | 9.2 | 9.6 |
 
-::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
-
 :::
 
 ::: {.column width="4%"}
@@ -168,7 +140,7 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 ::: {.column width="48%"}
 **2024 presidential vote (not in the prompt)**
 
-| Category | Personas | Sample (%) | Expected (%) |
+| Category | Personas | Sample (%) | CES (%) |
 |---|---:|---:|---:|
 | Harris | 1,522 | 43.5 | 43.2 |
 | Trump | 1,846 | 52.7 | 53.5 |
@@ -176,28 +148,12 @@ Sample is the share of drawn personas; expected is the weighted CES share, avera
 | Did not vote for president | 31 | 0.9 | 0.7 |
 | No answer | 30 | 0.9 | 0.7 |
 
+:::
+
+:::
+
 ::: {.chart-note}
-Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.
-:::
-
-:::
-
+In every table, sample is the share of drawn personas and CES is the weighted share among validated 2024 voters, averaged equally across states. Because personas are drawn at random, the sample should match the CES on average but not exactly.
 :::
 
 </details>
-
-**Repeated draws**
-
-Of the 3,500 personas, 904 (25.8%) repeat a respondent already drawn in the same state. The five states with the most repeats are shown below.
-
-| State | Pool | Repeated draws | Repeated (%) |
-|---|---:|---:|---:|
-| AK | 76 | 66 | 66.0 |
-| WY | 52 | 62 | 62.0 |
-| RI | 127 | 47 | 47.0 |
-| MT | 160 | 44 | 44.0 |
-| DE | 116 | 44 | 44.0 |
-
-::: {.chart-note}
-Pool is the number of eligible CES respondents in the state. Repeated draws count selections after a respondent's first appearance, not duplicate API calls. Sampling with replacement allows one respondent to appear as more than one persona.
-:::

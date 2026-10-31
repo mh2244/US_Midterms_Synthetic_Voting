@@ -170,25 +170,25 @@ rep.to_csv(OUT / "repeats_by_state.csv", index=False)
 # index.qmd includes this file ({{< include >}}), so the tables on the page always match the data.
 per_state_text = str(per_state.min()) if per_state.min() == per_state.max() else f"{per_state.min()} to {per_state.max()}"
 max_gap = overall["gap_points"].abs().max()
-md = [f"The sample has {len(personas):,} personas, {per_state_text} in each of the "
-      f"{personas['state'].nunique()} states. The expected share is the weighted CES share among "
-      "validated 2024 voters in each state, averaged over states, because every state contributes "
-      f"the same number of personas. On every category, the sample is within {max_gap:.1f} "
-      "percentage points of the expected share.", "",
-      f"![Composition of the {len(personas):,} personas (black) against the expected shares from "
-      "the weighted CES pool (grey). Household income is grouped into seven bands here; the table "
+md = [f"The sample contains {len(personas):,} personas, {per_state_text} in each of the "
+      f"{personas['state'].nunique()} states. We compare it with the 2024 CES. For each state, we "
+      "compute the weighted share of validated voters in each group, then average these shares "
+      "across states, giving each state equal weight because each contributes "
+      f"{per_state_text} personas. In every group, the sample is within {max_gap:.1f} "
+      "percentage points of the CES.", "",
+      f"![Composition of the {len(personas):,} personas (black) against the weighted 2024 CES "
+      "(grey). Household income is grouped into seven bands here; the table "
       f"view has all 17 categories.]({FIGURE.as_posix()}){{fig-alt=\"Paired horizontal bars for gender, "
       "race and ethnicity, age, education, party identification, ideology, household income and "
-      "2024 presidential vote, comparing the persona sample with the expected shares.\"}", "",
+      "2024 presidential vote, comparing the persona sample with the weighted 2024 CES.\"}", "",
       "<details>", "<summary>Table view</summary>", ""]
 
 
 def table(var):
-    out = [f"**{LABELS[var]}**", "", "| Category | Personas | Sample (%) | Expected (%) |", "|---|---:|---:|---:|"]
+    out = [f"**{LABELS[var]}**", "", "| Category | Personas | Sample (%) | CES (%) |", "|---|---:|---:|---:|"]
     for _, r in overall[overall["variable"] == LABELS[var]].iterrows():
         out.append(f"| {r['category']} | {r['n_sample']:,} | {r['pct_sample']:.1f} | {r['pct_expected']:.1f} |")
-    return out + ["", "::: {.chart-note}",
-                  "Sample is the share of drawn personas; expected is the weighted CES share, averaged equally across states. Small differences are expected from random sampling.", ":::", ""]
+    return out + [""]
 
 
 for left, right in [("gender", "race_5"), ("age_group", "education"), ("party_id_7", "ideology")]:
@@ -197,16 +197,12 @@ for left, right in [("gender", "race_5"), ("age_group", "education"), ("party_id
 for left, right in [("family_income", "pres_2024")]:
     md += ["::: {.columns}", "", '::: {.column width="48%"}'] + table(left) + [":::", "",
            '::: {.column width="4%"}', ":::", "", '::: {.column width="48%"}'] + table(right) + [":::", "", ":::", ""]
-md += ["</details>", ""]
-md += ["**Repeated draws**", "",
-       f"Of the {len(personas):,} personas, {int(rep['repeated_draws'].sum()):,} "
-       f"({rep['repeated_draws'].sum() / len(personas) * 100:.1f}%) repeat a respondent already drawn "
-       "in the same state. The five states with the most repeats are shown below.", "",
-       "| State | Pool | Repeated draws | Repeated (%) |", "|---|---:|---:|---:|"]
-for _, r in rep.head(5).iterrows():
-    md.append(f"| {r['state']} | {int(r['pool_size']):,} | {int(r['repeated_draws'])} | {r['pct_repeated']:.1f} |")
-md += ["", "::: {.chart-note}",
-       "Pool is the number of eligible CES respondents in the state. Repeated draws count selections after a respondent's first appearance, not duplicate API calls. Sampling with replacement allows one respondent to appear as more than one persona.", ":::", ""]
+md += ["::: {.chart-note}",
+       "In every table, sample is the share of drawn personas and CES is the weighted share among "
+       "validated 2024 voters, averaged equally across states. Because personas are drawn at random, "
+       "the sample should match the CES on average but not exactly.", ":::", "",
+       "</details>", ""]
+# Repeated draws (sampling with replacement) are reported in the Methods text of index.qmd.
 (OUT / "composition_overall.md").write_text("\n".join(md).rstrip() + "\n")
 
 #### Figure ####
@@ -239,9 +235,14 @@ for i, (ax, var) in enumerate(zip(axes.flat, order)):
     ax.tick_params(length=0)
     ax.spines[["top", "right", "left"]].set_visible(False)
 handles = [plt.Rectangle((0, 0), 1, 1, color=INK), plt.Rectangle((0, 0), 1, 1, color=GREY)]
-fig.legend(handles, [f"The {len(personas):,} personas", "Expected (weighted CES, validated 2024 voters)"],
-           loc="lower center", ncol=2, frameon=False, bbox_to_anchor=(0.5, 0.0))
 fig.subplots_adjust(left=0.2, right=0.97, top=0.97, bottom=0.07)
+# Centre the legend on what is drawn (panels and their labels), not on the whole image, which has
+# more empty space on the left than on the right.
+fig.canvas.draw()
+boxes = [ax.get_tightbbox(fig.canvas.get_renderer()).transformed(fig.transFigure.inverted()) for ax in axes.flat]
+centre = (min(b.x0 for b in boxes) + max(b.x1 for b in boxes)) / 2
+fig.legend(handles, [f"The {len(personas):,} personas", "2024 CES (weighted, validated voters)"],
+           loc="lower center", ncol=2, frameon=False, bbox_to_anchor=(centre, 0.0), columnspacing=3)
 FIGURE.parent.mkdir(parents=True, exist_ok=True)
 fig.savefig(FIGURE, dpi=200)
 plt.close(fig)
