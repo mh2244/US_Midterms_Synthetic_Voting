@@ -12,6 +12,12 @@
 | 29 October | GPT-6 Luna | 10,500 (10,500) | 5,315,142 | 417,769 | 0.74 |
 | **29 October, all models** | | **42,000 (41,996)** | **24,971,702** | **3,042,087** | **8.13** |
 | | *First to last call: 0.9 hours* | | | | |
+| 31 October | DeepSeek V4.1 Flash | 10,500 (10,500) | 5,469,453 | 703,783 | 2.49 |
+| 31 October | Gemini 3.5 Flash-Lite | 10,500 (10,500) | 5,690,514 | 740,089 | 3.56 |
+| 31 October | Claude Haiku 5.5 | 10,500 (10,496) | 8,993,886 | 1,223,975 | 1.51 |
+| 31 October | GPT-6 Luna | 10,500 (10,500) | 5,451,369 | 420,881 | 0.76 |
+| **31 October, all models** | | **42,000 (41,996)** | **25,605,222** | **3,088,728** | **8.31** |
+| | *First to last call: 1.0 hours* | | | | |
 | No news (baseline) | DeepSeek V4.1 Flash | 10,500 (10,500) | 1,648,559 | 639,368 | 1.26 |
 | No news (baseline) | Gemini 3.5 Flash-Lite | 10,500 (10,500) | 1,769,115 | 685,797 | 2.25 |
 | No news (baseline) | Claude Haiku 5.5 | 10,500 (10,500) | 2,309,316 | 1,088,094 | 0.77 |
