@@ -206,7 +206,6 @@ python scripts/08-build_prompts.py --news
 python scripts/09-query_models.py --batch-size 40 --sleep 0    # paid: 42,000 calls, about US$8
 python scripts/10-score_responses.py
 python scripts/11-build_forecast.py --combine none
-python scripts/11-build_forecast.py --combine shrink
 python scripts/11-build_forecast.py                            # inverse-variance headline, run last
 python scripts/13-make_figures.py
 python scripts/13b-make_map.py
@@ -273,8 +272,8 @@ hours) then does, in order:
    Skipped for `nonews`.
 5. Builds the prompts (`08`) and queries the four models (`09`), retrying up to three times and
    reusing every answer already saved.
-6. Scores the answers with SSR (`10`) and builds the forecast three ways (`11`: synthetic only,
-   shrinkage, then the inverse-variance headline).
+6. Scores the answers with SSR (`10`) and builds the forecast two ways (`11`: synthetic only,
+   then the inverse-variance headline).
 7. Makes the figures, map, headline, battleground table, crosstabs, comparisons, costs and news summary
    (`13` to `16e`); the extra tables only warn if they fail.
 8. Runs the test suite (`12`); a failure stops the run here.
@@ -371,6 +370,23 @@ Earlier pilots used `poolside/laguna-s-2.1:free` and
 `nvidia/nemotron-3-ultra-550b-a55b:free` for answers, `sentence-transformers/all-MiniLM-L6-v2`
 for embeddings and `dots-studio/dots-3-note-preview:free` for news screening; none of these
 answers are in the forecast.
+
+## API costs: what OpenRouter billed
+
+The website shows the token-based cost of each run (script `16d`). This is what OpenRouter
+actually billed, by day, from the activity export in `data/01-raw_data/` (to be updated after the
+31 October run).
+
+| Day | What ran | Voting models (US$) | SSR embeddings, Gemini Embedding 2 (US$) | News screening (US$) | Total (US$) |
+|---|---|---:|---:|---:|---:|
+| 25 October | Pilot: 20 answers from each model | 0.01 | – | – | 0.01 |
+| 26 October | Full test run (42,248 calls) and the embedding check | 7.06 | 0.54 | 0.00 (free model) | 7.61 |
+| 27 October | 27 October news run and the run without news (87,985 calls) | 11.10 | 1.01 | 0.09 (GPT-4.1 Nano) | 12.20 |
+| **Total** | | **18.17** | **1.56** | **0.09** | **19.82** |
+
+These are billed costs grouped by activity date, rather than by forecast run. A day can include more than one run and repeat attempts. A dash means no cost is recorded for that activity; totals may differ slightly from rounded entries.
+
+Embedding the answers of one run costs about US$0.50 and screening one day's news about US$0.09, so a full run costs about US$6 to US$8 in all, most of it Gemini 3.5 Flash-Lite (US$5.69 of the US$11.10 for voting on 27 October). The bill for voting on 27 October is lower than the token-based estimate in the first table (US$12.72 for the two runs) because DeepSeek was billed at its off-peak price (US$1.59 against an estimated US$3.68); Claude Haiku was billed more than estimated (US$2.70 against US$2.25) because OpenRouter counted 87,985 calls on 27 October against the 84,000 answers kept, 3,291 of the extra calls for Claude Haiku, probably calls repeated when the news run was resumed after stopping at the US$10 workspace budget. The test run on 21 October used free models and cost nothing.
 
 ## Statement on AI usage
 
