@@ -7,7 +7,7 @@
      independents; lighter tints of the same two colours for "leans" and "tilts"; a muted sand
      for toss-ups; near-black text, grey notes, light rules. The same values are in config.py.
    - Tables: one style for all (top rule, rule under the header, bottom rule, no vertical lines,
-     figures right-aligned in tabular digits).
+     every header and cell centred, figures in tabular digits).
    - Layout: one 900px column, section menu fixed at the top, captions below figures, left-aligned. */
 @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-Regular.ttf") format("truetype");
              font-weight: 400; font-style: normal; font-display: swap; }
@@ -68,12 +68,18 @@ h1.title { font-family: var(--serif); font-size: 3rem; line-height: 1.1;
 .sectionnav a:hover { text-decoration: underline; }
 h2, h3, h4 { scroll-margin-top: 4.5rem; }
 
-/* Section headings */
-h2 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700;
-     margin-top: 2.4em; border-bottom: none; }
-h3 { font-size: 1.05rem; font-weight: 700; }
-/* Fourth level (e.g. Map, Battleground races under State by state): smaller, grey */
-h4 { font-size: 0.95rem; font-weight: 600; color: var(--muted); margin-top: 1.8em; }
+/* Section headings: three clearly different levels, each larger than the body text (1rem).
+   Sections open with a heavy rule and subsections with a light one, as on the example site. */
+h2 { font-size: 1.35rem; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700;
+     margin-top: 3em; padding-top: 0.75em; border-top: 2px solid var(--ink); border-bottom: none; }
+h3 { font-size: 1.2rem; font-weight: 700; margin-top: 2.4em; padding-top: 0.65em;
+     border-top: 1px solid var(--rule); }
+/* No light rule when a subsection starts straight under its section's heavy rule */
+section.level2 > h2 + section.level3 > h3 { border-top: none; padding-top: 0; margin-top: 1.2em; }
+/* Fourth level (e.g. Map, Battleground races under State by state): no rule, just above body size */
+h4 { font-size: 1.05rem; font-weight: 600; color: var(--ink); margin-top: 1.8em; }
+/* The forecast headline (written by scripts/15b) is a heading, but not a section: no rule */
+.forecast-date + section > h2 { border-top: none; padding-top: 0; margin-top: 0.6em; }
 
 /* "Latest estimate" row */
 .forecast-date { color: var(--muted); font-family: var(--sans); font-size: 0.85rem;
@@ -119,7 +125,15 @@ main .columns table:not(.crosstab) th, main .columns table:not(.crosstab) td { p
             font-variant-numeric: tabular-nums; margin: 0; }
 .crosstab th, .crosstab td { padding: 0.18rem 0.28rem; text-align: right; white-space: nowrap; }
 .crosstab th:first-child, .crosstab td:first-child { text-align: left; }
-.crosstab thead th { font-weight: 700; border-bottom: 1px solid var(--ink); vertical-align: bottom; }
+.crosstab thead th { font-weight: 700; border-bottom: 1px solid var(--ink); vertical-align: bottom;
+                    white-space: normal; }   /* long headers wrap; body cells stay on one line */
+/* Same column widths in both tables, so their headers wrap the same way and line up */
+.crosstab { table-layout: fixed; }
+.crosstab thead th:nth-child(1) { width: 27%; }
+.crosstab thead th:nth-child(2) { width: 15%; }
+.crosstab thead th:nth-child(3) { width: 22%; }
+.crosstab thead th:nth-child(4) { width: 18%; }
+.crosstab thead th:nth-child(5) { width: 18%; }
 .crosstab tbody + tbody { border-top: 1px solid var(--ink); }
 .crosstab tr.ct-head th { background: var(--tint); font-weight: 700; text-transform: uppercase;
                           letter-spacing: 0.05em; font-size: 0.72rem; padding-top: 0.35rem; }
@@ -137,3 +151,7 @@ main table:not(.crosstab) tbody tr:last-child td { border-bottom: none; }
 main table:not(.crosstab) tr, main table:not(.crosstab) td, main table:not(.crosstab) th { background: none !important;
                                                                                          box-shadow: none !important; }
 main table:not(.crosstab) caption { caption-side: top; color: var(--muted); font-size: 0.8rem; text-align: left; }
+
+/* Every table on the page, crosstabs included: headers and cells centred. !important overrides the
+   alignment that pandoc writes into each cell from the markdown tables' alignment rows. */
+main table th, main table td { text-align: center !important; }
