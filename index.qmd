@@ -8,7 +8,7 @@ link-citations: true
 
 <!-- Section menu, as on the example site: styled by .sectionnav in styles.css -->
 ::: {.sectionnav}
-[How it works](#how) [Forecast](#forecast) [Sample](#sample) [Synthetic voters and polls](#synthetic) [Evaluation](#evaluation) [Methods](#methods) [Costs](#costs) [Discussion](#discussion) [Prompts](#prompts)
+[How it works](#how) [Forecast](#forecast) [Sample](#sample) [Methods](#methods) [Sensitivity](#synthetic) [Evaluation](#evaluation) [Costs](#costs) [Discussion](#discussion) [Prompts](#prompts)
 :::
 
 <!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py, published by 17. -->
@@ -76,7 +76,7 @@ Each entry is the Republican candidate's winning probability (the share of simul
 
 This section describes the 3,500 personas and compares their synthetic responses across groups before any adjustment using polls.
 
-### Composition
+### Composition {#composition}
 
 {{< include data/03-results/composition/composition_overall.md >}}
 
@@ -88,79 +88,8 @@ This table is a check of algorithmic fidelity [@argyle2023], not part of the for
 {{< include data/03-results/latest/crosstabs.md >}}
 
 ::: {.chart-note}
-Each row compares a group’s synthetic voters with how the same CES respondents voted in 2024. Synthetic voters leaning left are those whose answers, averaged over the four models and three repeats and before any correction toward polls, favour the Democratic or independent candidate. States are weighted by their share of validated 2024 voters. A dagger marks groups with fewer than 30 personas.
+Each row compares a group’s synthetic voters with how the same CES respondents voted in 2024. Synthetic voters leaning left are those whose answers, averaged over the four models and three repeats and before any correction toward polls, favour the Democratic or independent candidate. States are weighted by their share of validated 2024 voters.
 :::
-
-The table describes the run dated in the forecast headline. Agreement with these personas’ 2024 votes is a descriptive comparison, not a validation of their 2026 choices.
-
-## Synthetic Voters and Polls {#synthetic}
-
-<!-- DRAFT (Claude): rewrite. -->
-How much the synthetic voters add once polls are included, how much the news changes their answers, and how much the forecast depends on two assumed error sizes. These are national summaries.
-
-<!-- Tables written by scripts/16b-compare_runs.py after each run (data/03-results/comparison/). -->
-
-### Forecast by method
-
-{{< include data/03-results/comparison/methods.md >}}
-
-::: {.chart-note}
-For the latest news run, this table compares Republican control, median seats and the middle 90% of outcomes across forecasting methods, with models weighted equally. Error is the mean absolute gap from held-out poll averages, in percentage points; smaller means closer agreement with polls, not election results. Shrinkage uses 2024 plus swing when the state’s polls are withheld, so its error matches that benchmark. The no-language-model seat forecast uses polls where available and 2024 plus swing elsewhere; its held-out error uses 2024 plus swing because that state’s polls are withheld.
-:::
-
-### Effect of the news
-
-![Synthetic Republican two-candidate shares before polling adjustment. Left: the equally weighted mean across 35 states for each model (colours) and all models (black). Right: each state’s change from no news, with the median marked in black. Positive changes favour the Republican candidate; negative changes favour the Democratic or independent opponent. Changes are in percentage points and include generation variability, not just differences in news; on 31 October, Montana's change also reflects the corrected candidate (see [Data](#data)).](figures/latest/news_effect.png){fig-alt="Left, a line chart of the mean Republican synthetic share by model across the no-news run and the news days. Right, one dot per state for the change from no news on each news day, with the median marked."}
-
-<details>
-<summary>Table view</summary>
-
-{{< include data/03-results/comparison/news.md >}}
-
-::: {.chart-note}
-The table gives the Republican synthetic share before polling adjustment, averaged equally across 35 states, and its change from no news. Shares are percentages; changes are percentage points.
-:::
-
-</details>
-
-### Forecast by news day
-
-{{< include data/03-results/comparison/runs.md >}}
-
-::: {.chart-note}
-Headline results from the inverse-variance forecast for each news day and the no-news baseline, with all four models pooled. Seat intervals cover the middle 90% of simulations. Changes between dated runs can reflect updated polls as well as different news inputs and variation in model answers; from 31 October they also reflect the corrected Montana race (see [Data](#data)). The Democratic control measure includes the two continuing independents in that caucus.
-:::
-
-### Sensitivity to the assumed errors {#sensitivity}
-
-{{< include data/03-results/latest/sensitivity.md >}}
-
-::: {.chart-note}
-Each cell gives the probabilities “Republican control / Democratic caucus reaches 51 seats”, in per cent, pooling the four models. The Democratic total includes continuing independents Sanders and King but does not rely on new independent winners. An SD of 0.03 means three percentage points of vote share. Rows vary the shared national error and columns vary poll error beyond sampling. Bold marks the headline assumptions; the two probabilities need not sum to 100%.
-:::
-
-## Evaluation {#evaluation}
-
-<!-- DRAFT (Claude): rewrite. -->
-The forecast cannot be scored until the results come in on 3 November, so we check it in two ways that need no result: against polls it did not see, and against a prediction market that forecasts the same races by other means.
-
-### Against hidden polls: a leave-one-out check {#loo}
-
-<!-- DRAFT (Claude): rewrite. Table written by scripts/16b-compare_runs.py after each run. -->
-{{< include data/03-results/comparison/leave_one_out.md >}}
-
-::: {.chart-note}
-For each polled state, bias, swing and variance estimates are recalculated using the other states before predicting its withheld poll average. Entries are mean absolute errors in two-party vote share, in percentage points; smaller is better. This checks agreement with polls, not election outcomes. Each state’s polls are withheld before its prediction is made. The last column counts states where the combination beats the 2024-plus-swing benchmark.
-:::
-
-### Against a prediction market {#markets}
-
-<!-- DRAFT (Claude): rewrite. -->
-The idea for this check comes from Wang et al. [-@wang2015], who forecast the 2012 presidential election from an opt-in poll of Xbox users, adjusted it with multilevel regression and post-stratification, and, with no election result to compare against weeks before the vote, set their state forecasts beside prediction markets (Betfair and Intrade), which they describe as among the most accurate sources of political forecasts. We do the same with PredictIt [@predictit2026], which has a market for every one of the 35 races and for control of the Senate. A contract pays one dollar if it comes true, so its price is roughly the market's probability; the two sides' prices add up to a little more than one, so we divide the Republican side's price by their sum, and we leave out third candidates, as our forecast does. We use each market's closing price on the day of the news run. For 27 and 29 October, our Montana forecast is Alme against the Democrat Alani Bankhead, which we corrected to the independent Seth Bodnar from 31 October (see [Data](#data)), so Montana is not comparable with the market on those two days. The market is not independent of the polls, which traders read, but it combines them with other information through trading [@rothschild2009].
-
-{{< include data/03-results/comparison/markets.md >}}
-
-![Our Republican winning probability in each race against PredictIt's, on the latest news day. Points on the dashed line are races where the two agree; points in the shaded corners are races where they favour different sides. Hollow points are races with an independent instead of a Democrat; states that differ by 8 points or more are named. Data from PredictIt.](figures/latest/market_comparison.png){fig-alt="Scatter plot of 35 Senate races, our Republican winning probability against PredictIt's, with a 45-degree line and shaded corners where the two favour different sides."}
 
 ## Methods {#methods}
 
@@ -187,7 +116,7 @@ We built each persona from seven variables: age, education, race, gender, househ
 Sampling was conducted by state, and 100 personas were sampled per state. Some states had fewer than 100 respondents with a weight in the 2024 CES data. These were Wyoming (52 validated voters with a weight) and Alaska (76). For consistency, sampling with replacement was used across all 35 states. As a result, 904 of the 3,500 personas (26 per cent) repeat a respondent already drawn in the same state. In Alaska and Wyoming about two-thirds do, so these states rest on fewer distinct people than their 100 personas suggest.
 
 <!-- DRAFT (Claude): rewrite. -->
-Post-stratification happens at the sampling step rather than after the answers come back. Wang et al. [-@wang2015] post-stratify after collecting answers, because their Xbox sample was far from representative, with multilevel regression filling in small cells; our personas are drawn from a weighted survey, so weighting the draw is enough. Within each state, a validated voter's probability of being drawn is proportional to their "vvweight_post", the weight the CES constructs so that its respondents match the characteristics of the validated electorate [@ces2024guide]. Drawing in proportion to that weight means each state's 100 personas reproduce the weighted composition of its 2024 voters in expectation, so the state's synthetic share is the unweighted mean of the persona probabilities, and weighting the answers again would count the weights twice. The frame is therefore the 2024 validated electorate of each state, not the 2026 one; turnout changes between a presidential and a midterm year are not modelled. Every state receives 100 personas whatever its size, which is appropriate because each race is forecast on its own and the seat count comes from the state winners, not from pooling personas across states. The Composition section compares the drawn personas with the weighted CES pool.
+Post-stratification happens at the sampling step rather than after the answers come back. Wang et al. [-@wang2015] post-stratify after collecting answers, because their Xbox sample was far from representative, with multilevel regression filling in small cells; our personas are drawn from a weighted survey, so weighting the draw is enough. Within each state, a validated voter's probability of being drawn is proportional to their "vvweight_post", the weight the CES constructs so that its respondents match the characteristics of the validated electorate [@ces2024guide]. Drawing in proportion to that weight means each state's 100 personas reproduce the weighted composition of its 2024 voters in expectation, so the state's synthetic share is the unweighted mean of the persona probabilities, and weighting the answers again would count the weights twice. The frame is therefore the 2024 validated electorate of each state, not the 2026 one; turnout changes between a presidential and a midterm year are not modelled. Every state receives 100 personas whatever its size, which is appropriate because each race is forecast on its own and the seat count comes from the state winners, not from pooling personas across states. The [Composition](#composition) section compares the drawn personas with the weighted CES pool.
 
 ### News summaries {#news}
 
@@ -206,7 +135,7 @@ The screening prompt explicitly excludes sports and other material without suppo
 
 Each persona was asked how it would vote in its state's Senate race. Following Murray and Alexander [-@murray2026], we query 4 different models, as different LLMs have different biases. We also save model_returned and the query times, because Bisbee et al. [-@bisbee2024] state that the model behind a name can change even when the name stays the same. Candidate order was randomised for each persona.
 
-Each persona answered in free text, which was then scored with SSR (see [Turning answers into voting probabilities](#scoring)). Every prompt was sent through OpenRouter, three times, to four models from four companies: Claude Haiku 5.5 (anthropic/claude-haiku-5.5), GPT-6 Luna (openai/gpt-6-luna), DeepSeek V4.1 Flash (deepseek/deepseek-v4.1-flash), and Gemini 3.5 Flash-Lite (google/gemini-3.5-flash-lite). We did not set a temperature, so each model ran at its provider's default, and the three repeats differ through ordinary sampling. Answers were capped at 800 tokens, and reasoning was turned off, except for Gemini, which requires it and ran at the minimal level. The number of calls that returned an answer is given, by run and model, in the cost table. Answers that could not be scored were left out: on 27 October, one DeepSeek call reached the token limit without any text, and in the run without news one Claude Haiku answer was a refusal.
+Each persona answered in free text, which was then scored with SSR (see [Turning answers into voting probabilities](#scoring)). Every prompt was sent through OpenRouter, three times, to four models from four companies: Claude Haiku 5.5 (anthropic/claude-haiku-5.5), GPT-6 Luna (openai/gpt-6-luna), DeepSeek V4.1 Flash (deepseek/deepseek-v4.1-flash), and Gemini 3.5 Flash-Lite (google/gemini-3.5-flash-lite). We did not set a temperature, so each model ran at its provider's default, and the three repeats differ through ordinary sampling. Answers were capped at 800 tokens, and reasoning was turned off, except for Gemini, which requires it and ran at the minimal level. The number of answers each model returned in the latest run is given in the [cost table](#costs). Answers that could not be scored were left out: on 27 October, one DeepSeek call reached the token limit without any text, and in the run without news one Claude Haiku answer was a refusal.
 
 ### Turning answers into voting probabilities {#scoring}
 
@@ -232,14 +161,14 @@ For each state and model, the synthetic Democratic-side share is the mean p(left
 
 The combination has two steps. First, we removed each model's bias, defined as the mean difference between its synthetic share and the poll average across the polled states. Second, we averaged the bias-corrected synthetic share $m^*$ and the outside estimate $t$ with weights proportional to the inverse of their variances, so that the noisier estimate counts for less: the combined share is $w t + (1 - w) m^*$, with $w = \sigma^2_m / (\sigma^2_m + \sigma^2_t)$, and its variance is $1 / (1/\sigma^2_m + 1/\sigma^2_t)$. The synthetic variance $\sigma^2_m$ is the persona bootstrap variance plus a structural variance, estimated from the polled states as the variance of $m^*$ minus the poll average, less the mean bootstrap and poll variances. The poll variance is the sampling variance $s(1 - s)/n$ plus an assumed $0.03^2$ for error beyond sampling [@shirani-mehr2018]. The variance of the uniform swing is estimated the same way, from how far the polled states fall from their 2024 share plus the swing. Draws are normal around the combined share, and a national error with a standard deviation of 0.03, shared by every state within a draw, is added so that state errors move together [@shirani-mehr2018]. The synthetic weight, $1 - w$, depends on these estimated variances and the assumption that the two estimates have independent errors.
 
-The method-comparison tables report results for the forecast run identified in the headline. State- and model-specific weights are saved in the run's `ivw_weights.csv`. They describe the allocation under our estimated variances, not a validated measure of how much independent information the synthetic voters provide.
+The [method-comparison table](#by-method) below reports results for the forecast run identified in the headline. State- and model-specific weights are saved in the run's `ivw_weights.csv`. They describe the allocation under our estimated variances, not a validated measure of how much independent information the synthetic voters provide.
 
-We kept two other versions for comparison: the synthetic voters alone, and a shrinkage correction in which each polled state's gap to its polls is shrunk toward the mean gap with strength $k = 3$, and unpolled states take their 2024 share plus the uniform swing. In unpolled states the shrinkage version ignores the synthetic voters entirely, which is the main reason we chose inverse-variance weighting.
+We kept two other versions for comparison, shown in [Forecast by method](#by-method): the synthetic voters alone, and a forecast without any language model, which uses the poll average where there are polls and 2024 plus the uniform swing elsewhere.
 
 ### Sources of uncertainty {#uncertainty}
 
 <!-- DRAFT (Claude): rewrite. -->
-Each simulated outcome combines five sources of error. The first is which personas were drawn, measured by resampling each state's 100 personas. The second is structural model error, the part of the gap between a model and the polls that the bias correction does not remove, estimated from the 25 polled states; it differs by model, from about 0.03 for GPT-6 Luna to 0.07 for DeepSeek V4.1 Flash on 27 October. The third is poll error, which is sampling error plus an assumed 0.03 beyond sampling, and in unpolled states the error of the 2024-plus-swing estimate takes its place. The fourth is the shared national error (standard deviation 0.03), which shifts every state together in a draw and is what makes the seat distribution wide. The fifth is disagreement between models, which enters because the four models are pooled with equal weight rather than averaged into one estimate. Three sources are left out. The bias, the structural variance, and the swing are estimated from the same 25 states and treated as known. Synthetic and poll errors are assumed independent, although both may miss in the same direction. Apart from the national error, state errors are independent, so regional patterns (for example, a miss shared by the Midwest) are not captured. All three omissions make the intervals narrower than they should be. A fourth is the randomness of a run itself: a second complete run on 29 October, with the news collected again and every model queried again, moved the probability of Republican control by 1 point (38.8 against 37.8 per cent) and each state's winning probability by 0.5 points on average (at most 2.6, in Kentucky), about as much as the change between the 27 and 29 October news days (0.8 points on average), so a change between news days of that size is within run-to-run noise. The [sensitivity table](#sensitivity) in Synthetic Voters and Polls shows how far the probability of Republican control moves when the two assumed error sizes change.
+Each simulated outcome combines five sources of error. The first is which personas were drawn, measured by resampling each state's 100 personas. The second is structural model error, the part of the gap between a model and the polls that the bias correction does not remove, estimated from the 25 polled states; it differs by model, from about 0.03 for GPT-6 Luna to 0.07 for DeepSeek V4.1 Flash on 27 October. The third is poll error, which is sampling error plus an assumed 0.03 beyond sampling, and in unpolled states the error of the 2024-plus-swing estimate takes its place. The fourth is the shared national error (standard deviation 0.03), which shifts every state together in a draw and is what makes the seat distribution wide. The fifth is disagreement between models, which enters because the four models are pooled with equal weight rather than averaged into one estimate. Three sources are left out. The bias, the structural variance, and the swing are estimated from the same 25 states and treated as known. Synthetic and poll errors are assumed independent, although both may miss in the same direction. Apart from the national error, state errors are independent, so regional patterns (for example, a miss shared by the Midwest) are not captured. All three omissions make the intervals narrower than they should be. A fourth is the randomness of a run itself: a second complete run on 29 October, with the news collected again and every model queried again, moved the probability of Republican control by 1 point (38.8 against 37.8 per cent) and each state's winning probability by 0.5 points on average (at most 2.6, in Kentucky), about as much as the change between the 27 and 29 October news days (0.8 points on average), so a change between news days of that size is within run-to-run noise. The [sensitivity table](#sensitivity) below shows how far the probability of Republican control moves when the two assumed error sizes change.
 
 ### Tests
 
@@ -248,40 +177,91 @@ As a test run, we used Poolside's Laguna (poolside/laguna-s-2.1:free) and Nvidia
 <!-- DRAFT (Claude): rewrite. -->
 There are two test suites, one for the simulated data (`scripts/01-test_simulated_data.py`, 33 tests) and one for each real run (`scripts/12-test_actual_data.py`, 61 tests). Both are written with pytest and pandera, and both use the same schemas (`scripts/schemas.py`), so the simulated data, which we wrote before any model was queried, set the standard the real data must meet. A schema states, for each table, the type, allowed values, and range of every column, which columns form a unique key, and rules across columns; pandera checks every row and reports all failures at once. The tests after the schemas check what one table cannot: that tables agree with each other. Tests that apply to each model or persona variable are run once per model or variable, so a failure names it.
 
-The tests target the ways a silicon-sampling forecast can go wrong without an error message. For the API responses, every prompt must have been sent to every model three times; each model's share of empty or failed calls must be below 10 per cent; every call must have asked for the configured model, and every answer must have come from that company (a changed model id within the company passes with a warning, since the model behind a name can change [@bisbee2024]); fewer than 1 per cent of answers may stop at the token limit or be shorter than 20 characters; every answered call must record its token counts, which the cost table uses; and all answers must be from the run's own date. For the scores, only answers with status "ok" may have probabilities, and those must lie between 0 and 1 and add up to 1, so a model that did not answer becomes a missing value that is left out rather than a zero that enters the forecast. For the forecast, no share may be missing, the two shares in a race must add up to 1, the winner must be the party with the larger share and on that state's ballot, and every draw must fill exactly 100 seats. For the combination with polls, every weight must be between 0 and 1, every variance positive, and every combined share between the two estimates it averages. We checked that the suite fails when it should by planting four errors in a copy of the 27 October data (a missing probability, probabilities adding to 1.3, race shares adding to more than 1, and answers from another provider); each was caught. In the workflow a failed test stops the forecast and the website from being published, while the paid answers are still saved.
+The tests target the ways a silicon-sampling forecast can go wrong without an error message. For the API responses, every prompt must have been sent to every model three times; each model's share of empty or failed calls must be below 10 per cent; every call must have asked for the configured model, and every answer must have come from that company (a changed model id within the company passes with a warning, since the model behind a name can change [@bisbee2024]); fewer than 1 per cent of answers may stop at the token limit or be shorter than 20 characters; every answered call must record its token counts, which the [cost table](#costs) uses; and all answers must be from the run's own date. For the scores, only answers with status "ok" may have probabilities, and those must lie between 0 and 1 and add up to 1, so a model that did not answer becomes a missing value that is left out rather than a zero that enters the forecast. For the forecast, no share may be missing, the two shares in a race must add up to 1, the winner must be the party with the larger share and on that state's ballot, and every draw must fill exactly 100 seats. For the combination with polls, every weight must be between 0 and 1, every variance positive, and every combined share between the two estimates it averages. We checked that the suite fails when it should by planting four errors in a copy of the 27 October data (a missing probability, probabilities adding to 1.3, race shares adding to more than 1, and answers from another provider); each was caught. In the workflow a failed test stops the forecast and the website from being published, while the paid answers are still saved.
 
-
-### API costs and time {#costs}
-
-<!-- DRAFT (Claude): rewrite. Table written by scripts/16d-costs.py from the token counts saved by script 09. -->
-A full Design B run requests 42,000 answers: 3,500 personas, four models and three repeats.
-
-{{< include data/03-results/comparison/costs.md >}}
-
-::: {.chart-note}
-Calls include saved failures; answered calls have non-empty responses with no recorded request error, but may still include refusals. Costs use recorded token counts and the configured OpenRouter list prices of 25 October, excluding news screening and embeddings. DeepSeek’s off-peak discounts can make billed costs lower. Elapsed time includes gaps between attempts.
-:::
-
-<!-- DRAFT (Claude): rewrite. Numbers from the OpenRouter activity export in data/01-raw_data/openrouter_activity_2026-10-20_2026-10-29.csv. -->
-The billing table below also includes news screening and SSR embeddings, which are absent from the token-based estimates above.
-
-| Day | What ran | Voting models (US$) | SSR embeddings, Gemini Embedding 2 (US$) | News screening (US$) | Total (US$) |
-|---|---|---:|---:|---:|---:|
-| 25 October | Pilot: 20 answers from each model | 0.01 | – | – | 0.01 |
-| 26 October | Full test run (42,248 calls) and the embedding check | 7.06 | 0.54 | 0.00 (free model) | 7.61 |
-| 27 October | 27 October news run and the run without news (87,985 calls) | 11.10 | 1.01 | 0.09 (GPT-4.1 Nano) | 12.20 |
-| **Total** | | **18.17** | **1.56** | **0.09** | **19.82** |
-
-::: {.chart-note}
-These are billed costs grouped by activity date, rather than by forecast run. A day can include more than one run and repeat attempts. A dash means no cost is recorded for that activity; totals may differ slightly from rounded entries.
-:::
-
-Embedding the answers of one run costs about US$0.50 and screening one day's news about US$0.09, so a full run costs about US$6 to US$8 in all, most of it Gemini 3.5 Flash-Lite (US$5.69 of the US$11.10 for voting on 27 October). The bill for voting on 27 October is lower than the token-based estimate in the first table (US$12.72 for the two runs) because DeepSeek was billed at its off-peak price (US$1.59 against an estimated US$3.68); Claude Haiku was billed more than estimated (US$2.70 against US$2.25) because OpenRouter counted 87,985 calls on 27 October against the 84,000 answers kept, 3,291 of the extra calls for Claude Haiku, probably calls repeated when the news run was resumed after stopping at the US$10 workspace budget. The test run on 21 October used free models and cost nothing.
-
-<!-- Update the billing export and table after the remaining news runs. -->
 
 ### Design
 To design the website and figures, we referenced news outlets which reported on the 2024 Senate and presidential elections [@cnn2024; @politico2024; @npr2024; @cbc2024; @reuters2024]. 
+
+## Sensitivity of the forecast {#synthetic}
+
+This section shows how the results change with the forecasting method, news input, run date, and assumed errors.
+
+<!-- Tables written by scripts/16b-compare_runs.py after each run (data/03-results/comparison/). -->
+
+### Forecast by method {#by-method}
+
+{{< include data/03-results/comparison/methods.md >}}
+
+::: {.chart-note}
+This table compares three ways of building the forecast for the latest run, with the four models weighted equally. Error is the mean absolute gap from held-out poll averages, in percentage points. A smaller error indicates the result is closer to the polls. The no-language-model forecast uses polls where available and 2024 plus swing elsewhere.
+:::
+
+### Effect of the news
+
+This compares the synthetic voters’ answers across prompts containing different news content, before any adjustment using polls. Apart from random variation between runs, news content is the only source of variation.
+
+![The synthetic voters’ Republican share of the two-candidate vote, before any correction toward polls. Left: the average over the 35 states for each model (colours) and for all models together (black). Right: each state’s change from the no-news run, with all models pooled, in percentage points, with the median in black. Positive changes favour the Republican candidate; negative changes favour the Democratic or independent opponent. Changes include random variation between runs as well as the effect of the news. On 31 October, Montana’s change also reflects the corrected candidate (see [Data](#data)).](figures/latest/news_effect.png){fig-alt="Left, a line chart of the mean Republican synthetic share by model across the no-news run and the news days. Right, one dot per state for the change from no news on each news day, with the median marked."}
+
+<details>
+<summary>Table view</summary>
+
+{{< include data/03-results/comparison/news.md >}}
+
+::: {.chart-note}
+The table gives the Republican synthetic share before polling adjustment, averaged equally across 35 states, and its change from no news. Shares are in percentages; changes are in percentage points.
+:::
+
+</details>
+
+### Forecast by day
+
+This table shows the final forecast for each day. Polls, news inputs, and model responses vary between days, and it shows the size of these changes.
+
+{{< include data/03-results/comparison/runs.md >}}
+
+::: {.chart-note}
+Headline results from the inverse-variance forecast for each day, with all four models pooled. Changes between days can reflect updated polls as well as different news inputs and variation in model answers; from 31 October they also reflect the corrected Montana race (see [Data](#data)). The two probabilities need not sum to 100%.
+:::
+
+### Sensitivity to the assumed errors {#sensitivity}
+
+{{< include data/03-results/latest/sensitivity.md >}}
+
+::: {.chart-note}
+Each cell gives the probability of Republican control under a different national error (rows) and poll error beyond sampling (columns), both in percentage points of vote share. Bold marks the value used in the headline forecast.
+:::
+
+## Evaluation {#evaluation}
+
+<!-- DRAFT (Claude): rewrite. -->
+The forecast cannot be scored until the results come in on 3 November, so we check it in two ways that need no result: against polls it did not see, and against a prediction market that forecasts the same races by other means.
+
+### Against hidden polls: a leave-one-out check {#loo}
+
+<!-- DRAFT (Claude): rewrite. Table written by scripts/16b-compare_runs.py after each run. -->
+{{< include data/03-results/comparison/leave_one_out.md >}}
+
+::: {.chart-note}
+For each polled state, bias, swing and variance estimates are recalculated using the other states before predicting its withheld poll average. Entries are mean absolute errors in two-party vote share, in percentage points; smaller is better. This checks agreement with polls, not election outcomes. Each state’s polls are withheld before its prediction is made. The last column counts states where the combination beats the 2024-plus-swing benchmark.
+:::
+
+### Against a prediction market {#markets}
+
+<!-- DRAFT (Claude): rewrite. -->
+The idea for this check comes from Wang et al. [-@wang2015], who forecast the 2012 presidential election from an opt-in poll of Xbox users, adjusted it with multilevel regression and post-stratification, and, with no election result to compare against weeks before the vote, set their state forecasts beside prediction markets (Betfair and Intrade), which they describe as among the most accurate sources of political forecasts. We do the same with PredictIt [@predictit2026], which has a market for every one of the 35 races and for control of the Senate. A contract pays one dollar if it comes true, so its price is roughly the market's probability; the two sides' prices add up to a little more than one, so we divide the Republican side's price by their sum, and we leave out third candidates, as our forecast does. We use each market's closing price on the day of the news run. For 27 and 29 October, our Montana forecast is Alme against the Democrat Alani Bankhead, which we corrected to the independent Seth Bodnar from 31 October (see [Data](#data)), so Montana is not comparable with the market on those two days. The market is not independent of the polls, which traders read, but it combines them with other information through trading [@rothschild2009].
+
+{{< include data/03-results/comparison/markets.md >}}
+
+![Our Republican winning probability in each race against PredictIt's, on the latest news day. Points on the dashed line are races where the two agree; points in the shaded corners are races where they favour different sides. Hollow points are races with an independent instead of a Democrat; states that differ by 8 points or more are named. Data from PredictIt.](figures/latest/market_comparison.png){fig-alt="Scatter plot of 35 Senate races, our Republican winning probability against PredictIt's, with a 45-degree line and shaded corners where the two favour different sides."}
+
+## API costs and time {#costs}
+
+<!-- DRAFT (Claude): rewrite. Table and the cost of each run written by scripts/16d-costs.py from the token counts saved by script 09. -->
+<!-- TO UPDATE after the 31 October run: export the OpenRouter activity (openrouter.ai/activity > Export to CSV), save it in data/01-raw_data/, update the billing table in README.md, and fill in the total below. -->
+Each run asks 3,500 personas, four models and three repeats: 42,000 calls. Costs are token counts priced at OpenRouter's list prices of 25 October. Embedding the answers adds about US$0.50 per run and screening the news about US$0.09, so one run costs about US$9. In total, OpenRouter billed US$[TO UPDATE] for the project, including tests and repeated runs; the bill by day is in the README.
+
+{{< include data/03-results/comparison/costs.md >}}
 
 ## Discussion {#discussion}
 
@@ -308,7 +288,7 @@ Murray and Alexander [-@murray2026] show that analyst choices shape silicon samp
 <!-- DRAFT (Claude): rewrite. -->
 ### Uncertainty and the correlation between states
 
-Gelman et al. [-@gelman2020] stress that swings in vote share are highly correlated across states, so predicting the national swing does most of the work, while small departures from a uniform swing decide close races. Our forecast uses both points: the 10 unpolled states take their 2024 share plus a uniform swing, and a national error with a standard deviation of 0.03, shared by every state within a simulation, makes close races fall together. They also show that the assumed size of the shared error drives the winning probability; in their example, a standard deviation of 3 rather than 2 points lowered Biden's winning probability from 0.875 to 0.77. Our [sensitivity table](#sensitivity) shows the same: in the 27 October run, without a national error the probability of Republican control is 19 per cent, with 0.03 it is 38 per cent, and across the assumed errors it ranges from 9 to 43 per cent. Following their advice on communicating uncertainty, we round winning probabilities to whole per cents, show the state forecasts as a quantile dot plot [@kay2016], and describe outcomes as shares of simulations.
+Gelman et al. [-@gelman2020] stress that swings in vote share are highly correlated across states, so predicting the national swing does most of the work, while small departures from a uniform swing decide close races. Our forecast uses both points: the 10 unpolled states take their 2024 share plus a uniform swing, and a national error with a standard deviation of 0.03, shared by every state within a simulation, makes close races fall together. They also show that the assumed size of the shared error drives the winning probability; in their example, a standard deviation of 3 rather than 2 points lowered Biden's winning probability from 0.875 to 0.77. Our [sensitivity table](#sensitivity) shows the same: in the 27 October run, without a national error the probability of Republican control is 19 per cent, with a 3-point national error it is 38 per cent, and across the assumed errors it ranges from 9 to 43 per cent. Following their advice on communicating uncertainty, we round winning probabilities to whole per cents, show the state forecasts as a quantile dot plot [@kay2016], and describe outcomes as shares of simulations.
 
 <!-- DRAFT (Claude): rewrite. TO UPDATE after the 31 October run: make it the three news days (27, 29 and 31 October). -->
 Over the week the combined forecast moved little. The 23 polls added to the averages between 27 and 29 October shifted the 25 state poll averages by 0.2 points on average (at most 1.7, in Alabama), and the probability of Republican control moved from 38 to 39 per cent, with the same median and 90% interval of Republican seats; this change is no larger than the difference between two complete runs on the same day. Gelman et al. [-@gelman2020] argue that a forecast should move little from day to day, because most new polls carry little information about the outcome and a forecast that chases each one overstates what has changed. Our forecast is stable largely by construction: the 45-day poll window, weighted by sample size, lets a few new polls change an average only slightly, and the party stated in each prompt keeps the synthetic share in place. Stability is not evidence of accuracy on its own, and the week contained no event large enough to show whether the forecast would move when it should.
