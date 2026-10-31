@@ -52,7 +52,6 @@ ORDER = {
     "ideology": ["Very liberal", "Liberal", "Moderate", "Conservative", "Very conservative", "Not sure"],
     "income_band": ["Under $50K", "$50K to $100K", "$100K to $200K", "$200K or more", "Prefer not to say"],
 }
-SMALL = 30   # cells with fewer personas are marked
 
 
 def income_band(x):
@@ -169,9 +168,8 @@ def block(label):
     sub = mean[mean["variable"] == label]
     rows = [] if label == "All personas" else [f'<tr class="ct-head"><th colspan="5">{html_lib.escape(label)}</th></tr>']
     for _, r in sub.iterrows():
-        mark = " \u2020" if r["n_personas"] < SMALL else ""
         cls = ' class="ct-all"' if label == "All personas" else ""
-        rows.append(f"<tr{cls}><td>{html_lib.escape(r['category'])}{mark}</td><td>{r['n_personas']:,}</td>"
+        rows.append(f"<tr{cls}><td>{html_lib.escape(r['category'])}</td><td>{r['n_personas']:,}</td>"
                     f"<td>{pct(r['lean_left'])}</td><td>{pct(r['harris_2024'])}</td>"
                     f"<td>{signed(r['change'])}</td></tr>")
     return "<tbody>" + "".join(rows) + "</tbody>"
