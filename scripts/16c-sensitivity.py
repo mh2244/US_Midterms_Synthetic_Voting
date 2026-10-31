@@ -11,6 +11,8 @@
 # Any other information needed? Run from the project root:  python scripts/16c-sensitivity.py
 #   Each grid point calls script 11 with --summary-only, so the run's own forecast files are not
 #   touched. No model is called; it takes a few minutes.
+#   python scripts/16c-sensitivity.py --table-only  rebuilds the table from the saved
+#   sensitivity.csv without rerunning the grid.
 # Outputs (in data/03-results/run_<RUN>/): sensitivity.csv (one row per model and grid point)
 #   and sensitivity.md (the table on the website, four models pooled).
 # NOTE: the four models have the same number of draws, so pooling them is the plain mean of the
@@ -31,15 +33,19 @@ OUT_CSV = config.RUN_RESULTS / "sensitivity.csv"
 OUT_MD = config.RUN_RESULTS / "sensitivity.md"
 
 #### Run the grid ####
-if OUT_CSV.exists():
+TABLE_ONLY = "--table-only" in sys.argv
+if TABLE_ONLY:
+    assert OUT_CSV.exists(), "No sensitivity.csv to rebuild the table from; run without --table-only"
+elif OUT_CSV.exists():
     OUT_CSV.unlink()                          # start fresh; script 11 appends to this file
-env = {**os.environ, "RUN": config.RUN}
-for nat in NATIONAL:
-    for poll in POLL:
-        print(f"national SD {nat}, poll SD {poll}", flush=True)
-        subprocess.run([sys.executable, "scripts/11-build_forecast.py", "--combine", "ivw",
-                        "--national-sd", str(nat), "--poll-sd", str(poll), "--summary-only", str(OUT_CSV)],
-                       check=True, env=env, stdout=subprocess.DEVNULL)
+if not TABLE_ONLY:
+    env = {**os.environ, "RUN": config.RUN}
+    for nat in NATIONAL:
+        for poll in POLL:
+            print(f"national SD {nat}, poll SD {poll}", flush=True)
+            subprocess.run([sys.executable, "scripts/11-build_forecast.py", "--combine", "ivw",
+                            "--national-sd", str(nat), "--poll-sd", str(poll), "--summary-only", str(OUT_CSV)],
+                           check=True, env=env, stdout=subprocess.DEVNULL)
 
 #### Table ####
 grid = pd.read_csv(OUT_CSV)
@@ -49,15 +55,20 @@ assert pooled.stack().between(0, 1).all()
 
 
 def cell(nat, poll):
-    r = pooled.loc[(nat, poll)]
-    text = f"{r['p_rep_control'] * 100:.0f} / {r['p_dem_51_without_ind'] * 100:.0f}"
+    """Probability of Republican control, in per cent; bold for the headline assumptions.
+    (The probability of Democratic control stays in sensitivity.csv.)"""
+    text = f"{pooled.loc[(nat, poll), 'p_rep_control'] * 100:.0f}%"
     return f"**{text}**" if (nat, poll) == (config.NATIONAL_SD, 0.03) else text
 
 
-md = ["| National error SD | " + " | ".join(f"Poll error {p:.2f}" for p in POLL) + " |",
+def points(sd):
+    return f"{sd * 100:.0f}"                  # a standard deviation of 0.03 is 3 percentage points
+
+
+md = ["| National error (points) | " + " | ".join(f"Poll error: {points(p)} points" for p in POLL) + " |",
       "|---|" + "---:|" * len(POLL)]
 for nat in NATIONAL:
-    md.append(f"| {nat:.2f} | " + " | ".join(cell(nat, p) for p in POLL) + " |")
+    md.append(f"| {points(nat)} | " + " | ".join(cell(nat, p) for p in POLL) + " |")
 OUT_MD.write_text("\n".join(md) + "\n")
 print(f"Saved {OUT_CSV} and {OUT_MD}")
 print(OUT_MD.read_text())

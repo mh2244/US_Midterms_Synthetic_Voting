@@ -6,8 +6,8 @@
 #                           run (also drawn in figures/run_<RUN>/news_effect.png),
 #                           run, and how far each news day moved it from the no-news baseline
 #            3. methods.md  for the latest news run: chance of Republican control and median seats
-#                           under four methods (synthetic only, shrinkage, inverse-variance, and
-#                           2024 + uniform swing with no language model), plus the leave-one-out
+#                           under three methods (synthetic only, inverse-variance, and 2024 +
+#                           uniform swing with no language model), plus the leave-one-out
 #                           error of each method against the polls
 # Author: Kexin (Coco) Liu
 # Date: 27 October 2026
@@ -96,9 +96,9 @@ for run in runs:
     rows.append({"run": run, **s})
 by_run = pd.DataFrame(rows)
 by_run.round(4).to_csv(OUT / "runs.csv", index=False)
-md = ["| Run | Probability Democrats win 51+ seats (%) | Probability Republicans keep control (%) | Republican seats, median (90% interval) |",
+md = ["| Day | Probability of Democratic control (%) | Probability of Republican control (%) | Republican seats, median (90% interval) |",
       "|---|---:|---:|---:|"]
-for r in by_run.itertuples():
+for r in by_run[by_run["run"] != "nonews"].itertuples():   # dated runs only; the no-news run stays in runs.csv
     md.append(f"| {label(r.run)} | {pct(r.p_dem)} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) |")
 (OUT / "runs.md").write_text("\n".join(md) + "\n")
 
@@ -166,7 +166,7 @@ ax.set_ylim(mid - 5, mid + 5)               # a 10-point window, so small moves 
 ax.set_xlim(-0.2, len(order) - 1 + 1.4)
 ax.set_xticks(x, xlab)
 ax.set_ylabel("Synthetic Republican share (%)")
-ax.set_title("Mean over the 35 states")
+ax.set_title("Average Republican share, by model")
 if has_base:
     ax2 = axes[1]
     days = news_runs
@@ -181,7 +181,7 @@ if has_base:
     ax2.set_xlim(-0.6, len(days) - 0.4)
     ax2.set_xticks(range(len(days)), [label(r) for r in days])
     ax2.set_ylabel("Change from no news (points)")
-    ax2.set_title("Each state, all models pooled")
+    ax2.set_title("Change from no news, by state")
 fig.tight_layout()
 config.FIGURES.mkdir(parents=True, exist_ok=True)
 fig.savefig(config.FIGURES / "news_effect.png")
@@ -190,8 +190,7 @@ plt.close(fig)
 #### 3. Methods, for the latest news run ####
 res = config.RESULTS / f"run_{latest}"
 methods = []
-for tag, name in [("uncalibrated", "Synthetic voters only"), ("calibrated", "Shrinkage toward polls"),
-                  ("ivw", "Inverse-variance combination (headline)")]:
+for tag, name in [("uncalibrated", "Synthetic voters only"), ("ivw", "Inverse-variance combination (headline)")]:
     f = read_forecast(res / f"forecast_{tag}.parquet")
     methods.append({"method": name, **summary(seats_from(f[["model", "draw", "state", "winner"]].drop_duplicates()))})
 
@@ -227,17 +226,16 @@ for model, g in w.merge(poll, on="state").groupby("model"):
         m_star, b = te["model_share"] - gap, te["pres2024_dem_share"] + swing
         vm = te["var_boot"] + vs
         wt = vm / (vm + vb)
-        # shrinkage with no poll for this state: unpolled states get 2024 + swing, as in script 11
         loo.append({"model": model, "state": s, "truth": te["poll_share"], "synthetic": te["model_share"],
-                    "baseline": b, "shrink": b, "ivw": wt * b + (1 - wt) * m_star})
+                    "baseline": b, "ivw": wt * b + (1 - wt) * m_star})
 loo = pd.DataFrame(loo)
-err = {k: (loo[k] - loo["truth"]).abs().mean() for k in ["synthetic", "shrink", "ivw", "baseline"]}
+err = {k: (loo[k] - loo["truth"]).abs().mean() for k in ["synthetic", "ivw", "baseline"]}
 loo.round(4).to_csv(OUT / "leave_one_out.csv", index=False)
-for m, k in zip(methods, ["synthetic", "shrink", "ivw", "baseline"]):
+for m, k in zip(methods, ["synthetic", "ivw", "baseline"]):
     m["loo_error"] = err[k]
 meth = pd.DataFrame(methods)
 meth.round(4).to_csv(OUT / "methods.csv", index=False)
-md = ["| Method | Probability Republicans keep control (%) | Republican seats, median (90% interval) | Error against hidden polls (points) |",
+md = ["| Method | Probability of Republican control (%) | Republican seats, median (90% interval) | Error against hidden polls (points) |",
       "|---|---:|---:|---:|"]
 for r in meth.itertuples():
     md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) | {r.loo_error * 100:.1f} |")
