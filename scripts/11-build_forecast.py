@@ -8,9 +8,8 @@
 # Pre-requisites: Run scripts/10-score_responses.py first. Needs pyarrow for the parquet file.
 # Any other information needed? Run from the project root.
 #   python scripts/11-build_forecast.py                   <- headline: inverse-variance combination
-#   python scripts/11-build_forecast.py --combine shrink  <- comparison: shrunk gap + uniform swing
 #   python scripts/11-build_forecast.py --combine none    <- comparison: synthetic voters only
-#   Each run also saves labelled copies (forecast_ivw / _calibrated / _uncalibrated), and scripts
+#   Each run also saves labelled copies (forecast_ivw / _uncalibrated), and scripts
 #   13 and 15 draw whichever ran last, so run the headline (ivw) last.
 #
 # HOW one number per state is built:
@@ -55,9 +54,9 @@ import config
 ap = argparse.ArgumentParser()
 ap.add_argument("--design", default="B", choices=["B", "C"], help="which prompt design to forecast from")
 ap.add_argument("--draws", type=int, default=config.N_DRAWS)
-ap.add_argument("--combine", default="ivw", choices=["ivw", "shrink", "none"],
+ap.add_argument("--combine", default="ivw", choices=["ivw", "none"],
                 help="ivw: inverse-variance weights with polls or 2024 + swing (headline); "
-                     "shrink: subtract the shrunk model-minus-poll gap; none: synthetic only")
+                     "none: synthetic only")
 ap.add_argument("--poll-sd", type=float, default=0.03,
                 help="state poll error beyond sampling error, used by --combine ivw (assumption)")
 ap.add_argument("--national-sd", type=float, default=config.NATIONAL_SD,
@@ -67,7 +66,7 @@ ap.add_argument("--summary-only", type=Path, default=None,
                 help="append the chamber summary to this csv and save nothing else (for the "
                      "sensitivity table, scripts/16c-sensitivity.py)")
 args = ap.parse_args()
-args.ivw, args.calibrate = args.combine == "ivw", args.combine == "shrink"
+args.ivw = args.combine == "ivw"
 
 # Seats not up in 2026, checked 2026-10-25: the Senate is 53 R - 47 D (the 47 include King and
 # Sanders, independents who caucus with Democrats). 35 seats are up: 13 held by Democrats and 22
@@ -149,41 +148,6 @@ ces = ces[ces["state"].isin(nominees.index) & ces["vvweight_post"].notna()
 w = ces.pivot_table(index="state", columns="pres_vote_2024", values="vvweight_post", aggfunc="sum")
 pres = (w["Harris"] / (w["Harris"] + w["Trump"])).rename("pres2024_dem_share").reset_index()
 
-# Correction toward polls (--combine shrink, kept for comparison)
-#   Polled states: gap = model - poll, shrunk toward the mean gap (fewer polls, more shrinkage).
-#   Unpolled states: uniform swing. The average polled state has moved `swing` points from its
-#   2024 presidential result, so the target is pres2024 + swing and gap = model - target.
-#   This keeps each state's own 2024 lean instead of applying one model-wide gap, which had
-#   pushed Kentucky (personas lean Democratic by party ID) to a likely Democratic win.
-gap_table = pd.DataFrame()
-if args.calibrate:
-    pt = pd.DataFrame([{k: v for k, v in p.items() if k not in ("raw_draws", "shift")} for p in point])
-    pt = pt.merge(polls_df, on="state", how="left").merge(pres, on="state", how="left")
-    for model, grp in pt.groupby("model"):
-        polled = grp.dropna(subset=["poll_share"])
-        if len(polled) < 8:
-            print(f"--combine shrink skipped for {model}: only {len(polled)} polled states (need 8)")
-            continue
-        gap = polled["model_share"] - polled["poll_share"]
-        k = 3.0                                    # placeholder shrinkage strength; try 2 and 5
-        lam = polled["n_polls"] / (polled["n_polls"] + k)
-        shrunk = lam * gap + (1 - lam) * gap.mean()
-        gaps = dict(zip(polled["state"], shrunk))
-        swing = float((polled["poll_share"] - polled["pres2024_dem_share"]).mean())
-        unpolled = grp[grp["poll_share"].isna()]
-        swing_gap = unpolled["model_share"] - (unpolled["pres2024_dem_share"] + swing)
-        assert swing_gap.notna().all(), "An unpolled state has no 2024 presidential share"
-        gaps.update(dict(zip(unpolled["state"], swing_gap)))
-        for p in point:
-            if p["model"] == model:
-                p["gap"] = gaps[p["state"]]
-        gap_table = pd.concat([gap_table,
-                               pd.DataFrame({"model": model, "state": polled["state"], "gap": shrunk,
-                                             "method": "poll_shrunk", "swing": swing}),
-                               pd.DataFrame({"model": model, "state": unpolled["state"], "gap": swing_gap,
-                                             "method": "uniform_swing", "swing": swing})])
-        print(f"{model}: mean gap to polls {gap.mean():+.3f}; uniform swing from 2024 {swing:+.3f}")
-
 # Inverse-variance combination (--combine ivw, the default and the headline)
 #   Two noisy readings of each state's Democratic-side share are averaged, each weighted by
 #   1 / its variance (the less noisy one counts more):
@@ -242,7 +206,7 @@ if args.ivw:
 
 out = []
 for p in point:
-    base = p.get("base_draws", p["raw_draws"] - p.get("gap", 0.0))
+    base = p.get("base_draws", p["raw_draws"])
     share = np.clip(base + p["shift"], 0, 1)
     race = nominees.loc[p["state"]]
     # An exact 50/50 tie (possible with very few personas) is decided by a coin flip
@@ -298,13 +262,11 @@ comparison.round(3).to_csv(config.RUN_RESULTS / "state_comparison.csv", index=Fa
 polls_df.to_csv(config.RUN_RESULTS / "poll_averages.csv", index=False)
 chamber.round(3).to_csv(config.RUN_RESULTS / "chamber_summary.csv")
 # The files above are what scripts 13 and 15 read (the latest version run). Keep a labelled
-# copy as well, so the uncalibrated and calibrated forecasts can be compared side by side.
-tag = "ivw" if args.ivw else "calibrated" if args.calibrate else "uncalibrated"
+# copy as well, so the synthetic-only and inverse-variance forecasts can be compared side by side.
+tag = "ivw" if args.ivw else "uncalibrated"
 config.write_table(forecast, config.RUN_RESULTS / f"forecast_{tag}.parquet")
 comparison.round(3).to_csv(config.RUN_RESULTS / f"state_comparison_{tag}.csv", index=False)
 chamber.round(3).to_csv(config.RUN_RESULTS / f"chamber_summary_{tag}.csv")
-if len(gap_table):
-    gap_table.to_csv(config.RUN_RESULTS / "calibration_gaps.csv", index=False)
 if len(weight_table):
     keep = ["model", "state", "source", "model_share", "mean_gap", "m_star", "t", "combined",
             "w_synthetic", "sd_combined", "var_boot", "var_m", "var_t", "sd_struct", "swing", "sd_swing"]

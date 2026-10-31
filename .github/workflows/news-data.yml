@@ -1,6 +1,6 @@
 # Purpose: Full forecast run on the three news days (Oct 27, 29, 31):
 #          collect news -> concatenate nine summaries/persona -> prompts (08) -> model queries (09) -> SSR (10)
-#          -> forecast (11: synthetic only, shrinkage, then inverse-variance headline last)
+#          -> forecast (11: synthetic only, then inverse-variance headline last)
 #          -> figures, map, headline and battlegrounds (13, 13b, 15, 15b, 15c) -> crosstabs (16) -> run comparison (16b)
 #          -> sensitivity (16c) -> costs (16d) -> news summary (16e) -> tests (12) -> publish latest (17)
 #          -> render the website (Quarto, into docs/) -> commit.
@@ -206,11 +206,10 @@ jobs:
         run: python scripts/10-score_responses.py
 
       - name: Build the forecast (11)
-        # The two comparison versions first; the inverse-variance headline last, because
+        # The comparison version first; the inverse-variance headline last, because
         # scripts 13, 15 and 17 read the files written by the last run of 11.
         run: |
           python scripts/11-build_forecast.py --combine none
-          python scripts/11-build_forecast.py --combine shrink
           python scripts/11-build_forecast.py
 
       - name: Make figures, map, headline and crosstabs (13, 13b, 15, 15b, 15c, 16)
