@@ -118,6 +118,21 @@ random step uses `config.SEED` (2026), so reruns with the same inputs give the s
 | Seats up in 2026, senators not up | Wikipedia list of current senators, entered by hand (27 October 2026) | — | `data/01-raw_data/` |
 | US state boundaries | public GeoJSON (see the script) | `02b` | `data/01-raw_data/us-states.json` |
 
+**Correction: Montana's candidate (31 October).** Script `06` takes the Democrat whenever a
+state has one, so the 27 and 29 October runs forecast Montana as Alani Bankhead (Democrat) against
+Kurt Alme (Republican). The main challenger is the independent Seth Bodnar: polls since
+mid-September average Alme 42, Bodnar 31 and Bankhead 16 per cent. Those two runs therefore paired
+the Republican with the third-placed candidate, in both the prompts and the poll average, and gave
+Alme a winning probability above 99 per cent. We found it on 31 October, when Montana was on
+Ballotpedia's battleground list but a near-certain Republican win in our forecast, and fixed it
+before that day's run (branch `fix-montana-candidate`): an override in `06` makes Bodnar the left
+candidate, and only Montana's row of `data/02-analysis_data/senate_nominees_2026.csv` and
+`candidates_clean.csv` changed. Montana's results from 27 and 29 October are kept as they were
+run, so they are not comparable with later runs. We then checked every pair against the polls;
+Montana was the only state where the left candidate was not the leading opponent. The test
+`test_prompt_names_both_candidates` now fails on the archived 27 and 29 October prompts, which
+name Bankhead, as it should.
+
 **The raw CES file is not in the repository.** `CCES24_Common_OUTPUT_vv_topost_final.csv` is
 large and is distributed by Harvard Dataverse under its own terms of use, so it is downloaded
 rather than redistributed. To get it, run
