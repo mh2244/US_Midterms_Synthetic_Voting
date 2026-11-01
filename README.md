@@ -314,7 +314,8 @@ that only collected the news. Times are Toronto time, from GitHub's run history.
 | 29 October | 18 | Schedule: the 2:13 pm run, arrived 6:42 pm | Never ran: GitHub keeps one waiting run per group, so run 19 replaced it in the queue |
 | 29 October | 19 | Schedule: the 3:43 pm backup, arrived 7:33 pm | Did not skip itself (below); ran in full, then failed at the commit, so nothing reached `main`. Kept as a same-day replication |
 | 29 October | 20 | Schedule: the 5:43 pm backup, arrived 9:20 pm | Skipped itself (the check took 7 seconds); no cost |
-| 31 October | | | [TO UPDATE after the third news day] |
+| 31 October | 21 | Schedule: the 2:13 pm run, arrived 5:29 pm | **Succeeded at 7:07 pm: the forecast for 31 October** |
+| 31 October | 22 | Schedule: the 3:43 pm backup, arrived 6:47 pm | Did not skip itself, for the same reason as run 19; stopped at the credit check before any paid call (US$8.52 left). No cost |
 
 **Run 19 on 29 October.** A scheduled run uses the version of `main` from when GitHub created
 it. Run 19 was created at 7:33 pm, before run 17 committed its results at 8:05 pm, so its check
@@ -324,8 +325,11 @@ same day, so nothing reached `main` and the reported forecast is run 17's. Its f
 the run's artifact (`forecast-2026-10-29`). Compared with run 17, it gave a 37.8 against 38.8 per
 cent chance of Republican control and differed by 0.5 points per state on average, with only 33
 of about 100 news articles in common (summary in
-`data/03-results/comparison/replication_2026-10-29.csv`). To stop this on 31 October, the
-workflow is disabled as soon as that day's first run succeeds.
+`data/03-results/comparison/replication_2026-10-29.csv`). On 31 October the same thing
+happened again: run 22 was created at 6:47 pm, before run 21 committed its results at 7:07 pm, so
+it did not skip itself, but it stopped at the credit check before spending anything because the
+account had only US$8.52 left. The 5:43 pm backup had not started by the time we disabled both
+workflows that evening, so run 21 is the only forecast for 31 October.
 
 The four failures on 27 October, and what we changed so that later runs do not stop for the
 same reason:
@@ -374,19 +378,31 @@ answers are in the forecast.
 ## API costs: what OpenRouter billed
 
 The website shows the token-based cost of each run (script `16d`). This is what OpenRouter
-actually billed, by day, from the activity export in `data/01-raw_data/` (to be updated after the
-31 October run).
+actually billed, from the two activity exports in `data/01-raw_data/`
+(`openrouter_activity_2026-10-20_2026-10-29.csv` and `openrouter_activity_2026-10-26_2026-10-31.csv`).
 
-| Day | What ran | Voting models (US$) | SSR embeddings, Gemini Embedding 2 (US$) | News screening (US$) | Total (US$) |
-|---|---|---:|---:|---:|---:|
-| 25 October | Pilot: 20 answers from each model | 0.01 | – | – | 0.01 |
-| 26 October | Full test run (42,248 calls) and the embedding check | 7.06 | 0.54 | 0.00 (free model) | 7.61 |
-| 27 October | 27 October news run and the run without news (87,985 calls) | 11.10 | 1.01 | 0.09 (GPT-4.1 Nano) | 12.20 |
-| **Total** | | **18.17** | **1.56** | **0.09** | **19.82** |
+| Day | What ran | Calls to the voting models | Voting models (US$) | SSR embeddings, Gemini Embedding 2 (US$) | News screening (US$) | Total (US$) |
+|---|---|---:|---:|---:|---:|---:|
+| 25 October | Pilot: 20 answers from each model | 80 | 0.01 | – | – | 0.01 |
+| 26 October | Full test run and the embedding check | 42,248 | 7.06 | 0.54 | – | 7.61 |
+| 27 October | 27 October news run and the run without news | 87,985 | 11.10 | 1.01 | 0.09 | 12.20 |
+| 29 October | 29 October news run (run 17) and its repeat (run 19) | 84,007 | 13.17 | 1.06 | 0.12 | 14.36 |
+| 31 October | 31 October news run (run 21) | 42,000 | 6.63 | 0.54 | 0.05 | 7.21 |
+| **Total** | | **256,320** | **37.97** | **3.15** | **0.26** | **41.38** |
 
-These are billed costs grouped by activity date, rather than by forecast run. A day can include more than one run and repeat attempts. A dash means no cost is recorded for that activity; totals may differ slightly from rounded entries.
+Days are the days in Toronto on which each run started. The second export groups costs by UTC
+day, so run 19, which started at 7:33 pm on 29 October, appears there on 30 October; it is listed
+under 29 October here. Over the days both exports cover, they give the same total (US$19.82). A
+dash means no cost was recorded (the news screening on 26 October used a free model).
 
-Embedding the answers of one run costs about US$0.50 and screening one day's news about US$0.09, so a full run costs about US$6 to US$8 in all, most of it Gemini 3.5 Flash-Lite (US$5.69 of the US$11.10 for voting on 27 October). The bill for voting on 27 October is lower than the token-based estimate in the first table (US$12.72 for the two runs) because DeepSeek was billed at its off-peak price (US$1.59 against an estimated US$3.68); Claude Haiku was billed more than estimated (US$2.70 against US$2.25) because OpenRouter counted 87,985 calls on 27 October against the 84,000 answers kept, 3,291 of the extra calls for Claude Haiku, probably calls repeated when the news run was resumed after stopping at the US$10 workspace budget. The test run on 21 October used free models and cost nothing.
+One news run costs about US$7.20 as billed: on 31 October, US$6.63 for the four models, US$0.54
+for the embeddings and US$0.05 for the news screening. That is below the token-based estimate on
+the website (US$8.31 for the models) almost entirely because DeepSeek was billed at its off-peak
+price (US$0.82 against an estimated US$2.49); the other three models were billed within a cent of
+their estimates. On 27 October, OpenRouter counted 87,985 calls against the 84,000 answers kept,
+probably calls repeated when the news run was resumed after stopping at the US$10 workspace
+budget. The test run on 21 October used free models and cost nothing, and run 22 on 31 October
+stopped at the credit check before any paid call.
 
 ## Statement on AI usage
 

@@ -258,8 +258,7 @@ The idea for this check comes from Wang et al. [-@wang2015], who forecast the 20
 ## API costs and time {#costs}
 
 <!-- DRAFT (Claude): rewrite. Table and the cost of each run written by scripts/16d-costs.py from the token counts saved by script 09. -->
-<!-- TO UPDATE after the 31 October run: export the OpenRouter activity (openrouter.ai/activity > Export to CSV), save it in data/01-raw_data/, update the billing table in README.md, and fill in the total below. -->
-Each run asks 3,500 personas, four models and three repeats: 42,000 calls. Costs are token counts priced at OpenRouter's list prices of 25 October. Embedding the answers adds about US$0.50 per run and screening the news about US$0.09, so one run costs about US$9. In total, OpenRouter billed US$[TO UPDATE] for the project, including tests and repeated runs; the bill by day is in the README.
+Each run asks 3,500 personas, four models and three repeats: 42,000 calls. Costs are token counts priced at OpenRouter's list prices of 25 October. Embedding the answers adds about US$0.50 per run and screening the news less than US$0.10, so a run costs about US$9 at list prices. OpenRouter billed about US$7.20 per run, because DeepSeek was cheaper off-peak. In total, OpenRouter billed US$41.38 for the project, including the test run and a repeated run; the bill by day is in the README.
 
 {{< include data/03-results/comparison/costs.md >}}
 
