@@ -369,14 +369,26 @@ def test_bias_corrected_synthetic_input(ivw):
     assert np.allclose(ivw["combined"], expected, atol=1.1e-4)
 
 
-def test_uncorrected_synthetic_input(ivw):
-    """Runs built with --bias keep must not subtract the mean gap."""
-    if "bias_correction" not in ivw or ivw["bias_correction"].astype(str).str.lower().eq("true").any():
-        pytest.skip("bias-corrected method (the headline)")
-    assert np.allclose(ivw["m_star"], ivw["model_share"], atol=1e-8)
-    assert np.allclose(ivw["synthetic_input"], ivw["model_share"], atol=1e-8)
-    expected = ivw["w_synthetic"] * ivw["model_share"] + (1 - ivw["w_synthetic"]) * ivw["t"]
-    assert np.allclose(ivw["combined"], expected, atol=1.1e-4)
+@pytest.fixture(scope="module")
+def ivw_biaskept():
+    # The comparison version (scripts/11 --bias keep) writes its own weights file, so the
+    # headline file is never overwritten. Only the latest run has it (the method table).
+    path = config.RUN_RESULTS / "ivw_weights_biaskept.csv"
+    if not path.exists():
+        pytest.skip("no --bias keep version for this run (built only for the latest run)")
+    return pd.read_csv(path)
+
+
+def test_uncorrected_synthetic_input(ivw_biaskept):
+    """The comparison version that keeps the bias (the "bias not removed" row of the method
+    table) must combine the raw synthetic share, with no mean gap subtracted, using its
+    recorded weights."""
+    w = ivw_biaskept
+    assert not w["bias_correction"].astype(str).str.lower().eq("true").any(), "File says bias was removed"
+    assert np.allclose(w["m_star"], w["model_share"], atol=1e-8)
+    assert np.allclose(w["synthetic_input"], w["model_share"], atol=1e-8)
+    expected = w["w_synthetic"] * w["model_share"] + (1 - w["w_synthetic"]) * w["t"]
+    assert np.allclose(w["combined"], expected, atol=1.1e-4)
 
 
 def test_models_agree_on_which_states_are_polled(ivw):
