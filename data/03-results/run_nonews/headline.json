@@ -1,0 +1,11 @@
+{
+  "run": "nonews",
+  "dem": 52,
+  "ind": 0,
+  "rep": 48,
+  "p_dem_51_without_ind": 0.594,
+  "p_rep_control": 0.385,
+  "rep_q05": 40,
+  "rep_q95": 56,
+  "n_models": 4
+}

@@ -30,5 +30,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: polling-data
-          path: data/polling_data/
+          path: |
+            data/01-raw_data/polls/
+            data/02-analysis_data/polls/
           if-no-files-found: error

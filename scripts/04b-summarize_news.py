@@ -15,6 +15,7 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -26,6 +27,17 @@ import config
 GROUPS = ("left_leaning", "newspapers", "right_leaning")
 ARTICLE_FIELDS = ["url", "title", "outlet", "diet", "published_at_utc", "prompt_paragraph"]
 SUMMARY_METHOD = "concatenate_v1"
+# Paragraphs written by the screening model can carry outdated facts from its training data
+# (seen on 2026-10-26: "former President Trump"). Items matching these patterns are removed
+# before sampling and listed in data/news/flagged_<RUN>.csv. "former ..." forms that are
+# correct today (e.g. "former President Biden") are not matched.
+OUTDATED = re.compile(
+    r"\bformer\s+President\s+(?:Donald\s+)?Trump\b"
+    r"|(?<!former )\bPresident\s+(?:Joe\s+)?Biden\b"
+    r"|(?<!former )\bVice\s+President\s+(?:Kamala\s+)?Harris\b"
+    r"|\bMajority\s+Leader\s+(?:Chuck\s+)?Schumer\b"
+    r"|(?<!former )\bSpeaker\s+(?:Nancy\s+)?Pelosi\b"
+    r"|\bPresident-elect\s+Trump\b", re.I)
 
 
 def fingerprint(value):
@@ -49,6 +61,12 @@ def load_news(path):
     for column in ARTICLE_FIELDS:
         news[column] = news[column].astype(str).str.strip()
     news = news[news["url"].ne("") & news["prompt_paragraph"].ne("")]
+    flagged = news["prompt_paragraph"].str.contains(OUTDATED)
+    if flagged.any():
+        out = Path(path).parent / f"flagged_{config.RUN}.csv"
+        news.loc[flagged].assign(reason="outdated fact pattern").to_csv(out, index=False, encoding="utf-8-sig")
+        print(f"Removed {int(flagged.sum())} items with outdated facts; listed in {out}")
+    news = news.loc[~flagged]
     # Stable order and unique URLs make sampling independent of CSV row ordering.
     news = news.sort_values(ARTICLE_FIELDS).drop_duplicates("url").reset_index(drop=True)
     counts = news["diet"].value_counts()

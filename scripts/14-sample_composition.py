@@ -14,7 +14,9 @@
 #   composition_overall.csv    one row per variable and category
 #   composition_by_state.csv   long format: state, variable, category, n, pct
 #   repeats_by_state.csv       personas, distinct respondents, repeated draws, pool size, Kish n_eff
-#   composition_overall.md     Markdown tables to paste or include in index.qmd
+#   composition_overall.md     the figure and the tables (as a "Table view"), included in index.qmd
+#   figures/composition.png    sample against expected shares, one panel per variable (after the
+#                              layout of Figure 1 in Murray and Alexander 2026)
 #
 # HOW to read the "expected" column: each state contributes 100 personas, so the expected overall
 # share is the average of the states' weighted CES shares, each state counting equally. A gap
@@ -25,6 +27,12 @@
 #### Workspace setup ####
 import argparse
 
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -40,7 +48,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 LABELS = {
     "gender": "Gender", "race_5": "Race and ethnicity", "age_group": "Age group",
     "education": "Education", "family_income": "Household income", "party_id_7": "Party identification",
-    "ideology": "Ideology",
+    "ideology": "Ideology", "pres_2024": "2024 presidential vote (not in the prompt)",
 }
 ORDER = {
     "gender": ["Man", "Woman", "Non-binary", "Other"],
@@ -55,7 +63,29 @@ ORDER = {
                       "$80,000 - $99,999", "$100,000 - $119,999", "$120,000 - $149,999",
                       "$150,000 - $199,999", "$200,000 - $249,999", "$250,000 - $349,999",
                       "$350,000 - $499,999", "$500,000 or more", "Prefer not to say"],
+    "pres_2024": ["Harris", "Trump", "Third party", "Did not vote for president", "No answer"],
 }
+FIGURE = Path("figures") / "composition.png"
+# The figure groups the 17 income categories into 7 bands so the panel stays readable
+INCOME_BAND = {
+    "Less than $10,000": "Under $30K", "$10,000 - $19,999": "Under $30K", "$20,000 - $29,999": "Under $30K",
+    "$30,000 - $39,999": "$30K to $50K", "$40,000 - $49,999": "$30K to $50K",
+    "$50,000 - $59,999": "$50K to $70K", "$60,000 - $69,999": "$50K to $70K",
+    "$70,000 - $79,999": "$70K to $100K", "$80,000 - $99,999": "$70K to $100K",
+    "$100,000 - $119,999": "$100K to $150K", "$120,000 - $149,999": "$100K to $150K",
+    "$150,000 - $199,999": "$150K or more", "$200,000 - $249,999": "$150K or more",
+    "$250,000 - $349,999": "$150K or more", "$350,000 - $499,999": "$150K or more",
+    "$500,000 or more": "$150K or more", "Prefer not to say": "Prefer not to say"}
+
+
+def pres_group(x):
+    """2024 presidential vote as reported in the CES, in five groups."""
+    if pd.isna(x):
+        return "No answer"
+    if x in ("Harris", "Trump"):
+        return x
+    return "Did not vote for president" if x == "Did not vote for President" else "Third party"
+
 VARS = list(LABELS)
 
 #### Load the sample ####
@@ -74,11 +104,16 @@ print(f"{len(personas):,} personas in {personas['state'].nunique()} states "
 #### The pool, built the same way as in script 07 ####
 ces = pd.read_csv(config.CES_FILE, low_memory=False)
 pool = ces[ces["state"].isin(states) & ces["vvweight_post"].notna() & (ces["vvweight_post"] > 0)].copy()
+pool = pool[pool["validated_voter"].astype(str).str.lower() == "true"].copy()   # as in 07: validated voters
 pool["party_id_7"] = pool["party_id_7"].fillna("Not sure")
 pool["ideology"] = pool["ideology"].fillna("Not sure")
 pool["family_income"] = pool["family_income"].fillna("Prefer not to say")
 pool = pool.dropna(subset=["age_group", "education", "gender", "race_5"])
-print(f"Pool: {len(pool):,} CES respondents with vvweight_post in these states")
+print(f"Pool: {len(pool):,} validated 2024 voters with vvweight_post in these states")
+# 2024 vote: shown for comparison only; the models never see it
+pool["pres_2024"] = pool["pres_vote_2024"].map(pres_group)
+personas["pres_2024"] = personas["caseid"].map(
+    ces.drop_duplicates("caseid").set_index("caseid")["pres_vote_2024"]).map(pres_group)
 
 
 def categories(var):
@@ -132,23 +167,86 @@ rep = rep.sort_values("pct_repeated", ascending=False)
 rep.to_csv(OUT / "repeats_by_state.csv", index=False)
 
 #### Markdown for index.qmd ####
+# index.qmd includes this file ({{< include >}}), so the tables on the page always match the data.
 per_state_text = str(per_state.min()) if per_state.min() == per_state.max() else f"{per_state.min()} to {per_state.max()}"
-md = [f"{len(personas):,} personas, {per_state_text} in each of "
-      f"{personas['state'].nunique()} states. The expected share is the weighted CES share in each "
-      "state, averaged over states.", ""]
-for var in VARS:
-    md += [f"**{LABELS[var]}**", "", "| Category | Personas | Sample % | Expected % |", "|---|---:|---:|---:|"]
+max_gap = overall["gap_points"].abs().max()
+md = [f"The sample contains {len(personas):,} personas, {per_state_text} in each of the "
+      f"{personas['state'].nunique()} states. We compare it with the 2024 CES. For each state, we "
+      "compute the weighted share of validated voters in each group, then average these shares "
+      "across states, giving each state equal weight because each contributes "
+      f"{per_state_text} personas. In every group, the sample is within {max_gap:.1f} "
+      "percentage points of the CES.", "",
+      f"![Composition of the {len(personas):,} personas (black) against the weighted 2024 CES "
+      "(grey). Household income is grouped into seven bands here; the table "
+      f"view has all 17 categories.]({FIGURE.as_posix()}){{fig-alt=\"Paired horizontal bars for gender, "
+      "race and ethnicity, age, education, party identification, ideology, household income and "
+      "2024 presidential vote, comparing the persona sample with the weighted 2024 CES.\"}", "",
+      "<details>", "<summary>Table view</summary>", ""]
+
+
+def table(var):
+    out = [f"**{LABELS[var]}**", "", "| Category | Personas | Sample (%) | CES (%) |", "|---|---:|---:|---:|"]
     for _, r in overall[overall["variable"] == LABELS[var]].iterrows():
-        md.append(f"| {r['category']} | {r['n_sample']:,} | {r['pct_sample']:.1f} | {r['pct_expected']:.1f} |")
-    md.append("")
-md += ["**Repeated draws**", "",
-       f"{int(rep['repeated_draws'].sum()):,} of {len(personas):,} personas "
-       f"({rep['repeated_draws'].sum() / len(personas) * 100:.1f}%) repeat a respondent already drawn "
-       "in the same state. The five states with the most repeats:", "",
-       "| State | Pool | Repeated draws | % repeated |", "|---|---:|---:|---:|"]
-for _, r in rep.head(5).iterrows():
-    md.append(f"| {r['state']} | {int(r['pool_size']):,} | {int(r['repeated_draws'])} | {r['pct_repeated']:.1f} |")
-(OUT / "composition_overall.md").write_text("\n".join(md) + "\n")
+        out.append(f"| {r['category']} | {r['n_sample']:,} | {r['pct_sample']:.1f} | {r['pct_expected']:.1f} |")
+    return out + [""]
+
+
+for left, right in [("gender", "race_5"), ("age_group", "education"), ("party_id_7", "ideology")]:
+    md += ["::: {.columns}", "", '::: {.column width="48%"}'] + table(left) + [":::", "",
+           '::: {.column width="4%"}', ":::", "", '::: {.column width="48%"}'] + table(right) + [":::", "", ":::", ""]
+for left, right in [("family_income", "pres_2024")]:
+    md += ["::: {.columns}", "", '::: {.column width="48%"}'] + table(left) + [":::", "",
+           '::: {.column width="4%"}', ":::", "", '::: {.column width="48%"}'] + table(right) + [":::", "", ":::", ""]
+md += ["::: {.chart-note}",
+       "In every table, sample is the share of drawn personas and CES is the weighted share among "
+       "validated 2024 voters, averaged equally across states. Because personas are drawn at random, "
+       "the sample should match the CES on average but not exactly.", ":::", "",
+       "</details>", ""]
+# Repeated draws (sampling with replacement) are reported in the Methods text of index.qmd.
+(OUT / "composition_overall.md").write_text("\n".join(md).rstrip() + "\n")
+
+#### Figure ####
+# Two columns of panels; in each panel the black bar is the sample, the grey bar the expected share.
+INK, GREY = config.INK, "#b3b3b3"
+config.use_site_style()            # shared graph theme: scripts/site.mplstyle
+fig_data = overall.copy()
+inc = fig_data["variable"] == LABELS["family_income"]
+fig_data.loc[inc, "category"] = fig_data.loc[inc, "category"].map(INCOME_BAND)
+fig_data = fig_data.groupby(["variable", "category"], sort=False)[["pct_sample", "pct_expected"]].sum().reset_index()
+order = ["gender", "race_5", "age_group", "education", "party_id_7", "ideology", "family_income", "pres_2024"]
+rows_n = [max(len(fig_data[fig_data["variable"] == LABELS[order[i]]]),
+              len(fig_data[fig_data["variable"] == LABELS[order[i + 1]]])) for i in range(0, len(order), 2)]
+fig, axes = plt.subplots(len(rows_n), 2, figsize=(8, 0.25 * sum(rows_n) + 2.2),
+                         gridspec_kw={"height_ratios": rows_n, "hspace": 0.55, "wspace": 0.75})
+xmax = np.ceil(fig_data[["pct_sample", "pct_expected"]].to_numpy().max() / 10) * 10
+for i, (ax, var) in enumerate(zip(axes.flat, order)):
+    sub = fig_data[fig_data["variable"] == LABELS[var]]
+    rowmax = rows_n[i // 2]
+    y = np.arange(len(sub))[::-1] + (rowmax - len(sub))     # top-aligned, same bar size in a row
+    ax.barh(y + 0.19, sub["pct_sample"], height=0.36, color=INK)
+    ax.barh(y - 0.19, sub["pct_expected"], height=0.36, color=GREY)
+    ax.set_yticks(y, [c.replace("$", r"\$") for c in sub["category"]])
+    ax.set_ylim(-0.6, rowmax - 0.4)
+    ax.set_xlim(0, xmax)
+    ax.set_xticks(np.arange(0, xmax + 0.1, 25), [f"{v:.0f}%" for v in np.arange(0, xmax + 0.1, 25)])
+    ax.set_title(LABELS[var].replace(" (not in the prompt)", "\n(not in the prompt)"), loc="left",
+                 fontsize=10, fontweight="bold")
+    ax.set_axisbelow(True)
+    ax.tick_params(length=0)
+    ax.spines[["top", "right", "left"]].set_visible(False)
+handles = [plt.Rectangle((0, 0), 1, 1, color=INK), plt.Rectangle((0, 0), 1, 1, color=GREY)]
+fig.subplots_adjust(left=0.2, right=0.97, top=0.97, bottom=0.07)
+# Centre the legend on what is drawn (panels and their labels), not on the whole image, which has
+# more empty space on the left than on the right.
+fig.canvas.draw()
+boxes = [ax.get_tightbbox(fig.canvas.get_renderer()).transformed(fig.transFigure.inverted()) for ax in axes.flat]
+centre = (min(b.x0 for b in boxes) + max(b.x1 for b in boxes)) / 2
+fig.legend(handles, [f"The {len(personas):,} personas", "2024 CES (weighted, validated voters)"],
+           loc="lower center", ncol=2, frameon=False, bbox_to_anchor=(centre, 0.0), columnspacing=3)
+FIGURE.parent.mkdir(parents=True, exist_ok=True)
+fig.savefig(FIGURE, dpi=200)
+plt.close(fig)
+print(f"Saved {FIGURE}")
 
 #### Checks ####
 assert overall.groupby("variable")["n_sample"].sum().eq(len(personas)).all(), "A variable does not add up"

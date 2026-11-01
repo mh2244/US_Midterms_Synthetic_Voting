@@ -1,0 +1,32 @@
+# Graph theme for every figure on the website (loaded by config.use_site_style()).
+# Labels in Public Sans, the page's label font (assets/fonts, registered by config.use_site_style()).
+# Rules: no top or right axis lines, no grid (reference lines such as 50% are drawn where needed),
+# near-black text, grey notes (#555555 in the scripts), titles bold and left-aligned.
+font.family: sans-serif
+font.sans-serif: Public Sans, DejaVu Sans
+font.size: 9
+text.color: 1a1a1a
+axes.edgecolor: 1a1a1a
+axes.labelcolor: 1a1a1a
+axes.linewidth: 0.8
+axes.labelsize: 9
+axes.titlesize: 11
+axes.titleweight: bold
+axes.titlelocation: left
+axes.spines.top: False
+axes.spines.right: False
+axes.grid: False
+axes.facecolor: white
+xtick.color: 1a1a1a
+ytick.color: 1a1a1a
+xtick.labelsize: 8.5
+ytick.labelsize: 8.5
+xtick.major.size: 3
+ytick.major.size: 3
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+legend.frameon: False
+legend.fontsize: 9
+figure.facecolor: white
+savefig.facecolor: white
+savefig.dpi: 200

@@ -1,0 +1,196 @@
+variable,category,model,n_personas,n_scored,share_2026,lean_left,harris_2024,low,high,change
+All personas,All personas,deepseek,3500,3500.0,0.4391,0.4494,0.4489,,,
+All personas,All personas,gemini,3500,3500.0,0.4487,0.4595,0.4489,,,
+All personas,All personas,haiku,3500,3500.0,0.4502,0.4586,0.4489,,,
+All personas,All personas,luna,3500,3500.0,0.4558,0.4731,0.4489,,,
+Gender,Man,deepseek,1640,1640.0,0.3942,0.3858,0.3893,,,
+Gender,Man,gemini,1640,1640.0,0.397,0.3951,0.3893,,,
+Gender,Man,haiku,1640,1640.0,0.4027,0.3857,0.3893,,,
+Gender,Man,luna,1640,1640.0,0.3979,0.4066,0.3893,,,
+Gender,Woman,deepseek,1843,1843.0,0.4776,0.5035,0.4987,,,
+Gender,Woman,gemini,1843,1843.0,0.493,0.5144,0.4987,,,
+Gender,Woman,haiku,1843,1843.0,0.491,0.5212,0.4987,,,
+Gender,Woman,luna,1843,1843.0,0.506,0.5301,0.4987,,,
+Gender,Non-binary,deepseek,12,12.0,0.7681,0.941,0.9731,,,
+Gender,Non-binary,gemini,12,12.0,0.8006,0.941,0.9731,,,
+Gender,Non-binary,haiku,12,12.0,0.8021,0.941,0.9731,,,
+Gender,Non-binary,luna,12,12.0,0.8419,0.941,0.9731,,,
+Gender,Other,deepseek,5,5.0,0.7248,0.8774,0.6937,,,
+Gender,Other,gemini,5,5.0,0.6458,0.8302,0.6937,,,
+Gender,Other,haiku,5,5.0,0.709,0.8302,0.6937,,,
+Gender,Other,luna,5,5.0,0.6068,0.8302,0.6937,,,
+Race and ethnicity,White,deepseek,2725,2725.0,0.3854,0.3706,0.3753,,,
+Race and ethnicity,White,gemini,2725,2725.0,0.3922,0.3846,0.3753,,,
+Race and ethnicity,White,haiku,2725,2725.0,0.3914,0.3815,0.3753,,,
+Race and ethnicity,White,luna,2725,2725.0,0.3933,0.3973,0.3753,,,
+Race and ethnicity,Black,deepseek,362,362.0,0.7128,0.8388,0.8177,,,
+Race and ethnicity,Black,gemini,362,362.0,0.7308,0.8295,0.8177,,,
+Race and ethnicity,Black,haiku,362,362.0,0.7277,0.8179,0.8177,,,
+Race and ethnicity,Black,luna,362,362.0,0.7627,0.8353,0.8177,,,
+Race and ethnicity,Hispanic,deepseek,233,233.0,0.4482,0.4734,0.5009,,,
+Race and ethnicity,Hispanic,gemini,233,233.0,0.4768,0.4958,0.5009,,,
+Race and ethnicity,Hispanic,haiku,233,233.0,0.4855,0.5136,0.5009,,,
+Race and ethnicity,Hispanic,luna,233,233.0,0.4851,0.5231,0.5009,,,
+Race and ethnicity,Asian,deepseek,73,73.0,0.5329,0.5826,0.5963,,,
+Race and ethnicity,Asian,gemini,73,73.0,0.5419,0.5483,0.5963,,,
+Race and ethnicity,Asian,haiku,73,73.0,0.5488,0.5755,0.5963,,,
+Race and ethnicity,Asian,luna,73,73.0,0.5365,0.5741,0.5963,,,
+Race and ethnicity,Other,deepseek,107,107.0,0.4713,0.5099,0.4286,,,
+Race and ethnicity,Other,gemini,107,107.0,0.4634,0.4875,0.4286,,,
+Race and ethnicity,Other,haiku,107,107.0,0.4992,0.5142,0.4286,,,
+Race and ethnicity,Other,luna,107,107.0,0.4925,0.5083,0.4286,,,
+Age group,18-29,deepseek,468,468.0,0.4855,0.518,0.5516,,,
+Age group,18-29,gemini,468,468.0,0.4873,0.523,0.5516,,,
+Age group,18-29,haiku,468,468.0,0.4961,0.5246,0.5516,,,
+Age group,18-29,luna,468,468.0,0.5139,0.5473,0.5516,,,
+Age group,30-44,deepseek,766,766.0,0.4893,0.5283,0.505,,,
+Age group,30-44,gemini,766,766.0,0.5107,0.537,0.505,,,
+Age group,30-44,haiku,766,766.0,0.5142,0.542,0.505,,,
+Age group,30-44,luna,766,766.0,0.5317,0.5596,0.505,,,
+Age group,45-64,deepseek,1238,1238.0,0.4161,0.4063,0.4135,,,
+Age group,45-64,gemini,1238,1238.0,0.4254,0.4266,0.4135,,,
+Age group,45-64,haiku,1238,1238.0,0.4229,0.4139,0.4135,,,
+Age group,45-64,luna,1238,1238.0,0.4197,0.4326,0.4135,,,
+Age group,65+,deepseek,1028,1028.0,0.4026,0.4022,0.4002,,,
+Age group,65+,gemini,1028,1028.0,0.4066,0.4026,0.4002,,,
+Age group,65+,haiku,1028,1028.0,0.4075,0.4104,0.4002,,,
+Age group,65+,luna,1028,1028.0,0.4084,0.4129,0.4002,,,
+Education,No HS,deepseek,209,209.0,0.4266,0.4652,0.374,,,
+Education,No HS,gemini,209,209.0,0.4071,0.433,0.374,,,
+Education,No HS,haiku,209,209.0,0.4248,0.4471,0.374,,,
+Education,No HS,luna,209,209.0,0.4229,0.4734,0.374,,,
+Education,HS grad,deepseek,914,914.0,0.3766,0.3588,0.342,,,
+Education,HS grad,gemini,914,914.0,0.3807,0.3763,0.342,,,
+Education,HS grad,haiku,914,914.0,0.3789,0.3751,0.342,,,
+Education,HS grad,luna,914,914.0,0.3766,0.3796,0.342,,,
+Education,Some college,deepseek,637,637.0,0.4554,0.481,0.4887,,,
+Education,Some college,gemini,637,637.0,0.4695,0.483,0.4887,,,
+Education,Some college,haiku,637,637.0,0.4663,0.4725,0.4887,,,
+Education,Some college,luna,637,637.0,0.4763,0.4993,0.4887,,,
+Education,2-year,deepseek,392,392.0,0.4478,0.4651,0.461,,,
+Education,2-year,gemini,392,392.0,0.455,0.4908,0.461,,,
+Education,2-year,haiku,392,392.0,0.4623,0.4546,0.461,,,
+Education,2-year,luna,392,392.0,0.4686,0.4954,0.461,,,
+Education,4-year,deepseek,863,863.0,0.4251,0.4251,0.4355,,,
+Education,4-year,gemini,863,863.0,0.4378,0.4351,0.4355,,,
+Education,4-year,haiku,863,863.0,0.441,0.4444,0.4355,,,
+Education,4-year,luna,863,863.0,0.4376,0.444,0.4355,,,
+Education,Post-grad,deepseek,485,485.0,0.5499,0.5932,0.6292,,,
+Education,Post-grad,gemini,485,485.0,0.5713,0.6058,0.6292,,,
+Education,Post-grad,haiku,485,485.0,0.5726,0.6186,0.6292,,,
+Education,Post-grad,luna,485,485.0,0.6023,0.6379,0.6292,,,
+Party identification,Strong Dem,deepseek,779,779.0,0.8299,0.9965,0.9914,,,
+Party identification,Strong Dem,gemini,779,779.0,0.8506,0.9986,0.9914,,,
+Party identification,Strong Dem,haiku,779,779.0,0.8533,0.9789,0.9914,,,
+Party identification,Strong Dem,luna,779,779.0,0.8968,0.9923,0.9914,,,
+Party identification,Weak Dem,deepseek,245,245.0,0.763,0.9138,0.8671,,,
+Party identification,Weak Dem,gemini,245,245.0,0.842,0.9566,0.8671,,,
+Party identification,Weak Dem,haiku,245,245.0,0.8232,0.9623,0.8671,,,
+Party identification,Weak Dem,luna,245,245.0,0.8656,0.9521,0.8671,,,
+Party identification,Lean Dem,deepseek,379,379.0,0.7754,0.9796,0.9894,,,
+Party identification,Lean Dem,gemini,379,379.0,0.852,0.9925,0.9894,,,
+Party identification,Lean Dem,haiku,379,379.0,0.8344,0.9971,0.9894,,,
+Party identification,Lean Dem,luna,379,379.0,0.8906,0.9887,0.9894,,,
+Party identification,Independent,deepseek,336,336.0,0.4583,0.4775,0.3931,,,
+Party identification,Independent,gemini,336,336.0,0.4837,0.509,0.3931,,,
+Party identification,Independent,haiku,336,336.0,0.5274,0.5444,0.3931,,,
+Party identification,Independent,luna,336,336.0,0.6126,0.6835,0.3931,,,
+Party identification,Lean Rep,deepseek,486,486.0,0.141,0.0042,0.0311,,,
+Party identification,Lean Rep,gemini,486,486.0,0.1259,0.0218,0.0311,,,
+Party identification,Lean Rep,haiku,486,486.0,0.1371,0.0044,0.0311,,,
+Party identification,Lean Rep,luna,486,486.0,0.0692,0.0057,0.0311,,,
+Party identification,Weak Rep,deepseek,388,388.0,0.1482,0.0272,0.0807,,,
+Party identification,Weak Rep,gemini,388,388.0,0.1004,0.0277,0.0807,,,
+Party identification,Weak Rep,haiku,388,388.0,0.1173,0.0248,0.0807,,,
+Party identification,Weak Rep,luna,388,388.0,0.0876,0.0412,0.0807,,,
+Party identification,Strong Rep,deepseek,853,853.0,0.1221,0.0,0.0079,,,
+Party identification,Strong Rep,gemini,853,853.0,0.1092,0.0,0.0079,,,
+Party identification,Strong Rep,haiku,853,853.0,0.0948,0.0032,0.0079,,,
+Party identification,Strong Rep,luna,853,853.0,0.0681,0.0054,0.0079,,,
+Party identification,Not sure,deepseek,34,34.0,0.6026,0.5714,0.2765,,,
+Party identification,Not sure,gemini,34,34.0,0.5051,0.5372,0.2765,,,
+Party identification,Not sure,haiku,34,34.0,0.5906,0.7176,0.2765,,,
+Party identification,Not sure,luna,34,34.0,0.5371,0.5599,0.2765,,,
+Ideology,Very liberal,deepseek,428,428.0,0.7962,0.9796,0.9775,,,
+Ideology,Very liberal,gemini,428,428.0,0.8204,0.9878,0.9775,,,
+Ideology,Very liberal,haiku,428,428.0,0.8207,0.9678,0.9775,,,
+Ideology,Very liberal,luna,428,428.0,0.8896,0.9902,0.9775,,,
+Ideology,Liberal,deepseek,519,519.0,0.8097,0.976,0.9663,,,
+Ideology,Liberal,gemini,519,519.0,0.8566,0.9956,0.9663,,,
+Ideology,Liberal,haiku,519,519.0,0.8469,0.9954,0.9663,,,
+Ideology,Liberal,luna,519,519.0,0.8997,0.9968,0.9663,,,
+Ideology,Moderate,deepseek,980,980.0,0.5265,0.5633,0.5664,,,
+Ideology,Moderate,gemini,980,980.0,0.5644,0.5819,0.5664,,,
+Ideology,Moderate,haiku,980,980.0,0.5671,0.5912,0.5664,,,
+Ideology,Moderate,luna,980,980.0,0.5909,0.6247,0.5664,,,
+Ideology,Conservative,deepseek,847,847.0,0.1491,0.0335,0.0498,,,
+Ideology,Conservative,gemini,847,847.0,0.1156,0.0361,0.0498,,,
+Ideology,Conservative,haiku,847,847.0,0.1262,0.0365,0.0498,,,
+Ideology,Conservative,luna,847,847.0,0.0832,0.0321,0.0498,,,
+Ideology,Very conservative,deepseek,627,627.0,0.1405,0.019,0.0198,,,
+Ideology,Very conservative,gemini,627,627.0,0.1231,0.0149,0.0198,,,
+Ideology,Very conservative,haiku,627,627.0,0.1137,0.0076,0.0198,,,
+Ideology,Very conservative,luna,627,627.0,0.0733,0.01,0.0198,,,
+Ideology,Not sure,deepseek,99,99.0,0.3605,0.3722,0.2809,,,
+Ideology,Not sure,gemini,99,99.0,0.3896,0.4041,0.2809,,,
+Ideology,Not sure,haiku,99,99.0,0.4006,0.4069,0.2809,,,
+Ideology,Not sure,luna,99,99.0,0.4026,0.4977,0.2809,,,
+Household income,Under $50K,deepseek,1210,1210.0,0.4691,0.4963,0.4861,,,
+Household income,Under $50K,gemini,1210,1210.0,0.4805,0.507,0.4861,,,
+Household income,Under $50K,haiku,1210,1210.0,0.4831,0.5079,0.4861,,,
+Household income,Under $50K,luna,1210,1210.0,0.4882,0.5165,0.4861,,,
+Household income,$50K to $100K,deepseek,1143,1143.0,0.4365,0.4378,0.4251,,,
+Household income,$50K to $100K,gemini,1143,1143.0,0.4389,0.4364,0.4251,,,
+Household income,$50K to $100K,haiku,1143,1143.0,0.437,0.4387,0.4251,,,
+Household income,$50K to $100K,luna,1143,1143.0,0.4488,0.4578,0.4251,,,
+Household income,$100K to $200K,deepseek,689,689.0,0.4132,0.4176,0.4376,,,
+Household income,$100K to $200K,gemini,689,689.0,0.4273,0.4331,0.4376,,,
+Household income,$100K to $200K,haiku,689,689.0,0.431,0.4227,0.4376,,,
+Household income,$100K to $200K,luna,689,689.0,0.4286,0.4396,0.4376,,,
+Household income,$200K or more,deepseek,135,135.0,0.437,0.4456,0.499,,,
+Household income,$200K or more,gemini,135,135.0,0.4637,0.4758,0.499,,,
+Household income,$200K or more,haiku,135,135.0,0.4588,0.4761,0.499,,,
+Household income,$200K or more,luna,135,135.0,0.4613,0.4769,0.499,,,
+Household income,Prefer not to say,deepseek,323,323.0,0.3915,0.3778,0.3835,,,
+Household income,Prefer not to say,gemini,323,323.0,0.3989,0.4007,0.3835,,,
+Household income,Prefer not to say,haiku,323,323.0,0.4046,0.4035,0.3835,,,
+Household income,Prefer not to say,luna,323,323.0,0.4115,0.428,0.3835,,,
+All personas,All personas,mean of models,3500,,0.4484,0.4602,0.4489,0.4391,0.4558,0.0113
+Gender,Man,mean of models,1640,,0.3979,0.3933,0.3893,0.3942,0.4027,0.004
+Gender,Woman,mean of models,1843,,0.4919,0.5173,0.4987,0.4776,0.506,0.0187
+Gender,Non-binary,mean of models,12,,0.8032,0.941,0.9731,0.7681,0.8419,-0.0322
+Gender,Other,mean of models,5,,0.6716,0.842,0.6937,0.6068,0.7248,0.1484
+Race and ethnicity,White,mean of models,2725,,0.3906,0.3835,0.3753,0.3854,0.3933,0.0082
+Race and ethnicity,Black,mean of models,362,,0.7335,0.8303,0.8177,0.7128,0.7627,0.0126
+Race and ethnicity,Hispanic,mean of models,233,,0.4739,0.5015,0.5009,0.4482,0.4855,0.0006
+Race and ethnicity,Asian,mean of models,73,,0.54,0.5702,0.5963,0.5329,0.5488,-0.0261
+Race and ethnicity,Other,mean of models,107,,0.4816,0.505,0.4286,0.4634,0.4992,0.0764
+Age group,18-29,mean of models,468,,0.4957,0.5282,0.5516,0.4855,0.5139,-0.0233
+Age group,30-44,mean of models,766,,0.5115,0.5418,0.505,0.4893,0.5317,0.0367
+Age group,45-64,mean of models,1238,,0.421,0.4199,0.4135,0.4161,0.4254,0.0063
+Age group,65+,mean of models,1028,,0.4063,0.407,0.4002,0.4026,0.4084,0.0068
+Education,No HS,mean of models,209,,0.4204,0.4547,0.374,0.4071,0.4266,0.0806
+Education,HS grad,mean of models,914,,0.3782,0.3725,0.342,0.3766,0.3807,0.0304
+Education,Some college,mean of models,637,,0.4669,0.484,0.4887,0.4554,0.4763,-0.0048
+Education,2-year,mean of models,392,,0.4584,0.4764,0.461,0.4478,0.4686,0.0154
+Education,4-year,mean of models,863,,0.4354,0.4371,0.4355,0.4251,0.441,0.0016
+Education,Post-grad,mean of models,485,,0.574,0.6139,0.6292,0.5499,0.6023,-0.0153
+Party identification,Strong Dem,mean of models,779,,0.8577,0.9916,0.9914,0.8299,0.8968,0.0002
+Party identification,Weak Dem,mean of models,245,,0.8234,0.9462,0.8671,0.763,0.8656,0.0791
+Party identification,Lean Dem,mean of models,379,,0.8381,0.9895,0.9894,0.7754,0.8906,0.0001
+Party identification,Independent,mean of models,336,,0.5205,0.5536,0.3931,0.4583,0.6126,0.1606
+Party identification,Lean Rep,mean of models,486,,0.1183,0.009,0.0311,0.0692,0.141,-0.0221
+Party identification,Weak Rep,mean of models,388,,0.1134,0.0302,0.0807,0.0876,0.1482,-0.0505
+Party identification,Strong Rep,mean of models,853,,0.0985,0.0022,0.0079,0.0681,0.1221,-0.0058
+Party identification,Not sure,mean of models,34,,0.5588,0.5965,0.2765,0.5051,0.6026,0.3201
+Ideology,Very liberal,mean of models,428,,0.8317,0.9813,0.9775,0.7962,0.8896,0.0039
+Ideology,Liberal,mean of models,519,,0.8532,0.991,0.9663,0.8097,0.8997,0.0247
+Ideology,Moderate,mean of models,980,,0.5622,0.5903,0.5664,0.5265,0.5909,0.0239
+Ideology,Conservative,mean of models,847,,0.1185,0.0345,0.0498,0.0832,0.1491,-0.0152
+Ideology,Very conservative,mean of models,627,,0.1126,0.0129,0.0198,0.0733,0.1405,-0.0069
+Ideology,Not sure,mean of models,99,,0.3883,0.4202,0.2809,0.3605,0.4026,0.1394
+Household income,Under $50K,mean of models,1210,,0.4802,0.5069,0.4861,0.4691,0.4882,0.0208
+Household income,$50K to $100K,mean of models,1143,,0.4403,0.4427,0.4251,0.4365,0.4488,0.0176
+Household income,$100K to $200K,mean of models,689,,0.425,0.4283,0.4376,0.4132,0.431,-0.0094
+Household income,$200K or more,mean of models,135,,0.4552,0.4686,0.499,0.437,0.4637,-0.0305
+Household income,Prefer not to say,mean of models,323,,0.4016,0.4025,0.3835,0.3915,0.4115,0.019

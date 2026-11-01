@@ -18,16 +18,31 @@ python scripts/04b-summarize_news.py
 python scripts/08-build_prompts.py --news
 python scripts/09-query_models.py --batch-size 40 --sleep 0
 python scripts/10-score_responses.py
-python scripts/11-build_forecast.py
-python scripts/12-test_actual_data.py
+python scripts/11-build_forecast.py --combine none
+python scripts/11-build_forecast.py              # inverse-variance headline, run last
 python scripts/13-make_figures.py
+python scripts/13b-make_map.py
 python scripts/15-make_summary_bar.py
+python scripts/15b-make_headline.py
+python scripts/15c-make_battlegrounds.py     # results line, battleground table, seat distribution
+python scripts/16-make_crosstabs.py
+python scripts/16b-compare_runs.py
+python scripts/16c-sensitivity.py
+python scripts/16d-costs.py                  # cost and time per run and model
+python scripts/16e-news_summary.py           # news kept per outlet and topic, example news block
+python scripts/02c-download_predictit.py      # PredictIt prices (keeps 7 days: run within a week of each news day)
+python scripts/16f-compare_markets.py         # our forecast against PredictIt
+python scripts/12-test_actual_data.py         # pytest + pandera test suite
+python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```
 
 Planned news dates are October 27, 29 and 31, 2026. Without an override, RUN is
 `2026-10-27`. For the baseline, use `export RUN=nonews`, skip 04/04b, and run 08
 without `--news`, followed by the remaining stages. Optional script 14 summarizes
-persona composition and is not part of the forecast workflow.
+persona composition and is not part of the forecast workflow. The simulated data
+have their own test suite, `01-test_simulated_data.py`; both suites use the
+pandera schemas in `schemas.py` and run with pytest
+(`python -m pytest scripts/12-test_actual_data.py -v` lists every test).
 
 These commands make paid requests: news uses GPT-4.1 Nano, voting uses four
 models, and SSR uses Gemini Embedding 2. With 3,500 personas and three repeats,
@@ -46,11 +61,18 @@ Design B requires 42,000 voting requests per run, plus screening/embedding.
 - **09:** save raw responses and reuse matching successes. Incomplete runs exit
   with code 1, including an unfinished `--limit` pilot. Keep prompts unchanged
   and rerun 09 to retry remaining work.
-- **10–15:** score, simulate, check and plot. Polls are a comparison unless script
-  11 is run with `--calibrate`. Tests check consistency, not prediction accuracy.
+- **10–16:** score, simulate, plot and test. Script 11 combines the synthetic share
+  with polls (or 2024 + uniform swing) by inverse-variance weights; `--combine
+  none` (synthetic voters only) is kept for comparison. 13b, 15b, 15c and 16 write the
+  map, headline, battleground table and crosstabs; 16b–16d compare runs, test
+  sensitivity to the assumed errors and tabulate costs. Tests (12, pytest with pandera schemas)
+  check consistency, not prediction accuracy; in the workflow 15c, 16b, 16c and
+  16d only warn on failure, so they cannot block a paid run.
+- **17:** copies the latest news run to `figures/latest/` and
+  `data/03-results/latest/`, which `index.qmd` reads.
 
 Outputs are isolated under `data/02-analysis_data/run_<RUN>/`,
-`data/03-results/run_<RUN>/`, and `docs/figures/run_<RUN>/`. Shared candidates and
+`data/03-results/run_<RUN>/`, and `figures/run_<RUN>/` (not `docs/`, which Quarto rebuilds). Shared candidates and
 personas stay in `data/02-analysis_data/`; news stays in `data/news/`.
 
 ## Useful commands
@@ -70,6 +92,6 @@ certified as valid results.
 
 The workflow refreshes its own polling input, archives a copy as
 `data/03-results/run_<RUN>/polling_input.csv`, uploads artifacts, and attempts to
-commit news, polling inputs, answers and scores even after failure. Forecasts
-and figures are committed only when all preceding steps succeed. Publishing
-the website is a separate step.
+commit news, polling inputs, answers and scores even after failure. Forecasts,
+figures and the rendered website (`docs/`) are committed only when all
+preceding steps, including the tests, succeed.

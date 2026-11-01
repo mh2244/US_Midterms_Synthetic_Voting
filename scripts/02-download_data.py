@@ -3,11 +3,12 @@ Preamble:
 
 Purpose: Find and download 2024 Cooperative Election Study (CES) files from Harvard Dataverse.
 Authors: Maggie, Coco, Amelia
-Date: November 2nd, 2026
+Date: 19 October 2026 (paths updated 28 October 2026)
 Contact: maggieh.huang@mail.utoronto.ca
 License: MIT
 Pre-requisites: Download the CES 2024 CSV directly by file id by running this in terminal:
-    python scripts/00-download_data.py get --file-id 12050325
+    python scripts/02-download_data.py get --file-id 12050325
+Output: data/01-raw_data/ces/ (the raw CES file is not committed; see the README)
 """
 
 # Import libraries
@@ -18,7 +19,7 @@ from pathlib import Path # Handling folder paths
 import requests # Communicates with websites
 
 BASE = "https://dataverse.harvard.edu"
-OUT_DIR = Path("data") # Folder to save dataset to
+OUT_DIR = Path("data/01-raw_data/ces") # Folder to save dataset to (raw data, not committed)
 TIMEOUT = 60 # Give up after 60 seconds if the server does not answer
 SESSION = requests.Session() # Reusable connection that remembers settings
 

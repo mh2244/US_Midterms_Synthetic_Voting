@@ -37,6 +37,32 @@ MODELS = {
     "deepseek": "deepseek/deepseek-v4.1-flash",   # DeepSeek, $0.30 / $1.20 ($0.15 / $0.60 off-peak)
     "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
 }
+# OpenRouter list prices, US dollars per million tokens (input, output), checked 2026-10-25;
+# used by scripts/16d-costs.py
+PRICES = {"haiku": (0.10, 0.50), "luna": (0.10, 0.50), "deepseek": (0.30, 1.20), "gemini": (0.30, 2.50)}
+
+# Party colours used by every figure: blue for Democrats, red for Republicans, grey for independents
+PARTY_COLOURS = {"Democratic": "#2166ac", "Republican": "#b2182b", "Independent": "#808080"}
+# One colour per model, for figures that compare models (ColorBrewer Dark2, without its pink and
+# green so that no model colour can be read as a party colour)
+MODEL_COLOURS = {"haiku": "#d95f02", "luna": "#1b9e77", "deepseek": "#7570b3", "gemini": "#a6761d"}
+# The rest of the palette, shared with styles.css (:root): text, notes, rules, toss-up and no race
+INK, MUTED, RULE = "#1a1a1a", "#555555", "#d9d9d9"
+TOSS_UP_COLOUR, NO_RACE_COLOUR = "#e8d18c", "#eeeeee"
+
+
+def use_site_style():
+    """Graph theme for every figure: registers the page fonts (assets/fonts) and loads
+    scripts/site.mplstyle, so figures made on GitHub Actions match the page."""
+    from matplotlib import font_manager, pyplot as plt
+    for font in (Path(__file__).resolve().parent.parent / "assets" / "fonts").glob("*.ttf"):
+        font_manager.fontManager.addfont(str(font))
+    plt.style.use(Path(__file__).resolve().with_name("site.mplstyle"))
+
+
+# Names shown on the website (tables and figures), in the same order
+MODEL_LABELS = {"haiku": "Claude Haiku 5.5", "luna": "GPT-6 Luna", "deepseek": "DeepSeek V4.1 Flash",
+                "gemini": "Gemini 3.5 Flash-Lite"}
 
 # Reasoning ("thinking") setting sent with every request (script 09). Hidden reasoning tokens are
 # billed as output, so it is switched off: the answers only need two or three sentences.
@@ -88,12 +114,19 @@ ANALYSIS = SHARED_ANALYSIS
 RESULTS = DATA / "03-results"
 RUN_DIR = ANALYSIS / f"run_{RUN}"
 RUN_RESULTS = RESULTS / f"run_{RUN}"
-FIGURES = Path("docs/figures") / f"run_{RUN}"
-CES_FILE = DATA / "ces2024_senate_demographics.csv"
-CANDIDATES_RAW = DATA / "senate_candidates_2026.csv"
+# Figures live outside docs/: docs/ is Quarto's output folder and is rebuilt on every render.
+FIGURES = Path("figures") / f"run_{RUN}"
+# The website shows the latest news run from these fixed paths (filled by script 17).
+LATEST_RESULTS = RESULTS / "latest"
+LATEST_FIGURES = Path("figures") / "latest"
+RAW = DATA / "01-raw_data"            # inputs as downloaded or entered; never edited by a script
+CES_RAW = RAW / "ces" / "CCES24_Common_OUTPUT_vv_topost_final.csv"   # not in the repo (see README)
+CES_FILE = SHARED_ANALYSIS / "ces2024_senate_demographics.csv"
+CANDIDATES_RAW = RAW / "senate_candidates_2026.csv"
 NEWS_FILE = DATA / "news" / "news_context.csv"
 NEWS_SUMMARIES_FILE = DATA / "news" / "persona_news_summaries.csv"
-POLLS_FILE = DATA / "polling_data" / "02-analysis_data" / "senate_polls_2026_general.csv"
+POLLS_RAW = RAW / "polls" / "pollresults"          # one timestamped folder per download
+POLLS_FILE = SHARED_ANALYSIS / "polls" / "senate_polls_2026_general.csv"
 
 NOMINEES_FILE = SHARED_ANALYSIS / "senate_nominees_2026.csv"
 CANDIDATES_CLEAN = SHARED_ANALYSIS / "candidates_clean.csv"

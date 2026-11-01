@@ -1,18 +1,27 @@
 # Purpose: Full forecast run on the three news days (Oct 27, 29, 31):
 #          collect news -> concatenate nine summaries/persona -> prompts (08) -> model queries (09) -> SSR (10)
-#          -> forecast (11) -> tests (12) -> figures (13, 15) -> commit results.
+#          -> forecast (11: synthetic only, then inverse-variance headline last)
+#          -> figures, map, headline and battlegrounds (13, 13b, 15, 15b, 15c) -> crosstabs (16) -> run comparison (16b)
+#          -> sensitivity (16c) -> costs (16d) -> news summary (16e) -> tests (12) -> publish latest (17)
+#          -> render the website (Quarto, into docs/) -> commit.
+# Commit rule: model answers are always committed (so a rerun only asks for what is missing);
+# the forecast, figures and website are committed only if every step, including the tests, passed.
 # Needs: repository secret OPENROUTER_API_KEY.
 # Manual run: Actions > Forecast run > Run workflow. Leave run empty for today's
 # Toronto date, or enter nonews for the baseline.
-# Integration pending: paid voting-model settings.
 # RUN selects matching output and commit paths; completed answers are saved even on failure.
 # Disable this workflow before the project deadline.
 
 name: Forecast run
 
 on:
+  # GitHub can delay or skip a scheduled run (27 October: about four hours late). Two later
+  # times are backups: the "check" job skips a run when that day's forecast is already on main,
+  # and a backup after a failed run picks up where it stopped (news and answers are reused).
   schedule:
     - cron: "13 18 27,29,31 10 *"  # 2:13 pm Toronto on these October dates
+    - cron: "43 19 29,31 10 *"     # 3:43 pm backup
+    - cron: "43 21 29,31 10 *"     # 5:43 pm backup
   workflow_dispatch:
     inputs:
       run:
@@ -31,7 +40,32 @@ env:
   SUMMARY_SCRIPT: scripts/04b-summarize_news.py
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.done.outputs.go }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: data/03-results
+
+      - name: Skip a scheduled run when today's forecast is already done
+        id: done
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          RUN=$(TZ=America/Toronto date +%F)
+          if [ "$EVENT" = "schedule" ] && [ -f "data/03-results/run_${RUN}/chamber_summary.csv" ]; then
+            echo "The forecast for ${RUN} is already on main; nothing to do."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
   forecast:
+    needs: check
+    if: needs.check.outputs.go == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
@@ -66,18 +100,75 @@ jobs:
           echo "run_id=$RUN" >> "$GITHUB_OUTPUT"
           echo "Run id: $RUN"
 
+      - name: Check OpenRouter credit before spending anything
+        # 27 October stopped halfway when a $10 workspace budget ran out. A full run costs about
+        # $10, so stop here, before any paid call, if the key or account has less than $12 left.
+        # The workspace budget itself is not visible through the API; keep it above $12 too.
+        run: |
+          python - <<'EOF'
+          import os, sys
+          import requests
+          h = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
+          need = 12.0
+          try:
+              key = requests.get("https://openrouter.ai/api/v1/key", headers=h, timeout=30).json()["data"]
+              left = key.get("limit_remaining")
+              print(f"Key limit remaining: {left if left is not None else 'no limit'}")
+              if left is not None and left < need:
+                  sys.exit(f"Only ${left:.2f} left on the key's limit; raise it before running")
+              r = requests.get("https://openrouter.ai/api/v1/credits", headers=h, timeout=30)
+              if r.ok:
+                  d = r.json()["data"]
+                  remaining = d["total_credits"] - d["total_usage"]
+                  print(f"Account credit remaining: ${remaining:.2f}")
+                  if remaining < need:
+                      sys.exit(f"Only ${remaining:.2f} of credit left; add credit before running")
+              else:
+                  print(f"Could not read the account credit (HTTP {r.status_code}); continuing")
+          except (requests.RequestException, KeyError, ValueError) as exc:
+              print(f"Could not check the credit ({type(exc).__name__}); continuing")
+          EOF
+
       - name: Refresh polling data for this forecast
         run: |
           python scripts/polling_data/00-download_polling_data.py
           python scripts/polling_data/01-clean_polling_data.py
           mkdir -p "data/03-results/run_${RUN}"
-          cp data/polling_data/02-analysis_data/senate_polls_2026_general.csv \
+          cp data/02-analysis_data/polls/senate_polls_2026_general.csv \
              "data/03-results/run_${RUN}/polling_input.csv"
 
       - name: Collect news and assemble persona news
         if: steps.run_info.outputs.run_id != 'nonews'
         run: |
-          python scripts/04-collect_news.py
+          # A rerun on the same day reuses that day's news, so the prompts stay the same and 09
+          # only sends the calls that are still missing (the answers are committed after a failure).
+          if [ -f "data/news/persona_news_summaries_${RUN}.csv" ] && [ -f "data/news/news_context_${RUN}.csv" ]; then
+            echo "Reusing the news already collected for ${RUN}"
+            # 04 writes CRLF line endings and 08 checks the file's exact bytes, but git stored the
+            # committed copy with LF (.gitattributes: text=auto), so put the CRLF endings back.
+            python -c "import sys; b=open(sys.argv[1],'rb').read(); b=b if b'\r\n' in b else b.replace(b'\n', b'\r\n'); open(sys.argv[2],'wb').write(b)" "data/news/news_context_${RUN}.csv" data/news/news_context.csv
+            cp "data/news/persona_news_summaries_${RUN}.csv" data/news/persona_news_summaries.csv
+            exit 0
+          fi
+          # 04 exits 1 if even one article could not be screened (the model kept returning an
+          # invalid decision for it). Those articles are simply left out, so carry on when the
+          # news was collected in this run and at most 10% of articles failed; 04b then checks
+          # that every source group still has enough articles.
+          touch "$RUNNER_TEMP/news_start"
+          if ! python scripts/04-collect_news.py; then
+            if [ ! data/news/news_screening.csv -nt "$RUNNER_TEMP/news_start" ]; then
+              echo "News was not collected in this run" >&2
+              exit 1
+            fi
+            python - <<'EOF'
+          import sys
+          import pandas as pd
+          d = pd.read_csv("data/news/news_screening.csv", encoding="utf-8-sig")
+          bad = int((d["llm_status"] == "error").sum())
+          print(f"{bad} of {len(d)} articles could not be screened and are left out")
+          sys.exit(1 if bad > 0.10 * len(d) else 0)
+          EOF
+          fi
           python "$SUMMARY_SCRIPT"
           cp data/news/news.csv "data/news/news_${RUN}.csv"
           cp data/news/news_context.csv "data/news/news_context_${RUN}.csv"
@@ -92,21 +183,64 @@ jobs:
           fi
 
       - name: Query models (09)
-        run: python scripts/09-query_models.py --batch-size 40 --sleep 0
+        # 09 skips prompts that already have an answer, so a retry only sends what is missing
+        # (rate limits, provider errors). It exits with an error if calls are still unanswered.
+        # A handful of prompts can keep coming back empty from one model (seen on 27 October: 3 of
+        # 42,000 DeepSeek calls). After three attempts, carry on if at most 0.5% of calls are still
+        # missing; 10 and 11 leave those out, and 12 checks the failure rate per model.
+        run: |
+          for attempt in 1 2 3; do
+            if python scripts/09-query_models.py --batch-size 40 --sleep 0 2>&1 | tee "$RUNNER_TEMP/09.log"; then exit 0; fi
+            echo "Attempt $attempt left calls unanswered; trying again in 60 seconds"
+            sleep 60
+          done
+          left=$(grep -o "INCOMPLETE: [0-9]* calls" "$RUNNER_TEMP/09.log" | tail -1 | grep -o "[0-9]*" || true)
+          total=$(grep -o "[0-9]* prompts x [0-9]* models x [0-9]* repeats" "$RUNNER_TEMP/09.log" | head -1 | awk '{print $1 * $4 * $7}')
+          if [ -n "$left" ] && [ -n "$total" ] && [ "$left" -le $(( total / 200 )) ]; then
+            echo "$left calls are still unanswered after three attempts; they are left out"
+            exit 0
+          fi
+          exit 1
 
       - name: Score answers with SSR (10)
         run: python scripts/10-score_responses.py
 
       - name: Build the forecast (11)
-        run: python scripts/11-build_forecast.py
+        # The comparison version first; the inverse-variance headline last, because
+        # scripts 13, 15 and 17 read the files written by the last run of 11.
+        run: |
+          python scripts/11-build_forecast.py --combine none
+          python scripts/11-build_forecast.py
 
-      - name: Test the real data (12)
-        run: python scripts/12-test_actual_data.py
-
-      - name: Make figures (13, 15)
+      - name: Make figures, map, headline and crosstabs (13, 13b, 15, 15b, 15c, 16)
         run: |
           python scripts/13-make_figures.py
+          python scripts/13b-make_map.py
           python scripts/15-make_summary_bar.py
+          python scripts/15b-make_headline.py
+          python scripts/15c-make_battlegrounds.py || echo "::warning::15c failed; battleground table and seat distribution were not updated"
+          python scripts/16-make_crosstabs.py
+          # The comparison is extra: if it fails, keep the forecast and show the last saved tables
+          python scripts/16b-compare_runs.py || echo "::warning::16b failed; comparison tables were not updated"
+          python scripts/16c-sensitivity.py || echo "::warning::16c failed; sensitivity table was not updated"
+          python scripts/16d-costs.py || echo "::warning::16d failed; cost table was not updated"
+          python scripts/16e-news_summary.py || echo "::warning::16e failed; news summary was not updated"
+
+      - name: Test the real data (12)
+        # pytest + pandera suite (scripts/schemas.py); a failure stops publishing, answers are kept
+        run: python scripts/12-test_actual_data.py
+
+      - name: Publish this run on the website (17)
+        if: steps.run_info.outputs.run_id != 'nonews'
+        run: python scripts/17-publish_latest.py
+
+      - name: Set up Quarto
+        if: steps.run_info.outputs.run_id != 'nonews'
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render the website into docs/
+        if: steps.run_info.outputs.run_id != 'nonews'
+        run: quarto render
 
       - name: Upload run files (also after a failure)
         if: ${{ always() && steps.run_info.outputs.run_id != '' }}
@@ -115,10 +249,11 @@ jobs:
           name: forecast-${{ steps.run_info.outputs.run_id }}
           path: |
             data/news/*.csv
-            data/polling_data/
+            data/01-raw_data/polls/
+            data/02-analysis_data/polls/
             data/02-analysis_data/run_${{ steps.run_info.outputs.run_id }}/
             data/03-results/run_${{ steps.run_info.outputs.run_id }}/
-            docs/figures/run_${{ steps.run_info.outputs.run_id }}/
+            figures/run_${{ steps.run_info.outputs.run_id }}/
           if-no-files-found: warn
 
       - name: Commit answers and scores (always, so paid answers are kept)
@@ -126,7 +261,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for path in data/news data/polling_data "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}/polling_input.csv"; do
+          for path in data/news data/01-raw_data/polls data/02-analysis_data/polls "data/02-analysis_data/run_${RUN}" "data/03-results/run_${RUN}/polling_input.csv"; do
             if [ -e "$path" ]; then git add -- "$path"; fi
           done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
@@ -139,13 +274,18 @@ jobs:
           git pull --rebase
           git push
 
-      - name: Commit forecast and figures (only if every test passed)
+      - name: Commit forecast, figures and website (only if every test passed)
         if: ${{ success() && steps.run_info.outputs.run_id != '' }}
         run: |
-          for path in "data/03-results/run_${RUN}" "docs/figures/run_${RUN}" includes; do
-            if [ -e "$path" ]; then git add -- "$path"; fi
+          for path in "data/03-results/run_${RUN}" "figures/run_${RUN}" data/03-results/comparison data/03-results/latest figures/latest docs; do
+            if [ -e "$path" ]; then git add -A -- "$path"; fi
           done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
           git commit -m "Forecast for run ${RUN}, tests passed (automatic)"
-          git pull --rebase
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash push --include-untracked -m "Other files for run ${RUN}"
+            trap 'git stash pop' EXIT
+          fi
+          # Generated files: if someone pushed meanwhile, keep this run's version on a conflict
+          git pull --rebase -X theirs
           git push

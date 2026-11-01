@@ -1,0 +1,11 @@
+{
+  "run": "2026-10-26",
+  "dem": 52,
+  "ind": 0,
+  "rep": 48,
+  "p_dem_51_without_ind": 0.599,
+  "p_rep_control": 0.375,
+  "rep_q05": 40,
+  "rep_q95": 56,
+  "n_models": 4
+}
