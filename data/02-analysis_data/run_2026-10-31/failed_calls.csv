@@ -1,0 +1,5 @@
+prompt_id,run,persona_id,state,design,model,model_requested,repeat,queried_at_utc,model_returned,input_tokens,output_tokens,finish_reason,error
+TN_47|B|news1|812ba39213465a278fd07dd41cfea126e81f85f9a1960cd5403382ecdf347fa6|2026-10-31,2026-10-31,TN_47,TN,B,haiku,anthropic/claude-haiku-5.5,1,2026-10-31T21:44:42+00:00,anthropic/claude-haiku-5.5,865,12,error,provider error (finish_reason=error)
+TN_55|B|news1|013c50004f7a99788721f09674a5276368415ed27402dcd4a3df02574bc61da1|2026-10-31,2026-10-31,TN_55,TN,B,haiku,anthropic/claude-haiku-5.5,1,2026-10-31T21:44:42+00:00,anthropic/claude-haiku-5.5,820,17,error,provider error (finish_reason=error)
+TN_60|B|news1|2993c35eba8858595eaef1872b7d7303b24da529177a771721c58064e2d81893|2026-10-31,2026-10-31,TN_60,TN,B,haiku,anthropic/claude-haiku-5.5,1,2026-10-31T21:44:42+00:00,anthropic/claude-haiku-5.5,832,17,error,provider error (finish_reason=error)
+TN_61|B|news1|70da3b0b3558c19bfcb10987efd608d0a2db031286324f8dc3949a596f148e5a|2026-10-31,2026-10-31,TN_61,TN,B,haiku,anthropic/claude-haiku-5.5,1,2026-10-31T21:44:42+00:00,anthropic/claude-haiku-5.5,894,15,error,provider error (finish_reason=error)
