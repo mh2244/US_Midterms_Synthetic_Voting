@@ -1,7 +1,7 @@
 #### Preamble ####
 # Purpose: Crosstabs of the synthetic vote: for each demographic group, the share of the
-#          two-candidate vote that goes to the Democratic (or independent) candidate, next to how
-#          the SAME personas voted for president in 2024 (Harris share of Harris + Trump, CES).
+#          two-candidate vote that goes to the Republican candidate, next to how
+#          the SAME personas voted for president in 2024 (Trump share of Harris + Trump, CES).
 # Author: Kexin (Coco) Liu
 # Date: 26 October 2026
 # License: MIT
@@ -19,12 +19,12 @@
 #   2. Weight each persona by its state's share of the validated-voter weight (sum of
 #      vvweight_post in the state / 100 personas), so that pooled groups reflect the electorate
 #      of the 35 states rather than counting every state equally.
-#   3. Cell share = sum(w * p_left) / sum(w * (p_left + p_rep)), for each model; the table shows
+#   3. Cell share = sum(w * p_rep) / sum(w * (p_left + p_rep)), for each model; the table shows
 #      the plain mean over models (each model counts once) and the range across models.
-#   4. "Leaning left" is the weighted share of personas whose p_left is larger than p_rep. SSR
+#   4. "Leaning Republican" is the weighted share of personas whose p_left is larger than p_rep. SSR
 #      rarely gives a probability near 0 or 1 (an answer that clearly backs one candidate still
 #      scores about 0.85 to 0.9), so the share in step 3 is pulled toward 50 per cent in groups that
-#      vote one way; the leaning-left share shows which side the answers actually took.
+#      vote one way; the leaning-Republican share shows which side the answers actually took.
 #   5. The 2024 column uses the same personas and the same weights, from pres_vote_2024 in the
 #      CES (Harris or Trump only). The models never see the 2024 vote.
 # WHY no poll correction here: polls do not report these groups in every state, so the crosstabs
@@ -87,7 +87,7 @@ state_w = pool.groupby("state")["vvweight_post"].sum()
 personas["w"] = personas["state"].map(state_w) / personas["state"].map(personas.groupby("state").size())
 assert personas["w"].notna().all(), "A persona's state has no weight"
 pres = ces.drop_duplicates("caseid").set_index("caseid")["pres_vote_2024"]
-personas["harris"] = personas["caseid"].map(pres).map({"Harris": 1.0, "Trump": 0.0})
+personas["trump"] = personas["caseid"].map(pres).map({"Harris": 0.0, "Trump": 1.0})
 
 df = per.merge(personas[["persona_id", "w"] + list(LABELS)], on="persona_id", how="left")
 assert df["w"].notna().all(), "Scores contain persona_id values that are not in the personas file"
@@ -95,11 +95,11 @@ assert df["w"].notna().all(), "Scores contain persona_id values that are not in 
 
 #### Cells ####
 def cell_share(g):
-    return (g["w"] * g["p_left"]).sum() / (g["w"] * (g["p_left"] + g["p_rep"])).sum()
+    return (g["w"] * g["p_rep"]).sum() / (g["w"] * (g["p_left"] + g["p_rep"])).sum()
 
 
-def lean_left(g):
-    return (g["w"] * (g["p_left"] > g["p_rep"])).sum() / g["w"].sum()
+def lean_rep(g):
+    return (g["w"] * (g["p_rep"] > g["p_left"])).sum() / g["w"].sum()
 
 
 rows = []
@@ -110,27 +110,27 @@ for var, label, col in groups:
     for cat in cats:
         sel_p = personas if col is None else personas[personas[col] == cat]
         sel_d = df if col is None else df[df[col] == cat]
-        h = sel_p.dropna(subset=["harris"])
-        harris = (h["w"] * h["harris"]).sum() / h["w"].sum() if len(h) else np.nan
+        h = sel_p.dropna(subset=["trump"])
+        trump = (h["w"] * h["trump"]).sum() / h["w"].sum() if len(h) else np.nan
         for model, g in sel_d.groupby("model"):
             rows.append({"variable": label, "category": cat, "model": model, "n_personas": len(sel_p),
-                         "n_scored": g["persona_id"].nunique(), "share_2026": cell_share(g),
-                         "lean_left": lean_left(g),
-                         "harris_2024": harris})
+                         "n_scored": g["persona_id"].nunique(), "share_2026": cell_share(g), "share_party": "Republican",
+                         "lean_rep": lean_rep(g),
+                         "trump_2024": trump})
 tab = pd.DataFrame(rows)
 mean = (tab.groupby(["variable", "category"], sort=False)
         .agg(n_personas=("n_personas", "first"), share_2026=("share_2026", "mean"),
-             low=("share_2026", "min"), high=("share_2026", "max"), lean_left=("lean_left", "mean"),
-             harris_2024=("harris_2024", "first"))
+             low=("share_2026", "min"), high=("share_2026", "max"), lean_rep=("lean_rep", "mean"),
+             trump_2024=("trump_2024", "first"))
         .reset_index())
-# Difference = leaning left minus the 2024 Harris share of the same personas. It uses the
-# leaning-left share, not the SSR share, so the pull toward 50 per cent does not show up as change.
-mean["change"] = mean["lean_left"] - mean["harris_2024"]
+# Difference = leaning Republican minus the 2024 Trump share of the same personas. It uses the
+# leaning-Republican share, not the SSR share, so the pull toward 50 per cent does not show up as change.
+mean["change"] = mean["lean_rep"] - mean["trump_2024"]
 
 #### Checks ####
 assert tab["share_2026"].between(0, 1).all(), "A cell share is outside 0 to 1"
-assert tab["harris_2024"].dropna().between(0, 1).all()
-assert tab["lean_left"].between(0, 1).all()
+assert tab["trump_2024"].dropna().between(0, 1).all()
+assert tab["lean_rep"].between(0, 1).all()
 assert tab.groupby(["variable", "category"])["model"].nunique().eq(tab["model"].nunique()).all(), \
     "A model is missing from a cell"
 for label in LABELS.values():   # every variable's categories add up to all personas
@@ -155,13 +155,13 @@ def signed(x):
 
 # Two narrow tables side by side, written as HTML so each variable is its own block (tbody) with
 # a shaded header row; the styling is in styles.css (.crosstab). Each row: group, persona count,
-# share of synthetic voters leaning left, share of the same personas who voted Harris in 2024, and
+# share of synthetic voters leaning Republican, share of the same personas who voted Trump in 2024, and
 # the difference. The SSR share (share_2026) and its range across models stay in crosstabs.csv but
-# are not shown: the page compares people with people (leaning left against voted Harris).
+# are not shown: the page compares people with people (leaning Republican against voted Trump).
 import html as html_lib
 
-HEAD = ("<thead><tr><th>Group</th><th>Personas</th><th>Synthetic voters leaning left (%)</th>"
-        "<th>Voted Harris in 2024 (%)</th><th>Difference (points)</th></tr></thead>")
+HEAD = ("<thead><tr><th>Group</th><th>Personas</th><th>Synthetic Republican support, 2026 Senate (%)</th>"
+        "<th>Republican vote, 2024 presidential election (%)</th><th>Difference (points)</th></tr></thead>")
 
 
 def block(label):
@@ -170,7 +170,7 @@ def block(label):
     for _, r in sub.iterrows():
         cls = ' class="ct-all"' if label == "All personas" else ""
         rows.append(f"<tr{cls}><td>{html_lib.escape(r['category'])}</td><td>{r['n_personas']:,}</td>"
-                    f"<td>{pct(r['lean_left'])}</td><td>{pct(r['harris_2024'])}</td>"
+                    f"<td>{pct(r['lean_rep'])}</td><td>{pct(r['trump_2024'])}</td>"
                     f"<td>{signed(r['change'])}</td></tr>")
     return "<tbody>" + "".join(rows) + "</tbody>"
 
@@ -184,5 +184,5 @@ md = ["```{=html}", f'<div class="crosstab-pair">{tables}</div>', "```"]
 (config.RUN_RESULTS / "crosstabs.md").write_text("\n".join(md) + "\n")
 
 print(f"Saved {config.RUN_RESULTS / 'crosstabs.csv'} and crosstabs.md")
-print(mean.assign(**{c: mean[c].round(3) for c in ["share_2026", "low", "high", "lean_left", "harris_2024", "change"]})
+print(mean.assign(**{c: mean[c].round(3) for c in ["share_2026", "low", "high", "lean_rep", "trump_2024", "change"]})
       .to_string(index=False))

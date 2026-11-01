@@ -6,16 +6,18 @@
     "haiku",
     "luna"
   ],
+  "bias_correction": false,
+  "combination_method": "raw_error_weighted",
   "p_rep_control": [
-    0.361,
-    0.373,
-    0.388,
-    0.376
+    0.392,
+    0.414,
+    0.434,
+    0.457
   ],
   "rep_median": [
-    47.5,
     48.0,
     48.0,
-    48.0
+    48.5,
+    49.0
   ]
 }
