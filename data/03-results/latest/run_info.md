@@ -1,1 +1,1 @@
-Latest run: 31 October 2026, with that day's news. Across the 4 models, the probability that Republicans control the Senate is 36 to 39 per cent, and the median number of Republican seats is 48 to 48.
+Latest run: 31 October 2026, with that day's news. Across the 4 models, the probability that Republicans control the Senate is 39 to 46 per cent, and the median number of Republican seats is 48 to 49.

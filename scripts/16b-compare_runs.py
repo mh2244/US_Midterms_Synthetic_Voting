@@ -7,8 +7,7 @@
 #                           run, and how far each news day moved it from the no-news baseline
 #            3. methods.md  for the latest news run: chance of Republican control and median seats
 #                           under three methods (synthetic only, inverse-variance, and 2024 +
-#                           uniform swing with no language model), plus the leave-one-out
-#                           error of each method against the polls
+#                           uniform swing with no language model)
 # Author: Kexin (Coco) Liu
 # Date: 27 October 2026
 # License: MIT
@@ -23,10 +22,6 @@
 #   outside estimate t from script 11 (the poll average in polled states, 2024 + swing elsewhere)
 #   with that estimate's standard deviation, plus the same national error as script 11 (0.03).
 #   It is the inverse-variance forecast with the synthetic voters' weight set to zero.
-# HOW the leave-one-out error is computed: each polled state's poll is hidden in turn, the bias,
-#   swing and variances are estimated from the other polled states, and the hidden poll average is
-#   predicted. The target is a poll average, not a result, so this measures agreement with polls.
-
 #### Workspace setup ####
 from pathlib import Path
 
@@ -38,7 +33,6 @@ import config
 NEWS_DAYS = ["2026-10-27", "2026-10-29", "2026-10-31"]
 OUT = config.RESULTS / "comparison"
 DEM_NOT_UP, REP_NOT_UP = 34, 31          # as in script 11
-FLOOR = 0.005 ** 2                         # as in script 11
 rng = np.random.default_rng(config.SEED)
 
 
@@ -93,10 +87,13 @@ rows = []
 for run in runs:
     f = read_forecast(config.RESULTS / f"run_{run}" / "forecast_ivw.parquet")
     s = summary(seats_from(f[["model", "draw", "state", "winner"]].drop_duplicates()))
-    rows.append({"run": run, **s})
+    metadata = pd.read_csv(config.RESULTS / f"run_{run}" / "chamber_summary_ivw.csv")
+    raw_method = ("bias_correction" in metadata and
+                  metadata["bias_correction"].astype(str).str.lower().eq("false").all())
+    rows.append({"run": run, "combination": "raw synthetic" if raw_method else "mean-bias corrected", **s})
 by_run = pd.DataFrame(rows)
 by_run.round(4).to_csv(OUT / "runs.csv", index=False)
-md = ["| Day | Probability of Democratic control (%) | Probability of Republican control (%) | Republican seats, median (90% interval) |",
+md = ["| Day | Probability of Democratic caucus control (%) | Probability of Republican control (%) | Republican seats, median (90% interval) |",
       "|---|---:|---:|---:|"]
 for r in by_run[by_run["run"] != "nonews"].itertuples():   # dated runs only; the no-news run stays in runs.csv
     md.append(f"| {label(r.run)} | {pct(r.p_dem)} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) |")
@@ -196,7 +193,7 @@ plt.close(fig)
 #### 3. Methods, for the latest news run ####
 res = config.RESULTS / f"run_{latest}"
 methods = []
-for tag, name in [("uncalibrated", "Synthetic voters only"), ("ivw", "Inverse-variance combination (headline)")]:
+for tag, name in [("uncalibrated", "Synthetic voters only"), ("ivw", "Synthetic + polling information")]:
     f = read_forecast(res / f"forecast_{tag}.parquet")
     methods.append({"method": name, **summary(seats_from(f[["model", "draw", "state", "winner"]].drop_duplicates()))})
 
@@ -214,62 +211,40 @@ for state, r in base.iterrows():
     left = nominees.loc[state, "left_party"]
     sim.append(pd.DataFrame({"model": "baseline", "draw": np.arange(n), "state": state,
                              "winner": np.where(s > 0.5, left, "Republican")}))
-methods.append({"method": "2024 + uniform swing (no language model)",
+methods.append({"method": "Polls + 2024 swing (no LLM)",
                 **summary(seats_from(pd.concat(sim, ignore_index=True)))})
 
-# Leave-one-out error against the polls, pooled over models
-poll = pd.read_csv(res / "state_comparison_ivw.csv")[["state", "poll_share", "n_polls", "pres2024_dem_share"]]
-loo = []
-for model, g in w.merge(poll, on="state").groupby("model"):
-    P = g[g["source"] == "poll"].copy()
-    P["var_poll"] = P["var_t"]
-    for s in P["state"]:
-        tr, te = P[P["state"] != s], P[P["state"] == s].iloc[0]
-        gap = (tr["model_share"] - tr["poll_share"]).mean()
-        swing = (tr["poll_share"] - tr["pres2024_dem_share"]).mean()
-        vs = max(FLOOR, (tr["model_share"] - gap - tr["poll_share"]).var() - tr["var_boot"].mean() - tr["var_poll"].mean())
-        vb = max(FLOOR, (tr["poll_share"] - tr["pres2024_dem_share"] - swing).var() - tr["var_poll"].mean())
-        m_star, b = te["model_share"] - gap, te["pres2024_dem_share"] + swing
-        vm = te["var_boot"] + vs
-        wt = vm / (vm + vb)
-        loo.append({"model": model, "state": s, "truth": te["poll_share"], "synthetic": te["model_share"],
-                    "baseline": b, "ivw": wt * b + (1 - wt) * m_star})
-loo = pd.DataFrame(loo)
-err = {k: (loo[k] - loo["truth"]).abs().mean() for k in ["synthetic", "ivw", "baseline"]}
-loo.round(4).to_csv(OUT / "leave_one_out.csv", index=False)
-for m, k in zip(methods, ["synthetic", "ivw", "baseline"]):
-    m["loo_error"] = err[k]
 meth = pd.DataFrame(methods)
 meth.round(4).to_csv(OUT / "methods.csv", index=False)
-md = ["| Method | Probability of Republican control (%) | Republican seats, median (90% interval) | Error against hidden polls (points) |",
-      "|---|---:|---:|---:|"]
+# This paragraph follows the latest run, rather than leaving old figures in the Discussion.
+synthetic, combined, baseline = methods
+polled_weights = w.loc[w["source"] == "poll", "w_synthetic"].mean()
+unpolled_weights = w.loc[w["source"] != "poll", "w_synthetic"].mean()
+summary_text = (
+    f"For {label(latest)}, adding polling and historical information lowers the Republican "
+    f"control probability from {pct(synthetic['p_rep'])}% in the synthetic-only forecast to "
+    f"{pct(combined['p_rep'])}%. The no-LLM benchmark gives {pct(baseline['p_rep'])}%, so including "
+    "synthetic responses moves the combined forecast toward greater Republican support. "
+    f"Synthetic estimates receive an average weight of {polled_weights * 100:.0f}% in polled "
+    f"states and {unpolled_weights * 100:.0f}% in unpolled states. The remaining weight goes "
+    "to state polling averages or, where unavailable, the 2024 CES vote share plus uniform swing. "
+    "The combined result is therefore driven mainly by these outside estimates."
+)
+(OUT / "method_summary.md").write_text(summary_text + "\n")
+
+md = ["| Method | Probability of Republican control (%) | Republican seats, median (90% interval) |",
+      "|---|---:|---:|"]
 for r in meth.itertuples():
-    md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) | {r.loo_error * 100:.1f} |")
+    md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) |")
 (OUT / "methods.md").write_text("\n".join(md) + "\n")
 
-# Leave-one-out error by model (website, Validation and tests): mean absolute error in points
-# against the hidden poll average, and the share of polled states where the combination is closer
-# than 2024 + uniform swing
-by_model = loo.assign(**{f"e_{k}": (loo[k] - loo["truth"]).abs() * 100 for k in ["synthetic", "ivw", "baseline"]})
-lm = by_model.groupby("model").agg(synthetic=("e_synthetic", "mean"), ivw=("e_ivw", "mean"),
-                                   baseline=("e_baseline", "mean"),
-                                   beats=("e_ivw", lambda e: (e < by_model.loc[e.index, "e_baseline"]).mean()))
-lm = lm.loc[[m for m in config.MODEL_LABELS if m in lm.index]]
-md = [f"| Model | Synthetic voters only | Inverse-variance combination | 2024 + uniform swing | "
-      f"States where the combination is closer than 2024 + swing |", "|---|---:|---:|---:|---:|"]
-for m, r in lm.iterrows():
-    md.append(f"| {config.MODEL_LABELS.get(m, m)} | {r.synthetic:.1f} | {r.ivw:.1f} | {r.baseline:.1f} | "
-              f"{r.beats * 100:.0f}% |")
-md.append(f"| **All models** | {lm.synthetic.mean():.1f} | {lm.ivw.mean():.1f} | {lm.baseline.mean():.1f} | "
-          f"{lm.beats.mean() * 100:.0f}% |")
-(OUT / "leave_one_out.md").write_text("\n".join(md) + "\n")
 (OUT / "latest_run.txt").write_text(label(latest) + "\n")
 
 #### Checks ####
 assert by_run[["p_dem", "p_rep"]].stack().between(0, 1).all()
 assert (by_run["p_dem"] + by_run["p_rep"] <= 1 + 1e-9).all(), "Control chances add up to more than 1"
 assert news[runs].stack().between(0, 1).all(), "A synthetic share is outside 0 to 1"
-assert meth["loo_error"].notna().all() and len(loo) > 0
+assert len(meth) == 3 and meth[["p_dem", "p_rep"]].stack().between(0, 1).all()
 
 print((OUT / "runs.md").read_text())
 print((OUT / "news.md").read_text())

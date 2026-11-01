@@ -1,5 +1,5 @@
-| Day | Probability of Democratic control (%) | Probability of Republican control (%) | Republican seats, median (90% interval) |
+| Day | Probability of Democratic caucus control (%) | Probability of Republican control (%) | Republican seats, median (90% interval) |
 |---|---:|---:|---:|
-| 27 October | 60 | 38 | 48 (40 to 56) |
-| 29 October | 59 | 39 | 48 (40 to 56) |
-| 31 October | 61 | 37 | 48 (40 to 55) |
+| 27 October | 53 | 45 | 49 (41 to 57) |
+| 29 October | 51 | 46 | 49 (41 to 57) |
+| 31 October | 56 | 42 | 48 (41 to 56) |

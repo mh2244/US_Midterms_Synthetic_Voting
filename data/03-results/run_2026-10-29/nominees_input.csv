@@ -1,0 +1,36 @@
+state,state_name,race_type,left_name,left_party,rep_name
+FL,Florida,special,Angie Nixon,Democratic,Ashley Moody
+OH,Ohio,special,Sherrod Brown,Democratic,Jon Husted
+AL,Alabama,regular,Everett Wess,Democratic,Barry Moore
+AK,Alaska,regular,Mary Peltola,Democratic,Dan Sullivan
+AR,Arkansas,regular,Hallie Shoffner,Democratic,Tom Cotton
+CO,Colorado,regular,John Hickenlooper,Democratic,Mark Baisley
+DE,Delaware,regular,Chris Coons,Democratic,Michael Katz
+GA,Georgia,regular,Jon Ossoff,Democratic,Mike Collins
+ID,Idaho,regular,Todd Achilles,Independent,Jim Risch
+IL,Illinois,regular,Juliana Stratton,Democratic,Don Tracy
+IA,Iowa,regular,Josh Turek,Democratic,Ashley Hinson
+KS,Kansas,regular,Adam Hamilton,Democratic,Roger Marshall
+KY,Kentucky,regular,Charles Booker,Democratic,Andy Barr
+LA,Louisiana,regular,Jamie Davis,Democratic,Julia Letlow
+ME,Maine,regular,Troy Jackson,Democratic,Susan Collins
+MA,Massachusetts,regular,Ed Markey,Democratic,John Deaton
+MI,Michigan,regular,Abdul El-Sayed,Democratic,Mike Rogers
+MN,Minnesota,regular,Peggy Flanagan,Democratic,Michele Tafoya
+MS,Mississippi,regular,Scott Colom,Democratic,Cindy Hyde-Smith
+MT,Montana,regular,Alani Bankhead,Democratic,Kurt Alme
+NE,Nebraska,regular,Dan Osborn,Independent,Pete Ricketts
+NH,New Hampshire,regular,Chris Pappas,Democratic,John E. Sununu
+NJ,New Jersey,regular,Cory Booker,Democratic,Justin Murphy
+NM,New Mexico,regular,Ben Ray Luján,Democratic,Larry Marker
+NC,North Carolina,regular,Roy Cooper,Democratic,Michael Whatley
+OK,Oklahoma,regular,N'Kiyla Jasmine Thomas,Democratic,Kevin Hern
+OR,Oregon,regular,Jeff Merkley,Democratic,David Brock Smith
+RI,Rhode Island,regular,Jack Reed,Democratic,Raymond McKay
+SC,South Carolina,regular,Annie Andrews,Democratic,Darline Graham
+SD,South Dakota,regular,Brian Bengs,Independent,Mike Rounds
+TN,Tennessee,regular,Marquita Bradshaw,Democratic,Bill Hagerty
+TX,Texas,regular,James Talarico,Democratic,Ken Paxton
+VA,Virginia,regular,Mark Warner,Democratic,Bert Mizusawa
+WV,West Virginia,regular,Rachel Fetty Anderson,Democratic,Shelley Moore Capito
+WY,Wyoming,regular,James W. Byrd,Democratic,Harriet Hageman

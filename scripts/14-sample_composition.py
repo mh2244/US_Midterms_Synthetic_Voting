@@ -174,8 +174,9 @@ md = [f"The sample contains {len(personas):,} personas, {per_state_text} in each
       f"{personas['state'].nunique()} states. We compare it with the 2024 CES. For each state, we "
       "compute the weighted share of validated voters in each group, then average these shares "
       "across states, giving each state equal weight because each contributes "
-      f"{per_state_text} personas. In every group, the sample is within {max_gap:.1f} "
-      "percentage points of the CES.", "",
+      f"{per_state_text} personas. For each category shown, the proportion of sampled personas "
+      f"differs from the expected proportion under our weighted CES sampling frame by no more "
+      f"than {max_gap:.1f} percentage points.", "",
       f"![Composition of the {len(personas):,} personas (black) against the weighted 2024 CES "
       "(grey). Household income is grouped into seven bands here; the table "
       f"view has all 17 categories.]({FIGURE.as_posix()}){{fig-alt=\"Paired horizontal bars for gender, "

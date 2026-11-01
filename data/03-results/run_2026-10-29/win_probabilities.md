@@ -4,34 +4,34 @@
 | Montana | Alani Bankhead v. Kurt Alme | **>99** | >99 | >99 | >99 | >99 |
 | West Virginia | Rachel Fetty Anderson v. Shelley Moore Capito | **>99** | >99 | >99 | >99 | >99 |
 | Idaho | Todd Achilles (I) v. Jim Risch | **>99** | >99 | >99 | >99 | >99 |
-| Oklahoma | N'Kiyla Jasmine Thomas v. Kevin Hern | **>99** | >99 | >99 | 99 | 100 |
-| Alabama | Everett Wess v. Barry Moore | **98** | 100 | 98 | 98 | 98 |
-| Tennessee | Marquita Bradshaw v. Bill Hagerty | **97** | 97 | 97 | 97 | 96 |
-| Arkansas | Hallie Shoffner v. Tom Cotton | **96** | 97 | 94 | 96 | 96 |
-| South Dakota | Brian Bengs (I) v. Mike Rounds | **92** | 88 | 97 | 93 | 92 |
-| Louisiana | Jamie Davis v. Julia Letlow | **85** | 89 | 87 | 78 | 86 |
-| Kentucky | Charles Booker v. Andy Barr | **76** | 77 | 67 | 81 | 78 |
-| Florida | Angie Nixon v. Ashley Moody | **74** | 74 | 75 | 76 | 72 |
-| Mississippi | Scott Colom v. Cindy Hyde-Smith | **74** | 72 | 78 | 70 | 75 |
-| Kansas | Adam Hamilton v. Roger Marshall | **66** | 73 | 68 | 62 | 62 |
-| Nebraska | Dan Osborn (I) v. Pete Ricketts | **61** | 57 | 64 | 59 | 64 |
-| South Carolina | Annie Andrews v. Darline Graham | **60** | 55 | 69 | 57 | 59 |
-| Texas | James Talarico v. Ken Paxton | **59** | 67 | 63 | 55 | 50 |
-| Maine | Troy Jackson v. Susan Collins | **54** | 61 | 47 | 54 | 55 |
-| Iowa | Josh Turek v. Ashley Hinson | **53** | 54 | 49 | 55 | 53 |
-| Michigan | Abdul El-Sayed v. Mike Rogers | **37** | 36 | 42 | 34 | 36 |
-| Ohio | Sherrod Brown v. Jon Husted | **31** | 33 | 36 | 27 | 29 |
-| Alaska | Mary Peltola v. Dan Sullivan | **27** | 30 | 18 | 31 | 30 |
-| Minnesota | Peggy Flanagan v. Michele Tafoya | **18** | 15 | 14 | 22 | 20 |
-| New Hampshire | Chris Pappas v. John E. Sununu | **14** | 12 | 13 | 15 | 15 |
-| Georgia | Jon Ossoff v. Mike Collins | **11** | 12 | 9 | 11 | 10 |
-| North Carolina | Roy Cooper v. Michael Whatley | **7** | 5 | 12 | 4 | 5 |
-| Virginia | Mark Warner v. Bert Mizusawa | **5** | 6 | 7 | 4 | 4 |
-| Illinois | Juliana Stratton v. Don Tracy | **5** | 5 | 4 | 4 | 5 |
-| Colorado | John Hickenlooper v. Mark Baisley | **2** | <1 | 3 | 2 | 2 |
-| New Jersey | Cory Booker v. Justin Murphy | **2** | 3 | 1 | 2 | 2 |
-| New Mexico | Ben Ray Luján v. Larry Marker | **1** | <1 | <1 | 1 | 1 |
-| Oregon | Jeff Merkley v. David Brock Smith | **<1** | <1 | <1 | <1 | <1 |
-| Rhode Island | Jack Reed v. Raymond McKay | **<1** | <1 | <1 | <1 | <1 |
+| Oklahoma | N'Kiyla Jasmine Thomas v. Kevin Hern | **>99** | >99 | >99 | 99 | >99 |
+| Alabama | Everett Wess v. Barry Moore | **99** | 100 | 99 | 98 | 99 |
+| Tennessee | Marquita Bradshaw v. Bill Hagerty | **98** | 99 | 99 | 98 | 98 |
+| Arkansas | Hallie Shoffner v. Tom Cotton | **96** | 98 | 96 | 96 | 96 |
+| South Dakota | Brian Bengs (I) v. Mike Rounds | **95** | 94 | 97 | 95 | 94 |
+| Kentucky | Charles Booker v. Andy Barr | **92** | 92 | 90 | 93 | 92 |
+| Louisiana | Jamie Davis v. Julia Letlow | **84** | 86 | 85 | 78 | 85 |
+| Florida | Angie Nixon v. Ashley Moody | **80** | 80 | 82 | 82 | 78 |
+| Mississippi | Scott Colom v. Cindy Hyde-Smith | **76** | 76 | 79 | 73 | 77 |
+| South Carolina | Annie Andrews v. Darline Graham | **66** | 65 | 72 | 64 | 64 |
+| Nebraska | Dan Osborn (I) v. Pete Ricketts | **62** | 62 | 65 | 60 | 61 |
+| Kansas | Adam Hamilton v. Roger Marshall | **60** | 65 | 62 | 55 | 57 |
+| Iowa | Josh Turek v. Ashley Hinson | **57** | 59 | 56 | 57 | 57 |
+| Maine | Troy Jackson v. Susan Collins | **54** | 57 | 52 | 53 | 55 |
+| Texas | James Talarico v. Ken Paxton | **53** | 58 | 56 | 50 | 48 |
+| Alaska | Mary Peltola v. Dan Sullivan | **42** | 45 | 38 | 42 | 42 |
+| Michigan | Abdul El-Sayed v. Mike Rogers | **41** | 42 | 46 | 39 | 39 |
+| Ohio | Sherrod Brown v. Jon Husted | **38** | 40 | 42 | 34 | 37 |
+| Minnesota | Peggy Flanagan v. Michele Tafoya | **29** | 28 | 29 | 30 | 30 |
+| New Hampshire | Chris Pappas v. John E. Sununu | **21** | 20 | 23 | 20 | 21 |
+| Georgia | Jon Ossoff v. Mike Collins | **16** | 17 | 16 | 16 | 15 |
+| Virginia | Mark Warner v. Bert Mizusawa | **15** | 16 | 17 | 13 | 12 |
+| North Carolina | Roy Cooper v. Michael Whatley | **11** | 9 | 16 | 8 | 10 |
+| Illinois | Juliana Stratton v. Don Tracy | **7** | 7 | 7 | 6 | 7 |
+| Colorado | John Hickenlooper v. Mark Baisley | **5** | 3 | 7 | 4 | 5 |
+| New Jersey | Cory Booker v. Justin Murphy | **4** | 5 | 4 | 4 | 4 |
+| New Mexico | Ben Ray Luján v. Larry Marker | **2** | 2 | 2 | 1 | 2 |
+| Oregon | Jeff Merkley v. David Brock Smith | **1** | 2 | 1 | 1 | 1 |
 | Delaware | Chris Coons v. Michael Katz | **<1** | <1 | <1 | <1 | <1 |
 | Massachusetts | Ed Markey v. John Deaton | **<1** | <1 | <1 | <1 | <1 |
+| Rhode Island | Jack Reed v. Raymond McKay | **<1** | <1 | <1 | <1 | <1 |

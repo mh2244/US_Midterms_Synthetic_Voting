@@ -347,11 +347,21 @@ def test_schema_ivw_weights(ivw, nominees):
 
 
 def test_combined_share_between_its_inputs(ivw):
-    """A weighted average lies between the two things it averages: the bias-corrected synthetic
-    share and the outside estimate."""
+    """A weighted average lies between the two things it averages: the synthetic
+    share used by the chosen method and the outside estimate."""
     lo = np.minimum(ivw["m_star"], ivw["t"]) - 1e-6
     hi = np.maximum(ivw["m_star"], ivw["t"]) + 1e-6
     assert ivw["combined"].between(lo, hi).all()
+
+
+def test_uncorrected_synthetic_input(ivw):
+    """Raw-combination runs must not subtract the diagnostic mean gap."""
+    if "bias_correction" not in ivw or ivw["bias_correction"].astype(str).str.lower().eq("true").any():
+        pytest.skip("historical bias-corrected method")
+    assert np.allclose(ivw["m_star"], ivw["model_share"], atol=1e-8)
+    assert np.allclose(ivw["synthetic_input"], ivw["model_share"], atol=1e-8)
+    expected = ivw["w_synthetic"] * ivw["model_share"] + (1 - ivw["w_synthetic"]) * ivw["t"]
+    assert np.allclose(ivw["combined"], expected, atol=1.1e-4)
 
 
 def test_models_agree_on_which_states_are_polled(ivw):
@@ -388,8 +398,13 @@ def cross():
 def test_crosstab_shares(cross):
     """Crosstab shares are present and between 0 and 1."""
     each = cross[cross["model"] != "mean of models"]
-    assert each[["share_2026", "lean_left"]].notna().all().all()
-    assert each[["share_2026", "lean_left"]].stack().between(0, 1).all()
+    lean = "lean_rep" if "lean_rep" in each else "lean_left"  # Historical tables retain their original schema.
+    assert each[["share_2026", lean]].notna().all().all()
+    assert each[["share_2026", lean]].stack().between(0, 1).all()
+    if "trump_2024" in cross:
+        assert cross["trump_2024"].dropna().between(0, 1).all()
+        mean = cross[cross["model"] == "mean of models"]
+        assert np.allclose(mean["change"], mean["lean_rep"] - mean["trump_2024"], atol=1.1e-4)
 
 
 def test_crosstab_groups_complete(cross, personas):
