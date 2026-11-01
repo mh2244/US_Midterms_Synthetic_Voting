@@ -103,11 +103,16 @@ for r in by_run[by_run["run"] != "nonews"].itertuples():   # dated runs only; th
 (OUT / "runs.md").write_text("\n".join(md) + "\n")
 
 #### 2. Synthetic share before any poll correction, by model and run ####
+# Montana is left out of the news comparison on every day: its left candidate changed from the
+# Democrat Alani Bankhead (27 and 29 October and the no-news run) to the independent Seth Bodnar
+# (31 October), so its change from the no-news run is not an effect of the news.
+NEWS_EXCLUDE = ["MT"]
 share = {}
 for run in runs:
     comp = pd.read_csv(config.RESULTS / f"run_{run}" / "state_comparison_uncalibrated.csv")
+    comp = comp[~comp["state"].isin(NEWS_EXCLUDE)]
     cols = [c for c in comp.columns if c.startswith("model_")]
-    share[run] = comp[cols].mean().rename(lambda c: c.removeprefix("model_"))   # plain mean over the 35 states
+    share[run] = comp[cols].mean().rename(lambda c: c.removeprefix("model_"))   # plain mean over the 34 states
 news = pd.DataFrame(share)
 models = [m for m in config.MODEL_LABELS if m in news.index] + sorted(set(news.index) - set(config.MODEL_LABELS))
 news = news.loc[models]
@@ -125,7 +130,7 @@ for m, r in republican_news.iterrows():
 (OUT / "news.md").write_text("\n".join(md) + "\n")
 
 #### 2b. Figure: the synthetic share in each setting, and each state's change from no news ####
-# Left: mean over the 35 states for each model (config.MODEL_COLOURS, labelled at the right) and all models (black),
+# Left: mean over the 34 states (Montana left out, see section 2) for each model (config.MODEL_COLOURS, labelled at the right) and all models (black),
 # in the order no news, 27, 29, 31 October. Right (when the no-news run exists): each state's change
 # from no news, all models pooled, one dot per state. Saved as figures/run_<RUN>/news_effect.png.
 import matplotlib
@@ -138,6 +143,7 @@ xlab = ["No news" if r == "nonews" else label(r) for r in order]
 per_state = {}
 for run in order:
     comp = pd.read_csv(config.RESULTS / f"run_{run}" / "state_comparison_uncalibrated.csv").set_index("state")
+    comp = comp.drop(index=NEWS_EXCLUDE, errors="ignore")
     per_state[run] = 1 - comp[[c for c in comp.columns if c.startswith("model_")]].mean(axis=1)   # models pooled
 has_base = "nonews" in runs and len(news_runs) > 0
 fig, axes = plt.subplots(1, 2 if has_base else 1, figsize=(9, 3.6) if has_base else (5.5, 3.6),
