@@ -21,7 +21,7 @@
 #      of the 35 states rather than counting every state equally.
 #   3. Cell share = sum(w * p_rep) / sum(w * (p_left + p_rep)), for each model; the table shows
 #      the plain mean over models (each model counts once) and the range across models.
-#   4. "Leaning Republican" is the weighted share of personas whose p_left is larger than p_rep. SSR
+#   4. "Leaning Republican" is the weighted share of personas whose p_rep is larger than p_left. SSR
 #      rarely gives a probability near 0 or 1 (an answer that clearly backs one candidate still
 #      scores about 0.85 to 0.9), so the share in step 3 is pulled toward 50 per cent in groups that
 #      vote one way; the leaning-Republican share shows which side the answers actually took.

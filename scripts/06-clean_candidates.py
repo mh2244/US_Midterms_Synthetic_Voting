@@ -2,19 +2,20 @@
 # Purpose: Turns the Wikipedia candidate list into one row per race that names the main
 #          "left" candidate (the Democrat, or the leading independent where there is none)
 #          and the Republican. Later scripts put these names in the prompts and anchors. 
-#          While there are multiple parties (Republican, Democrat, Independent, Liberterian, etc.)
-#          this script compares the senate_candidates_2026.csv to the real polling data to identify
-#          2 sides--SSR requires 1 scale (not Republican to definitely Republican, in our case). from
-#          real polling data, idnetifies the Republican candidate with most vote share and opposition 
-#          /non-Republican with highest vote share as the two main candidates. 
-#           Would be a limitation to mention in our analysis.
-# Author: Maggie, Coco, Amelia.
+#          While there are several parties (Republican, Democratic, Independent, Libertarian, etc.),
+#          SSR needs one scale with two ends, so the script compares senate_candidates_2026.csv with
+#          the real polling data and keeps the Republican with the most poll support and the
+#          non-Republican with the most poll support as the two main candidates. This is a
+#          limitation we discuss on the website.
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/05-collect_candidates.py first. The poll file is optional,
 #   but it helps pick the right person when a party lists several names.
 # Any other information needed? Run from the project root. READ THE PRINTED WARNINGS and fix
-#   the OVERRIDES table below by hand: Wikipedia lists are messy (see the notes there).
+#   the OVERRIDES table below by hand: Wikipedia lists are messy (see the notes there). Montana's
+#   override (the independent Seth Bodnar, the leading challenger) was added before the 31 October run.
+# Outputs: data/02-analysis_data/senate_nominees_2026.csv (one row per race) and candidates_clean.csv
 #
 # WHY this script exists: the raw list has full state names, a "DFL" label in Minnesota, three
 # Republicans in Alaska, no Democrat in Idaho and South Dakota, and an independent (Osborn) as

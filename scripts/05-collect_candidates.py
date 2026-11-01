@@ -1,5 +1,13 @@
-## Download the list of 2026 U.S. Senate candidates from Wikipedia
-## Each row represents one race
+#### Preamble ####
+# Purpose: Downloads the list of 2026 US Senate candidates from Wikipedia ("2026 United States
+#          Senate elections"), one row per candidate with the state and party.
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
+# Date: 21 October 2026
+# License: MIT
+# Pre-requisites: Internet access; pip install pandas requests lxml.
+# Any other information needed? Run from the project root:  python scripts/05-collect_candidates.py
+# Output: data/01-raw_data/senate_candidates_2026.csv (raw; script 06 picks the two candidates
+#   per race from it). The list was downloaded on 21 October 2026.
 
 ## Required Packages
 import re
