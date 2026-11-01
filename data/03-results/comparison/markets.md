@@ -1,7 +1,7 @@
 | News day | States | Correlation | Mean absolute difference (points) | Favourite differs | Probability of Republican control: ours / market (%) |
 |---|---:|---:|---:|---|---:|
-| 27 October | 35 | 0.98 | 5.7 | Maine, Texas | 38 / 36 |
-| 29 October | 35 | 0.98 | 6.2 | Maine, Texas | 39 / 33 |
+| 27 October | 35 | 0.98 | 6.1 | Maine, Texas | 38 / 36 |
+| 29 October | 35 | 0.97 | 6.6 | Maine, Texas | 39 / 33 |
 
 <details>
 <summary>Table view: every race, 29 October</summary>
@@ -26,7 +26,6 @@
 | Colorado | 2 | 2 | 0 |
 | Tennessee | 97 | 97 | 0 |
 | Illinois | 4 | 5 | +1 |
-| Montana | 99 | >99 | +1 |
 | Arkansas | 94 | 96 | +2 |
 | West Virginia | 98 | >99 | +2 |
 | Ohio | 28 | 31 | +3 |
@@ -42,6 +41,7 @@
 | Michigan | 24 | 37 | +13 |
 | Kansas | 51 | 66 | +15 |
 | Maine | 39 | 54 | +16 |
+| Montana (I) | 84 | >99 | +16 |
 | Texas | 32 | 59 | +27 |
 
 </details>

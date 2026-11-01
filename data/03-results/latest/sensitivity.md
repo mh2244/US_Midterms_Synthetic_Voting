@@ -1,6 +1,6 @@
-| National error SD | Poll error 0.02 | Poll error 0.03 | Poll error 0.04 |
+| National error (points) | Poll error: 2 points | Poll error: 3 points | Poll error: 4 points |
 |---|---:|---:|---:|
-| 0.00 | 7 / 90 | 17 / 78 | 26 / 66 |
-| 0.02 | 30 / 68 | 33 / 64 | 35 / 60 |
-| 0.03 | 36 / 64 | **37 / 61** | 39 / 57 |
-| 0.04 | 38 / 61 | 40 / 59 | 41 / 56 |
+| 0 | 7% | 17% | 26% |
+| 2 | 30% | 33% | 35% |
+| 3 | 36% | **37%** | 39% |
+| 4 | 38% | 40% | 41% |
