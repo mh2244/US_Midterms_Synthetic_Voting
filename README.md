@@ -45,7 +45,8 @@ large language models, and combined with state polls. **No real person was surve
    five anchor statements are embedded and compared.
 5. **Combining with polls.** For each state and model, the synthetic share is bias-corrected and
    averaged with the state's poll average (or, in the 10 unpolled states, its 2024 share plus a
-   uniform swing) using inverse-variance weights. Simulations add persona resampling, model
+   uniform swing) using inverse-variance weights. A version that keeps the bias and counts it as
+   error (`scripts/11-build_forecast.py --bias keep`) is reported for comparison. Simulations add persona resampling, model
    error, poll error and a national error shared by all states (standard deviation 0.03).
 6. **Outputs.** 1,000 simulated outcomes per state and model, saved as parquet, summarized as
    seat distributions, win probabilities, a map and tables on the website.
@@ -178,7 +179,7 @@ same stage. Each script starts with a preamble (purpose, inputs, outputs, how to
 | | `15b-make_headline.py` | Headline, seat bar and run line |
 | | `15c-make_battlegrounds.py` | Results line, battleground table, Republican seat distribution |
 | Tables | `16-make_crosstabs.py` | Crosstabs of the synthetic vote by group |
-| | `16b-compare_runs.py` | Runs and methods compared, news-effect figure, leave-one-out check |
+| | `16b-compare_runs.py` | Runs and methods compared, news-effect figure |
 | | `16c-sensitivity.py` | Sensitivity of the headline to the two assumed error sizes |
 | | `16d-costs.py` | Calls, tokens, cost and time per run and model |
 | | `16e-news_summary.py` | Articles kept per outlet and topic, and an example news block |

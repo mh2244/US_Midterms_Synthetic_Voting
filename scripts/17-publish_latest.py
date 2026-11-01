@@ -86,6 +86,7 @@ line = (f"Latest run: {when}, with that day's news. Across the {len(chamber)} mo
         f"is {seat_range}.")
 (config.LATEST_RESULTS / "run_info.md").write_text(line + "\n")
 info_file.write_text(json.dumps({"run": config.RUN, "models": chamber["model"].tolist(),
+                                 "bias_correction": True, "combination_method": "bias_corrected_inverse_variance",
                                  "p_rep_control": chamber["p_rep_control"].round(3).tolist(),
                                  "rep_median": chamber["rep_median"].tolist()}, indent=2) + "\n")
 

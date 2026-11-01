@@ -144,6 +144,10 @@ md += ["", "::: {.chart-note}",
        "Winning probabilities are for the Republican candidate. Positive values mean we give the ",
        "Republican a higher probability than the market does. ",
        "(I) marks a race with an independent instead of a Democrat.", ":::", "", "</details>"]
+missing_days = [run for run in NEWS_DAYS if run not in set(summ["run"])]
+if missing_days:
+    md += ["", "Market closing prices are not available in the saved downloads for "
+           + ", ".join(day(run) for run in missing_days) + "; no same-day comparison is reported."]
 (OUT / "markets.md").write_text("\n".join(md) + "\n")
 
 #### Figure: ours against the market, latest news day ####

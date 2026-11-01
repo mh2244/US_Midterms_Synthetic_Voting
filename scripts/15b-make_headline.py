@@ -70,7 +70,7 @@ day = "with no news" if config.RUN == "nonews" else \
     f"{date.fromisoformat(config.RUN).day} {date.fromisoformat(config.RUN):%B %Y}"
 run_label = "No-news baseline" if config.RUN == "nonews" else f"Forecast as of {day}"
 sub = (f"We combine synthetic responses from {WORDS.get(n_models, n_models)} "
-       f"language models with polling data to forecast the 35 Senate races in 2026. "
+       f"language models with polling information to forecast the 35 Senate races in 2026. "
        f"To estimate which party will control the Senate, we add the 35 race predictions "
        f"to the 65 seats not up for election: {REP_NOT_UP} held by Republicans, 32 by Democrats, and two by "
        f"independents, Bernie Sanders and Angus King, who caucus with Democrats.\n\n"

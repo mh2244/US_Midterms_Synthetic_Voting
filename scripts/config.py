@@ -126,9 +126,11 @@ CANDIDATES_RAW = RAW / "senate_candidates_2026.csv"
 NEWS_FILE = DATA / "news" / "news_context.csv"
 NEWS_SUMMARIES_FILE = DATA / "news" / "persona_news_summaries.csv"
 POLLS_RAW = RAW / "polls" / "pollresults"          # one timestamped folder per download
-POLLS_FILE = SHARED_ANALYSIS / "polls" / "senate_polls_2026_general.csv"
+POLLS_FILE = Path(os.environ.get("FORECAST_POLLS_FILE",
+                                str(SHARED_ANALYSIS / "polls" / "senate_polls_2026_general.csv")))
 
-NOMINEES_FILE = SHARED_ANALYSIS / "senate_nominees_2026.csv"
+NOMINEES_FILE = Path(os.environ.get("FORECAST_NOMINEES_FILE",
+                                   str(SHARED_ANALYSIS / "senate_nominees_2026.csv")))
 CANDIDATES_CLEAN = SHARED_ANALYSIS / "candidates_clean.csv"
 PERSONAS_FILE = SHARED_ANALYSIS / "personas.parquet"
 PROMPTS_FILE = RUN_DIR / "prompts.parquet"

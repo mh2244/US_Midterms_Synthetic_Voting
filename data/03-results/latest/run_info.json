@@ -6,6 +6,8 @@
     "haiku",
     "luna"
   ],
+  "bias_correction": true,
+  "combination_method": "bias_corrected_inverse_variance",
   "p_rep_control": [
     0.361,
     0.373,
