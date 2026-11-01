@@ -11,6 +11,16 @@
 #   The simulated files have the same columns as the real files made by scripts 06, 07,
 #   10 and 11, so the same tests can check both. Numbers marked "same as config.py"
 #   must be changed in both places if the plan changes.
+# HOW the variables are linked (so the fake data behave like the real ones):
+#   - Each state has its own partisan lean, which sets each person's party side.
+#   - Age, gender, race, education and ideology depend on party side (for example, Black,
+#     young, female and post-graduate voters lean Democratic).
+#   - Household income depends on education.
+#   - Each respondent has a stable lean (from ideology plus noise), shared by every model and
+#     repeat, so repeated answers from the same person are correlated.
+#   - The four models differ in substance, not only in failure rates: each has its own
+#     Republican lean (as the real models lean 5 to 9 points Republican of the polls) and its
+#     own decisiveness (how far its answers scatter around the persona's lean).
 
 
 #### Workspace setup ####
@@ -95,7 +105,39 @@ party_labels = {
     "middle": ["Independent", "Not sure"],
 }
 
-# Ideology depends on side, so our fake people are plausible
+# Demographics depend on side, so our fake people are plausible (rough 2024 exit-poll patterns).
+# Order of each list: the categories above.
+age_probs = {
+    "dem":    [0.20, 0.27, 0.31, 0.22],
+    "rep":    [0.11, 0.22, 0.38, 0.29],
+    "middle": [0.20, 0.30, 0.33, 0.17],
+}
+gender_probs = {
+    "dem":    [0.420, 0.560, 0.015, 0.005],
+    "rep":    [0.540, 0.455, 0.003, 0.002],
+    "middle": [0.500, 0.480, 0.015, 0.005],
+}
+race_probs = {
+    "dem":    [0.55, 0.22, 0.13, 0.05, 0.05],
+    "rep":    [0.82, 0.03, 0.08, 0.03, 0.04],
+    "middle": [0.66, 0.10, 0.13, 0.05, 0.06],
+}
+education_probs = {
+    "dem":    [0.04, 0.20, 0.18, 0.09, 0.27, 0.22],
+    "rep":    [0.05, 0.31, 0.21, 0.11, 0.22, 0.10],
+    "middle": [0.08, 0.30, 0.22, 0.10, 0.20, 0.10],
+}
+
+# Income depends on education: a bell-shaped profile over the 16 brackets, centred higher for
+# more education, plus a fixed 9% "Prefer not to say".
+income_centre = {"No HS": 3, "HS grad": 5, "Some college": 6, "2-year": 6.5, "4-year": 8.5,
+                 "Post-grad": 10}
+income_probs = {}
+for edu, centre in income_centre.items():
+    weights = np.exp(-((np.arange(16) - centre) ** 2) / (2 * 3.0 ** 2))
+    income_probs[edu] = list(0.91 * weights / weights.sum()) + [0.09]
+
+# Ideology depends on side
 ideology_probs = {
     "dem":    [0.25, 0.40, 0.25, 0.04, 0.01, 0.05],
     "rep":    [0.01, 0.04, 0.25, 0.40, 0.25, 0.05],
@@ -120,22 +162,30 @@ for state in all_states:
 
     for i in range(pool_size):
         side = np.random.choice(["dem", "rep", "middle"], p=[p_dem, p_rep, p_mid])
+        education = np.random.choice(educations, p=education_probs[side])
 
         rows.append({
             "caseid": caseid,
             "state": state,
             "vvweight_post": np.random.uniform(0.1, 3),
-            "age_group": np.random.choice(age_groups, p=[0.15, 0.25, 0.35, 0.25]),
-            "family_income": np.random.choice(family_incomes),
-            "education": np.random.choice(educations, p=[0.05, 0.25, 0.20, 0.10, 0.25, 0.15]),
-            "gender": np.random.choice(genders, p=[0.48, 0.50, 0.01, 0.01]),
-            "race_5": np.random.choice(race_groups, p=[0.65, 0.12, 0.12, 0.05, 0.06]),
+            "age_group": np.random.choice(age_groups, p=age_probs[side]),
+            "family_income": np.random.choice(family_incomes, p=income_probs[education]),
+            "education": education,
+            "gender": np.random.choice(genders, p=gender_probs[side]),
+            "race_5": np.random.choice(race_groups, p=race_probs[side]),
             "party_id_7": np.random.choice(party_labels[side]),
             "ideology": np.random.choice(ideologies, p=ideology_probs[side]),
         })
         caseid = caseid + 1
 
 ces_pool = pd.DataFrame(rows)
+
+# Each respondent's stable lean on the log-odds scale (positive = more Republican), from ideology
+# plus noise. It is kept with the respondent, so a person drawn twice has the same lean, and it
+# is shared by every model and repeat.
+ideology_score = {"Very liberal": -2, "Liberal": -1, "Moderate": 0, "Conservative": 1,
+                  "Very conservative": 2, "Not sure": 0}
+ces_pool["lean"] = 0.5 * ces_pool["ideology"].map(ideology_score) + np.random.normal(0, 0.5, len(ces_pool))
 
 
 #### Sample personas ####
@@ -157,6 +207,8 @@ for state in all_states:
     samples.append(sample)
 
 personas = pd.concat(samples).drop(columns="vvweight_post")
+lean_of = dict(zip(personas["persona_id"], personas["lean"]))   # used for the answers below
+personas = personas.drop(columns="lean")                         # not a column of the real file
 
 # Put persona_id first so the table is easy to read
 personas = personas[["persona_id"] + [c for c in personas.columns if c != "persona_id"]]
@@ -174,6 +226,17 @@ base_probs = {
     "dem":    [0.80, 0.08, 0.12],
     "rep":    [0.08, 0.80, 0.12],
     "middle": [0.35, 0.35, 0.30],
+}
+
+# How the models differ in substance (the real models lean 5 to 9 points Republican of the
+# polls, DeepSeek most and GPT-6 Luna least):
+#   rep_lean       share of the left probability each model moves to the Republican
+#   concentration  how closely a model's answers stay at the persona's lean (higher = steadier)
+model_behaviour = {
+    "haiku":    {"rep_lean": 0.06, "concentration": 25},
+    "luna":     {"rep_lean": 0.05, "concentration": 30},
+    "deepseek": {"rep_lean": 0.09, "concentration": 15},
+    "gemini":   {"rep_lean": 0.07, "concentration": 20},
 }
 
 # How often each model's answer cannot be scored. Planted on purpose for the tests.
@@ -199,10 +262,19 @@ for model in models:
     for repeat in range(1, n_repeats + 1):
         for _, person in personas.iterrows():
             side = side_of[person["party_id_7"]]
+            behaviour = model_behaviour[model]
 
-            # Random probabilities that add up to 1 and centre on the side's base_probs.
-            # A larger number (20) means answers stay closer to the base.
-            p_left, p_rep, p_other = np.random.dirichlet(20 * np.array(base_probs[side]))
+            # Centre of this persona's answers: the side's base probabilities, with the two-party
+            # split moved by the persona's own lean (log-odds), then by the model's Republican lean.
+            left0, rep0, other0 = base_probs[side]
+            r = 1 / (1 + np.exp(-(np.log(rep0 / left0) + lean_of[person["persona_id"]])))
+            centre_left, centre_rep = (1 - other0) * (1 - r), (1 - other0) * r
+            moved = behaviour["rep_lean"] * centre_left
+            centre = np.array([centre_left - moved, centre_rep + moved, other0])
+
+            # Random probabilities that add up to 1 and scatter around the centre; each model has
+            # its own concentration (a larger number keeps answers closer to the centre).
+            p_left, p_rep, p_other = np.random.dirichlet(behaviour["concentration"] * centre)
 
             # Plant answers that cannot be scored
             rates = status_rates[model]
