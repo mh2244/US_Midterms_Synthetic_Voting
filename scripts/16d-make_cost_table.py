@@ -7,7 +7,7 @@
 # Date: 27 October 2026
 # License: MIT
 # Pre-requisites: Script 09 has run for at least one run.
-# Any other information needed? Run from the project root:  python scripts/16d-costs.py
+# Any other information needed? Run from the project root:  python scripts/16d-make_cost_table.py
 # Outputs: data/03-results/comparison/costs.csv and costs.md
 #
 # HOW the cost is computed: input and output tokens times the OpenRouter list prices in

@@ -533,7 +533,7 @@ def main():
     mode.add_argument('--collect-only', action='store_true', help='Collect RSS news without LLM screening.')
     parser.add_argument('--model', help='Paid OpenRouter news model; default OPENROUTER_NEWS_MODEL or openai/gpt-4.1-nano.')
     parser.add_argument('--batch-size', type=int, default=20, help='Articles per model request, 1–20; default 20.')
-    parser.add_argument('--out', type=Path, default=Path(__file__).resolve().parents[1] / 'data/news/news.csv')
+    parser.add_argument('--out', type=Path, default=Path(__file__).resolve().parents[1] / 'data/01-raw_data/news/news.csv')
     args = parser.parse_args()
     if not 1 <= args.per_source_limit <= 60:
         parser.error('--per-source-limit must be between 1 and 60')
@@ -573,7 +573,8 @@ def main():
         if args.collect_only:
             return 0
         return filter_news(session, rows, api_key, model, args.batch_size,
-                           project / '.cache' / 'news_llm.json', args.out.parent)
+                           project / '.cache' / 'news_llm.json',
+                           project / 'data' / '02-analysis_data' / 'news')
 
 
 

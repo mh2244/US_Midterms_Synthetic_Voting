@@ -6,7 +6,7 @@
 # Contact: amelia.f.feng@outlook.com
 # License: MIT
 # Pre-requisites: Run 11-build_forecast.py; install pandas numpy matplotlib pyarrow.
-# Run from the project root: python scripts/15-make_summary_bar.py
+# Run from the project root: python scripts/15-plot_win_probabilities.py
 # Outputs: data/03-results/run_<RUN>/win_probabilities.csv, win_probabilities.md (the table on
 #          the website: one row per race, all models and each model) and
 #          figures/run_<RUN>/forecast_win_probability_bar.png (kept for reference, not on the page)

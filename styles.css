@@ -90,7 +90,7 @@ h4 { font-size: 1.05rem; font-weight: 600; color: var(--ink); margin-top: 1.8em;
 .estimate-head .label { text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700; font-size: 0.85rem; }
 .estimate-head .updated { color: var(--muted); font-size: 0.85rem; }
 
-/* Headline and seat bar (made by scripts/15-make_summary_bar.py) */
+/* Headline and seat bar (made by scripts/15-plot_win_probabilities.py) */
 .forecast-summary { margin: 0.8rem 0 1.5rem; }
 .forecast-summary .headline { font-size: 1.9rem; font-weight: 700; line-height: 1.2; text-align: center;
                               margin: 0.6rem 0 1.4rem; font-family: var(--serif); }

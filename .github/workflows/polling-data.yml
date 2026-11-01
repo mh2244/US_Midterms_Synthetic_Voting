@@ -21,10 +21,10 @@ jobs:
           python-version: "3.12"
 
       - name: Download polling data
-        run: python scripts/polling_data/00-download_polling_data.py
+        run: python scripts/02d-download_polls.py
 
       - name: Clean polling data
-        run: python scripts/polling_data/01-clean_polling_data.py
+        run: python scripts/03b-clean_polls.py
 
       - name: Upload polling data
         uses: actions/upload-artifact@v4

@@ -69,7 +69,7 @@ ap.add_argument("--national-sd", type=float, default=config.NATIONAL_SD,
 ap.add_argument("--poll-window-days", type=int, default=45)
 ap.add_argument("--summary-only", type=Path, default=None,
                 help="append the chamber summary to this csv and save nothing else (for the "
-                     "sensitivity table, scripts/16c-sensitivity.py)")
+                     "sensitivity table, scripts/16c-make_sensitivity_table.py)")
 args = ap.parse_args()
 args.ivw = args.combine == "ivw"
 args.remove_bias = args.bias == "remove"

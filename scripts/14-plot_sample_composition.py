@@ -8,8 +8,8 @@
 # Pre-requisites: Run scripts/06-clean_candidates.py and scripts/07-build_personas.py first
 #   (personas.parquet or personas.csv, and the CES file). Does not call any model or need a key.
 # Any other information needed? Run from the project root:
-#   python scripts/14-sample_composition.py
-#   python scripts/14-sample_composition.py --personas path/to/personas.csv   <- another copy
+#   python scripts/14-plot_sample_composition.py
+#   python scripts/14-plot_sample_composition.py --personas path/to/personas.csv   <- another copy
 # Outputs (in data/03-results/composition/):
 #   composition_overall.csv    one row per variable and category
 #   composition_by_state.csv   long format: state, variable, category, n, pct

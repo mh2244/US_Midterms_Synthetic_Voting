@@ -5,7 +5,7 @@
 # Author: Maggie, Coco, Amelia
 # Date: 22 October 2026
 # License: MIT
-# Pre-requisites: Run scripts/03_extract_data.py and scripts/06-clean_candidates.py first.
+# Pre-requisites: Run scripts/03-extract_ces.py and scripts/06-clean_candidates.py first.
 # Any other information needed? Run from the project root. Set N_PER_STATE in config.py
 #   (5 for the test run). Add --n 100 for the real run.
 #
