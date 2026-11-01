@@ -39,7 +39,7 @@ FIGS = ["seat_bar.png", "forecast_dotplot.png", "forecast_win_probability_bar.pn
 # Copied when present; the sensitivity table (16c) and the battleground summary (15c) are extra
 # and must not block publishing
 OPTIONAL = ["sensitivity.md", "sensitivity.csv", "results_summary.md", "battlegrounds.md", "battlegrounds.csv"]
-OPTIONAL_FIGS = ["seat_distribution.png", "news_effect.png"]
+OPTIONAL_FIGS = ["seat_distribution.png", "news_effect.png", "market_comparison.png"]
 TABLES = ["headline.md", "headline.json", "senate_map.md", "crosstabs.md", "win_probabilities.md", "chamber_summary.csv", "win_probabilities.csv", "ivw_weights.csv",
           "state_comparison.csv"]
 
@@ -81,7 +81,7 @@ day = date.fromisoformat(config.RUN)
 when = f"{day.day} {day:%B %Y}"
 pct_range = f"{p.min():.0f} per cent" if round(p.min()) == round(p.max()) else f"{p.min():.0f} to {p.max():.0f} per cent"
 seat_range = f"{seats.min():.0f}" if seats.min() == seats.max() else f"{seats.min():.0f} to {seats.max():.0f}"
-line = (f"Latest run: {when}, with that day's news. Across the {len(chamber)} models, the chance that "
+line = (f"Latest run: {when}, with that day's news. Across the {len(chamber)} models, the probability that "
         f"Republicans control the Senate is {pct_range}, and the median number of Republican seats "
         f"is {seat_range}.")
 (config.LATEST_RESULTS / "run_info.md").write_text(line + "\n")

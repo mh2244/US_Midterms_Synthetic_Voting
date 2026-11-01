@@ -119,11 +119,14 @@ FIGURES = Path("figures") / f"run_{RUN}"
 # The website shows the latest news run from these fixed paths (filled by script 17).
 LATEST_RESULTS = RESULTS / "latest"
 LATEST_FIGURES = Path("figures") / "latest"
-CES_FILE = DATA / "ces2024_senate_demographics.csv"
-CANDIDATES_RAW = DATA / "senate_candidates_2026.csv"
+RAW = DATA / "01-raw_data"            # inputs as downloaded or entered; never edited by a script
+CES_RAW = RAW / "ces" / "CCES24_Common_OUTPUT_vv_topost_final.csv"   # not in the repo (see README)
+CES_FILE = SHARED_ANALYSIS / "ces2024_senate_demographics.csv"
+CANDIDATES_RAW = RAW / "senate_candidates_2026.csv"
 NEWS_FILE = DATA / "news" / "news_context.csv"
 NEWS_SUMMARIES_FILE = DATA / "news" / "persona_news_summaries.csv"
-POLLS_FILE = DATA / "polling_data" / "02-analysis_data" / "senate_polls_2026_general.csv"
+POLLS_RAW = RAW / "polls" / "pollresults"          # one timestamped folder per download
+POLLS_FILE = SHARED_ANALYSIS / "polls" / "senate_polls_2026_general.csv"
 
 NOMINEES_FILE = SHARED_ANALYSIS / "senate_nominees_2026.csv"
 CANDIDATES_CLEAN = SHARED_ANALYSIS / "candidates_clean.csv"

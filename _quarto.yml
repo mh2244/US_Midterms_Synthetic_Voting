@@ -16,11 +16,12 @@ format:
   html:
     theme: default
     css: styles.css
-    fontsize: 1.1rem
+    fontsize: 1rem
     toc: false
     page-layout: article
     grid:
-      body-width: 860px
+      body-width: 900px
       margin-width: 60px
+      gutter-width: 2rem
     fig-align: center
     smooth-scroll: true

@@ -68,7 +68,7 @@ def pct_text(p):
 
 def table_md(summary, nominees):
     """Markdown table: chance the Democratic or independent candidate wins, by race and model."""
-    wide = summary.pivot(index="state", columns="model", values="p_left_win")
+    wide = summary.pivot(index="state", columns="model", values="p_rep_win")
     models = [m for m in config.MODEL_LABELS if m in wide.columns] + \
              sorted(set(wide.columns) - set(config.MODEL_LABELS))
     wide["all"] = wide[models].mean(axis=1)            # each model counts equally
@@ -132,9 +132,7 @@ def main():
     fig.legend(handles=[Patch(color=BLUE, label="Democratic"), Patch(color=INDEPENDENT, label="Independent*"),
                         Patch(color=RED, label="Republican")], loc="upper center", ncol=3, frameon=False,
                bbox_to_anchor=(0.5, 1.0), fontsize=9.5)
-    fig.text(0.01, 0.005, "* Independent candidate. Numbers in the bars are per cent of simulated outcomes. "
-             f"Run {config.RUN}.", fontsize=8, color=config.MUTED)
-    fig.tight_layout(rect=(0, 0.015, 1, 0.975), h_pad=2.0, w_pad=2.5)
+    fig.tight_layout(rect=(0, 0, 1, 0.975), h_pad=2.0, w_pad=2.5)
     out = config.FIGURES
     out.mkdir(parents=True, exist_ok=True)
     config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)

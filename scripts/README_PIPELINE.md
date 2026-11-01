@@ -19,7 +19,6 @@ python scripts/08-build_prompts.py --news
 python scripts/09-query_models.py --batch-size 40 --sleep 0
 python scripts/10-score_responses.py
 python scripts/11-build_forecast.py --combine none
-python scripts/11-build_forecast.py --combine shrink
 python scripts/11-build_forecast.py              # inverse-variance headline, run last
 python scripts/13-make_figures.py
 python scripts/13b-make_map.py
@@ -30,6 +29,9 @@ python scripts/16-make_crosstabs.py
 python scripts/16b-compare_runs.py
 python scripts/16c-sensitivity.py
 python scripts/16d-costs.py                  # cost and time per run and model
+python scripts/16e-news_summary.py           # news kept per outlet and topic, example news block
+python scripts/02c-download_predictit.py      # PredictIt prices (keeps 7 days: run within a week of each news day)
+python scripts/16f-compare_markets.py         # our forecast against PredictIt
 python scripts/12-test_actual_data.py         # pytest + pandera test suite
 python scripts/17-publish_latest.py              # news runs only; then quarto render
 ```
@@ -61,7 +63,7 @@ Design B requires 42,000 voting requests per run, plus screening/embedding.
   and rerun 09 to retry remaining work.
 - **10–16:** score, simulate, plot and test. Script 11 combines the synthetic share
   with polls (or 2024 + uniform swing) by inverse-variance weights; `--combine
-  shrink` and `--combine none` are kept for comparison. 13b, 15b, 15c and 16 write the
+  none` (synthetic voters only) is kept for comparison. 13b, 15b, 15c and 16 write the
   map, headline, battleground table and crosstabs; 16b–16d compare runs, test
   sensitivity to the assumed errors and tabulate costs. Tests (12, pytest with pandera schemas)
   check consistency, not prediction accuracy; in the workflow 15c, 16b, 16c and

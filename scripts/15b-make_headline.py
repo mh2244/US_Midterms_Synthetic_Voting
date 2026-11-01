@@ -11,7 +11,8 @@
 #   (script 17 copies them to the latest folders that index.qmd reads).
 #
 # HOW the headline is chosen:
-#   Democrats are favoured if they win 51 or more seats WITHOUT any independent in more than half
+#   The Democratic caucus (including its two continuing independents) is favoured if it reaches
+#   51 seats without newly elected independent winners in more than half
 #   of the simulations; Republicans are favoured if they control the Senate (50 or more seats, with
 #   Vice President Vance breaking ties) in more than half; otherwise the race is a toss-up.
 # WHY Democrats need 51 on their own: Osborn (Nebraska) has said he will not caucus with either
@@ -50,7 +51,7 @@ n_models = seats.index.get_level_values("model").nunique()
 assert seats.groupby("model").size().nunique() == 1, "Models have different numbers of draws"
 
 # Pooled over models: every model has the same number of draws, so each counts equally
-p_dem = float((seats["dem"] >= 51).mean())       # Democratic control without independents
+p_dem = float((seats["dem"] >= 51).mean())       # Existing Democratic caucus + Democratic winners; excludes new independent winners
 p_rep = float((seats["rep"] >= 50).mean())       # Republican control (VP breaks 50-50 ties)
 rep = int(round(seats["rep"].median()))
 ind = int(round(seats["ind"].median()))
@@ -58,19 +59,26 @@ dem = 100 - rep - ind
 q05, q95 = (int(round(seats["rep"].quantile(x))) for x in (0.05, 0.95))
 
 #### Headline text ####
-tail = f", with {ind} independent" + ("s" if ind > 1 else "") if ind else ""
+tail = f", with {ind} newly elected independent" + ("s" if ind > 1 else "") if ind else ""
 if p_dem > 0.5:
-    head = f"Democrats are favoured to win the Senate, {dem} seats to {rep}{tail}"
+    head = f"The Democratic caucus is favoured to control the Senate, {dem} seats to {rep}{tail}"
 elif p_rep > 0.5:
-    head = f"Republicans are favoured to keep the Senate, {rep} seats to {dem}{tail}"
+    head = f"Republicans are favoured to keep the Senate, {rep} seats to {dem} for the Democratic caucus{tail}"
 else:
-    head = f"The Senate is a toss-up: {dem} Democratic seats to {rep} Republican{tail}"
+    head = f"The Senate is a toss-up: {dem} Democratic caucus seats to {rep} Republican{tail}"
 day = "with no news" if config.RUN == "nonews" else \
     f"{date.fromisoformat(config.RUN).day} {date.fromisoformat(config.RUN):%B %Y}"
-sub = (f"Democrats win 51 or more seats without independents in {p_dem * 100:.0f} per cent of "
-       f"simulations, and Republicans keep control in {p_rep * 100:.0f} per cent. Republicans win "
-       f"between {q05} and {q95} seats in 90 per cent of simulations. Synthetic voters from "
-       f"{WORDS.get(n_models, n_models)} language models, combined with polls; run of {day}.")
+run_label = "No-news baseline" if config.RUN == "nonews" else f"Forecast as of {day}"
+sub = (f"We combine synthetic responses from {WORDS.get(n_models, n_models)} "
+       f"language models with polling data to forecast the 35 Senate races in 2026. "
+       f"To estimate which party will control the Senate, we add the 35 race predictions "
+       f"to the 65 seats not up for election: {REP_NOT_UP} held by Republicans, 32 by Democrats, and two by "
+       f"independents, Bernie Sanders and Angus King, who caucus with Democrats.\n\n"
+       f"The probability that the Democratic caucus reaches the 51-seat threshold for control, "
+       f"without support from newly elected independents, is {p_dem * 100:.0f} per cent; the "
+       f"probability that Republicans retain control is {p_rep * 100:.0f} per cent. Republicans need 50 seats because the Republican "
+       f"vice president can break a 50–50 tie. In 90 per cent of our simulations, Republicans win "
+       f"between {q05} and {q95} seats, showing the uncertainty around the forecast.")
 
 #### Seat bar ####
 config.use_site_style()            # shared graph theme: scripts/site.mplstyle
@@ -82,11 +90,11 @@ for n, party in [(dem, "Democratic"), (ind, "Independent"), (rep, "Republican")]
     left += n
 ax.vlines(50, -0.4, 0.4, color=config.INK, lw=1.2, ls=(0, (3, 2)), zorder=3)
 ax.text(50, 0.44, "50 seats and the vice president", ha="center", va="bottom", fontsize=8, color=config.MUTED)
-ax.text(0, -0.42, f"Democrats {dem}", ha="left", va="top", fontsize=12, fontweight="bold", color=COL["Democratic"])
+ax.text(0, -0.42, f"Democratic caucus {dem}", ha="left", va="top", fontsize=10, fontweight="bold", color=COL["Democratic"])
 ax.text(100, -0.42, f"Republicans {rep}", ha="right", va="top", fontsize=12, fontweight="bold",
         color=COL["Republican"])
 if ind:
-    ax.text(dem + ind / 2, -0.42, f"Independent {ind}", ha="center", va="top", fontsize=10,
+    ax.text(dem + ind / 2, -0.42, f"New independents {ind}", ha="center", va="top", fontsize=10,
             color=COL["Independent"])
 ax.set_xlim(0, 100)
 ax.set_ylim(-0.9, 0.75)
@@ -97,9 +105,10 @@ fig.savefig(config.FIGURES / "seat_bar.png", dpi=200)
 plt.close(fig)
 
 #### Save ####
-md = (f"## {head}\n\n{sub}\n\n"
-      "![Median seats in the next Senate, all simulations and models pooled.](figures/latest/seat_bar.png)"
-      '{fig-alt="Horizontal bar of 100 Senate seats split into Democratic, independent and Republican '
+md = (f"::: {{.forecast-date}}\n{run_label}\n:::\n\n"
+      f"## {head}\n\n{sub}\n\n"
+      "![This summary shows all 100 Senate seats, with each model weighted equally. The Democratic caucus includes Sanders and King; any independent seats shown represent newly elected independents. Republican and newly elected independent seat counts are medians, with the remaining seats assigned to the Democratic caucus.](figures/latest/seat_bar.png)"
+      '{fig-alt="Horizontal bar of 100 Senate seats split into Democratic caucus, newly elected independent and Republican '
       f'seats ({dem}, {ind} and {rep}), with a dashed line at 50."}}\n')
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
 (config.RUN_RESULTS / "headline.md").write_text(md)

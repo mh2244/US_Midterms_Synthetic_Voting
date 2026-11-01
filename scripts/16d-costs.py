@@ -1,7 +1,8 @@
 #### Preamble ####
-# Purpose: Cost and timing of the model queries in each run, for the "API Costs" section of the
-#          website: calls, tokens, cost in US dollars and the time between the first and the last
-#          call, by run and model, from the token counts that script 09 saves with every answer.
+# Purpose: Cost and timing of the model queries, for the "API costs and time" section of the
+#          website: answers, tokens and cost in US dollars by model for the latest news run, the
+#          cost of every run, and the time from the latest run's first call to its last, from
+#          the token counts that script 09 saves with every answer (all runs are in costs.csv).
 # Author: Kexin (Coco) Liu
 # Date: 27 October 2026
 # License: MIT
@@ -48,17 +49,24 @@ assert (costs["cost_usd"] >= 0).all() and costs["cost_usd"].notna().all()
 OUT.mkdir(parents=True, exist_ok=True)
 costs.round({"cost_usd": 4}).to_csv(OUT / "costs.csv", index=False)
 
-#### Table ####
-md = ["| Run | Model | Calls (answered) | Input tokens | Output tokens | Cost (US$) |", "|---|---|---:|---:|---:|---:|"]
-for run, g in costs.groupby("run", sort=False):
-    for r in g.itertuples():
-        md.append(f"| {r.run_label} | {config.MODEL_LABELS.get(r.model, r.model)} | {r.calls:,} ({r.answered:,}) | "
-                  f"{r.input_tokens:,} | {r.output_tokens:,} | {r.cost_usd:,.2f} |")
-    span = g["last_call"].max() - g["first_call"].min()
-    hours = span.total_seconds() / 3600 if pd.notna(span) else float("nan")
-    md.append(f"| **{g['run_label'].iloc[0]}, all models** | | **{g['calls'].sum():,} "
-              f"({g['answered'].sum():,})** | **{g['input_tokens'].sum():,}** | **{g['output_tokens'].sum():,}** | "
-              f"**{g['cost_usd'].sum():,.2f}** |")
-    md.append(f"| | *First to last call: {hours:.1f} hours* | | | | |")
+#### Table: the latest news run, one row per model ####
+dated = [r for r in RUNS if r != "nonews" and r in set(costs["run"])]
+latest = dated[-1] if dated else costs["run"].iloc[-1]
+g = costs[costs["run"] == latest]
+md = [f"**{RUNS[latest]} run**", "",
+      "| Model | Answers | Input tokens | Output tokens | Cost (US$) |", "|---|---:|---:|---:|---:|"]
+for r in g.itertuples():
+    md.append(f"| {config.MODEL_LABELS.get(r.model, r.model)} | {r.answered:,} | {r.input_tokens:,} | "
+              f"{r.output_tokens:,} | {r.cost_usd:,.2f} |")
+md.append(f"| **All models** | **{g['answered'].sum():,}** | **{g['input_tokens'].sum():,}** | "
+          f"**{g['output_tokens'].sum():,}** | **{g['cost_usd'].sum():,.2f}** |")
+# One sentence for every run, so earlier runs stay on the page without their own rows
+totals = costs.groupby("run", sort=False).agg(cost=("cost_usd", "sum"), first=("first_call", "min"),
+                                              last=("last_call", "max"))
+parts = [f"{RUNS[r].replace(' (baseline)', '').replace('No news', 'the run without news')} US${t.cost:,.2f}"
+         for r, t in totals.iterrows()]
+hours = (totals.loc[latest, "last"] - totals.loc[latest, "first"]).total_seconds() / 3600
+md += ["", f"Cost of each run: {', '.join(parts[:-1])} and {parts[-1]}. The {RUNS[latest]} run took "
+           f"{hours:.1f} hours from its first call to its last."]
 (OUT / "costs.md").write_text("\n".join(md) + "\n")
 print("\n".join(md))
