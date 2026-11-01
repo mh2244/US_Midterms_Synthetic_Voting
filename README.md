@@ -195,8 +195,9 @@ before any paid call.
 - **Montana.** Script `06` picked the Democrat Alani Bankhead as the left candidate, but the main
   challenger is the independent Seth Bodnar (polls: Alme 42, Bodnar 31, Bankhead 16). This was
   fixed before the 31 October run. Montana's 27 and 29 October results are kept as run and are
-  left out of the news and PredictIt comparisons for those days. For the same reason the test
-  `test_prompt_names_both_candidates` fails on the 27 and 29 October prompts.
+  left out of the news and PredictIt comparisons for those days. The test
+  `test_prompt_names_both_candidates` checks those earlier prompts (and the no-news baseline)
+  against Bankhead's name and the 31 October prompts against Bodnar's.
 - **Bias correction.** A revision on 1 November rebuilt the forecasts without the bias
   correction. We kept the bias-corrected forecast of the scheduled runs as the headline; the
   other version is reproducible with `--bias keep` and reported in the method table.

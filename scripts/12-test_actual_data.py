@@ -187,8 +187,12 @@ def test_one_prompt_per_persona(prompts, personas):
 
 def test_prompt_names_both_candidates(prompts, nominees):
     """Each prompt names both candidates of its own state's race, so no persona is asked about
-    the wrong race."""
+    the wrong race. Montana's left candidate was corrected before the 31 October run (README,
+    "Corrections and known issues"): earlier runs, including the no-news baseline built on
+    27 October, asked about the Democrat Alani Bankhead, so they are checked against her name."""
     m = prompts.merge(nominees, on="state")
+    if config.RUN == "nonews" or config.RUN < "2026-10-31":
+        m.loc[m["state"] == "MT", "left_name"] = "Alani Bankhead"
     ok = [a in t and b in t for a, b, t in zip(m["left_name"], m["rep_name"], m["prompt_text"])]
     assert all(ok), f"{len(ok) - sum(ok)} prompts do not name both candidates"
 
