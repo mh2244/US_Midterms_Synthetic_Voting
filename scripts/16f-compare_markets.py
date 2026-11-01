@@ -15,9 +15,8 @@
 #   figures/run_<latest news day>/market_comparison.png (script 17 copies it to figures/latest).
 #
 # HOW a price becomes a probability: a PredictIt contract pays $1 if it comes true, so its price is
-#   roughly the market's probability. The prices of the two sides add up to a little more than 1
-#   (the market's margin), so the Republican side's price is divided by the sum of the two sides'
-#   prices.
+#   roughly the market's probability. Normalise the two selected closing prices by their sum;
+#   this does not assume that their unnormalised sum must exceed one.
 #   Contracts for anyone else (a third candidate) are left out, as in our two-sided forecast.
 # The market is not ground truth and not independent of the polls, which traders also read; it is
 #   a forecast that combines the polls with other information through trading.
@@ -131,7 +130,7 @@ for s in summ.itertuples():
 md += ["", "::: {.chart-note}",
        "Correlation measures the association between our Republican winning probabilities and the market’s across races. ",
        "The mean absolute difference measures how far apart the two probabilities are, averaged across states. ",
-       "Market probabilities are calculated from closing prices on each news day.", ":::"]
+       "Market probabilities use the API's daily closing prices on each news day, normalised over the two selected contracts.", ":::"]
 latest = summ["run"].iloc[-1]
 t = table[table["run"] == latest].sort_values("difference")
 md += ["", "<details>", f"<summary>Table view: every race, {day(latest)}</summary>", "",

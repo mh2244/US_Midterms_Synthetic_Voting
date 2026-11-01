@@ -258,10 +258,19 @@ this README, and explained methods we then chose between (for example inverse-va
 and the sources of uncertainty). For the website prose it provided outlines and drafted some
 paragraphs, which are marked `DRAFT (Claude)` in the source of `index.qmd`.
 
-**Maggie Huang and Jingxuan (Amelia) Feng:** [TO COMPLETE. For each tool: the exact model name
-and identifier, when it was used, what for, and whether through a coding agent. The group's
-earlier notes in `other/llm_usage/llm_usage_notes.txt` record Claude Sonnet 5.5 (medium effort) for the
-analysis plan, scripts, figures, website design, debugging and grammar fixes; Gemini 3.5 Flash
-Lite for the analysis plan, explaining papers and debugging; and Codex/ChatGPT for code review,
-GitHub Actions and environment setup, and documentation, with the model version not recorded.
-Say which of these each person used.]
+**Jingxuan (Amelia) Feng** used Codex and ChatGPT throughout October and on 1 November 2026;
+the exact underlying model names and identifiers were not recorded. Codex was used as a coding
+agent with access to the repository on her computer. It helped develop and revise polling
+downloads and cleaning (`02d`, `03b`), news collection and screening (`04`), news assignment
+(`04b`) and prompt integration (`08`). It also helped troubleshoot GitHub Actions, connect
+polling inputs to forecasts, organise dated outputs, preserve paid answers after failures,
+and set up the Python environment. For the website, it helped revise `index.qmd`, `styles.css`
+and `_quarto.yml`, compare forecasting methods,
+and check consistency between figures, tables and saved results. It assisted with recalculating
+results from saved scores, updating the PredictIt comparison, resolving Git issues, and drafting
+commit messages and pull-request descriptions. ChatGPT and Codex also explained papers, SSR,
+polling combinations and uncertainty, and drafted or edited website prose, the README and
+pipeline documentation, including this AI usage statement.
+
+**Maggie Huang:** [TO COMPLETE: tools and model identifiers, dates, purposes, and whether used
+through a coding agent.]

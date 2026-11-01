@@ -7,7 +7,7 @@
 ::: {.chart-note}
 Correlation measures the association between our Republican winning probabilities and the market’s across races. 
 The mean absolute difference measures how far apart the two probabilities are, averaged across states. 
-Market probabilities are calculated from closing prices on each news day.
+Market probabilities use the API's daily closing prices on each news day, normalised over the two selected contracts.
 :::
 
 <details>

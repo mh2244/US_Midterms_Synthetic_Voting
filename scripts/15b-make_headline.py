@@ -77,7 +77,9 @@ sub = (f"We combine synthetic responses from {WORDS.get(n_models, n_models)} "
        f"The probability that the Democratic caucus reaches the 51-seat threshold for control, "
        f"without support from newly elected independents, is {p_dem * 100:.0f} per cent; the "
        f"probability that Republicans retain control is {p_rep * 100:.0f} per cent. Republicans need 50 seats because the Republican "
-       f"vice president can break a 50–50 tie. In 90 per cent of our simulations, Republicans win "
+       f"vice president can break a 50–50 tie. The remaining simulations require a decision about "
+       f"newly elected independents, whose caucus affiliations we do not assume. "
+       f"In 90 per cent of our simulations, Republicans win "
        f"between {q05} and {q95} seats, showing the uncertainty around the forecast.")
 
 #### Seat bar ####
