@@ -246,12 +246,14 @@ summary_text = (
 if "ivw_biaskept" in by_tag:
     kept = by_tag["ivw_biaskept"]
     wk = pd.read_csv(res / "ivw_weights_biaskept.csv")
-    lean = "Republican" if wk.drop_duplicates("model")["mean_gap"].mean() < 0 else "Democratic"
     summary_text += (
-        f" Without the bias correction, the synthetic shares receive less weight (an average of "
-        f"{wk.loc[wk['source'] == 'poll', 'w_synthetic'].mean() * 100:.0f}% in polled states) but keep "
-        f"their {lean} lean, and the probability of Republican control is {pct(kept['p_rep'])}%: the "
-        f"choice between the two methods alone moves it by {abs(kept['p_rep'] - combined['p_rep']) * 100:.0f} points."
+        " In the comparison without bias correction, we combine the original synthetic shares "
+        "with polling and historical estimates. The synthetic–poll gap is included in the error "
+        "estimate, giving synthetic shares an average weight of "
+        f"{wk.loc[wk['source'] == 'poll', 'w_synthetic'].mean() * 100:.0f}% in polled states. "
+        f"This version gives Republicans a {pct(kept['p_rep'])}% probability of control, compared "
+        f"with {pct(combined['p_rep'])}% under the bias-corrected headline forecast. "
+        "Both the synthetic shares and their weights differ between these versions."
     )
 (OUT / "method_summary.md").write_text(summary_text + "\n")
 
