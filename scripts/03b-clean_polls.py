@@ -5,7 +5,7 @@
 # Date: 24 October 2026
 # Contact: amelia.f.feng@outlook.com
 # License: MIT
-# Pre-requisites: Python 3.10+; run 00-download_polling_data.py first.
+# Pre-requisites: Python 3.10+; run 02d-download_polls.py first.
 #                 Uses only the Python standard library.
 
 """Select useful columns and retain 2026-cycle general-election Senate polls.
@@ -20,7 +20,7 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2] / "data"
+ROOT = Path(__file__).resolve().parents[1] / "data"
 RAW_DIR = ROOT / "01-raw_data" / "polls" / "pollresults"
 OUTPUT_FILE = ROOT / "02-analysis_data" / "polls" / "senate_polls_2026_general.csv"
 
@@ -97,7 +97,7 @@ def main():
     if input_file is None:
         downloads = sorted(RAW_DIR.glob("*/senate_polls_all.csv"))
         if not downloads:
-            raise FileNotFoundError("Run 00-download_polling_data.py first or pass the input CSV path.")
+            raise FileNotFoundError("Run 02d-download_polls.py first or pass the input CSV path.")
         input_file = downloads[-1]
     output_file = OUTPUT_FILE
     output_file.parent.mkdir(parents=True, exist_ok=True)

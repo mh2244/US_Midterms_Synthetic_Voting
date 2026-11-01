@@ -43,13 +43,15 @@ assumed errors and a comparison with PredictIt.
 assets/fonts/           fonts used by the page and the figures
 data/
   00-simulated_data/    simulated data, written before any real data (script 00)
-  01-raw_data/          inputs as downloaded: polls, candidates, PredictIt prices, map, billing
-  02-analysis_data/     cleaned inputs; each run's prompts, answers and scores (run_<RUN>/)
+  01-raw_data/          inputs as downloaded: news articles, polls, candidates, PredictIt
+                        prices, map, OpenRouter billing (no script edits these files)
+  02-analysis_data/     cleaned inputs: CES extract, personas, nominees, polls, screened news
+                        and persona news blocks (news/), and each run's prompts, answers and
+                        scores (run_<RUN>/)
   03-results/           forecasts and tables by run (run_<RUN>/), latest/, comparison/
-  news/                 collected and screened news, by date
 docs/                   rendered website served by GitHub Pages (do not edit by hand)
 figures/                figures by run, and latest/ (what the website shows)
-plan/                   planning notes and the website sketch
+other/                  LLM usage notes, planning notes and website sketches
 scripts/                the pipeline, numbered in run order
 index.qmd               the website (one page); _quarto.yml and styles.css set the design
 references.bib          references cited on the website
@@ -82,9 +84,9 @@ uses seed 2026.
 | Data | Source | Script | Saved to |
 |---|---|---|---|
 | 2024 CES | [Harvard Dataverse](https://dataverse.harvard.edu/) | `02`, `03` | extract in `data/02-analysis_data/` |
-| Senate polls | [PollResults API](https://pollresults.org/api/) | `polling_data/00`, `01` | `data/01-raw_data/polls/`, cleaned in `data/02-analysis_data/polls/` |
+| Senate polls | [PollResults API](https://pollresults.org/api/) | `02d`, `03b` | `data/01-raw_data/polls/`, cleaned in `data/02-analysis_data/polls/` |
 | Candidates | [Wikipedia](https://en.wikipedia.org/wiki/2026_United_States_Senate_elections) | `05`, `06` | `data/01-raw_data/`, nominees in `data/02-analysis_data/` |
-| News | RSS/Atom feeds of ten outlets, Google News | `04`, `04b` | `data/news/` |
+| News | RSS/Atom feeds of ten outlets, Google News | `04`, `04b` | `data/01-raw_data/news/`, screened in `data/02-analysis_data/news/` |
 | Prediction-market prices | [PredictIt](https://www.predictit.org) public API (non-commercial use) | `02c` | `data/01-raw_data/markets/` |
 | Seats not up in 2026 | Wikipedia, entered by hand | – | `data/01-raw_data/` |
 | State boundaries | public GeoJSON | `02b` | `data/01-raw_data/us-states.json` |
@@ -93,7 +95,7 @@ uses seed 2026.
 Dataverse's terms of use. Download it with
 
 ```bash
-python scripts/02-download_data.py get --file-id 12050325
+python scripts/02-download_ces.py get --file-id 12050325
 ```
 
 or by hand (2024 CES Common Content), and save it as
@@ -108,9 +110,9 @@ and writes to that run's folders, so runs never overwrite each other.
 
 ```bash
 export RUN=2026-10-31
-python scripts/polling_data/00-download_polling_data.py
-python scripts/polling_data/01-clean_polling_data.py
-python scripts/04-collect_news.py && python scripts/04b-summarize_news.py
+python scripts/02d-download_polls.py
+python scripts/03b-clean_polls.py
+python scripts/04-collect_news.py && python scripts/04b-assign_news.py
 python scripts/08-build_prompts.py --news
 python scripts/09-query_models.py --batch-size 40 --sleep 0   # paid: 42,000 calls, about US$8
 python scripts/10-score_responses.py
@@ -118,8 +120,8 @@ python scripts/11-build_forecast.py --combine none            # synthetic voters
 python scripts/11-build_forecast.py --bias keep               # comparison: bias not removed
 python scripts/11-build_forecast.py                           # headline, run last
 python scripts/12-test_actual_data.py
-for s in 13-make_figures 13b-make_map 15-make_summary_bar 15b-make_headline 15c-make_battlegrounds \
-         16-make_crosstabs 16b-compare_runs 16c-sensitivity 16d-costs 16e-news_summary \
+for s in 13-plot_state_dotplot 13b-make_map 15-plot_win_probabilities 15b-make_headline 15c-make_battlegrounds_and_seats \
+         16-make_crosstabs 16b-compare_runs 16c-make_sensitivity_table 16d-make_cost_table 16e-make_news_tables \
          02c-download_predictit 16f-compare_markets 17-publish_latest; do python scripts/$s.py; done
 quarto render
 ```
@@ -131,15 +133,18 @@ gives more detail.
 
 | Stage | Scripts |
 |---|---|
-| Simulated data and its tests | `00`, `01` |
-| Downloads: CES, map, PredictIt | `02`, `02b`, `02c`, then `03_extract_data` |
-| News | `04` collects and screens with `openai/gpt-4.1-nano`; `04b` builds each persona's news block |
-| Candidates | `05` scrapes, `06` picks the left candidate and the Republican |
-| Personas, prompts, answers, scores | `07`, `08`, `09`, `10` |
-| Forecast | `11` (`--combine none`, `--bias keep` for the comparisons) |
-| Tests | `12`, with schemas in `schemas.py` |
-| Figures and tables | `13` dot plot, `13b` map, `14` composition, `15`–`15c` probabilities, headline and battlegrounds, `16` crosstabs, `16b` runs and methods, `16c` sensitivity, `16d` costs, `16e` news, `16f` PredictIt |
-| Website | `17` copies the latest run to the `latest/` folders |
+| Simulated data and its tests | `00-simulate_data`, `01-test_simulated_data` |
+| Downloads | `02-download_ces`, `02b-download_map`, `02c-download_predictit`, `02d-download_polls` |
+| Cleaning | `03-extract_ces`, `03b-clean_polls` |
+| News | `04-collect_news` (collects and screens with `openai/gpt-4.1-nano`), `04b-assign_news` (each persona's nine paragraphs) |
+| Candidates | `05-collect_candidates`, `06-clean_candidates` |
+| Personas, prompts, answers, scores | `07-build_personas`, `08-build_prompts`, `09-query_models`, `10-score_responses` |
+| Forecast | `11-build_forecast` (`--combine none` and `--bias keep` for the comparisons) |
+| Tests | `12-test_actual_data`, with schemas in `schemas.py` |
+| Figures | `13-plot_state_dotplot`, `13b-make_map`, `14-plot_sample_composition`, `15-plot_win_probabilities`, `15b-make_headline`, `15c-make_battlegrounds_and_seats` |
+| Tables | `16-make_crosstabs`, `16b-compare_runs`, `16c-make_sensitivity_table`, `16d-make_cost_table`, `16e-make_news_tables`, `16f-compare_markets` |
+| Website | `17-publish_latest` copies the latest run to the `latest/` folders |
+| Shared | `config.py` (settings and paths), `site.mplstyle` (graph theme) |
 
 ## Tests
 
@@ -256,7 +261,7 @@ paragraphs, which are marked `DRAFT (Claude)` in the source of `index.qmd`.
 
 **Maggie Huang and Jingxuan (Amelia) Feng:** [TO COMPLETE. For each tool: the exact model name
 and identifier, when it was used, what for, and whether through a coding agent. The group's
-earlier notes in `plan/LLM Usage Document.txt` record Claude Sonnet 5.5 (medium effort) for the
+earlier notes in `other/llm_usage/llm_usage_notes.txt` record Claude Sonnet 5.5 (medium effort) for the
 analysis plan, scripts, figures, website design, debugging and grammar fixes; Gemini 3.5 Flash
 Lite for the analysis plan, explaining papers and debugging; and Codex/ChatGPT for code review,
 GitHub Actions and environment setup, and documentation, with the model version not recorded.

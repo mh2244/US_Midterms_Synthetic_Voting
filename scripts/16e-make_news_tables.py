@@ -6,9 +6,9 @@
 # Date: 28 October 2026
 # License: MIT
 # Pre-requisites: Scripts 04 and 04b have run for at least one news day.
-# Any other information needed? Run from the project root:  python scripts/16e-news_summary.py
-# Inputs: data/news/news_context_<RUN>.csv (the articles kept by script 04) and
-#   data/news/persona_news_summaries_<RUN>.csv (the nine paragraphs each persona received, 04b).
+# Any other information needed? Run from the project root:  python scripts/16e-make_news_tables.py
+# Inputs: data/02-analysis_data/news/news_context_<RUN>.csv (the articles kept by script 04) and
+#   data/02-analysis_data/news/persona_news_summaries_<RUN>.csv (the nine paragraphs each persona received, 04b).
 # Output: data/03-results/comparison/news_summary.md (included by index.qmd).
 
 #### Workspace setup ####
@@ -20,7 +20,7 @@ import pandas as pd
 import config
 
 NEWS_DAYS = ["2026-10-27", "2026-10-29", "2026-10-31"]
-NEWS = Path("data/news")
+NEWS = config.NEWS_DIR
 OUT = config.RESULTS / "comparison"
 GROUPS = {"left_leaning": "Left-leaning", "newspapers": "Newspapers", "right_leaning": "Right-leaning"}
 TOPICS = {"policy": "Policy", "foreign_policy": "Foreign policy", "law": "Law and courts", "elections": "Elections",

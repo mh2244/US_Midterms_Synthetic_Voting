@@ -187,7 +187,7 @@ cython_debug/
 /.quarto/
 **/*.quarto_ipynb
 
-# Raw CES 2024 file: downloaded by scripts/02-download_data.py, not redistributed (see README)
+# Raw CES 2024 file: downloaded by scripts/02-download_ces.py, not redistributed (see README)
 data/01-raw_data/ces/*.csv
 
 # R, RStudio and editor files

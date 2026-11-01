@@ -8,10 +8,10 @@
 # Date: 27 October 2026
 # License: MIT
 # Pre-requisites: Run scripts 10 and 11 for this RUN (needs scores.parquet and the polls file).
-# Any other information needed? Run from the project root:  python scripts/16c-sensitivity.py
+# Any other information needed? Run from the project root:  python scripts/16c-make_sensitivity_table.py
 #   Each grid point calls script 11 with --summary-only, so the run's own forecast files are not
 #   touched. No model is called; it takes a few minutes.
-#   python scripts/16c-sensitivity.py --table-only  rebuilds the table from the saved
+#   python scripts/16c-make_sensitivity_table.py --table-only  rebuilds the table from the saved
 #   sensitivity.csv without rerunning the grid.
 # Outputs (in data/03-results/run_<RUN>/): sensitivity.csv (one row per model and grid point)
 #   and sensitivity.md (the table on the website, four models pooled).

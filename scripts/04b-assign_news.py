@@ -7,9 +7,9 @@
 # License: MIT
 # Pre-requisites: Run scripts 04 and 07; install requirements.txt.
 #                 This script makes no API calls and needs no API key.
-# Run: python scripts/04b-summarize_news.py
+# Run: python scripts/04b-assign_news.py
 # Preview selections without writing output: add --dry-run.
-# Output: data/news/persona_news_summaries.csv (includes all selected sources).
+# Output: data/02-analysis_data/news/persona_news_summaries.csv (includes all selected sources).
 # newspapers is a source group, NOT a claim of political neutrality.
 
 import argparse
@@ -29,7 +29,7 @@ ARTICLE_FIELDS = ["url", "title", "outlet", "diet", "published_at_utc", "prompt_
 SUMMARY_METHOD = "concatenate_v1"
 # Paragraphs written by the screening model can carry outdated facts from its training data
 # (seen on 2026-10-26: "former President Trump"). Items matching these patterns are removed
-# before sampling and listed in data/news/flagged_<RUN>.csv. "former ..." forms that are
+# before sampling and listed in data/02-analysis_data/news/flagged_<RUN>.csv. "former ..." forms that are
 # correct today (e.g. "former President Biden") are not matched.
 OUTDATED = re.compile(
     r"\bformer\s+President\s+(?:Donald\s+)?Trump\b"

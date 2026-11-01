@@ -38,7 +38,7 @@ MODELS = {
     "gemini": "google/gemini-3.5-flash-lite",     # Google, $0.30 / $2.50
 }
 # OpenRouter list prices, US dollars per million tokens (input, output), checked 2026-10-25;
-# used by scripts/16d-costs.py
+# used by scripts/16d-make_cost_table.py
 PRICES = {"haiku": (0.10, 0.50), "luna": (0.10, 0.50), "deepseek": (0.30, 1.20), "gemini": (0.30, 2.50)}
 
 # Party colours used by every figure: blue for Democrats, red for Republicans, grey for independents
@@ -123,8 +123,10 @@ RAW = DATA / "01-raw_data"            # inputs as downloaded or entered; never e
 CES_RAW = RAW / "ces" / "CCES24_Common_OUTPUT_vv_topost_final.csv"   # not in the repo (see README)
 CES_FILE = SHARED_ANALYSIS / "ces2024_senate_demographics.csv"
 CANDIDATES_RAW = RAW / "senate_candidates_2026.csv"
-NEWS_FILE = DATA / "news" / "news_context.csv"
-NEWS_SUMMARIES_FILE = DATA / "news" / "persona_news_summaries.csv"
+NEWS_RAW_FILE = RAW / "news" / "news.csv"                       # articles as collected (script 04)
+NEWS_DIR = SHARED_ANALYSIS / "news"                               # screened news and persona news blocks
+NEWS_FILE = NEWS_DIR / "news_context.csv"
+NEWS_SUMMARIES_FILE = NEWS_DIR / "persona_news_summaries.csv"
 POLLS_RAW = RAW / "polls" / "pollresults"          # one timestamped folder per download
 POLLS_FILE = Path(os.environ.get("FORECAST_POLLS_FILE",
                                 str(SHARED_ANALYSIS / "polls" / "senate_polls_2026_general.csv")))

@@ -24,7 +24,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 API = "https://api.pollresults.org/v1.0/politics/results/senate"
-ROOT = Path(__file__).resolve().parents[2] / "data"
+ROOT = Path(__file__).resolve().parents[1] / "data"
 RAW_DIR = ROOT / "01-raw_data" / "polls" / "pollresults"      # one timestamped folder per download
 
 

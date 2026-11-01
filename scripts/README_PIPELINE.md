@@ -11,25 +11,25 @@ every stage:
 
 ```bash
 export RUN=2026-10-27
-python scripts/polling_data/00-download_polling_data.py
-python scripts/polling_data/01-clean_polling_data.py
+python scripts/02d-download_polls.py
+python scripts/03b-clean_polls.py
 python scripts/04-collect_news.py
-python scripts/04b-summarize_news.py
+python scripts/04b-assign_news.py
 python scripts/08-build_prompts.py --news
 python scripts/09-query_models.py --batch-size 40 --sleep 0
 python scripts/10-score_responses.py
 python scripts/11-build_forecast.py --combine none
 python scripts/11-build_forecast.py              # inverse-variance headline, run last
-python scripts/13-make_figures.py
+python scripts/13-plot_state_dotplot.py
 python scripts/13b-make_map.py
-python scripts/15-make_summary_bar.py
+python scripts/15-plot_win_probabilities.py
 python scripts/15b-make_headline.py
-python scripts/15c-make_battlegrounds.py     # results line, battleground table, seat distribution
+python scripts/15c-make_battlegrounds_and_seats.py     # results line, battleground table, seat distribution
 python scripts/16-make_crosstabs.py
 python scripts/16b-compare_runs.py
-python scripts/16c-sensitivity.py
-python scripts/16d-costs.py                  # cost and time per run and model
-python scripts/16e-news_summary.py           # news kept per outlet and topic, example news block
+python scripts/16c-make_sensitivity_table.py
+python scripts/16d-make_cost_table.py                  # cost and time per run and model
+python scripts/16e-make_news_tables.py           # news kept per outlet and topic, example news block
 python scripts/02c-download_predictit.py      # PredictIt prices (keeps 7 days: run within a week of each news day)
 python scripts/16f-compare_markets.py         # our forecast against PredictIt
 python scripts/12-test_actual_data.py         # pytest + pandera test suite
@@ -76,14 +76,14 @@ Design B requires 42,000 voting requests per run, plus screening/embedding.
 
 Outputs are isolated under `data/02-analysis_data/run_<RUN>/`,
 `data/03-results/run_<RUN>/`, and `figures/run_<RUN>/` (not `docs/`, which Quarto rebuilds). Shared candidates and
-personas stay in `data/02-analysis_data/`; news stays in `data/news/`.
+personas stay in `data/02-analysis_data/`; collected news is in `data/01-raw_data/news/` and screened news in `data/02-analysis_data/news/`.
 
 ## Useful commands
 
 ```bash
 python scripts/04-collect_news.py --collect-only  # collect without model calls
 python scripts/04-collect_news.py --filter-only   # rescreen the saved collection
-python scripts/04b-summarize_news.py --dry-run    # preview without writing
+python scripts/04b-assign_news.py --dry-run    # preview without writing
 python scripts/09-query_models.py --limit 4       # paid pilot; partial exit code 1
 ```
 

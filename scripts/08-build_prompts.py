@@ -5,7 +5,7 @@
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/06-clean_candidates.py and scripts/07-build_personas.py first.
-#   Optional: data/news/persona_news_summaries.csv from scripts/04b-summarize_news.py.
+#   Optional: data/02-analysis_data/news/persona_news_summaries.csv from scripts/04b-assign_news.py.
 # Any other information needed? Run from the project root.
 #   --designs B      one free-text answer, scored with SSR in script 10 (the main method)
 #   --designs B,C    also a "100 people like you" percentage question (a comparison)
@@ -52,7 +52,7 @@ INSTRUCTIONS = (
 def load_summaries(personas):
     """Fail rather than silently use unfinished or stale persona summaries."""
     if not config.NEWS_SUMMARIES_FILE.exists():
-        raise ValueError("Run scripts/04b-summarize_news.py first to generate persona summaries")
+        raise ValueError("Run scripts/04b-assign_news.py first to generate persona summaries")
     summaries = pd.read_csv(config.NEWS_SUMMARIES_FILE, encoding="utf-8-sig", dtype=str).fillna("")
     required = {"persona_id", "status", "summary", "persona_hash", "news_file_hash",
                 "request_hash", "articles_json", "run_id", "summary_method"}

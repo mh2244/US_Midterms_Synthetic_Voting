@@ -7,7 +7,7 @@
 # Date: 27 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/11-build_forecast.py (the default --combine ivw last).
-# Any other information needed? Run from the project root:  python scripts/15c-make_battlegrounds.py
+# Any other information needed? Run from the project root:  python scripts/15c-make_battlegrounds_and_seats.py
 # Inputs: data/01-raw_data/senate_seats_up_2026.csv (party holding each seat up in 2026, entered
 #   by hand from the list of current senators on Wikipedia, checked 27 October 2026; 13 Democratic
 #   and 22 Republican, as in script 11).

@@ -7,7 +7,7 @@ Date: 19 October 2026 (paths updated 28 October 2026)
 Contact: maggieh.huang@mail.utoronto.ca
 License: MIT
 Pre-requisites: Download the CES 2024 CSV directly by file id by running this in terminal:
-    python scripts/02-download_data.py get --file-id 12050325
+    python scripts/02-download_ces.py get --file-id 12050325
 Output: data/01-raw_data/ces/ (the raw CES file is not committed; see the README)
 """
 
