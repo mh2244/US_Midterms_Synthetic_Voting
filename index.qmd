@@ -38,7 +38,7 @@ The simulations allow a shared national error to move several states in the same
 
 {{< include data/03-results/latest/senate_map.md >}}
 
-The map gives a geographic overview of the 35 races, showing which side is favoured in each state and how strongly. The dot plot below shows the simulated vote shares behind each rating: a race rated likely has nearly all its dots on one side of 50 per cent, while a toss-up has dots spread on both sides.
+The map gives a geographic overview of the 35 races, showing which side is favoured in each state and how strongly. The quantile dot plot below [@kay2016] shows the simulated vote shares behind each rating: a race rated likely has nearly all its dots on one side of 50 per cent, while a toss-up has dots spread on both sides.
 
 ![Simulated Republican share of the two-candidate vote in each state, pooling all four models. Each row has 20 dots, where each dot stands for 5% of simulations. Red dots, to the right of the 50% line, are Republican wins; blue dots, to the left, are Democratic wins; and grey dots, to the left in races marked with an asterisk, are independent wins. The number at the right of each row is the Republican’s winning probability: the share of simulations in which they get more than 50%.](figures/latest/forecast_dotplot.png){fig-alt="Quantile dot plot of Republican two-candidate vote share and winning probability in each of the 35 Senate races."}
 
@@ -93,11 +93,11 @@ Both columns describe Republican support among the same personas, before any pol
 
 ## Methods {#methods}
 
-The voting responses are synthetic; we did not conduct a new survey. We used Python 3.12 [@python], pandas [@mckinney2010], NumPy [@harris2020], pyarrow [@arrow], requests [@requests], matplotlib [@hunter2007] and sentence-transformers [@reimers2019] for the analysis, and pytest [@pytest] and pandera [@bantilan2020] for testing. The website was built with Quarto [@quarto].
+The voting responses are synthetic; we did not conduct a new survey. We used Python 3.12 [@python] with pandas [@mckinney2010], NumPy [@harris2020], pyarrow [@arrow], matplotlib [@hunter2007], requests [@requests], lxml [@lxml] and tqdm [@tqdm], and sentence-transformers [@reimers2019] for the pilot embeddings; tests use pytest [@pytest] and pandera [@bantilan2020], and the website was built with Quarto [@quarto].
 
 ### Data {#data}
 
-Our personas come from the 2024 Cooperative Election Study (CES), a survey of 60,000 US adults [@ces2024guide]. Of these respondents, 38,307 lived in the 35 states holding Senate elections in 2026. Among them, 23,025 had a post-election voter-file weight, and 21,211 were validated as having voted in 2024. We used the post-election weight because the persona characteristics draw on both survey waves. Having a voter-file weight does not itself establish that someone voted, so we applied the validated-voter restriction separately.
+Our personas come from the 2024 Cooperative Election Study (CES), a survey of 60,000 US adults [@ces2024data; @ces2024guide]. Of these respondents, 38,307 lived in the 35 states holding Senate elections in 2026. Among them, 23,025 had a post-election voter-file weight, and 21,211 were validated as having voted in 2024. We used the post-election weight because the persona characteristics draw on both survey waves. Having a voter-file weight does not itself establish that someone voted, so we applied the validated-voter restriction separately.
 
 We obtained candidate lists from Wikipedia on 21 October [@wikipedia2026]. Our two-candidate framework pairs the Republican with the leading Democratic or Independent opponent. Where several names were listed for a side, we used the candidate appearing most often in polls since 1 August. In Idaho, Nebraska and South Dakota, the opponent is Independent; in Montana, Independent Seth Bodnar polls ahead of Democrat Alani Bankhead. Additional candidates are acknowledged in the prompts but are not named individually.
 

@@ -251,7 +251,7 @@ pool the four models and come from the 31 October run.</p>
   });
 })();
 </script>
-<p>The map gives a geographic overview of the 35 races, showing which side is favoured in each state and how strongly. The dot plot below shows the simulated vote shares behind each rating: a race rated likely has nearly all its dots on one side of 50 per cent, while a toss-up has dots spread on both sides.</p>
+<p>The map gives a geographic overview of the 35 races, showing which side is favoured in each state and how strongly. The quantile dot plot below <span class="citation" data-cites="kay2016">(<a href="#ref-kay2016" role="doc-biblioref">Kay et al. 2016</a>)</span> shows the simulated vote shares behind each rating: a race rated likely has nearly all its dots on one side of 50 per cent, while a toss-up has dots spread on both sides.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/latest/forecast_dotplot.png" class="img-fluid figure-img" alt="Quantile dot plot of Republican two-candidate vote share and winning probability in each of the 35 Senate races."></p>
@@ -1572,10 +1572,10 @@ Table view
 </section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
-<p>The voting responses are synthetic; we did not conduct a new survey. We used Python 3.12 <span class="citation" data-cites="python">(<a href="#ref-python" role="doc-biblioref">Python Software Foundation, n.d.</a>)</span>, pandas <span class="citation" data-cites="mckinney2010">(<a href="#ref-mckinney2010" role="doc-biblioref">McKinney 2010</a>)</span>, NumPy <span class="citation" data-cites="harris2020">(<a href="#ref-harris2020" role="doc-biblioref"><span class="nocase">Harris et al.</span> 2020</a>)</span>, pyarrow <span class="citation" data-cites="arrow">(<a href="#ref-arrow" role="doc-biblioref">Apache Arrow Developers, n.d.</a>)</span>, requests <span class="citation" data-cites="requests">(<a href="#ref-requests" role="doc-biblioref">Reitz, n.d.</a>)</span>, matplotlib <span class="citation" data-cites="hunter2007">(<a href="#ref-hunter2007" role="doc-biblioref">Hunter 2007</a>)</span> and sentence-transformers <span class="citation" data-cites="reimers2019">(<a href="#ref-reimers2019" role="doc-biblioref">Reimers and Gurevych 2019</a>)</span> for the analysis, and pytest <span class="citation" data-cites="pytest">(<a href="#ref-pytest" role="doc-biblioref">Krekel et al. 2004</a>)</span> and pandera <span class="citation" data-cites="bantilan2020">(<a href="#ref-bantilan2020" role="doc-biblioref">Bantilan 2020</a>)</span> for testing. The website was built with Quarto <span class="citation" data-cites="quarto">(<a href="#ref-quarto" role="doc-biblioref">Allaire et al. 2022</a>)</span>.</p>
+<p>The voting responses are synthetic; we did not conduct a new survey. We used Python 3.12 <span class="citation" data-cites="python">(<a href="#ref-python" role="doc-biblioref">Python Software Foundation 2023</a>)</span> with pandas <span class="citation" data-cites="mckinney2010">(<a href="#ref-mckinney2010" role="doc-biblioref">McKinney 2010</a>)</span>, NumPy <span class="citation" data-cites="harris2020">(<a href="#ref-harris2020" role="doc-biblioref"><span class="nocase">Harris et al.</span> 2020</a>)</span>, pyarrow <span class="citation" data-cites="arrow">(<a href="#ref-arrow" role="doc-biblioref">Apache Arrow Developers 2026</a>)</span>, matplotlib <span class="citation" data-cites="hunter2007">(<a href="#ref-hunter2007" role="doc-biblioref">Hunter 2007</a>)</span>, requests <span class="citation" data-cites="requests">(<a href="#ref-requests" role="doc-biblioref">Reitz 2026</a>)</span>, lxml <span class="citation" data-cites="lxml">(<a href="#ref-lxml" role="doc-biblioref">Behnel et al. 2026</a>)</span> and tqdm <span class="citation" data-cites="tqdm">(<a href="#ref-tqdm" role="doc-biblioref"><span class="nocase">da Costa-Luis</span> 2019</a>)</span>, and sentence-transformers <span class="citation" data-cites="reimers2019">(<a href="#ref-reimers2019" role="doc-biblioref">Reimers and Gurevych 2019</a>)</span> for the pilot embeddings; tests use pytest <span class="citation" data-cites="pytest">(<a href="#ref-pytest" role="doc-biblioref">Krekel et al. 2004</a>)</span> and pandera <span class="citation" data-cites="bantilan2020">(<a href="#ref-bantilan2020" role="doc-biblioref">Bantilan 2020</a>)</span>, and the website was built with Quarto <span class="citation" data-cites="quarto">(<a href="#ref-quarto" role="doc-biblioref">Allaire et al. 2026</a>)</span>.</p>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<p>Our personas come from the 2024 Cooperative Election Study (CES), a survey of 60,000 US adults <span class="citation" data-cites="ces2024guide">(<a href="#ref-ces2024guide" role="doc-biblioref">Ansolabehere et al. 2025</a>)</span>. Of these respondents, 38,307 lived in the 35 states holding Senate elections in 2026. Among them, 23,025 had a post-election voter-file weight, and 21,211 were validated as having voted in 2024. We used the post-election weight because the persona characteristics draw on both survey waves. Having a voter-file weight does not itself establish that someone voted, so we applied the validated-voter restriction separately.</p>
+<p>Our personas come from the 2024 Cooperative Election Study (CES), a survey of 60,000 US adults <span class="citation" data-cites="ces2024data ces2024guide">(<a href="#ref-ces2024data" role="doc-biblioref">Schaffner et al. 2025</a>; <a href="#ref-ces2024guide" role="doc-biblioref">Ansolabehere et al. 2025</a>)</span>. Of these respondents, 38,307 lived in the 35 states holding Senate elections in 2026. Among them, 23,025 had a post-election voter-file weight, and 21,211 were validated as having voted in 2024. We used the post-election weight because the persona characteristics draw on both survey waves. Having a voter-file weight does not itself establish that someone voted, so we applied the validated-voter restriction separately.</p>
 <p>We obtained candidate lists from Wikipedia on 21 October <span class="citation" data-cites="wikipedia2026">(<a href="#ref-wikipedia2026" role="doc-biblioref">Wikipedia contributors 2026</a>)</span>. Our two-candidate framework pairs the Republican with the leading Democratic or Independent opponent. Where several names were listed for a side, we used the candidate appearing most often in polls since 1 August. In Idaho, Nebraska and South Dakota, the opponent is Independent; in Montana, Independent Seth Bodnar polls ahead of Democrat Alani Bankhead. Additional candidates are acknowledged in the prompts but are not named individually.</p>
 <p>We corrected Montana’s candidate pair before the 31 October run. The 27 and 29 October runs had paired Republican Kurt Alme with Bankhead rather than Bodnar, so their synthetic estimates and matched polls described a different contest. Those earlier Montana results are not directly comparable with the final run.</p>
 <p>Polling data come from PollResults, which compiles Senate polls originally tracked by The New York Times <span class="citation" data-cites="pollresults2026">(<a href="#ref-pollresults2026" role="doc-biblioref">PollResults.org 2026</a>)</span>. We use these data both in the combined forecast and as a benchmark for evaluating synthetic estimates. Polls are estimates of voter preferences, not election results; their role in setting the weights is discussed below.</p>
@@ -2492,13 +2492,13 @@ Table view: every race, 31 October
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-quarto" class="csl-entry" role="listitem">
-Allaire, J. J., Charles Teague, Carlos Scheidegger, Yihui Xie, and Christophe Dervieux. 2022. <em>Quarto</em>. <a href="https://quarto.org">https://quarto.org</a>.
+Allaire, J. J., Charles Teague, Carlos Scheidegger, Yihui Xie, and Christophe Dervieux. 2026. <em>Quarto, Version 1.9.38</em>. <a href="https://doi.org/10.5281/zenodo.5960048">https://doi.org/10.5281/zenodo.5960048</a>.
 </div>
 <div id="ref-ces2024guide" class="csl-entry" role="listitem">
 Ansolabehere, Stephen, Brian Schaffner, Jeremy Pope, Lisa Argyle, and Michael Barber. 2025. <em>Guide to the 2024 Cooperative Election Study</em>. Data Release No. 21. Harvard University.
 </div>
 <div id="ref-arrow" class="csl-entry" role="listitem">
-Apache Arrow Developers. n.d. <em>Apache Arrow (<span class="nocase">pyarrow</span>)</em>. <a href="https://arrow.apache.org">https://arrow.apache.org</a>.
+Apache Arrow Developers. 2026. <em>Apache Arrow: <span class="nocase">pyarrow</span>, the <span>Python</span> Library</em>. <a href="https://arrow.apache.org/docs/python/">https://arrow.apache.org/docs/python/</a>.
 </div>
 <div id="ref-argyle2023" class="csl-entry" role="listitem">
 Argyle, Lisa P., Ethan C. Busby, Nancy Fulda, Joshua R. Gubler, Christopher Rytting, and David Wingate. 2023. <span>“Out of One, Many: Using Language Models to Simulate Human Samples.”</span> <em>Political Analysis</em> 31 (3): 337–51. <a href="https://doi.org/10.1017/pan.2023.2">https://doi.org/10.1017/pan.2023.2</a>.
@@ -2509,6 +2509,9 @@ Ballotpedia. 2026. <em>U.s. Senate Battlegrounds, 2026</em>. <a href="https://ba
 <div id="ref-bantilan2020" class="csl-entry" role="listitem">
 Bantilan, Niels. 2020. <span>“Pandera: Statistical Data Validation of Pandas Dataframes.”</span> <em>Proceedings of the 19th Python in Science Conference</em>, 116–24. <a href="https://doi.org/10.25080/Majora-342d178e-010">https://doi.org/10.25080/Majora-342d178e-010</a>.
 </div>
+<div id="ref-lxml" class="csl-entry" role="listitem">
+Behnel, Stefan, Martijn Faassen, and Ian Bicking. 2026. <em><span class="nocase">lxml</span>: <span>XML</span> and <span>HTML</span> with <span>Python</span>, Version 6.1.3</em>. <a href="https://lxml.de">https://lxml.de</a>.
+</div>
 <div id="ref-bisbee2024" class="csl-entry" role="listitem">
 Bisbee, James, Joshua D. Clinton, Cassy Dorff, Brenton Kenkel, and Jennifer M. Larson. 2024. <span>“Synthetic Replacements for Human Survey Data? The Perils of Large Language Models.”</span> <em>Political Analysis</em> 32 (4): 401–16. <a href="https://doi.org/10.1017/pan.2024.5">https://doi.org/10.1017/pan.2024.5</a>.
 </div>
@@ -2517,6 +2520,9 @@ CBC News. 2024. <em><span>U.S.</span> Election Results 2024</em>. <a href="https
 </div>
 <div id="ref-cnn2024" class="csl-entry" role="listitem">
 CNN. 2024. <em>Senate Election Results 2024</em>. <a href="https://www.cnn.com/election/2024/results/senate">https://www.cnn.com/election/2024/results/senate</a>.
+</div>
+<div id="ref-tqdm" class="csl-entry" role="listitem">
+<span class="nocase">da Costa-Luis, Casper O.</span> 2019. <span>“<span class="nocase">tqdm</span>: A Fast, Extensible Progress Meter for <span>Python</span> and <span>CLI</span>.”</span> <em>Journal of Open Source Software</em> 4 (37): 1277. <a href="https://doi.org/10.21105/joss.01277">https://doi.org/10.21105/joss.01277</a>.
 </div>
 <div id="ref-gelman2020" class="csl-entry" role="listitem">
 Gelman, Andrew, Jessica Hullman, Christopher Wlezien, and George Elliott Morris. 2020. <span>“Information, Incentives, and Goals in Election Forecasts.”</span> <em>Judgment and Decision Making</em> 15 (5): 863–80. <a href="https://dlab.sauder.ubc.ca/sjdm/journal/20/200907b/jdm200907b.html">https://dlab.sauder.ubc.ca/sjdm/journal/20/200907b/jdm200907b.html</a>.
@@ -2530,8 +2536,11 @@ Heath, Oscar, and Rohan Alexander. 2026. <em>Correcting Mode Collapse in Silicon
 <div id="ref-hunter2007" class="csl-entry" role="listitem">
 Hunter, John D. 2007. <span>“Matplotlib: A 2D Graphics Environment.”</span> <em>Computing in Science &amp; Engineering</em> 9 (3): 90–95. <a href="https://doi.org/10.1109/MCSE.2007.55">https://doi.org/10.1109/MCSE.2007.55</a>.
 </div>
+<div id="ref-kay2016" class="csl-entry" role="listitem">
+Kay, Matthew, Tara Kola, Jessica R. Hullman, and Sean A. Munson. 2016. <span>“When (Ish) Is My Bus? <span>User-Centered</span> Visualizations of Uncertainty in Everyday, Mobile Predictive Systems.”</span> <em>Proceedings of the 2016 <span>CHI</span> Conference on Human Factors in Computing Systems</em>, 5092–103. <a href="https://doi.org/10.1145/2858036.2858558">https://doi.org/10.1145/2858036.2858558</a>.
+</div>
 <div id="ref-pytest" class="csl-entry" role="listitem">
-Krekel, Holger, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, and Florian Bruhin. 2004. <em>Pytest</em>. <a href="https://github.com/pytest-dev/pytest">https://github.com/pytest-dev/pytest</a>.
+Krekel, Holger, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, and Florian Bruhin. 2004. <em><span class="nocase">pytest</span>, Version 9</em>. <a href="https://github.com/pytest-dev/pytest">https://github.com/pytest-dev/pytest</a>.
 </div>
 <div id="ref-lockgelman2010" class="csl-entry" role="listitem">
 Lock, Kari, and Andrew Gelman. 2010. <span>“Bayesian Combination of State Polls and Election Forecasts.”</span> <em>Political Analysis</em> 18 (3): 337–48. <a href="https://doi.org/10.1093/pan/mpq002">https://doi.org/10.1093/pan/mpq002</a>.
@@ -2558,19 +2567,22 @@ PollResults.org. 2026. <em><span>PollResults</span> Senate Results <span>API</sp
 PredictIt. 2026. <em>2026 <span>U.S.</span> Senate Election Markets: Daily Prices</em>. <a href="https://www.predictit.org">https://www.predictit.org</a>.
 </div>
 <div id="ref-python" class="csl-entry" role="listitem">
-Python Software Foundation. n.d. <em>Python Language Reference</em>. <a href="https://www.python.org">https://www.python.org</a>.
+Python Software Foundation. 2023. <em>Python Language Reference, Version 3.12</em>. <a href="https://www.python.org">https://www.python.org</a>.
 </div>
 <div id="ref-reimers2019" class="csl-entry" role="listitem">
 Reimers, Nils, and Iryna Gurevych. 2019. <span>“Sentence-<span>BERT</span>: Sentence Embeddings Using <span>Siamese</span> <span>BERT</span>-Networks.”</span> <em>Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing</em>. <a href="https://arxiv.org/abs/1908.10084">https://arxiv.org/abs/1908.10084</a>.
 </div>
 <div id="ref-requests" class="csl-entry" role="listitem">
-Reitz, Kenneth. n.d. <em>Requests: <span>HTTP</span> for Humans</em>. <a href="https://requests.readthedocs.io">https://requests.readthedocs.io</a>.
+Reitz, Kenneth. 2026. <em>Requests: <span>HTTP</span> for Humans, Version 2.34.2</em>. <a href="https://requests.readthedocs.io">https://requests.readthedocs.io</a>.
 </div>
 <div id="ref-reuters2024" class="csl-entry" role="listitem">
 Reuters. 2024. <em><span>US</span> Senate Election Results 2024</em>. <a href="https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/">https://www.reuters.com/graphics/USA-ELECTION/RESULTS/zjpqnemxwvx/senate/</a>.
 </div>
 <div id="ref-rothschild2009" class="csl-entry" role="listitem">
 Rothschild, David. 2009. <span>“Forecasting Elections: Comparing Prediction Markets, Polls, and Their Biases.”</span> <em>Public Opinion Quarterly</em> 73 (5): 895–916. <a href="https://doi.org/10.1093/poq/nfp082">https://doi.org/10.1093/poq/nfp082</a>.
+</div>
+<div id="ref-ces2024data" class="csl-entry" role="listitem">
+Schaffner, Brian, Marissa Shih, Stephen Ansolabehere, and Jeremy Pope. 2025. <em>Cooperative Election Study Common Content, 2024</em>. Harvard Dataverse. <a href="https://doi.org/10.7910/DVN/X11EP6">https://doi.org/10.7910/DVN/X11EP6</a>.
 </div>
 <div id="ref-pew2025sources" class="csl-entry" role="listitem">
 Shearer, Elisa, Kirsten Eddy, Michael Lipka, and Katerina Eva Matsa. 2025. <em>The Political Gap in <span>Americans’</span> News Sources</em>. Pew Research Center. <a href="https://www.pewresearch.org/journalism/2025/06/10/the-political-gap-in-americans-news-sources/">https://www.pewresearch.org/journalism/2025/06/10/the-political-gap-in-americans-news-sources/</a>.
