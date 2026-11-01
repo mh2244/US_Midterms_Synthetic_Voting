@@ -241,10 +241,12 @@ for m, k in zip(methods, ["synthetic", "ivw", "baseline"]):
     m["loo_error"] = err[k]
 meth = pd.DataFrame(methods)
 meth.round(4).to_csv(OUT / "methods.csv", index=False)
-md = ["| Method | Probability of Republican control (%) | Republican seats, median (90% interval) | Error against hidden polls (points) |",
-      "|---|---:|---:|---:|"]
+# The leave-one-out error stays in methods.csv and leave_one_out.md, but it is no longer shown on the
+# website, so this table shows only the forecast under each method.
+md = ["| Method | Probability of Republican control (%) | Republican seats, median (90% interval) |",
+      "|---|---:|---:|"]
 for r in meth.itertuples():
-    md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) | {r.loo_error * 100:.1f} |")
+    md.append(f"| {r.method} | {pct(r.p_rep)} | {r.rep_median} ({r.rep_q05} to {r.rep_q95}) |")
 (OUT / "methods.md").write_text("\n".join(md) + "\n")
 
 # Leave-one-out error by model (website, Validation and tests): mean absolute error in points

@@ -194,7 +194,7 @@ This section shows how the results change with the forecasting method, news inpu
 {{< include data/03-results/comparison/methods.md >}}
 
 ::: {.chart-note}
-This table compares three ways of building the forecast for the latest run, with the four models weighted equally. Error is the mean absolute gap from held-out poll averages, in percentage points. A smaller error indicates the result is closer to the polls. The no-language-model forecast uses polls where available and 2024 plus swing elsewhere.
+This table compares three ways of building the forecast for the latest run, with the four models weighted equally. The no-language-model forecast uses polls where available and 2024 plus swing elsewhere.
 :::
 
 ### Effect of the news
@@ -234,22 +234,11 @@ Each cell gives the probability of Republican control under a different national
 
 ## Evaluation {#evaluation}
 
-<!-- DRAFT (Claude): rewrite. -->
-The forecast cannot be scored until the results come in on 3 November, so we check it in two ways that need no result: against polls it did not see, and against a prediction market that forecasts the same races by other means.
-
-### Against hidden polls: a leave-one-out check {#loo}
-
-<!-- DRAFT (Claude): rewrite. Table written by scripts/16b-compare_runs.py after each run. -->
-{{< include data/03-results/comparison/leave_one_out.md >}}
-
-::: {.chart-note}
-For each polled state, bias, swing and variance estimates are recalculated using the other states before predicting its withheld poll average. Entries are mean absolute errors in two-party vote share, in percentage points; smaller is better. This checks agreement with polls, not election outcomes. Each state’s polls are withheld before its prediction is made. The last column counts states where the combination beats the 2024-plus-swing benchmark.
-:::
+The forecast cannot be scored against the actual results until after the election on 3 November. Therefore, we compare it with a prediction market that forecasts the same races using a different method.
 
 ### Against a prediction market {#markets}
 
-<!-- DRAFT (Claude): rewrite. -->
-The idea for this check comes from Wang et al. [-@wang2015], who forecast the 2012 presidential election from an opt-in poll of Xbox users, adjusted it with multilevel regression and post-stratification, and, with no election result to compare against weeks before the vote, set their state forecasts beside prediction markets (Betfair and Intrade), which they describe as among the most accurate sources of political forecasts. We do the same with PredictIt [@predictit2026], which has a market for every one of the 35 races and for control of the Senate. A contract pays one dollar if it comes true, so its price is roughly the market's probability; the two sides' prices add up to a little more than one, so we divide the Republican side's price by their sum, and we leave out third candidates, as our forecast does. We use each market's closing price on the day of the news run. For 27 and 29 October, our Montana forecast is Alme against the Democrat Alani Bankhead, which we corrected to the independent Seth Bodnar from 31 October (see [Data](#data)), so Montana is not comparable with the market on those two days. The market is not independent of the polls, which traders read, but it combines them with other information through trading [@rothschild2009].
+This comparison follows Wang et al. [-@wang2015], who forecast the 2012 presidential election using an opt-in poll of Xbox users. Before election results were available, they compared their state forecasts with prediction markets, which they described as among the most accurate sources of political forecasts. We use PredictIt [@predictit2026], which has a market for each of the 35 races and for control of the Senate. A contract pays one dollar if the predicted outcome occurs, so its price roughly reflects the market’s estimated probability. The two sides’ prices sum to slightly more than one, so we divide the Republican price by their sum, excluding third candidates as our forecast does. We use each market’s closing price on the date of each news run. Montana is excluded from the comparison on 27 and 29 October because our forecast used the Democrat Alani Bankhead instead of the independent Seth Bodnar (see [Data](#data)). The market is not independent of the polls, but it adds other information through trading [@rothschild2009].
 
 {{< include data/03-results/comparison/markets.md >}}
 
