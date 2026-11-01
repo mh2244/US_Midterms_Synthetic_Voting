@@ -63,10 +63,10 @@ md.append(f"| **All models** | **{g['answered'].sum():,}** | **{g['input_tokens'
 # One sentence for every run, so earlier runs stay on the page without their own rows
 totals = costs.groupby("run", sort=False).agg(cost=("cost_usd", "sum"), first=("first_call", "min"),
                                               last=("last_call", "max"))
-parts = [f"{RUNS[r].replace(' (baseline)', '').replace('No news', 'the run without news')} US${t.cost:,.2f}"
-         for r, t in totals.iterrows()]
+parts = [f"US${t.cost:,.2f} for the run without news, whose prompts contain no news" if r == "nonews"
+         else f"{RUNS[r]} US${t.cost:,.2f}" for r, t in totals.iterrows()]
 hours = (totals.loc[latest, "last"] - totals.loc[latest, "first"]).total_seconds() / 3600
-md += ["", f"Cost of each run: {', '.join(parts[:-1])} and {parts[-1]}. The {RUNS[latest]} run took "
-           f"{hours:.1f} hours from its first call to its last."]
+md += ["", f"Estimated cost of each run, from the token counts: {', '.join(parts[:-1])}, and {parts[-1]}. "
+           f"The {RUNS[latest]} run took {hours:.1f} hours from its first call to its last."]
 (OUT / "costs.md").write_text("\n".join(md) + "\n")
 print("\n".join(md))

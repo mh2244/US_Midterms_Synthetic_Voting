@@ -2375,15 +2375,14 @@ Table view: every race, 31 October
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/latest/market_comparison.png" class="img-fluid figure-img" alt="Scatter plot of 35 Senate races, our Republican winning probability against PredictIt's, with a 45-degree line and shaded corners where the two favour different sides."></p>
-<figcaption>Our Republican winning probability in each race against PredictIt’s, on the latest news day. Points on the dashed line are races where the two agree; points in the shaded corners are races where they favour different sides. Hollow points are races with an independent instead of a Democrat; states that differ by 8 points or more are named. Data from PredictIt.</figcaption>
+<figcaption>Our Republican winning probability in each race against PredictIt’s, on the latest news day. Points on the dashed line are races where the two agree; points in the shaded corners are races where they favour different sides. Hollow points are races with an independent instead of a Democrat; states that differ by 8 points or more are named.</figcaption>
 </figure>
 </div>
 </section>
 </section>
 <section id="costs" class="level2">
 <h2 class="anchored" data-anchor-id="costs">API costs and time</h2>
-<!-- DRAFT (Claude): rewrite. Table and the cost of each run written by scripts/16d-costs.py from the token counts saved by script 09. -->
-<p>Each run asks 3,500 personas, four models and three repeats: 42,000 calls. Costs are token counts priced at OpenRouter’s list prices of 25 October. Embedding the answers adds about US$0.50 per run and screening the news less than US$0.10, so a run costs about US$9 at list prices. OpenRouter billed about US$7.20 per run, because DeepSeek was cheaper off-peak. In total, OpenRouter billed US$41.38 for the project, including the test run and a repeated run; the bill by day is in the README.</p>
+<p>Each run uses 3,500 personas. Four models answer for each persona three times, giving 42,000 calls per run. We calculate costs from the recorded token counts using OpenRouter’s list prices as of 25 October. Answer embeddings cost about US$0.50 per run, and news screening costs less than US$0.10. The total estimated cost is about US$9 per run. OpenRouter charged about US$7.20 per run because DeepSeek’s off-peak prices were lower. The total project bill was US$41.38, including the test run and a repeated run. The README lists the charges by day.</p>
 <p><strong>31 October run</strong></p>
 <table class="caption-top table">
 <colgroup>
@@ -2440,7 +2439,7 @@ Table view: every race, 31 October
 </tr>
 </tbody>
 </table>
-<p>Cost of each run: 27 October US$8.08, 29 October US$8.13, 31 October US$8.31 and the run without news US$4.64. The 31 October run took 1.0 hours from its first call to its last.</p>
+<p>Estimated cost of each run, from the token counts: 27 October US$8.08, 29 October US$8.13, 31 October US$8.31, and US$4.64 for the run without news, whose prompts contain no news. The 31 October run took 1.0 hours from its first call to its last.</p>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
