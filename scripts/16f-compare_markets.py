@@ -86,8 +86,11 @@ for run in NEWS_DAYS:
     rep = f[f["party"] == "Republican"].assign(win=lambda d: d["winner"] == "Republican")
     ours = rep.groupby(["state", "model"])["win"].mean().groupby("state").mean()
     races = m.drop(index="control", errors="ignore").join(ours.rename("ours_p_rep"), how="inner")
-    if run in {"2026-10-27", "2026-10-29"}:
-        races = races.drop(index="MT", errors="ignore")  # different opponent in the saved prompts
+    # Montana's left candidate was the Democrat Alani Bankhead until the 31 October run and the
+    # independent Seth Bodnar from then on, while the market's contracts are matched to the current
+    # nominee (Bodnar), so Montana is left out of the comparison for the earlier news days.
+    if run < "2026-10-31":
+        races = races.drop(index="MT", errors="ignore")
     races["difference"] = races["ours_p_rep"] - races["market_p_rep"]
     races = races.assign(run=run).reset_index()[["run", "state", "market_p_rep", "ours_p_rep", "difference"]]
     rows.append(races)
@@ -119,19 +122,28 @@ def pct(p):
     return "<1" if p < 0.005 else ">99" if p > 0.995 else f"{p * 100:.0f}"
 
 
-md = ["| News day | States | Correlation | Mean absolute difference (points) | Favourite differs | "
-      "Probability of Republican control: ours / market (%) |", "|---|---:|---:|---:|---|---:|"]
+md = ["| News day | States | Correlation | Mean absolute difference (points) | "
+      "Our probability of Republican control (%) | Market probability of Republican control (%) |",
+      "|---|---:|---:|---:|---:|---:|"]
 for s in summ.itertuples():
-    ctrl = f"{s.ours_rep_control * 100:.0f} / {s.market_rep_control * 100:.0f}" if pd.notna(s.market_rep_control) else "–"
-    md.append(f"| {day(s.run)} | {s.n} | {s.corr:.2f} | {s.mad * 100:.1f} | {s.differs} | {ctrl} |")
+    market = f"{s.market_rep_control * 100:.0f}" if pd.notna(s.market_rep_control) else "–"
+    md.append(f"| {day(s.run)} | {s.n} | {s.corr:.2f} | {s.mad * 100:.1f} | {s.ours_rep_control * 100:.0f} | {market} |")
+md += ["", "::: {.chart-note}",
+       "Correlation measures the association between our Republican winning probabilities and the market’s across races. ",
+       "The mean absolute difference measures how far apart the two probabilities are, averaged across states. ",
+       "Market probabilities are calculated from closing prices on each news day.", ":::"]
 latest = summ["run"].iloc[-1]
 t = table[table["run"] == latest].sort_values("difference")
 md += ["", "<details>", f"<summary>Table view: every race, {day(latest)}</summary>", "",
-       "| State | Market winning probability (%) | Our winning probability (%) | Ours minus market (points) |", "|---|---:|---:|---:|"]
+       "| State | Our winning probability (%) | Market winning probability (%) | Difference (points) |",
+       "|---|---:|---:|---:|"]
 for r in t.itertuples():
     name = config.STATE_NAME.get(r.state, r.state) + (" (I)" if nominees.loc[r.state, "left_party"] == "Independent" else "")
-    md.append(f"| {name} | {pct(r.market_p_rep)} | {pct(r.ours_p_rep)} | {signed(r.difference)} |")
-md += ["", "</details>"]
+    md.append(f"| {name} | {pct(r.ours_p_rep)} | {pct(r.market_p_rep)} | {signed(r.difference)} |")
+md += ["", "::: {.chart-note}",
+       "Winning probabilities are for the Republican candidate. Positive values mean we give the ",
+       "Republican a higher probability than the market does. ",
+       "(I) marks a race with an independent instead of a Democrat.", ":::", "", "</details>"]
 missing_days = [run for run in NEWS_DAYS if run not in set(summ["run"])]
 if missing_days:
     md += ["", "Market closing prices are not available in the saved downloads for "

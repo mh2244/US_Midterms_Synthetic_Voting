@@ -62,8 +62,11 @@ Design B requires 42,000 voting requests per run, plus screening/embedding.
   with code 1, including an unfinished `--limit` pilot. Keep prompts unchanged
   and rerun 09 to retry remaining work.
 - **10–16:** score, simulate, plot and test. Script 11 combines the synthetic share
-  with polls (or 2024 + uniform swing), using the raw synthetic share and error-scale weights that include squared systematic gaps; no mean-bias correction is applied. The `ivw` file/CLI name is retained for compatibility; `--combine
-  none` (synthetic voters only) is kept for comparison. 13b, 15b, 15c and 16 write the
+  with polls (or 2024 + uniform swing): each model's mean gap from the polls is
+  subtracted, then the corrected share is averaged with the outside estimate by
+  inverse-variance weights. `--combine none` (synthetic voters only) and `--bias keep`
+  (raw synthetic share, gap counted as error; written to `*_ivw_biaskept` files and
+  never to the headline files) are kept for comparison. 13b, 15b, 15c and 16 write the
   map, headline, battleground table and crosstabs; 16b–16d compare runs, test
   sensitivity to the assumed errors and tabulate costs. Tests (12, pytest with pandera schemas)
   check consistency, not prediction accuracy; in the workflow 15c, 16b, 16c and
@@ -96,20 +99,19 @@ commit news, polling inputs, answers and scores even after failure. Forecasts,
 figures and the rendered website (`docs/`) are committed only when all
 preceding steps, including the tests, succeed.
 
-The original mean-bias-corrected outputs for 27, 29 and 31 October are preserved
-under `data/03-results/archive/<date>_bias_corrected/`. All three dated forecasts
-have been rebuilt using raw synthetic estimates and the same weighting method,
-without new model requests. Each uses its saved `polling_input.csv` and a
-`nominees_input.csv` reconstructed from the candidate pairs in its saved prompts.
-The Montana pairing differs on 31 October, reflecting the original model inputs.
-
-To reproduce a dated forecast with these inputs:
+The headline forecasts for 27, 29 and 31 October are the bias-corrected outputs of
+the scheduled runs. Each run folder also has a `nominees_input.csv` reconstructed
+from the candidate pairs in its saved prompts; the Montana pairing differs on
+31 October, reflecting the original model inputs. The comparison row "bias not
+removed" in the method table was built from these saved inputs, without new model
+requests:
 
 ```bash
-export RUN=2026-10-27  # or 2026-10-29 / 2026-10-31
+export RUN=2026-10-31
 export FORECAST_POLLS_FILE="data/03-results/run_${RUN}/polling_input.csv"
 export FORECAST_NOMINEES_FILE="data/03-results/run_${RUN}/nominees_input.csv"
-python scripts/11-build_forecast.py
+python scripts/11-build_forecast.py --bias keep   # writes the *_ivw_biaskept files only
+RUN=2026-10-31 python scripts/16b-compare_runs.py   # then 16b adds the fourth method row
 ```
 
 The candidate snapshots contain the two modelled candidates; they do not

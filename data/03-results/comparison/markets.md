@@ -1,48 +1,60 @@
-| News day | States | Correlation | Mean absolute difference (points) | Favourite differs | Probability of Republican control: ours / market (%) |
-|---|---:|---:|---:|---|---:|
-| 27 October | 34 | 0.98 | 6.1 | Maine, Texas | 45 / 36 |
-| 29 October | 34 | 0.98 | 6.7 | Maine, Texas | 46 / 33 |
-| 31 October | 35 | 0.98 | 6.4 | Kansas, Maine, Texas | 42 / 29 |
+| News day | States | Correlation | Mean absolute difference (points) | Our probability of Republican control (%) | Market probability of Republican control (%) |
+|---|---:|---:|---:|---:|---:|
+| 27 October | 34 | 0.98 | 5.8 | 38 | 36 |
+| 29 October | 34 | 0.98 | 6.3 | 39 | 33 |
+| 31 October | 35 | 0.98 | 5.7 | 37 | 29 |
+
+::: {.chart-note}
+Correlation measures the association between our Republican winning probabilities and the market’s across races. 
+The mean absolute difference measures how far apart the two probabilities are, averaged across states. 
+Market probabilities are calculated from closing prices on each news day.
+:::
 
 <details>
 <summary>Table view: every race, 31 October</summary>
 
-| State | Market winning probability (%) | Our winning probability (%) | Ours minus market (points) |
+| State | Our winning probability (%) | Market winning probability (%) | Difference (points) |
 |---|---:|---:|---:|
-| Louisiana | 89 | 76 | −13 |
-| Mississippi | 88 | 76 | −12 |
-| Nebraska (I) | 76 | 66 | −10 |
-| South Carolina | 72 | 63 | −9 |
-| Florida | 83 | 78 | −5 |
-| Rhode Island | 4 | <1 | −4 |
-| Iowa | 58 | 55 | −3 |
-| New Mexico | 4 | 1 | −2 |
-| New Jersey | 3 | 1 | −2 |
-| Oregon | 2 | <1 | −2 |
-| Colorado | 2 | 1 | −1 |
-| Delaware | 1 | <1 | −1 |
-| Massachusetts | 1 | <1 | −1 |
-| Kentucky | 95 | 96 | +1 |
-| Arkansas | 94 | 96 | +2 |
-| West Virginia | 98 | >99 | +2 |
-| Alabama | 97 | 99 | +2 |
-| Tennessee | 97 | 99 | +2 |
-| South Dakota (I) | 90 | 93 | +3 |
-| Idaho (I) | 97 | >99 | +3 |
-| Oklahoma | 96 | >99 | +4 |
-| Montana (I) | 89 | 93 | +4 |
-| Virginia | 2 | 6 | +4 |
-| Wyoming | 95 | >99 | +5 |
-| Illinois | 2 | 8 | +6 |
-| North Carolina | 4 | 11 | +7 |
-| Kansas | 49 | 56 | +7 |
-| Ohio | 28 | 37 | +9 |
-| Alaska | 32 | 41 | +9 |
-| Georgia | 5 | 15 | +10 |
-| New Hampshire | 8 | 19 | +11 |
-| Maine | 36 | 52 | +16 |
-| Texas | 34 | 51 | +17 |
-| Michigan | 25 | 42 | +17 |
-| Minnesota | 8 | 26 | +18 |
+| Mississippi | 74 | 88 | −14 |
+| South Carolina | 57 | 72 | −14 |
+| Louisiana | 77 | 89 | −12 |
+| Nebraska (I) | 64 | 76 | −12 |
+| Florida | 72 | 83 | −11 |
+| Iowa | 51 | 58 | −7 |
+| Rhode Island | <1 | 4 | −4 |
+| New Mexico | 1 | 4 | −3 |
+| Kentucky | 92 | 95 | −3 |
+| New Jersey | <1 | 3 | −2 |
+| Alaska | 30 | 32 | −2 |
+| Oregon | <1 | 2 | −2 |
+| Colorado | 1 | 2 | −1 |
+| Montana (I) | 88 | 89 | −1 |
+| Delaware | <1 | 1 | −1 |
+| Massachusetts | <1 | 1 | −1 |
+| South Dakota (I) | 91 | 90 | +1 |
+| Arkansas | 95 | 94 | +1 |
+| Alabama | 99 | 97 | +2 |
+| Virginia | 4 | 2 | +2 |
+| Tennessee | 99 | 97 | +2 |
+| West Virginia | >99 | 98 | +2 |
+| Idaho (I) | >99 | 97 | +3 |
+| Ohio | 31 | 28 | +3 |
+| North Carolina | 8 | 4 | +4 |
+| Illinois | 6 | 2 | +4 |
+| Oklahoma | >99 | 96 | +4 |
+| Wyoming | >99 | 95 | +5 |
+| Georgia | 10 | 5 | +5 |
+| New Hampshire | 14 | 8 | +6 |
+| Minnesota | 16 | 8 | +8 |
+| Kansas | 61 | 49 | +12 |
+| Michigan | 37 | 25 | +12 |
+| Maine | 50 | 36 | +14 |
+| Texas | 53 | 34 | +19 |
+
+::: {.chart-note}
+Winning probabilities are for the Republican candidate. Positive values mean we give the 
+Republican a higher probability than the market does. 
+(I) marks a race with an independent instead of a Democrat.
+:::
 
 </details>

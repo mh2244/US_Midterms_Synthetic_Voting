@@ -2,10 +2,10 @@
 Forecast as of 27 October 2026
 :::
 
-## The Democratic caucus is favoured to control the Senate, 51 seats to 49
+## The Democratic caucus is favoured to control the Senate, 52 seats to 48
 
-We combine synthetic responses from four language models with polling information to forecast the 35 Senate races in 2026. We weight the raw synthetic estimates without subtracting their average gap from polls. To estimate which party will control the Senate, we add the 35 race predictions to the 65 seats not up for election: 31 held by Republicans, 32 by Democrats, and two by independents, Bernie Sanders and Angus King, who caucus with Democrats.
+We combine synthetic responses from four language models with polling data. We forecast the 35 Senate races in 2026. To estimate which party will control the Senate, we add the 65 seats not up for election: 31 held by Republicans, 32 by Democrats, and two by independents, Bernie Sanders and Angus King, who caucus with Democrats.
 
-The probability that the Democratic caucus reaches the 51-seat threshold for control, without support from newly elected independents, is 53 per cent; the probability that Republicans retain control is 45 per cent. Republicans need 50 seats because the Republican vice president can break a 50–50 tie. In 90 per cent of our simulations, Republicans win between 41 and 57 seats, showing the uncertainty around the forecast.
+Across the simulations, the Democratic caucus reaches the 51-seat threshold for control without support from newly elected independents in 60 per cent of outcomes. Republicans retain control in 38 per cent. Republicans need 50 seats because the Republican vice president can break a 50–50 tie. The central 90 per cent of simulated Republican seat totals ranges from 40 to 56, showing the uncertainty around the forecast.
 
-![This summary shows all 100 Senate seats, with each model weighted equally. The Democratic caucus includes Sanders and King; any independent seats shown represent newly elected independents. Republican and newly elected independent seat counts are medians, with the remaining seats assigned to the Democratic caucus.](figures/latest/seat_bar.png){fig-alt="Horizontal bar of 100 Senate seats split into Democratic caucus, newly elected independent and Republican seats (51, 0 and 49), with a dashed line at 50."}
+![The bar summarises the 100-seat Senate, with each model counting equally. The Democratic caucus includes Sanders and King; a separate independent segment counts only new independent winners. Republican and new-independent totals are medians, and the remaining seats go to the Democratic caucus. These totals are a summary, not a certain outcome.](figures/latest/seat_bar.png){fig-alt="Horizontal bar of 100 Senate seats split into Democratic caucus, newly elected independent and Republican seats (52, 0 and 48), with a dashed line at 50."}

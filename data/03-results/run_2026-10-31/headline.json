@@ -3,9 +3,9 @@
   "dem": 52,
   "ind": 0,
   "rep": 48,
-  "p_dem_51_without_ind": 0.555,
-  "p_rep_control": 0.424,
-  "rep_q05": 41,
-  "rep_q95": 56,
+  "p_dem_51_without_ind": 0.609,
+  "p_rep_control": 0.374,
+  "rep_q05": 40,
+  "rep_q95": 55,
   "n_models": 4
 }

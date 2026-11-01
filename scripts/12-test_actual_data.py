@@ -354,10 +354,21 @@ def test_combined_share_between_its_inputs(ivw):
     assert ivw["combined"].between(lo, hi).all()
 
 
+def test_bias_corrected_synthetic_input(ivw):
+    """The headline method subtracts each model's mean gap from the polls before averaging, and
+    the combined share is the recorded weighted average of the corrected share and the outside
+    estimate. Files written before the bias_correction column existed are bias-corrected."""
+    if "bias_correction" in ivw and not ivw["bias_correction"].astype(str).str.lower().eq("true").all():
+        pytest.skip("run built with --bias keep")
+    assert np.allclose(ivw["m_star"], ivw["model_share"] - ivw["mean_gap"], atol=2e-4)
+    expected = ivw["w_synthetic"] * ivw["m_star"] + (1 - ivw["w_synthetic"]) * ivw["t"]
+    assert np.allclose(ivw["combined"], expected, atol=1.1e-4)
+
+
 def test_uncorrected_synthetic_input(ivw):
-    """Raw-combination runs must not subtract the diagnostic mean gap."""
+    """Runs built with --bias keep must not subtract the mean gap."""
     if "bias_correction" not in ivw or ivw["bias_correction"].astype(str).str.lower().eq("true").any():
-        pytest.skip("historical bias-corrected method")
+        pytest.skip("bias-corrected method (the headline)")
     assert np.allclose(ivw["m_star"], ivw["model_share"], atol=1e-8)
     assert np.allclose(ivw["synthetic_input"], ivw["model_share"], atol=1e-8)
     expected = ivw["w_synthetic"] * ivw["model_share"] + (1 - ivw["w_synthetic"]) * ivw["t"]

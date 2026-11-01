@@ -6,7 +6,9 @@
 #                           run (also drawn in figures/run_<RUN>/news_effect.png),
 #                           run, and how far each news day moved it from the no-news baseline
 #            3. methods.md  for the latest news run: chance of Republican control and median seats
-#                           under three methods (synthetic only, inverse-variance, and 2024 +
+#                           under four methods (synthetic only; inverse-variance with the bias
+#                           removed, the headline; inverse-variance with the bias kept, from
+#                           scripts/11 --bias keep, if that file exists; and polls or 2024 +
 #                           uniform swing with no language model)
 # Author: Kexin (Coco) Liu
 # Date: 27 October 2026
@@ -193,9 +195,15 @@ plt.close(fig)
 #### 3. Methods, for the latest news run ####
 res = config.RESULTS / f"run_{latest}"
 methods = []
-for tag, name in [("uncalibrated", "Synthetic voters only"), ("ivw", "Synthetic + polling information")]:
-    f = read_forecast(res / f"forecast_{tag}.parquet")
-    methods.append({"method": name, **summary(seats_from(f[["model", "draw", "state", "winner"]].drop_duplicates()))})
+versions = [("uncalibrated", "Synthetic voters only"), ("ivw", "Synthetic + polls, bias removed (headline)"),
+            ("ivw_biaskept", "Synthetic + polls, bias not removed")]
+for tag, name in versions:
+    path = res / f"forecast_{tag}.parquet"
+    if tag == "ivw_biaskept" and not path.exists():   # optional: scripts/11 --bias keep
+        continue
+    f = read_forecast(path)
+    methods.append({"method": name, "tag": tag,
+                    **summary(seats_from(f[["model", "draw", "state", "winner"]].drop_duplicates()))})
 
 # 2024 + uniform swing, no language model: draw around t with sd_t (same for every model)
 w = pd.read_csv(res / "ivw_weights.csv")
@@ -211,25 +219,40 @@ for state, r in base.iterrows():
     left = nominees.loc[state, "left_party"]
     sim.append(pd.DataFrame({"model": "baseline", "draw": np.arange(n), "state": state,
                              "winner": np.where(s > 0.5, left, "Republican")}))
-methods.append({"method": "Polls + 2024 swing (no LLM)",
+methods.append({"method": "Polls + 2024 swing (no LLM)", "tag": "baseline",
                 **summary(seats_from(pd.concat(sim, ignore_index=True)))})
 
-meth = pd.DataFrame(methods)
+meth = pd.DataFrame(methods).drop(columns="tag")
 meth.round(4).to_csv(OUT / "methods.csv", index=False)
 # This paragraph follows the latest run, rather than leaving old figures in the Discussion.
-synthetic, combined, baseline = methods
+by_tag = {m["tag"]: m for m in methods}
+synthetic, combined, baseline = by_tag["uncalibrated"], by_tag["ivw"], by_tag["baseline"]
 polled_weights = w.loc[w["source"] == "poll", "w_synthetic"].mean()
 unpolled_weights = w.loc[w["source"] != "poll", "w_synthetic"].mean()
+gap = round((combined["p_rep"] - baseline["p_rep"]) * 100)
+direction = ("moves the combined forecast toward greater Republican support" if gap > 0 else
+             "moves the combined forecast toward the Democratic side" if gap < 0 else
+             "leaves the probability unchanged")
 summary_text = (
     f"For {label(latest)}, adding polling and historical information lowers the Republican "
     f"control probability from {pct(synthetic['p_rep'])}% in the synthetic-only forecast to "
     f"{pct(combined['p_rep'])}%. The no-LLM benchmark gives {pct(baseline['p_rep'])}%, so including "
-    "synthetic responses moves the combined forecast toward greater Republican support. "
+    f"synthetic responses {direction}. "
     f"Synthetic estimates receive an average weight of {polled_weights * 100:.0f}% in polled "
     f"states and {unpolled_weights * 100:.0f}% in unpolled states. The remaining weight goes "
     "to state polling averages or, where unavailable, the 2024 CES vote share plus uniform swing. "
     "The combined result is therefore driven mainly by these outside estimates."
 )
+if "ivw_biaskept" in by_tag:
+    kept = by_tag["ivw_biaskept"]
+    wk = pd.read_csv(res / "ivw_weights_biaskept.csv")
+    lean = "Republican" if wk.drop_duplicates("model")["mean_gap"].mean() < 0 else "Democratic"
+    summary_text += (
+        f" Without the bias correction, the synthetic shares receive less weight (an average of "
+        f"{wk.loc[wk['source'] == 'poll', 'w_synthetic'].mean() * 100:.0f}% in polled states) but keep "
+        f"their {lean} lean, and the probability of Republican control is {pct(kept['p_rep'])}%: the "
+        f"choice between the two methods alone moves it by {abs(kept['p_rep'] - combined['p_rep']) * 100:.0f} points."
+    )
 (OUT / "method_summary.md").write_text(summary_text + "\n")
 
 md = ["| Method | Probability of Republican control (%) | Republican seats, median (90% interval) |",
@@ -244,7 +267,7 @@ for r in meth.itertuples():
 assert by_run[["p_dem", "p_rep"]].stack().between(0, 1).all()
 assert (by_run["p_dem"] + by_run["p_rep"] <= 1 + 1e-9).all(), "Control chances add up to more than 1"
 assert news[runs].stack().between(0, 1).all(), "A synthetic share is outside 0 to 1"
-assert len(meth) == 3 and meth[["p_dem", "p_rep"]].stack().between(0, 1).all()
+assert len(meth) in (3, 4) and meth[["p_dem", "p_rep"]].stack().between(0, 1).all()
 
 print((OUT / "runs.md").read_text())
 print((OUT / "news.md").read_text())

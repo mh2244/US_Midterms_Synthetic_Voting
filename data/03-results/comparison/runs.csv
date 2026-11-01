@@ -1,5 +1,5 @@
 run,combination,p_dem,p_rep,rep_median,rep_q05,rep_q95
-2026-10-27,raw synthetic,0.5308,0.4458,49,41,57
-2026-10-29,raw synthetic,0.513,0.4602,49,41,57
-2026-10-31,raw synthetic,0.555,0.4242,48,41,56
+2026-10-27,mean-bias corrected,0.598,0.3822,48,40,56
+2026-10-29,mean-bias corrected,0.5903,0.3878,48,40,56
+2026-10-31,mean-bias corrected,0.6092,0.3745,48,40,55
 nonews,mean-bias corrected,0.594,0.3845,48,40,56

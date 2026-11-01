@@ -25,7 +25,8 @@
 #   (26 October test run), because SSR probabilities are rarely exactly 0 or 1.
 # HOW polls enter (default --combine ivw): see the comment above the inverse-variance block.
 #   The bootstrap variance is one part of the synthetic variance; the rest is estimated from
-#   the mean squared gap of raw synthetic shares from polls, including systematic offsets.
+#   how far the bias-corrected synthetic shares fall from the polls (--bias keep: from the mean
+#   squared gap of the raw shares, so the bias counts as error).
 # A national error shared by all states is ON by default (config.NATIONAL_SD = 0.03, an
 #   assumption; Gelman et al. 2020; Shirani-Mehr et al. 2018). Rerun with --national-sd 0, 0.02
 #   and 0.04 for the sensitivity table, and --poll-sd 0.02 and 0.04 for the poll error.
@@ -57,6 +58,10 @@ ap.add_argument("--draws", type=int, default=config.N_DRAWS)
 ap.add_argument("--combine", default="ivw", choices=["ivw", "none"],
                 help="ivw: inverse-variance weights with polls or 2024 + swing (headline); "
                      "none: synthetic only")
+ap.add_argument("--bias", default="remove", choices=["remove", "keep"],
+                help="remove: subtract each model's mean gap from the polls before combining (headline); "
+                     "keep: combine the raw synthetic share and count the gap as error (comparison only, "
+                     "written to *_ivw_biaskept files)")
 ap.add_argument("--poll-sd", type=float, default=0.03,
                 help="state poll error beyond sampling error, used by --combine ivw (assumption)")
 ap.add_argument("--national-sd", type=float, default=config.NATIONAL_SD,
@@ -67,6 +72,8 @@ ap.add_argument("--summary-only", type=Path, default=None,
                      "sensitivity table, scripts/16c-sensitivity.py)")
 args = ap.parse_args()
 args.ivw = args.combine == "ivw"
+args.remove_bias = args.bias == "remove"
+assert args.ivw or args.remove_bias, "--bias keep only applies to --combine ivw"
 
 # Seats not up in 2026, checked 2026-10-25: the Senate is 53 R - 47 D (the 47 include King and
 # Sanders, independents who caucus with Democrats). 35 seats are up: 13 held by Democrats and 22
@@ -148,12 +155,22 @@ ces = ces[ces["state"].isin(nominees.index) & ces["vvweight_post"].notna()
 w = ces.pivot_table(index="state", columns="pres_vote_2024", values="vvweight_post", aggfunc="sum")
 pres = (w["Harris"] / (w["Harris"] + w["Trump"])).rename("pres2024_dem_share").reset_index()
 
-# Combine the RAW synthetic share with polls (or 2024 + swing); never subtract a mean gap.
-# Working error scales use squared discrepancies, so systematic offsets count as error.
-# var_m = bootstrap variance + max(floor, mean((model - poll)^2) - mean(bootstrap + poll variance)).
-# The weights minimise an approximate independent-error criterion, not a proven unbiased variance.
-# The normal simulation spread uses these working scales; bias, dependence and estimated scales
-# make its intervals approximate. mean_gap is saved for diagnosis only.
+# Inverse-variance combination (--combine ivw, the default and the headline)
+#   Two noisy readings of each state's Democratic-side share are averaged, each weighted by
+#   1 / its variance (the less noisy one counts more):
+#     synthetic  m* = model share - mean gap to polls (the mean gap is the bias, removed first)
+#                var_m = persona bootstrap variance + structural variance of the model
+#     outside    t = poll average in polled states, 2024 presidential share + uniform swing in
+#                unpolled states; var_t = poll variance, or the error of uniform swing
+#     combined = w * t + (1 - w) * m*,  w = var_m / (var_m + var_t),  var = 1 / (1/var_m + 1/var_t)
+#   The structural variance and the error of uniform swing are estimated from the polled states:
+#     var(m* - poll)            = structural + bootstrap + poll   -> solve for structural
+#     var(poll - (2024 + swing)) = swing error + poll              -> solve for swing error
+#   Poll variance = sampling variance s(1-s)/n + args.poll_sd^2 (assumed error beyond sampling).
+#   ASSUMES the errors are independent of each other; draws are normal around the combination.
+# --bias keep (comparison only): m* is the RAW model share, nothing is subtracted, and the
+#   structural variance uses the mean SQUARED gap, mean((model - poll)^2), so the bias counts as
+#   error. The synthetic share then gets less weight but keeps its lean.
 weight_table = pd.DataFrame()
 if args.ivw:
     pt = pd.DataFrame([{"model": p["model"], "state": p["state"], "model_share": p["model_share"],
@@ -169,11 +186,17 @@ if args.ivw:
         grp = grp.copy()
         mean_gap = float((polled["model_share"] - polled["poll_share"]).mean())
         swing = float((polled["poll_share"] - polled["pres2024_dem_share"]).mean())
-        grp["synthetic_input"] = grp["model_share"]
-        grp["m_star"] = grp["synthetic_input"]  # Legacy column name; no correction is applied.
-        grp["bias_correction"] = False
-        resid_m = polled["model_share"] - polled["poll_share"]
-        var_struct = max(floor, (resid_m ** 2).mean() - polled["var_boot"].mean() - polled["var_poll"].mean())
+        if args.remove_bias:
+            grp["synthetic_input"] = grp["model_share"] - mean_gap
+            resid_m = polled["model_share"] - mean_gap - polled["poll_share"]
+            spread = resid_m.var()                       # spread of the gaps left after the correction
+        else:
+            grp["synthetic_input"] = grp["model_share"]  # raw share, nothing subtracted
+            resid_m = polled["model_share"] - polled["poll_share"]
+            spread = (resid_m ** 2).mean()               # mean squared gap: the bias counts as error
+        grp["m_star"] = grp["synthetic_input"]
+        grp["bias_correction"] = args.remove_bias
+        var_struct = max(floor, spread - polled["var_boot"].mean() - polled["var_poll"].mean())
         resid_b = polled["poll_share"] - (polled["pres2024_dem_share"] + swing)
         var_swing = max(floor, resid_b.var() - polled["var_poll"].mean())
         grp["var_m"] = grp["var_boot"] + var_struct
@@ -194,7 +217,7 @@ if args.ivw:
                 r = lookup.loc[p["state"]]
                 p["base_draws"] = r["combined"] + r["sd_combined"] * rng.standard_normal(D)
         weight_table = pd.concat([weight_table, grp])
-        print(f"{model}: diagnostic mean gap (not subtracted) {mean_gap:+.3f}; structural sd {np.sqrt(var_struct):.3f}; "
+        print(f"{model}: mean gap {mean_gap:+.3f} ({'subtracted' if args.remove_bias else 'not subtracted'}); structural sd {np.sqrt(var_struct):.3f}; "
               f"swing {swing:+.3f}, swing error sd {np.sqrt(var_swing):.3f}; "
               f"synthetic weight polled {grp.loc[is_polled, 'w_synthetic'].mean():.2f}, "
               f"unpolled {grp.loc[~is_polled, 'w_synthetic'].mean():.2f}")
@@ -238,7 +261,7 @@ chamber["p_dem_51_without_ind"] = (seats["dem"] >= 51).groupby("model").mean()  
 chamber["national_sd"] = args.national_sd
 chamber["poll_sd"] = args.poll_sd
 chamber["combine"] = args.combine
-chamber["bias_correction"] = False
+chamber["bias_correction"] = args.remove_bias
 control = chamber["p_rep_control"]
 
 #### Checks and save ####
@@ -253,6 +276,15 @@ if args.summary_only:                  # sensitivity runs: leave the run's real 
     raise SystemExit(0)
 
 config.RUN_RESULTS.mkdir(parents=True, exist_ok=True)
+if not args.remove_bias:               # comparison version: labelled files only, headline untouched
+    config.write_table(forecast, config.RUN_RESULTS / "forecast_ivw_biaskept.parquet")
+    chamber.round(3).to_csv(config.RUN_RESULTS / "chamber_summary_ivw_biaskept.csv")
+    keep = ["model", "state", "source", "model_share", "mean_gap", "synthetic_input", "m_star", "bias_correction",
+            "t", "combined", "w_synthetic", "sd_combined", "var_boot", "var_m", "var_t", "sd_struct", "swing", "sd_swing"]
+    weight_table[keep].round(4).to_csv(config.RUN_RESULTS / "ivw_weights_biaskept.csv", index=False)
+    print(chamber.round(2).to_string())
+    print(f"Saved the --bias keep forecast to {config.RUN_RESULTS / 'forecast_ivw_biaskept.parquet'}")
+    raise SystemExit(0)
 config.write_table(forecast, config.FORECAST_FILE)
 comparison.round(3).to_csv(config.RUN_RESULTS / "state_comparison.csv", index=False)
 polls_df.to_csv(config.RUN_RESULTS / "poll_averages.csv", index=False)

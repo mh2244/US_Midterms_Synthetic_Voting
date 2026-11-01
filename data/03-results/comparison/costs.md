@@ -8,4 +8,4 @@
 | GPT-6 Luna | 10,500 | 5,451,369 | 420,881 | 0.76 |
 | **All models** | **41,996** | **25,605,222** | **3,088,728** | **8.31** |
 
-Cost of each run: 27 October US$8.08, 29 October US$8.13, 31 October US$8.31 and the run without news US$4.64. The 31 October run took 1.0 hours from its first call to its last.
+Estimated cost of each run, from the token counts: 27 October US$8.08, 29 October US$8.13, 31 October US$8.31, and US$4.64 for the run without news, whose prompts contain no news. The 31 October run took 1.0 hours from its first call to its last.

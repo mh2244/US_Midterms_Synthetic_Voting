@@ -1,5 +1,0 @@
-model,dem_median,ind_median,rep_median,rep_q05,rep_q95,p_rep_control,p_dem_51_without_ind,national_sd,poll_sd,combine
-deepseek,52.0,0.0,47.5,40.0,55.0,0.361,0.621,0.03,0.03,ivw
-gemini,52.0,0.0,48.0,40.0,55.0,0.373,0.614,0.03,0.03,ivw
-haiku,52.0,0.0,48.0,40.0,56.0,0.388,0.588,0.03,0.03,ivw
-luna,52.0,0.0,48.0,40.0,56.0,0.376,0.614,0.03,0.03,ivw
