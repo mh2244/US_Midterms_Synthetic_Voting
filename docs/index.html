@@ -1862,17 +1862,15 @@ Example: the news block of one persona (Florida, 31 October)
 <h3 class="anchored" data-anchor-id="by-method">Forecast by method</h3>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 26%">
-<col style="width: 26%">
-<col style="width: 26%">
+<col style="width: 27%">
+<col style="width: 36%">
+<col style="width: 36%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Method</th>
 <th style="text-align: right;">Probability of Republican control (%)</th>
 <th style="text-align: right;">Republican seats, median (90% interval)</th>
-<th style="text-align: right;">Error against hidden polls (points)</th>
 </tr>
 </thead>
 <tbody>
@@ -1880,24 +1878,21 @@ Example: the news block of one persona (Florida, 31 October)
 <td>Synthetic voters only</td>
 <td style="text-align: right;">90</td>
 <td style="text-align: right;">54 (48 to 59)</td>
-<td style="text-align: right;">8.1</td>
 </tr>
 <tr class="even">
 <td>Inverse-variance combination (headline)</td>
 <td style="text-align: right;">37</td>
 <td style="text-align: right;">48 (40 to 55)</td>
-<td style="text-align: right;">3.6</td>
 </tr>
 <tr class="odd">
 <td>2024 + uniform swing (no language model)</td>
 <td style="text-align: right;">34</td>
 <td style="text-align: right;">47 (40 to 56)</td>
-<td style="text-align: right;">3.6</td>
 </tr>
 </tbody>
 </table>
 <div class="chart-note">
-<p>This table compares three ways of building the forecast for the latest run, with the four models weighted equally. Error is the mean absolute gap from held-out poll averages, in percentage points. A smaller error indicates the result is closer to the polls. The no-language-model forecast uses polls where available and 2024 plus swing elsewhere.</p>
+<p>This table compares three ways of building the forecast for the latest run, with the four models weighted equally. The no-language-model forecast uses polls where available and 2024 plus swing elsewhere.</p>
 </div>
 </section>
 <section id="effect-of-the-news" class="level3">
@@ -2088,82 +2083,18 @@ Table view
 </section>
 <section id="evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="evaluation">Evaluation</h2>
-<!-- DRAFT (Claude): rewrite. -->
-<p>The forecast cannot be scored until the results come in on 3 November, so we check it in two ways that need no result: against polls it did not see, and against a prediction market that forecasts the same races by other means.</p>
-<section id="loo" class="level3">
-<h3 class="anchored" data-anchor-id="loo">Against hidden polls: a leave-one-out check</h3>
-<!-- DRAFT (Claude): rewrite. Table written by scripts/16b-compare_runs.py after each run. -->
-<table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Model</th>
-<th style="text-align: right;">Synthetic voters only</th>
-<th style="text-align: right;">Inverse-variance combination</th>
-<th style="text-align: right;">2024 + uniform swing</th>
-<th style="text-align: right;">States where the combination is closer than 2024 + swing</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Claude Haiku 5.5</td>
-<td style="text-align: right;">7.0</td>
-<td style="text-align: right;">3.5</td>
-<td style="text-align: right;">3.6</td>
-<td style="text-align: right;">64%</td>
-</tr>
-<tr class="even">
-<td>GPT-6 Luna</td>
-<td style="text-align: right;">6.6</td>
-<td style="text-align: right;">3.7</td>
-<td style="text-align: right;">3.6</td>
-<td style="text-align: right;">44%</td>
-</tr>
-<tr class="odd">
-<td>DeepSeek V4.1 Flash</td>
-<td style="text-align: right;">10.0</td>
-<td style="text-align: right;">3.7</td>
-<td style="text-align: right;">3.6</td>
-<td style="text-align: right;">44%</td>
-</tr>
-<tr class="even">
-<td>Gemini 3.5 Flash-Lite</td>
-<td style="text-align: right;">8.9</td>
-<td style="text-align: right;">3.7</td>
-<td style="text-align: right;">3.6</td>
-<td style="text-align: right;">40%</td>
-</tr>
-<tr class="odd">
-<td><strong>All models</strong></td>
-<td style="text-align: right;">8.1</td>
-<td style="text-align: right;">3.6</td>
-<td style="text-align: right;">3.6</td>
-<td style="text-align: right;">48%</td>
-</tr>
-</tbody>
-</table>
-<div class="chart-note">
-<p>For each polled state, bias, swing and variance estimates are recalculated using the other states before predicting its withheld poll average. Entries are mean absolute errors in two-party vote share, in percentage points; smaller is better. This checks agreement with polls, not election outcomes. Each state’s polls are withheld before its prediction is made. The last column counts states where the combination beats the 2024-plus-swing benchmark.</p>
-</div>
-</section>
+<p>The forecast cannot be scored against the actual results until after the election on 3 November. Therefore, we compare it with a prediction market that forecasts the same races using a different method.</p>
 <section id="markets" class="level3">
 <h3 class="anchored" data-anchor-id="markets">Against a prediction market</h3>
-<!-- DRAFT (Claude): rewrite. -->
-<p>The idea for this check comes from Wang et al. <span class="citation" data-cites="wang2015">(<a href="#ref-wang2015" role="doc-biblioref">2015</a>)</span>, who forecast the 2012 presidential election from an opt-in poll of Xbox users, adjusted it with multilevel regression and post-stratification, and, with no election result to compare against weeks before the vote, set their state forecasts beside prediction markets (Betfair and Intrade), which they describe as among the most accurate sources of political forecasts. We do the same with PredictIt <span class="citation" data-cites="predictit2026">(<a href="#ref-predictit2026" role="doc-biblioref">PredictIt 2026</a>)</span>, which has a market for every one of the 35 races and for control of the Senate. A contract pays one dollar if it comes true, so its price is roughly the market’s probability; the two sides’ prices add up to a little more than one, so we divide the Republican side’s price by their sum, and we leave out third candidates, as our forecast does. We use each market’s closing price on the day of the news run. For 27 and 29 October, our Montana forecast is Alme against the Democrat Alani Bankhead, which we corrected to the independent Seth Bodnar from 31 October (see <a href="#data">Data</a>), so Montana is not comparable with the market on those two days. The market is not independent of the polls, which traders read, but it combines them with other information through trading <span class="citation" data-cites="rothschild2009">(<a href="#ref-rothschild2009" role="doc-biblioref">Rothschild 2009</a>)</span>.</p>
+<p>This comparison follows Wang et al. <span class="citation" data-cites="wang2015">(<a href="#ref-wang2015" role="doc-biblioref">2015</a>)</span>, who forecast the 2012 presidential election using an opt-in poll of Xbox users. Before election results were available, they compared their state forecasts with prediction markets, which they described as among the most accurate sources of political forecasts. We use PredictIt <span class="citation" data-cites="predictit2026">(<a href="#ref-predictit2026" role="doc-biblioref">PredictIt 2026</a>)</span>, which has a market for each of the 35 races and for control of the Senate. A contract pays one dollar if the predicted outcome occurs, so its price roughly reflects the market’s estimated probability. The two sides’ prices sum to slightly more than one, so we divide the Republican price by their sum, excluding third candidates as our forecast does. We use each market’s closing price on the date of each news run. Montana is excluded from the comparison on 27 and 29 October because our forecast used the Democrat Alani Bankhead instead of the independent Seth Bodnar (see <a href="#data">Data</a>). The market is not independent of the polls, but it adds other information through trading <span class="citation" data-cites="rothschild2009">(<a href="#ref-rothschild2009" role="doc-biblioref">Rothschild 2009</a>)</span>.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
-<col style="width: 18%">
-<col style="width: 18%">
-<col style="width: 18%">
-<col style="width: 13%">
-<col style="width: 18%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -2171,29 +2102,32 @@ Table view
 <th style="text-align: right;">States</th>
 <th style="text-align: right;">Correlation</th>
 <th style="text-align: right;">Mean absolute difference (points)</th>
-<th>Favourite differs</th>
-<th style="text-align: right;">Probability of Republican control: ours / market (%)</th>
+<th style="text-align: right;">Our probability of Republican control (%)</th>
+<th style="text-align: right;">Market probability of Republican control (%)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>27 October</td>
-<td style="text-align: right;">35</td>
+<td style="text-align: right;">34</td>
 <td style="text-align: right;">0.98</td>
-<td style="text-align: right;">6.1</td>
-<td>Maine, Texas</td>
-<td style="text-align: right;">38 / 36</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">36</td>
 </tr>
 <tr class="even">
 <td>29 October</td>
-<td style="text-align: right;">35</td>
-<td style="text-align: right;">0.97</td>
-<td style="text-align: right;">6.6</td>
-<td>Maine, Texas</td>
-<td style="text-align: right;">39 / 33</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">33</td>
 </tr>
 </tbody>
 </table>
+<div class="chart-note">
+<p>Correlation measures the association between our Republican winning probabilities and the market’s across races. The mean absolute difference measures how far apart the two probabilities are, averaged across states. Market probabilities are calculated from closing prices on each news day.</p>
+</div>
 <details>
 <summary>
 Table view: every race, 29 October
@@ -2208,100 +2142,100 @@ Table view: every race, 29 October
 <thead>
 <tr class="header">
 <th>State</th>
-<th style="text-align: right;">Market winning probability (%)</th>
 <th style="text-align: right;">Our winning probability (%)</th>
-<th style="text-align: right;">Ours minus market (points)</th>
+<th style="text-align: right;">Market winning probability (%)</th>
+<th style="text-align: right;">Difference (points)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Kentucky</td>
-<td style="text-align: right;">94</td>
 <td style="text-align: right;">76</td>
+<td style="text-align: right;">94</td>
 <td style="text-align: right;">−18</td>
 </tr>
 <tr class="even">
 <td>Florida</td>
-<td style="text-align: right;">87</td>
 <td style="text-align: right;">74</td>
+<td style="text-align: right;">87</td>
 <td style="text-align: right;">−13</td>
 </tr>
 <tr class="odd">
 <td>Mississippi</td>
-<td style="text-align: right;">85</td>
 <td style="text-align: right;">74</td>
+<td style="text-align: right;">85</td>
 <td style="text-align: right;">−11</td>
 </tr>
 <tr class="even">
 <td>South Carolina</td>
-<td style="text-align: right;">71</td>
 <td style="text-align: right;">60</td>
+<td style="text-align: right;">71</td>
 <td style="text-align: right;">−10</td>
 </tr>
 <tr class="odd">
 <td>Nebraska (I)</td>
-<td style="text-align: right;">71</td>
 <td style="text-align: right;">61</td>
+<td style="text-align: right;">71</td>
 <td style="text-align: right;">−10</td>
 </tr>
 <tr class="even">
 <td>Alaska</td>
-<td style="text-align: right;">32</td>
 <td style="text-align: right;">27</td>
+<td style="text-align: right;">32</td>
 <td style="text-align: right;">−5</td>
 </tr>
 <tr class="odd">
 <td>Rhode Island</td>
-<td style="text-align: right;">4</td>
 <td style="text-align: right;">&lt;1</td>
+<td style="text-align: right;">4</td>
 <td style="text-align: right;">−4</td>
 </tr>
 <tr class="even">
 <td>New Mexico</td>
-<td style="text-align: right;">4</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
 <td style="text-align: right;">−3</td>
 </tr>
 <tr class="odd">
 <td>Louisiana</td>
-<td style="text-align: right;">88</td>
 <td style="text-align: right;">85</td>
+<td style="text-align: right;">88</td>
 <td style="text-align: right;">−3</td>
 </tr>
 <tr class="even">
 <td>Massachusetts</td>
-<td style="text-align: right;">3</td>
 <td style="text-align: right;">&lt;1</td>
+<td style="text-align: right;">3</td>
 <td style="text-align: right;">−3</td>
 </tr>
 <tr class="odd">
 <td>Oregon</td>
-<td style="text-align: right;">3</td>
 <td style="text-align: right;">&lt;1</td>
+<td style="text-align: right;">3</td>
 <td style="text-align: right;">−3</td>
 </tr>
 <tr class="even">
 <td>Iowa</td>
-<td style="text-align: right;">55</td>
 <td style="text-align: right;">53</td>
+<td style="text-align: right;">55</td>
 <td style="text-align: right;">−3</td>
 </tr>
 <tr class="odd">
 <td>South Dakota (I)</td>
-<td style="text-align: right;">95</td>
 <td style="text-align: right;">92</td>
+<td style="text-align: right;">95</td>
 <td style="text-align: right;">−3</td>
 </tr>
 <tr class="even">
 <td>New Jersey</td>
-<td style="text-align: right;">3</td>
 <td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
 <td style="text-align: right;">−1</td>
 </tr>
 <tr class="odd">
 <td>Delaware</td>
-<td style="text-align: right;">1</td>
 <td style="text-align: right;">&lt;1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">−1</td>
 </tr>
 <tr class="even">
@@ -2318,114 +2252,111 @@ Table view: every race, 29 October
 </tr>
 <tr class="even">
 <td>Illinois</td>
-<td style="text-align: right;">4</td>
 <td style="text-align: right;">5</td>
+<td style="text-align: right;">4</td>
 <td style="text-align: right;">+1</td>
 </tr>
 <tr class="odd">
 <td>Arkansas</td>
-<td style="text-align: right;">94</td>
 <td style="text-align: right;">96</td>
+<td style="text-align: right;">94</td>
 <td style="text-align: right;">+2</td>
 </tr>
 <tr class="even">
 <td>West Virginia</td>
-<td style="text-align: right;">98</td>
 <td style="text-align: right;">&gt;99</td>
+<td style="text-align: right;">98</td>
 <td style="text-align: right;">+2</td>
 </tr>
 <tr class="odd">
 <td>Ohio</td>
-<td style="text-align: right;">28</td>
 <td style="text-align: right;">31</td>
+<td style="text-align: right;">28</td>
 <td style="text-align: right;">+3</td>
 </tr>
 <tr class="even">
 <td>Virginia</td>
-<td style="text-align: right;">2</td>
 <td style="text-align: right;">5</td>
+<td style="text-align: right;">2</td>
 <td style="text-align: right;">+3</td>
 </tr>
 <tr class="odd">
 <td>North Carolina</td>
-<td style="text-align: right;">3</td>
 <td style="text-align: right;">7</td>
+<td style="text-align: right;">3</td>
 <td style="text-align: right;">+4</td>
 </tr>
 <tr class="even">
 <td>Wyoming</td>
-<td style="text-align: right;">96</td>
 <td style="text-align: right;">&gt;99</td>
+<td style="text-align: right;">96</td>
 <td style="text-align: right;">+4</td>
 </tr>
 <tr class="odd">
 <td>Oklahoma</td>
-<td style="text-align: right;">95</td>
 <td style="text-align: right;">&gt;99</td>
+<td style="text-align: right;">95</td>
 <td style="text-align: right;">+4</td>
 </tr>
 <tr class="even">
 <td>New Hampshire</td>
-<td style="text-align: right;">9</td>
 <td style="text-align: right;">14</td>
+<td style="text-align: right;">9</td>
 <td style="text-align: right;">+5</td>
 </tr>
 <tr class="odd">
 <td>Georgia</td>
-<td style="text-align: right;">5</td>
 <td style="text-align: right;">11</td>
+<td style="text-align: right;">5</td>
 <td style="text-align: right;">+6</td>
 </tr>
 <tr class="even">
 <td>Alabama</td>
-<td style="text-align: right;">92</td>
 <td style="text-align: right;">98</td>
+<td style="text-align: right;">92</td>
 <td style="text-align: right;">+6</td>
 </tr>
 <tr class="odd">
 <td>Idaho (I)</td>
-<td style="text-align: right;">93</td>
 <td style="text-align: right;">&gt;99</td>
+<td style="text-align: right;">93</td>
 <td style="text-align: right;">+7</td>
 </tr>
 <tr class="even">
 <td>Minnesota</td>
-<td style="text-align: right;">10</td>
 <td style="text-align: right;">18</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">+8</td>
 </tr>
 <tr class="odd">
 <td>Michigan</td>
-<td style="text-align: right;">24</td>
 <td style="text-align: right;">37</td>
+<td style="text-align: right;">24</td>
 <td style="text-align: right;">+13</td>
 </tr>
 <tr class="even">
 <td>Kansas</td>
-<td style="text-align: right;">51</td>
 <td style="text-align: right;">66</td>
+<td style="text-align: right;">51</td>
 <td style="text-align: right;">+15</td>
 </tr>
 <tr class="odd">
 <td>Maine</td>
-<td style="text-align: right;">39</td>
 <td style="text-align: right;">54</td>
+<td style="text-align: right;">39</td>
 <td style="text-align: right;">+16</td>
 </tr>
 <tr class="even">
-<td>Montana (I)</td>
-<td style="text-align: right;">84</td>
-<td style="text-align: right;">&gt;99</td>
-<td style="text-align: right;">+16</td>
-</tr>
-<tr class="odd">
 <td>Texas</td>
-<td style="text-align: right;">32</td>
 <td style="text-align: right;">59</td>
+<td style="text-align: right;">32</td>
 <td style="text-align: right;">+27</td>
 </tr>
 </tbody>
 </table>
+<div class="chart-note">
+<p>Winning probabilities are for the Republican candidate. Positive values mean we give the Republican a higher probability than the market does. (I) marks a race with an independent instead of a Democrat.</p>
+</div>
 </details>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
