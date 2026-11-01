@@ -78,8 +78,12 @@ h3 { font-size: 1.2rem; font-weight: 700; margin-top: 2.4em; padding-top: 0.65em
 section.level2 > h2 + section.level3 > h3 { border-top: none; padding-top: 0; margin-top: 1.2em; }
 /* Fourth level (e.g. Map, Battleground races under State by state): no rule, just above body size */
 h4 { font-size: 1.05rem; font-weight: 600; color: var(--ink); margin-top: 1.8em; }
-/* The forecast headline (written by scripts/15b) is a heading, but not a section: no rule */
-.forecast-date + section > h2 { border-top: none; padding-top: 0; margin-top: 0.6em; }
+/* The forecast headline (written by scripts/15b) is a heading, but not a section: no rule, and set
+   as a sentence in the serif face rather than in the uppercase section style, so it reads as the
+   main finding */
+.forecast-date + section > h2 { border-top: none; padding-top: 0; margin-top: 0.6em;
+                                font-family: var(--serif); text-transform: none; letter-spacing: 0;
+                                font-size: 1.9rem; line-height: 1.2; }
 
 /* "Latest estimate" row */
 .forecast-date { color: var(--muted); font-family: var(--sans); font-size: 0.85rem;
@@ -155,3 +159,14 @@ main table:not(.crosstab) caption { caption-side: top; color: var(--muted); font
 /* Every table on the page, crosstabs included: headers and cells centred. !important overrides the
    alignment that pandoc writes into each cell from the markdown tables' alignment rows. */
 main table th, main table td { text-align: center !important; }
+
+/* Tables whose first column holds names (models, methods): keep each name on one line */
+.firstcol-nowrap table td:first-child, .firstcol-nowrap table th:first-child { white-space: nowrap; }
+
+/* References: long URLs wrap instead of widening the page */
+#refs a, .csl-entry a { overflow-wrap: anywhere; }
+
+/* Phones: wide tables scroll sideways inside their own box, so the page itself never does */
+@media (max-width: 700px) {
+  main table { display: block; overflow-x: auto; max-width: 100%; }
+}
