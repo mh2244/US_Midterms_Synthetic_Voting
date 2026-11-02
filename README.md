@@ -265,8 +265,8 @@ part of the method and are listed above. We used AI daily from 7 October to 2 No
 **Tools.**
 - **Claude Opus 5.5** (`claude-opus-5-5`), through **Claude Code** (Anthropic's coding agent,
   with access to the repository) and in the **Claude app**, where it generated first versions of scripts.
-- **GPT-6.1 Sol** (`gpt-6.1-sol`) used through OpenAI Codex, and **GPT-6** used via the web app.
-- **Gemini 3.5 Flash-Lite**, used through the web app rather than a coding agent.
+- **GPT-6.1 Sol** (`gpt-6.1-sol`) used through **OpenAI Codex** (coding agent with access to the repository), and **GPT-6** used via the **ChatGPT web app**.
+- **Gemini 3.5 Flash-Lite**, used through the **Gemini web app** rather than a coding agent.
 
 **Code.** These tools wrote first versions of most scripts in `scripts/` and later revisions of
 them: the CES, poll, news, candidate and PredictIt downloads and cleaning (`02` to `06`), the
