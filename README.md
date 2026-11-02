@@ -266,8 +266,8 @@ part of the method and are listed above. We used AI throughout October and on 1 
 - **Claude Opus 5.5** (`claude-opus-5-5`), through **Claude Code** (Anthropic's coding agent,
   with access to the repository) and in the **Claude app**, where it generated first versions of
   scripts.
-- **OpenAI Codex** (a coding agent with access to the repository) and **ChatGPT**; the exact
-  model names and identifiers were not recorded.
+- **GPT-6.1 Sol Light**, used through **OpenAI Codex** (a coding agent with access to the
+  repository) and **ChatGPT**.
 
 **Code.** These tools wrote first versions of most scripts in `scripts/` and later revisions of
 them: the CES, poll, news, candidate and PredictIt downloads and cleaning (`02` to `06`), the

@@ -239,24 +239,24 @@ direction = ("moves the combined forecast toward greater Republican support" if 
 summary_text = (
     f"For {label(latest)}, adding polling and historical information lowers the Republican "
     f"control probability from {pct(synthetic['p_rep'])}% in the synthetic-only forecast to "
-    f"{pct(combined['p_rep'])}%. The no-LLM benchmark gives {pct(baseline['p_rep'])}%, so including "
+    f"{pct(combined['p_rep'])}%. The no-LLM benchmark gives {pct(baseline['p_rep'])}%; including "
     f"synthetic responses {direction}. "
     f"Synthetic estimates receive an average weight of {polled_weights * 100:.0f}% in polled "
     f"states and {unpolled_weights * 100:.0f}% in unpolled states. The remaining weight goes "
     "to state polling averages or, where unavailable, the 2024 CES vote share plus uniform swing. "
-    "The combined result is therefore driven mainly by these outside estimates."
+    "These outside estimates therefore dominate the combined result."
 )
 if "ivw_biaskept" in by_tag:
     kept = by_tag["ivw_biaskept"]
     wk = pd.read_csv(res / "ivw_weights_biaskept.csv")
     summary_text += (
         " In the comparison without bias correction, we combine the original synthetic shares "
-        "with polling and historical estimates. The synthetic–poll gap is included in the error "
-        "estimate, giving synthetic shares an average weight of "
+        "with polling and historical estimates. Including the synthetic–poll gap in the error "
+        "estimate gives synthetic shares an average weight of "
         f"{wk.loc[wk['source'] == 'poll', 'w_synthetic'].mean() * 100:.0f}% in polled states. "
         f"This version gives Republicans a {pct(kept['p_rep'])}% probability of control, compared "
         f"with {pct(combined['p_rep'])}% under the bias-corrected headline forecast. "
-        "Both the synthetic shares and their weights differ between these versions."
+        "The versions differ in both their synthetic shares and weights."
     )
 (OUT / "method_summary.md").write_text(summary_text + "\n")
 
