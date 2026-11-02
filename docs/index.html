@@ -60,7 +60,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-e0231ea12d39862197f109c7b48d384d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b8198fbbc22e4d61efe0af11450ea456.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -178,7 +178,7 @@ window.Quarto = {
 <section id="how" class="level2">
 <h2 class="anchored" data-anchor-id="how">How the forecast works</h2>
 <p>We forecast all 35 Senate races on 3 November 2026 by combining synthetic voter responses with polling information. We sample 100 personas per state from the 2024 Cooperative Election Study, giving respondents with larger survey weights a greater chance of selection. Each persona receives nine news paragraphs, and four language models answer its voting question three times in their own words. We score these answers using Semantic Similarity Rating (SSR), then average the scores to estimate each state’s Republican share of the two-candidate vote.</p>
-<p>Across the polled states, the models’ synthetic Republican shares average about 5–9 percentage points above the polling estimates. Our headline method subtracts each model’s average synthetic–poll gap before combining its estimate with the state’s poll average. We call this bias correction, but the gap is measured against polls, not known election outcomes. Where polls are unavailable, we use the weighted 2024 CES vote share plus the average shift observed in polled states. The noisier of the two estimates gets less weight. This adapts the inverse-variance weighting of Lock and Gelman <span class="citation" data-cites="lockgelman2010">(<a href="#ref-lockgelman2010" role="doc-biblioref">2010</a>)</span>, but our error estimates are approximate, and polls are not ground truth. We simulate 1,000 outcomes per model, allowing a shared national error to move states together, and give all four models equal weight. Adding the 65 seats not up for election produces a distribution over control of the 100-seat Senate. The <a href="#by-method">Discussion</a> compares this combined forecast with synthetic-only and no-LLM alternatives.</p>
+<p>The models’ synthetic Republican vote shares are, on average, 5–9 percentage points higher than the polling estimates. We subtract each model’s average difference from the polls to correct for this bias. This correction is based on polling estimates rather than actual election results. We then combine the adjusted model estimate with the state’s polling average. For states without polling data, we instead use the 2024 CES vote share, adjusted by the average shift observed in states with polls. When combining the two estimates, we give less weight to the estimate with greater uncertainty, following the approach of Lock and Gelman <span class="citation" data-cites="lockgelman2010">(<a href="#ref-lockgelman2010" role="doc-biblioref">2010</a>)</span>, but our error estimates are approximate. We simulate 1,000 election outcomes for each model, allowing a shared national error to affect multiple states at the same time. We give all four models equal weight and include the 65 Senate seats that are not up for election to estimate each party’s probability of controlling the Senate. In the <a href="#by-method">Discussion</a>, we compare this combined forecast with three alternative forecasting methods.</p>
 </section>
 <section id="forecast" class="level2">
 <h2 class="anchored" data-anchor-id="forecast">Forecast</h2>
@@ -259,7 +259,6 @@ pool the four models and come from the 31 October run.</p>
 </div>
 <section id="battlegrounds" class="level4">
 <h4 class="anchored" data-anchor-id="battlegrounds">Battleground races</h4>
-<!-- Table written by scripts/15c-make_battlegrounds_and_seats.py. -->
 <p>Ballotpedia identifies these 12 races as battlegrounds <span class="citation" data-cites="ballotpedia2026">(<a href="#ref-ballotpedia2026" role="doc-biblioref">Ballotpedia 2026</a>)</span>. Republicans hold nine of these seats; Democrats hold the other three, in Georgia, Michigan and New Hampshire. Our forecast may rate some of these races as less competitive than Ballotpedia’s selection suggests.</p>
 <p>Montana needs a qualification. Republican Kurt Alme faces both Independent Seth Bodnar and Democrat Alani Bankhead. Our two-candidate forecast compares Alme with Bodnar, the leading opponent in the polls, and leaves out Bankhead’s share. It therefore does not capture the full three-way contest.</p>
 <table class="caption-top table">
@@ -1228,7 +1227,7 @@ Table view
 </section>
 <section id="crosstabs" class="level3">
 <h3 class="anchored" data-anchor-id="crosstabs">Crosstabs</h3>
-<p>This table counts personas leaning Republican; it does not report the SSR vote shares used in the forecast.</p>
+<p>This table checks algorithmic fidelity <span class="citation" data-cites="argyle2023">(<a href="#ref-argyle2023" role="doc-biblioref">Argyle et al. 2023</a>)</span>; it is not part of the forecast. For each group, we compare the synthetic responses before any polling adjustment with the actual 2024 votes of the same personas. The models were not given information about these votes.</p>
 <div class="crosstab-pair"><div class="crosstab-col">
 <table class="crosstab caption-top table">
 <thead>
@@ -1565,7 +1564,7 @@ Table view
 </table>
 </div></div>
 <div class="chart-note">
-<p>Both columns describe Republican support among the same personas, before any polling combination. The synthetic column is the proportion whose average Republican score exceeds their Democratic or Independent score, averaged equally across models; exact ties count toward neither side. The 2024 column is the Republican share among respondents reporting a Trump or Harris vote, excluding other and missing choices. State weights reflect the validated 2024 electorate across the 35 states. Difference is synthetic support minus the 2024 Republican vote share, in percentage points. Positive values indicate more Republican support in the synthetic answers. This compares partisan patterns across different elections, not prediction error; Senate opponents include Independents as well as Democrats. Groups with fewer than 50 personas (non-binary, other gender and “Not sure” party identification) are too small to interpret, and persona counts include respondents drawn more than once, so they overstate the number of distinct people.</p>
+<p>Each row compares the synthetic Republican support of a group with how the same CES respondents voted in 2024. Synthetic Republican support is the proportion of personas whose responses, averaged across four models and three repeats, favour the Republican candidate. This measure counts personas rather than the SSR vote shares used in the forecast. The 2024 column shows Trump’s share among respondents who voted for Trump or Harris. The difference is calculated by subtracting the 2024 Republican vote share from synthetic Republican support, in percentage points. States are weighted by their share of validated voters in 2024. Groups with fewer than 50 personas, including non-binary respondents, those reporting another gender, and those unsure of their party identification, are too small for reliable interpretation. Persona counts also include respondents selected more than once.</p>
 </div>
 </section>
 </section>
@@ -1850,7 +1849,6 @@ Example: the news block of one persona (Florida, 31 October)
 <section id="synthetic" class="level2">
 <h2 class="anchored" data-anchor-id="synthetic">Sensitivity of the forecast</h2>
 <p>This section shows how the results change with news input, run date and assumed errors.</p>
-<!-- Tables written by scripts/16b-compare_runs.py after each run (data/03-results/comparison/). -->
 <section id="effect-of-the-news" class="level3">
 <h3 class="anchored" data-anchor-id="effect-of-the-news">Effect of the news</h3>
 <p>This comparison describes changes associated with the news inputs, alongside variation between model runs. It uses synthetic responses before combination with polling information.</p>
