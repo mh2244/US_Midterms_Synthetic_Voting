@@ -260,15 +260,14 @@ written at the top of [`styles.css`](styles.css).
 ## Statement on AI usage
 
 This covers AI used to build the project; the models that generate the synthetic answers are
-part of the method and are listed above. We used AI throughout October and on 1 November 2026.
+part of the method and are listed above. We used AI daily from 7 October to 2 November 2026. The following tools were used interchangeably for all the purposes listed below, which include coding, debugging, repository work, explanations, and writing.
 
 **Tools.**
 - **Claude Opus 5.5** (`claude-opus-5-5`), through **Claude Code** (Anthropic's coding agent,
-  with access to the repository) and in the **Claude app**, where it generated first versions of
-  scripts.
+  with access to the repository) and in the **Claude app**, where it generated first versions of scripts.
 - **GPT-6.1 Sol Light**, used through **OpenAI Codex** (a coding agent with access to the
   repository) and **ChatGPT**.
-- **Gemini 3.5 Flash-Lite**, used through the web app.
+- **Gemini 3.5 Flash-Lite**, used through the web app rather than a coding agent.
 
 **Code.** These tools wrote first versions of most scripts in `scripts/` and later revisions of
 them: the CES, poll, news, candidate and PredictIt downloads and cleaning (`02` to `06`), the
