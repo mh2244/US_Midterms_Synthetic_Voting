@@ -268,6 +268,7 @@ part of the method and are listed above. We used AI throughout October and on 1 
   scripts.
 - **GPT-6.1 Sol Light**, used through **OpenAI Codex** (a coding agent with access to the
   repository) and **ChatGPT**.
+- **Gemini 3.5 Flash-Lite**, used through the web app.
 
 **Code.** These tools wrote first versions of most scripts in `scripts/` and later revisions of
 them: the CES, poll, news, candidate and PredictIt downloads and cleaning (`02` to `06`), the
