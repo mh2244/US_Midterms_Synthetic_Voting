@@ -161,7 +161,7 @@ window.Quarto = {
 <div class="sectionnav">
 <p><a href="#how">How it works</a> <a href="#forecast">Forecast</a> <a href="#sample">Sample</a> <a href="#methods">Methods</a> <a href="#synthetic">Sensitivity</a> <a href="#evaluation">Evaluation</a> <a href="#costs">Costs</a> <a href="#discussion">Discussion</a></p>
 </div>
-<!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py, published by 17. -->
+<!-- Headline, seat bar and run line: written by scripts/15b-make_headline.py. -->
 <div class="forecast-date">
 <p>Forecast as of 31 October 2026</p>
 </div>
@@ -175,14 +175,13 @@ window.Quarto = {
 <figcaption>This summary shows all 100 Senate seats, with each model weighted equally. The Democratic caucus includes Sanders and King; any independent seats shown represent newly elected independents. Republican and newly elected independent seat counts are medians, with the remaining seats assigned to the Democratic caucus.</figcaption>
 </figure>
 </div>
-<!-- Results line: written by scripts/15c-make_battlegrounds_and_seats.py, published by 17. -->
+<!-- Results line: written by scripts/15c-make_battlegrounds_and_seats.py. -->
 <p>Democrats are favoured to gain North Carolina, Alaska and Ohio, now held by Republicans. Maine, Iowa and Texas are toss-ups, with each side given a winning probability of 45% to 55%.</p>
 </section>
 <section id="how" class="level2">
 <h2 class="anchored" data-anchor-id="how">How the forecast works</h2>
 <p>We forecast all 35 Senate races on 3 November 2026 by combining synthetic voter responses with polling information. We sample 100 personas per state from the 2024 Cooperative Election Study, giving respondents with larger survey weights a greater chance of selection. Each persona receives nine news paragraphs, and four language models answer its voting question three times in their own words. We score these answers using Semantic Similarity Rating (SSR), then average the scores to estimate each state’s Republican share of the two-candidate vote.</p>
-<!-- DRAFT (Claude): rewrite. -->
-<p>Across the polled states, the models’ synthetic Republican shares average about 5–9 percentage points above the polling estimates. Our headline method subtracts each model’s average synthetic–poll gap before combining its estimate with the state’s poll average. We call this bias correction, but the gap is measured against polls, not known election outcomes. Where polls are unavailable, we use the weighted 2024 CES vote share plus the average shift observed in polled states. The noisier of the two estimates gets less weight. This adapts the inverse-variance weighting of Lock and Gelman <span class="citation" data-cites="lockgelman2010">(<a href="#ref-lockgelman2010" role="doc-biblioref">Lock and Gelman 2010</a>)</span>, but our error estimates are approximate, and polls are not ground truth. We simulate 1,000 outcomes per model, allowing a shared national error to move states together, and give all four models equal weight. Adding the 65 seats not up for election produces a distribution over control of the 100-seat Senate. The <a href="#by-method">Discussion</a> compares this combined forecast with synthetic-only and no-LLM alternatives.</p>
+<p>The models’ synthetic Republican vote shares are, on average, 5–9 percentage points higher than the polling estimates. We subtract each model’s average difference from the polls to correct for this bias. This correction is based on polling estimates rather than actual election results. We then combine the adjusted model estimate with the state’s polling average. For states without polling data, we instead use the 2024 CES vote share, adjusted by the average shift observed in states with polls. When combining the two estimates, we give less weight to the estimate with greater uncertainty, following the approach of Lock and Gelman <span class="citation" data-cites="lockgelman2010">(<a href="#ref-lockgelman2010" role="doc-biblioref">2010</a>)</span>, but our error estimates are approximate. We simulate 1,000 election outcomes for each model, allowing a shared national error to affect multiple states at the same time. We give all four models equal weight and include the 65 Senate seats that are not up for election to estimate each party’s probability of controlling the Senate. In the <a href="#by-method">Discussion</a>, we compare this combined forecast with three alternative forecasting methods.</p>
 </section>
 <section id="forecast" class="level2">
 <h2 class="anchored" data-anchor-id="forecast">Forecast</h2>
@@ -254,7 +253,7 @@ pool the four models and come from the 31 October run.</p>
   });
 })();
 </script>
-<p>The map gives a geographic overview of the 35 races, showing which side is favoured in each state and how strongly. The quantile dot plot below <span class="citation" data-cites="kay2016">(<a href="#ref-kay2016" role="doc-biblioref">Kay et al. 2016</a>)</span> shows the simulated vote shares behind each rating: a race rated likely has nearly all its dots on one side of 50 per cent, while a toss-up has dots spread on both sides.</p>
+<p>The map gives a geographic overview of the 35 races, showing which side is favoured in each state and how strongly <span class="citation" data-cites="publicamundi2014">(state boundaries from <a href="#ref-publicamundi2014" role="doc-biblioref">PublicaMundi 2014</a>)</span>. The quantile dot plot below <span class="citation" data-cites="kay2016">(<a href="#ref-kay2016" role="doc-biblioref">Kay et al. 2016</a>)</span> shows the simulated vote shares behind each rating: a race rated likely has nearly all its dots on one side of 50 per cent, while a toss-up has dots spread on both sides.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/latest/forecast_dotplot.png" class="img-fluid figure-img" alt="Quantile dot plot of Republican two-candidate vote share and winning probability in each of the 35 Senate races."></p>
@@ -263,7 +262,6 @@ pool the four models and come from the 31 October run.</p>
 </div>
 <section id="battlegrounds" class="level4">
 <h4 class="anchored" data-anchor-id="battlegrounds">Battleground races</h4>
-<!-- Table written by scripts/15c-make_battlegrounds_and_seats.py. -->
 <p>Ballotpedia identifies these 12 races as battlegrounds <span class="citation" data-cites="ballotpedia2026">(<a href="#ref-ballotpedia2026" role="doc-biblioref">Ballotpedia 2026</a>)</span>. Republicans hold nine of these seats; Democrats hold the other three, in Georgia, Michigan and New Hampshire. Our forecast may rate some of these races as less competitive than Ballotpedia’s selection suggests.</p>
 <p>Montana needs a qualification. Republican Kurt Alme faces both Independent Seth Bodnar and Democrat Alani Bankhead. Our two-candidate forecast compares Alme with Bodnar, the leading opponent in the polls, and leaves out Bankhead’s share. It therefore does not capture the full three-way contest.</p>
 <table class="caption-top table">
@@ -1232,7 +1230,7 @@ Table view
 </section>
 <section id="crosstabs" class="level3">
 <h3 class="anchored" data-anchor-id="crosstabs">Crosstabs</h3>
-<p>This table counts personas leaning Republican; it does not report the SSR vote shares used in the forecast.</p>
+<p>This table checks algorithmic fidelity <span class="citation" data-cites="argyle2023">(<a href="#ref-argyle2023" role="doc-biblioref">Argyle et al. 2023</a>)</span>; it is not part of the forecast. For each group, we compare the synthetic responses before any polling adjustment with the actual 2024 votes of the same personas. The models were not given information about these votes.</p>
 <div class="crosstab-pair"><div class="crosstab-col">
 <table class="crosstab caption-top table">
 <thead>
@@ -1569,13 +1567,13 @@ Table view
 </table>
 </div></div>
 <div class="chart-note">
-<p>Both columns describe Republican support among the same personas, before any polling combination. The synthetic column is the proportion whose average Republican score exceeds their Democratic or Independent score, averaged equally across models; exact ties count toward neither side. The 2024 column is the Republican share among respondents reporting a Trump or Harris vote, excluding other and missing choices. State weights reflect the validated 2024 electorate across the 35 states. Difference is synthetic support minus the 2024 Republican vote share, in percentage points. Positive values indicate more Republican support in the synthetic answers. This compares partisan patterns across different elections, not prediction error; Senate opponents include Independents as well as Democrats.</p>
+<p>Each row compares the synthetic Republican support of a group with how the same CES respondents voted in 2024. Synthetic Republican support is the proportion of personas whose responses, averaged across four models and three repeats, favour the Republican candidate. This measure counts personas rather than the SSR vote shares used in the forecast. The 2024 column shows Trump’s share among respondents who voted for Trump or Harris. The difference is calculated by subtracting the 2024 Republican vote share from synthetic Republican support, in percentage points. States are weighted by their share of validated voters in 2024. Groups with fewer than 50 personas, including non-binary respondents, those reporting another gender, and those unsure of their party identification, are too small for reliable interpretation. Persona counts also include respondents selected more than once.</p>
 </div>
 </section>
 </section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
-<p>The voting responses are synthetic; we did not conduct a new survey. We used Python 3.12 <span class="citation" data-cites="python">(<a href="#ref-python" role="doc-biblioref">Python Software Foundation 2023</a>)</span> with pandas <span class="citation" data-cites="mckinney2010">(<a href="#ref-mckinney2010" role="doc-biblioref">McKinney 2010</a>)</span>, NumPy <span class="citation" data-cites="harris2020">(<a href="#ref-harris2020" role="doc-biblioref"><span class="nocase">Harris et al.</span> 2020</a>)</span>, pyarrow <span class="citation" data-cites="arrow">(<a href="#ref-arrow" role="doc-biblioref">Apache Arrow Developers 2026</a>)</span>, matplotlib <span class="citation" data-cites="hunter2007">(<a href="#ref-hunter2007" role="doc-biblioref">Hunter 2007</a>)</span>, requests <span class="citation" data-cites="requests">(<a href="#ref-requests" role="doc-biblioref">Reitz 2026</a>)</span>, lxml <span class="citation" data-cites="lxml">(<a href="#ref-lxml" role="doc-biblioref">Behnel et al. 2026</a>)</span> and tqdm <span class="citation" data-cites="tqdm">(<a href="#ref-tqdm" role="doc-biblioref"><span class="nocase">da Costa-Luis</span> 2019</a>)</span>. Pilot embeddings used sentence-transformers <span class="citation" data-cites="reimers2019">(<a href="#ref-reimers2019" role="doc-biblioref">Reimers and Gurevych 2019</a>)</span>. Tests use pytest <span class="citation" data-cites="pytest">(<a href="#ref-pytest" role="doc-biblioref">Krekel et al. 2004</a>)</span> and pandera <span class="citation" data-cites="bantilan2020">(<a href="#ref-bantilan2020" role="doc-biblioref">Bantilan 2020</a>)</span>, and the website was built with Quarto <span class="citation" data-cites="quarto">(<a href="#ref-quarto" role="doc-biblioref">Allaire et al. 2026</a>)</span>.</p>
+<p>The voting responses are synthetic; we did not conduct a new survey. We used Python 3.12 <span class="citation" data-cites="python">(<a href="#ref-python" role="doc-biblioref">Python Software Foundation 2023</a>)</span> with pandas <span class="citation" data-cites="mckinney2010">(<a href="#ref-mckinney2010" role="doc-biblioref">McKinney 2010</a>)</span>, NumPy <span class="citation" data-cites="harris2020">(<a href="#ref-harris2020" role="doc-biblioref"><span class="nocase">Harris et al.</span> 2020</a>)</span>, pyarrow <span class="citation" data-cites="arrow">(<a href="#ref-arrow" role="doc-biblioref">Apache Arrow Developers 2026</a>)</span>, matplotlib <span class="citation" data-cites="hunter2007">(<a href="#ref-hunter2007" role="doc-biblioref">Hunter 2007</a>)</span>, requests <span class="citation" data-cites="requests">(<a href="#ref-requests" role="doc-biblioref">Reitz 2026</a>)</span>, lxml <span class="citation" data-cites="lxml">(<a href="#ref-lxml" role="doc-biblioref">Behnel et al. 2026</a>)</span>, tqdm <span class="citation" data-cites="tqdm">(<a href="#ref-tqdm" role="doc-biblioref"><span class="nocase">da Costa-Luis</span> 2019</a>)</span> and python-dotenv <span class="citation" data-cites="dotenv">(<a href="#ref-dotenv" role="doc-biblioref">Kumar 2026</a>)</span>. Pilot embeddings used sentence-transformers <span class="citation" data-cites="reimers2019">(<a href="#ref-reimers2019" role="doc-biblioref">Reimers and Gurevych 2019</a>)</span>. Tests use pytest <span class="citation" data-cites="pytest">(<a href="#ref-pytest" role="doc-biblioref">Krekel et al. 2004</a>)</span> and pandera <span class="citation" data-cites="bantilan2020">(<a href="#ref-bantilan2020" role="doc-biblioref">Bantilan 2020</a>)</span>, and the website was built with Quarto <span class="citation" data-cites="quarto">(<a href="#ref-quarto" role="doc-biblioref">Allaire et al. 2026</a>)</span>.</p>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>Our personas come from the 2024 Cooperative Election Study (CES), a survey of 60,000 US adults <span class="citation" data-cites="ces2024data ces2024guide">(<a href="#ref-ces2024data" role="doc-biblioref">Schaffner et al. 2025</a>; <a href="#ref-ces2024guide" role="doc-biblioref">Ansolabehere et al. 2025</a>)</span>. Of these respondents, 38,307 lived in the 35 states holding Senate elections in 2026. Among them, 23,025 had a post-election voter-file weight, and 21,211 were validated as having voted in 2024. We chose the post-election weight because the persona characteristics use both survey waves. A voter-file weight does not by itself show that a respondent voted, so we applied the validated-voter restriction separately.</p>
@@ -1594,8 +1592,8 @@ Table view
 </section>
 <section id="news" class="level3">
 <h3 class="anchored" data-anchor-id="news">News summaries</h3>
-<p>We collect news from publisher RSS feeds, with Google News site searches as a fallback. Each collection covers the preceding 48 hours, removes duplicates and keeps up to 60 items per outlet. The ten outlets are The New York Times, The Washington Post, The Wall Street Journal, USA Today, Fox News, New York Post, The Daily Wire, HuffPost, Mother Jones and Vox. We group them as left-leaning outlets, newspapers and right-leaning outlets, following Pew Research Center’s audience and political-leaning information <span class="citation" data-cites="pew2025sources">(<a href="#ref-pew2025sources" role="doc-biblioref">Shearer et al. 2025</a>)</span>. “Newspapers” identifies a source group, not political neutrality.</p>
-<p>GPT-4.1 Nano screens titles and feed excerpts for US national significance and relevance to elections, policy, law or the economy. It then writes a short paragraph for each retained item. The instructions exclude sports and unrelated material and require a concrete development. Selected incorrect presidential and vice-presidential titles trigger a rewrite or exclusion. The paragraphs rely on titles and excerpts, not full articles, and the checks do not independently verify their claims.</p>
+<p>We collect news from publisher RSS feeds, with Google News site searches as a fallback. Each collection covers the preceding 48 hours, removes duplicates and keeps up to 60 items per outlet. The collected titles, feed excerpts and URLs are saved in the repository (<code>data/01-raw_data/news/</code>). The ten outlets are The New York Times, The Washington Post, The Wall Street Journal, USA Today, Fox News, New York Post, The Daily Wire, HuffPost, Mother Jones and Vox. We group them as left-leaning outlets, newspapers and right-leaning outlets, following Pew Research Center’s audience and political-leaning information <span class="citation" data-cites="pew2025sources">(<a href="#ref-pew2025sources" role="doc-biblioref">Shearer et al. 2025</a>)</span>. “Newspapers” identifies a source group, not political neutrality.</p>
+<p>GPT-4.1 Nano <span class="citation" data-cites="gpt41nano2025">(<a href="#ref-gpt41nano2025" role="doc-biblioref">OpenAI 2025</a>)</span> screens titles and feed excerpts for US national significance and relevance to elections, policy, law or the economy. It then writes a short paragraph for each retained item. The instructions exclude sports and unrelated material and require a concrete development. Selected incorrect presidential and vice-presidential titles trigger a rewrite or exclusion. The paragraphs rely on titles and excerpts, not full articles, and the checks do not independently verify their claims.</p>
 <p>Each persona receives nine paragraphs, with three drawn at random from each source group. We concatenate the existing paragraphs without another model summary. The same news block is used across models and repeat queries. A fixed random seed reproduces the selection when inputs are unchanged, and retries reuse the dated selections. The tables below describe the retained pool and show one actual persona block, selected for illustration rather than at random.</p>
 <p><strong>Articles kept, by outlet.</strong> Number of articles that passed the screening on each news day.</p>
 <table class="caption-top table">
@@ -1809,7 +1807,7 @@ Example: the news block of one persona (Florida, 31 October)
 <section id="prompts-and-models" class="level3">
 <h3 class="anchored" data-anchor-id="prompts-and-models">Prompts and models</h3>
 <p>We ask each persona how it would vote in its state’s Senate race and randomise the order of the two candidates. Models from four companies allow for systematic differences in their responses <span class="citation" data-cites="murray2026">(<a href="#ref-murray2026" role="doc-biblioref">Murray and Alexander 2026</a>)</span>. We record the returned model identifier and query time because a model can change while retaining its advertised name <span class="citation" data-cites="bisbee2024">(<a href="#ref-bisbee2024" role="doc-biblioref">Bisbee et al. 2024</a>)</span>.</p>
-<p>We use Claude Haiku 5.5, GPT-6 Luna, DeepSeek V4.1 Flash and Gemini 3.5 Flash-Lite through OpenRouter. Each model answers every persona’s prompt three times. We score the responses separately and average their scores to reduce variation between individual answers. We request two or three sentences rather than percentages, leave generation temperature at the provider’s default, and cap output at 800 tokens. Reasoning is disabled except for Gemini, which requires it and uses minimal effort. Empty, refused and otherwise invalid responses are recorded and excluded from scoring, rather than assigned zero support. Four Claude Haiku calls returned no answer in the 31 October run; calls and answers by model appear in the <a href="#costs">cost table</a>.</p>
+<p>We use Claude Haiku 5.5 <span class="citation" data-cites="haiku2026">(<a href="#ref-haiku2026" role="doc-biblioref">Anthropic 2026</a>)</span>, GPT-6 Luna <span class="citation" data-cites="luna2026">(<a href="#ref-luna2026" role="doc-biblioref">OpenAI 2026</a>)</span>, DeepSeek V4.1 Flash <span class="citation" data-cites="deepseek2026">(<a href="#ref-deepseek2026" role="doc-biblioref">DeepSeek 2026</a>)</span> and Gemini 3.5 Flash-Lite <span class="citation" data-cites="geminiflashlite2026">(<a href="#ref-geminiflashlite2026" role="doc-biblioref">Google 2026a</a>)</span> through OpenRouter <span class="citation" data-cites="openrouter2026">(<a href="#ref-openrouter2026" role="doc-biblioref">OpenRouter 2026</a>)</span>. Each model answers every persona’s prompt three times. We score the responses separately and average their scores to reduce variation between individual answers. We request two or three sentences rather than percentages, leave generation temperature at the provider’s default, and cap output at 800 tokens. Reasoning is disabled except for Gemini, which requires it and uses minimal effort. Empty, refused and otherwise invalid responses are recorded and excluded from scoring, rather than assigned zero support. Four Claude Haiku calls returned no answer in the 31 October run; calls and answers by model appear in the <a href="#costs">cost table</a>.</p>
 </section>
 <section id="scoring" class="level3">
 <h3 class="anchored" data-anchor-id="scoring">Turning answers into voting probabilities</h3>
@@ -1824,7 +1822,7 @@ Example: the news block of one persona (Florida, 31 October)
 </section>
 <section id="semantic-similarity-rating" class="level4">
 <h4 class="anchored" data-anchor-id="semantic-similarity-rating">Semantic Similarity Rating</h4>
-<p>Gemini Embedding 2 represents each answer and five candidate-specific statements as numerical vectors. The statements express definite support for the Democratic or Independent candidate, leaning toward that candidate, being undecided or choosing another option, leaning Republican, and definite Republican support. Cosine similarity compares the direction of the answer’s vector with each statement’s vector, producing five similarity scores per answer.</p>
+<p>Gemini Embedding 2 <span class="citation" data-cites="geminiembedding2026">(<a href="#ref-geminiembedding2026" role="doc-biblioref">Google 2026b</a>)</span> represents each answer and five candidate-specific statements as numerical vectors. The statements express definite support for the Democratic or Independent candidate, leaning toward that candidate, being undecided or choosing another option, leaning Republican, and definite Republican support. Cosine similarity compares the direction of the answer’s vector with each statement’s vector, producing five similarity scores per answer.</p>
 <p>We rescale those five scores to the range zero to one and apply softmax with a temperature of 0.25. Adding the first two weights gives support for the Democratic or Independent candidate; adding the final two gives Republican support. The middle weight represents other choices, indecision or nonvoting. Answers and statements are embedded in the same way, without separate query and document settings.</p>
 <p>These allocations are not calibrated probabilities of an individual’s actual vote. Vote choice is not an ordered rating scale, and the middle statement groups behaviours with different meanings. We neither apply a smoothing step nor fit the temperature to voting outcomes, which are not yet observed. This differs from the rating applications in Heath and Alexander <span class="citation" data-cites="heath2026">(<a href="#ref-heath2026" role="doc-biblioref">2026</a>)</span>. Softmax may assign weight to both sides even when an answer clearly names one candidate. That allocation reflects the scoring rule, not greater variation between personas.</p>
 </section>
@@ -1833,7 +1831,6 @@ Example: the news block of one persona (Florida, 31 October)
 <h3 class="anchored" data-anchor-id="combining">Combining synthetic votes with polls</h3>
 <p>We draw on Lock and Gelman’s <span class="citation" data-cites="lockgelman2010">(<a href="#ref-lockgelman2010" role="doc-biblioref">2010</a>)</span> inverse-variance approach to combining forecasts and polls. They estimate predictive uncertainty from past elections. We adapt the weighting idea using approximate error scales for synthetic responses, rather than reproducing their full Bayesian model.</p>
 <p>We first average each persona’s scores over repeated answers. The state’s Republican two-candidate share is the mean Republican score divided by the sum of the mean scores for the two candidates. Resampling personas 1,000 times estimates its bootstrap variability. The outside estimate uses information other than synthetic responses: a state polling average where available, or the weighted 2024 CES vote share plus the average shift in polled states (“2024 plus uniform swing”) otherwise. Polls must name both selected candidates and end within 45 days of the newest poll. We retain one question per poll, prefer likely-voter samples and weight two-candidate shares by sample size.</p>
-<!-- DRAFT (Claude): rewrite. -->
 <p>The combination has two steps. First, we subtract each model’s average synthetic–poll gap across polled states to obtain the corrected share <span class="math inline">\(m^*\)</span>. This assumes that polls are correct on average across those states; it does not establish that the original gap was a model error. Second, we combine <span class="math inline">\(m^*\)</span> with the outside estimate <span class="math inline">\(t\)</span>: <span class="math inline">\(c=(1-w)m^*+wt\)</span>, with outside weight <span class="math inline">\(w=V_m/(V_m+V_t)\)</span>. A larger synthetic variance gives the outside estimate more weight. The synthetic variance <span class="math inline">\(V_m\)</span> adds bootstrap variance to a structural variance. We estimate the structural component from the across-state variance of the differences between corrected synthetic shares and polling averages, subtracting the average bootstrap and polling variances. A floor of <span class="math inline">\(0.005^2\)</span> keeps this component positive.</p>
 <p>For polls, the error scale adds sampling variance <span class="math inline">\(p(1-p)/n\)</span> to an assumed <span class="math inline">\(0.03^2\)</span> for error beyond sampling <span class="citation" data-cites="shirani-mehr2018">(<a href="#ref-shirani-mehr2018" role="doc-biblioref">Shirani-Mehr et al. 2018</a>)</span>. For states without polls, it uses the errors around 2024 plus uniform swing. We draw normal outcomes around the combined share with variance <span class="math inline">\(1/(1/V_m+1/V_t)\)</span>, then add a shared national error with standard deviation 0.03. The correction applies each model’s average synthetic–poll gap equally to every state. The weights also assume that synthetic and polling errors are independent. These assumptions make the estimates approximate. The <a href="#by-method">Discussion</a> compares the combined forecast with synthetic-only and no-LLM forecasts, and with a version that retains the gap and counts it as error.</p>
 </section>
@@ -1855,7 +1852,6 @@ Example: the news block of one persona (Florida, 31 October)
 <section id="synthetic" class="level2">
 <h2 class="anchored" data-anchor-id="synthetic">Sensitivity of the forecast</h2>
 <p>This section shows how the results change with news input, run date and assumed errors.</p>
-<!-- Tables written by scripts/16b-compare_runs.py after each run (data/03-results/comparison/). -->
 <section id="effect-of-the-news" class="level3">
 <h3 class="anchored" data-anchor-id="effect-of-the-news">Effect of the news</h3>
 <p>This comparison describes changes associated with the news inputs, alongside variation between model runs. It uses synthetic responses before combination with polling information.</p>
@@ -2039,7 +2035,7 @@ Table view
 </tbody>
 </table>
 <div class="chart-note">
-<p>Each cell gives the probability of Republican control under a different national error (rows) and poll error beyond sampling (columns), both expressed as standard deviations in percentage points of vote share.</p>
+<p>Each cell gives the probability of Republican control under a different national error (rows) and poll error beyond sampling (columns), both expressed as standard deviations in percentage points of vote share. Bold marks the headline assumptions.</p>
 </div>
 </section>
 </section>
@@ -2337,7 +2333,7 @@ Table view: every race, 31 October
 </details>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/latest/market_comparison.png" class="img-fluid figure-img" alt="Scatter plot of 35 Senate races, our Republican winning probability against PredictIt's, with a 45-degree line and shaded corners where the two favour different sides."></p>
+<p><img src="figures/latest/market_comparison.png" class="img-fluid figure-img" style="width:70.0%" alt="Scatter plot of 35 Senate races, our Republican winning probability against PredictIt's, with a 45-degree line and shaded corners where the two favour different sides."></p>
 <figcaption>Our Republican winning probability in each race against PredictIt’s, on the latest news day. Points on the dashed line are races where the two agree; points in the shaded corners are races where they favour different sides. Hollow points are races with an independent instead of a Democrat; states that differ by 8 points or more are named.</figcaption>
 </figure>
 </div>
@@ -2346,6 +2342,7 @@ Table view: every race, 31 October
 <section id="costs" class="level2">
 <h2 class="anchored" data-anchor-id="costs">API costs and time</h2>
 <p>Each run uses 3,500 personas. Four models answer for each persona three times, giving 42,000 calls per run. We calculate costs from the recorded token counts using OpenRouter’s list prices as of 25 October. Answer embeddings cost about US$0.50 per run, and news screening costs less than US$0.10. The total estimated cost is about US$9 per run. OpenRouter charged about US$7.20 per run because DeepSeek’s off-peak prices were lower. The total project bill was US$41.38, including the test run and a repeated run. The README lists the charges by day.</p>
+<div class="firstcol-nowrap">
 <p><strong>31 October run</strong></p>
 <table class="caption-top table">
 <colgroup>
@@ -2403,12 +2400,14 @@ Table view: every race, 31 October
 </tbody>
 </table>
 <p>Estimated cost of each run, from the token counts: 27 October US$8.08, 29 October US$8.13, 31 October US$8.31, and US$4.64 for the run without news, whose prompts contain no news. The 31 October run took 1.0 hours from its first call to its last.</p>
+</div>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
 <section id="by-method" class="level3">
-<h3 class="anchored" data-anchor-id="by-method">Comparing synthetic-only, combined and no-LLM forecasts</h3>
+<h3 class="anchored" data-anchor-id="by-method">Comparing four ways of building the forecast</h3>
 <p>The table compares four methods using the latest run’s saved inputs. Synthetic-only uses the original SSR shares without polling adjustment. The combined forecast, used for the headline, subtracts each model’s average gap from polls and combines the corrected shares with state polling averages. Where polls are unavailable, it uses the 2024 CES vote share shifted by the average change in polled states (“2024 plus uniform swing”). The third version combines raw synthetic shares with the outside estimates. Its error scale uses the mean squared synthetic–poll gap instead of the variance of the remaining differences after correction. Both the input shares and weights therefore change. The no-LLM benchmark uses the same polling averages and 2024-plus-swing estimates, excluding synthetic responses. The comparison shows how synthetic responses change the forecast, but cannot establish accuracy before election results are available.</p>
+<div class="firstcol-nowrap">
 <table class="caption-top table">
 <colgroup>
 <col style="width: 27%">
@@ -2445,31 +2444,28 @@ Table view: every race, 31 October
 </tr>
 </tbody>
 </table>
+</div>
 <div class="chart-note">
 <p>The synthetic methods pool four models with equal weight. Seat intervals contain the middle 90% of simulated outcomes.</p>
 </div>
 <p>For 31 October, adding polling and historical information lowers the Republican control probability from 90% in the synthetic-only forecast to 37%. The no-LLM benchmark gives 34%; including synthetic responses moves the combined forecast toward greater Republican support. Synthetic estimates receive an average weight of 19% in polled states and 17% in unpolled states. The remaining weight goes to state polling averages or, where unavailable, the 2024 CES vote share plus uniform swing. These outside estimates therefore dominate the combined result. In the comparison without bias correction, we combine the original synthetic shares with polling and historical estimates. Including the synthetic–poll gap in the error estimate gives synthetic shares an average weight of 11% in polled states. This version gives Republicans a 42% probability of control, compared with 37% under the bias-corrected headline forecast. The versions differ in both their synthetic shares and weights.</p>
-<!-- DRAFT (Claude): rewrite. -->
 </section>
 <section id="fidelity" class="level3">
 <h3 class="anchored" data-anchor-id="fidelity">Do synthetic voters reproduce partisan voting patterns?</h3>
-<p>Argyle et al. <span class="citation" data-cites="argyle2023">(<a href="#ref-argyle2023" role="doc-biblioref">2023</a>)</span> define algorithmic fidelity as a model’s ability to reproduce patterns of human responses across groups. We compare synthetic Republican support in the 2026 Senate races with the same personas’ reported Republican vote in the 2024 presidential election, across demographic and party-identification groups. The prompts did not include that earlier vote. The comparison asks whether the models reproduce earlier partisan patterns, not whether they predict each person’s next vote. Because some Senate opponents are Independents, non-Republican support cannot always be labelled Democratic support.</p>
-<p>Bisbee et al. <span class="citation" data-cites="bisbee2024">(<a href="#ref-bisbee2024" role="doc-biblioref">2024</a>)</span> caution that aggregate resemblance can mask overly uniform responses and distorted relationships between characteristics and opinions. The <a href="#crosstabs">Crosstabs table</a> compares synthetic Republican support with reported 2024 Republican voting across these groups. Party-identification groups help assess whether the models rely too heavily on party, while groups without a clear party preference offer a harder check. Agreement with the 2024 column is not enough: turnout, candidates and preferences can change between elections. We use the tables to describe the synthetic sample, not to validate the forecast.</p>
+<p>Argyle et al. <span class="citation" data-cites="argyle2023">(<a href="#ref-argyle2023" role="doc-biblioref">2023</a>)</span> define algorithmic fidelity as a model’s ability to reproduce patterns of human responses across groups. We compare synthetic Republican support in the 2026 Senate races with the same personas’ reported Republican vote in the 2024 presidential election, across demographic and party-identification groups. The prompts did not include that earlier vote. The comparison asks whether the models reproduce earlier partisan patterns, not whether they predict each person’s next vote. Because some Senate opponents are Independents, non-Republican support cannot always be labelled Democratic support. In the 31 October run, 54 per cent of all personas leaned Republican, against a 55 per cent Republican vote in 2024, and every gender, race, age, education and income group with at least 50 personas was within 6 points, except personas without a high-school diploma (54 against 63 per cent).</p>
+<p>Bisbee et al. <span class="citation" data-cites="bisbee2024">(<a href="#ref-bisbee2024" role="doc-biblioref">2024</a>)</span> caution that aggregate resemblance can mask overly uniform responses and distorted relationships between characteristics and opinions. The <a href="#crosstabs">Crosstabs table</a> compares synthetic Republican support with reported 2024 Republican voting across these groups. Party-identification groups help assess whether the models rely too heavily on party. Weak Republicans leaned Republican 97 per cent of the time, against a 92 per cent Republican vote in 2024; weak Democrats leaned Republican 5 against 13 per cent. Groups without a clear party preference offer a harder check: Independents leaned Republican 41 per cent of the time, against 61 per cent in 2024. Agreement with the 2024 column is not enough: turnout, candidates and preferences can change between elections. In the polled states, the polls put the Democratic side about 6 points above its 2024 share, while the synthetic shares sit 5 to 9 points on the Republican side of the polls. We use the tables to describe the synthetic sample, not to validate the forecast.</p>
 </section>
 <section id="ssr-discussion" class="level3">
 <h3 class="anchored" data-anchor-id="ssr-discussion">Free text and Semantic Similarity Rating</h3>
-<p>SSR scores do not always match the strength of support expressed in an answer <span class="citation" data-cites="heath2026 maier2025">(<a href="#ref-heath2026" role="doc-biblioref">Heath and Alexander 2026</a>; <a href="#ref-maier2025" role="doc-biblioref"><span class="nocase">Maier et al.</span> 2025</a>)</span>. The scoring rule can assign support to both candidates even when a response clearly chooses one. A group can therefore appear less partisan without its personas’ answers becoming more diverse. Our limited embedding check also found that undecided answers were not clearly distinguished from candidate support. The forecast depends partly on the reference statements and softmax temperature, as well as on the model answers.</p>
-<!-- DRAFT (Claude): rewrite. -->
+<p>SSR scores do not always match the strength of support expressed in an answer <span class="citation" data-cites="heath2026 maier2025">(<a href="#ref-heath2026" role="doc-biblioref">Heath and Alexander 2026</a>; <a href="#ref-maier2025" role="doc-biblioref"><span class="nocase">Maier et al.</span> 2025</a>)</span>. The scoring rule can assign support to both candidates even when a response clearly chooses one: strong Democrats leaned Republican in 1 per cent of cases, but their average Republican SSR share was 14 per cent. A group can therefore appear less partisan without its personas’ answers becoming more diverse. Our limited embedding check also found that undecided answers were not clearly distinguished from candidate support. The forecast depends partly on the reference statements and softmax temperature, as well as on the model answers.</p>
 </section>
 <section id="the-news-the-personas-read" class="level3">
 <h3 class="anchored" data-anchor-id="the-news-the-personas-read">The news the personas read</h3>
 <p>Murray and Alexander <span class="citation" data-cites="murray2026">(<a href="#ref-murray2026" role="doc-biblioref">2026</a>)</span> find that including party identification in a persona can limit the effect of news on its answers. Our <a href="#synthetic">news comparison</a> shows small changes in the average synthetic share across the recorded runs, with different changes across states. Every prompt includes party identification, which may contribute to this stability. Model answers also vary between runs, so we cannot attribute all changes to news exposure or infer that news has no effect on real voters.</p>
-<!-- DRAFT (Claude): rewrite. -->
 </section>
 <section id="uncertainty-and-the-correlation-between-states" class="level3">
 <h3 class="anchored" data-anchor-id="uncertainty-and-the-correlation-between-states">Uncertainty and the correlation between states</h3>
 <p>The <a href="#sensitivity">sensitivity table</a> shows how error assumptions affect the probability of Senate control. If polls miss support for one party across the country, several closely matched races could change winners together <span class="citation" data-cites="gelman2020">(<a href="#ref-gelman2020" role="doc-biblioref">Gelman et al. 2020</a>)</span>. Errors confined to one region may produce patterns that our shared national error does not fully capture. The forecasts change little across the three days, but their wide seat intervals allow many outcomes. Stability alone does not establish accuracy.</p>
-<!-- DRAFT (Claude): rewrite. -->
 </section>
 <section id="what-agreement-with-the-market-tells-us" class="level3">
 <h3 class="anchored" data-anchor-id="what-agreement-with-the-market-tells-us">What agreement with the market tells us</h3>
@@ -2483,11 +2479,9 @@ Table view: every race, 31 October
 <p>The forecast considers only two candidates per race, so the final two-candidate shares do not fully represent other candidates, indecision or nonvoting. In Montana, we compare Republican Kurt Alme with Independent Seth Bodnar and omit Democrat Alani Bankhead. The forecast cannot represent support across all three candidates or how that division affects the winner. Further scoring limitations are discussed under <a href="#ssr-discussion">Free text and Semantic Similarity Rating</a>.</p>
 <p>Provider defaults and model updates can change answers even when prompts are saved. News was collected on only three days, limiting what these runs tell us about responses to other events. Future work could vary the amount and mix of news while holding the remaining inputs constant.</p>
 <p>Comparable forecasts from more elections would allow us to test the correction and weights. They could also help assess whether error sizes differ by region or race competitiveness, whether models should receive different weights, and whether estimating uncertainty across dates gives more reliable results.</p>
-<!-- DRAFT (Claude): rewrite. -->
 </section>
 <section id="conclusion" class="level3">
 <h3 class="anchored" data-anchor-id="conclusion">Conclusion: what the synthetic voters add</h3>
-<!-- DRAFT (Claude): rewrite. Numbers from the 31 October run. -->
 <p>Synthetic-only strongly favours Republican control, while the combined forecast and no-LLM benchmark favour the Democratic caucus. Synthetic responses change the result relative to the no-LLM benchmark, but receive a small share of the combined weight. The project illustrates how silicon sampling can enter an election forecast; it does not establish an improvement over polling and historical information. Evaluation against election results must use the same vote-share denominator: votes for the two selected candidates, not all candidates. Winner comparisons must also account for omitted candidates who could win or affect the outcome, especially in Montana. Assessing the method more broadly requires more elections and settings.</p>
 </section>
 </section>
@@ -2498,7 +2492,10 @@ Table view: every race, 31 October
 Allaire, J. J., Charles Teague, Carlos Scheidegger, Yihui Xie, and Christophe Dervieux. 2026. <em>Quarto, Version 1.9.38</em>. <a href="https://doi.org/10.5281/zenodo.5960048">https://doi.org/10.5281/zenodo.5960048</a>.
 </div>
 <div id="ref-ces2024guide" class="csl-entry" role="listitem">
-Ansolabehere, Stephen, Brian Schaffner, Jeremy Pope, Lisa Argyle, and Michael Barber. 2025. <em>Guide to the 2024 Cooperative Election Study</em>. Data Release No. 21. Harvard University.
+Ansolabehere, Stephen, Brian Schaffner, Jeremy Pope, Lisa Argyle, and Michael Barber. 2025. <em>Guide to the 2024 Cooperative Election Study</em>. Data Release No. 21. Harvard University. <a href="https://doi.org/10.7910/DVN/X11EP6">https://doi.org/10.7910/DVN/X11EP6</a>.
+</div>
+<div id="ref-haiku2026" class="csl-entry" role="listitem">
+Anthropic. 2026. <em><span>Claude Haiku 5.5</span> (<span class="nocase">anthropic/claude-haiku-5.5</span>)</em>. Accessed through <span>OpenRouter</span>. <a href="https://openrouter.ai/anthropic/claude-haiku-5.5">https://openrouter.ai/anthropic/claude-haiku-5.5</a>.
 </div>
 <div id="ref-arrow" class="csl-entry" role="listitem">
 Apache Arrow Developers. 2026. <em>Apache Arrow: <span class="nocase">pyarrow</span>, the <span>Python</span> Library</em>. <a href="https://arrow.apache.org/docs/python/">https://arrow.apache.org/docs/python/</a>.
@@ -2507,10 +2504,10 @@ Apache Arrow Developers. 2026. <em>Apache Arrow: <span class="nocase">pyarrow</s
 Argyle, Lisa P., Ethan C. Busby, Nancy Fulda, Joshua R. Gubler, Christopher Rytting, and David Wingate. 2023. <span>“Out of One, Many: Using Language Models to Simulate Human Samples.”</span> <em>Political Analysis</em> 31 (3): 337–51. <a href="https://doi.org/10.1017/pan.2023.2">https://doi.org/10.1017/pan.2023.2</a>.
 </div>
 <div id="ref-ballotpedia2026" class="csl-entry" role="listitem">
-Ballotpedia. 2026. <em>U.s. Senate Battlegrounds, 2026</em>. <a href="https://ballotpedia.org/U.S._Senate_battlegrounds,_2026">https://ballotpedia.org/U.S._Senate_battlegrounds,_2026</a>.
+Ballotpedia. 2026. <em><span>U.S.</span> Senate Battlegrounds, 2026</em>. <a href="https://ballotpedia.org/U.S._Senate_battlegrounds,_2026">https://ballotpedia.org/U.S._Senate_battlegrounds,_2026</a>.
 </div>
 <div id="ref-bantilan2020" class="csl-entry" role="listitem">
-Bantilan, Niels. 2020. <span>“Pandera: Statistical Data Validation of Pandas Dataframes.”</span> <em>Proceedings of the 19th Python in Science Conference</em>, 116–24. <a href="https://doi.org/10.25080/Majora-342d178e-010">https://doi.org/10.25080/Majora-342d178e-010</a>.
+Bantilan, Niels. 2020. <span>“<span class="nocase">pandera</span>: Statistical Data Validation of <span>Pandas</span> Dataframes.”</span> <em>Proceedings of the 19th Python in Science Conference</em>, 116–24. <a href="https://doi.org/10.25080/Majora-342d178e-010">https://doi.org/10.25080/Majora-342d178e-010</a>.
 </div>
 <div id="ref-lxml" class="csl-entry" role="listitem">
 Behnel, Stefan, Martijn Faassen, and Ian Bicking. 2026. <em><span class="nocase">lxml</span>: <span>XML</span> and <span>HTML</span> with <span>Python</span>, Version 6.1.3</em>. <a href="https://lxml.de">https://lxml.de</a>.
@@ -2527,8 +2524,17 @@ CNN. 2024. <em>Senate Election Results 2024</em>. <a href="https://www.cnn.com/e
 <div id="ref-tqdm" class="csl-entry" role="listitem">
 <span class="nocase">da Costa-Luis, Casper O.</span> 2019. <span>“<span class="nocase">tqdm</span>: A Fast, Extensible Progress Meter for <span>Python</span> and <span>CLI</span>.”</span> <em>Journal of Open Source Software</em> 4 (37): 1277. <a href="https://doi.org/10.21105/joss.01277">https://doi.org/10.21105/joss.01277</a>.
 </div>
+<div id="ref-deepseek2026" class="csl-entry" role="listitem">
+DeepSeek. 2026. <em><span>DeepSeek V4.1 Flash</span> (<span class="nocase">deepseek/deepseek-v4.1-flash</span>)</em>. Accessed through <span>OpenRouter</span>. <a href="https://openrouter.ai/deepseek/deepseek-v4.1-flash">https://openrouter.ai/deepseek/deepseek-v4.1-flash</a>.
+</div>
 <div id="ref-gelman2020" class="csl-entry" role="listitem">
-Gelman, Andrew, Jessica Hullman, Christopher Wlezien, and George Elliott Morris. 2020. <span>“Information, Incentives, and Goals in Election Forecasts.”</span> <em>Judgment and Decision Making</em> 15 (5): 863–80. <a href="https://dlab.sauder.ubc.ca/sjdm/journal/20/200907b/jdm200907b.html">https://dlab.sauder.ubc.ca/sjdm/journal/20/200907b/jdm200907b.html</a>.
+Gelman, Andrew, Jessica Hullman, Christopher Wlezien, and George Elliott Morris. 2020. <span>“Information, Incentives, and Goals in Election Forecasts.”</span> <em>Judgment and Decision Making</em> 15 (5): 863–80. <a href="https://doi.org/10.1017/S1930297500007981">https://doi.org/10.1017/S1930297500007981</a>.
+</div>
+<div id="ref-geminiflashlite2026" class="csl-entry" role="listitem">
+Google. 2026a. <em><span>Gemini 3.5 Flash-Lite</span> (<span class="nocase">google/gemini-3.5-flash-lite</span>)</em>. Accessed through <span>OpenRouter</span>. <a href="https://openrouter.ai/google/gemini-3.5-flash-lite">https://openrouter.ai/google/gemini-3.5-flash-lite</a>.
+</div>
+<div id="ref-geminiembedding2026" class="csl-entry" role="listitem">
+Google. 2026b. <em><span>Gemini Embedding 2</span> (<span class="nocase">google/gemini-embedding-2</span>)</em>. Accessed through <span>OpenRouter</span>. <a href="https://openrouter.ai/google/gemini-embedding-2">https://openrouter.ai/google/gemini-embedding-2</a>.
 </div>
 <div id="ref-harris2020" class="csl-entry" role="listitem">
 <span class="nocase">Harris, Charles R., K. Jarrod Millman, Stéfan J. van der Walt, et al.</span> 2020. <span>“Array Programming with <span>NumPy</span>.”</span> <em>Nature</em> 585: 357–62. <a href="https://doi.org/10.1038/s41586-020-2649-2">https://doi.org/10.1038/s41586-020-2649-2</a>.
@@ -2540,10 +2546,13 @@ Heath, Oscar, and Rohan Alexander. 2026. <em>Correcting Mode Collapse in Silicon
 Hunter, John D. 2007. <span>“Matplotlib: A 2D Graphics Environment.”</span> <em>Computing in Science &amp; Engineering</em> 9 (3): 90–95. <a href="https://doi.org/10.1109/MCSE.2007.55">https://doi.org/10.1109/MCSE.2007.55</a>.
 </div>
 <div id="ref-kay2016" class="csl-entry" role="listitem">
-Kay, Matthew, Tara Kola, Jessica R. Hullman, and Sean A. Munson. 2016. <span>“When (Ish) Is My Bus? <span>User-Centered</span> Visualizations of Uncertainty in Everyday, Mobile Predictive Systems.”</span> <em>Proceedings of the 2016 <span>CHI</span> Conference on Human Factors in Computing Systems</em>, 5092–103. <a href="https://doi.org/10.1145/2858036.2858558">https://doi.org/10.1145/2858036.2858558</a>.
+Kay, Matthew, Tara Kola, Jessica R. Hullman, and Sean A. Munson. 2016. <span>“When <span class="nocase">(ish)</span> Is My Bus? <span>User-Centered</span> Visualizations of Uncertainty in Everyday, Mobile Predictive Systems.”</span> <em>Proceedings of the 2016 <span>CHI</span> Conference on Human Factors in Computing Systems</em>, 5092–103. <a href="https://doi.org/10.1145/2858036.2858558">https://doi.org/10.1145/2858036.2858558</a>.
 </div>
 <div id="ref-pytest" class="csl-entry" role="listitem">
 Krekel, Holger, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, and Florian Bruhin. 2004. <em><span class="nocase">pytest</span>, Version 9</em>. <a href="https://github.com/pytest-dev/pytest">https://github.com/pytest-dev/pytest</a>.
+</div>
+<div id="ref-dotenv" class="csl-entry" role="listitem">
+Kumar, Saurabh. 2026. <em><span class="nocase">python-dotenv</span>: Reads Key-Value Pairs from a <span class="nocase">.env</span> File</em>. <a href="https://github.com/theskumar/python-dotenv">https://github.com/theskumar/python-dotenv</a>.
 </div>
 <div id="ref-lockgelman2010" class="csl-entry" role="listitem">
 Lock, Kari, and Andrew Gelman. 2010. <span>“Bayesian Combination of State Polls and Election Forecasts.”</span> <em>Political Analysis</em> 18 (3): 337–48. <a href="https://doi.org/10.1093/pan/mpq002">https://doi.org/10.1093/pan/mpq002</a>.
@@ -2552,13 +2561,22 @@ Lock, Kari, and Andrew Gelman. 2010. <span>“Bayesian Combination of State Poll
 <span class="nocase">Maier, Benjamin F., Ulf Aslak, Luca Fiaschi, et al.</span> 2025. <em><span>LLMs</span> Reproduce Human Purchase Intent via Semantic Similarity Elicitation of Likert Ratings</em>. <a href="https://arxiv.org/abs/2510.08338">https://arxiv.org/abs/2510.08338</a>.
 </div>
 <div id="ref-mckinney2010" class="csl-entry" role="listitem">
-McKinney, Wes. 2010. <span>“Data Structures for Statistical Computing in Python.”</span> <em>Proceedings of the 9th Python in Science Conference</em>, 56–61.
+McKinney, Wes. 2010. <span>“Data Structures for Statistical Computing in Python.”</span> <em>Proceedings of the 9th Python in Science Conference</em>, 56–61. <a href="https://doi.org/10.25080/Majora-92bf1922-00a">https://doi.org/10.25080/Majora-92bf1922-00a</a>.
 </div>
 <div id="ref-murray2026" class="csl-entry" role="listitem">
 Murray, Ellie, and Rohan Alexander. 2026. <span>“How Analyst Choices Affect Silicon Samples from the 2025 <span>CES</span>.”</span> Unpublished manuscript.
 </div>
 <div id="ref-npr2024" class="csl-entry" role="listitem">
 NPR. 2024. <em>Live: Senate Election Results 2024</em>. <a href="https://apps.npr.org/2024-election-results/senate.html">https://apps.npr.org/2024-election-results/senate.html</a>.
+</div>
+<div id="ref-gpt41nano2025" class="csl-entry" role="listitem">
+OpenAI. 2025. <em><span>GPT-4.1 Nano</span> (<span class="nocase">openai/gpt-4.1-nano</span>)</em>. Accessed through <span>OpenRouter</span>. <a href="https://openrouter.ai/openai/gpt-4.1-nano">https://openrouter.ai/openai/gpt-4.1-nano</a>.
+</div>
+<div id="ref-luna2026" class="csl-entry" role="listitem">
+OpenAI. 2026. <em><span>GPT-6 Luna</span> (<span class="nocase">openai/gpt-6-luna</span>)</em>. Accessed through <span>OpenRouter</span>. <a href="https://openrouter.ai/openai/gpt-6-luna">https://openrouter.ai/openai/gpt-6-luna</a>.
+</div>
+<div id="ref-openrouter2026" class="csl-entry" role="listitem">
+OpenRouter. 2026. <em><span>OpenRouter</span> <span>API</span> Documentation</em>. <a href="https://openrouter.ai/docs">https://openrouter.ai/docs</a>.
 </div>
 <div id="ref-politico2024" class="csl-entry" role="listitem">
 Politico. 2024. <em>Senate Election Results 2024: Live Map, Races by State</em>. <a href="https://www.politico.com/2024-election/results/senate/">https://www.politico.com/2024-election/results/senate/</a>.
@@ -2569,11 +2587,14 @@ PollResults.org. 2026. <em><span>PollResults</span> Senate Results <span>API</sp
 <div id="ref-predictit2026" class="csl-entry" role="listitem">
 PredictIt. 2026. <em>2026 <span>U.S.</span> Senate Election Markets: Daily Prices</em>. <a href="https://www.predictit.org">https://www.predictit.org</a>.
 </div>
+<div id="ref-publicamundi2014" class="csl-entry" role="listitem">
+PublicaMundi. 2014. <em><span>MappingAPI</span>: <span>US</span> State Boundaries (<span>GeoJSON</span>)</em>. GitHub repository. <a href="https://github.com/PublicaMundi/MappingAPI/blob/master/data/geojson/us-states.json">https://github.com/PublicaMundi/MappingAPI/blob/master/data/geojson/us-states.json</a>.
+</div>
 <div id="ref-python" class="csl-entry" role="listitem">
 Python Software Foundation. 2023. <em>Python Language Reference, Version 3.12</em>. <a href="https://www.python.org">https://www.python.org</a>.
 </div>
 <div id="ref-reimers2019" class="csl-entry" role="listitem">
-Reimers, Nils, and Iryna Gurevych. 2019. <span>“Sentence-<span>BERT</span>: Sentence Embeddings Using <span>Siamese</span> <span>BERT</span>-Networks.”</span> <em>Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing</em>. <a href="https://arxiv.org/abs/1908.10084">https://arxiv.org/abs/1908.10084</a>.
+Reimers, Nils, and Iryna Gurevych. 2019. <span>“Sentence-<span>BERT</span>: Sentence Embeddings Using <span>Siamese</span> <span>BERT</span>-Networks.”</span> <em>Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing</em>, 3980–90. <a href="https://doi.org/10.18653/v1/D19-1410">https://doi.org/10.18653/v1/D19-1410</a>.
 </div>
 <div id="ref-requests" class="csl-entry" role="listitem">
 Reitz, Kenneth. 2026. <em>Requests: <span>HTTP</span> for Humans, Version 2.34.2</em>. <a href="https://requests.readthedocs.io">https://requests.readthedocs.io</a>.

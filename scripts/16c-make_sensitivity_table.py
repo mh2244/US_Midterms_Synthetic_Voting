@@ -14,7 +14,8 @@
 #   python scripts/16c-make_sensitivity_table.py --table-only  rebuilds the table from the saved
 #   sensitivity.csv without rerunning the grid.
 # Outputs (in data/03-results/run_<RUN>/): sensitivity.csv (one row per model and grid point)
-#   and sensitivity.md (the table on the website, four models pooled).
+#   and sensitivity.md (the table on the website: the chance of Republican control, four models
+#   pooled; the csv also keeps the chance of 51 Democratic seats).
 # NOTE: the four models have the same number of draws, so pooling them is the plain mean of the
 #   four per-model chances.
 

@@ -8,6 +8,10 @@
 # License: MIT
 # Pre-requisites: pip install requests tqdm python-dotenv
 #                 Set OPENROUTER_API_KEY in the environment or project .env.
+# Run from the project root: python scripts/04-collect_news.py (screening model: openai/gpt-4.1-nano)
+# Outputs: data/01-raw_data/news/news.csv (the articles as collected), and
+#   data/02-analysis_data/news/news_screening.csv (every screening decision) and news_context.csv
+#   (the kept articles with their prompt paragraphs, read by script 04b).
 
 """Collect up to 60 recent news items per media outlet, with no global cap.
 

@@ -1,5 +1,6 @@
 #### Preamble ####
-# Purpose: Settings shared by scripts 06-13, so a number or model name is changed in one place.
+# Purpose: Settings shared by every script (paths, models, sample sizes, seed, prices, colours),
+#          so a number or model name is changed in one place.
 # Author: Maggie Huang
 # Date: 22 October 2026
 # License: MIT

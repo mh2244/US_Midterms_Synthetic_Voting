@@ -7,11 +7,13 @@
 # License: MIT
 # Pre-requisites: Python 3.10+; run 02d-download_polls.py first.
 #                 Uses only the Python standard library.
+# Run from the project root: python scripts/03b-clean_polls.py
+# Output: data/02-analysis_data/polls/senate_polls_2026_general.csv
 
 """Select useful columns and retain 2026-cycle general-election Senate polls.
 
-Run: python3 clean_pollresults.py
-Or:  python3 clean_pollresults.py path/to/senate_polls_all.csv
+Run: python scripts/03b-clean_polls.py
+Or:  python scripts/03b-clean_polls.py path/to/senate_polls_all.csv
 Uses only the Python standard library. The original download is not modified.
 One output row remains one answer within a poll question, not one entire poll.
 """

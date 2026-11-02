@@ -1,7 +1,7 @@
 #### Preamble ####
 # Purpose: Sends every prompt to each model on OpenRouter and saves the raw text answers,
 #          with the exact model id returned, the time, and the token counts.
-# Author: (group)
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/08-build_prompts.py first. Put your key in a file called .env in
@@ -10,11 +10,13 @@
 # Any other information needed? Run from the project root.
 #   python scripts/09-query_models.py --limit 4      <- first try: 4 real calls
 #   python scripts/09-query_models.py                <- everything not yet answered
-#   python scripts/09-query_models.py --batch-size 10 --sleep 0   <- paid models: 10 requests at once
+#   python scripts/09-query_models.py --batch-size 40 --sleep 0   <- what every forecast run used
+#                                                       (paid models, 40 requests at once)
 #   python scripts/09-query_models.py --mock         <- no internet, no key: fake answers to
 #                                                       test scripts 10-13
 #
-# FREE-MODEL LIMITS (OpenRouter docs, checked 22 Oct 2026): 20 requests per minute, and
+# Each forecast run sends 3,500 prompts x 4 paid models x 3 repeats = 42,000 calls.
+# FREE-MODEL LIMITS (pilot only; OpenRouter docs, checked 22 Oct 2026): 20 requests per minute, and
 # 50 per day unless you have bought at least 10 credits (then 1,000 per day). The test run
 # is 175 personas x 2 models = 350 calls, so under the 50 limit it takes about 7 days. The
 # script keeps what it has saved, skips finished prompts, and stops cleanly when the daily

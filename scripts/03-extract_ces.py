@@ -1,53 +1,24 @@
-"""
-Pre-amble:
-
-Purpose: Extract the relevant variables from the 2024 CES dataset.
-The variables we want are senate-vote variables and demographic variables.
-These will be used to build cross-tabs later on.
-Authors: Maggie, Coco, Amelia
-Date: November 2nd, 2026
-Contact: maggieh.huang@mail.utoronto.ca
-License: MIT
-Pre-requisites: Run 00-download_data.py first and ensure that the 2024 CES dataset is saved
-under the "data" subfolder. 
-Other Information: In the 2026 Senate race, the following states will have races, according to https://ballotpedia.org/U.S._Senate_battlegrounds,_2026
-
-1. Alabama
-2. Alaska
-3. Arkansas
-4. Colorado
-5. Delaware
-6. Florida
-7. Georgia
-8. Idaho
-9. Illinois
-10. Iowa
-11. Kansas
-12. Kentucky
-13. Louisiana
-14. Maine
-15. Massachusetts
-16. Michigan
-17. Minnesota
-18. Mississippi
-19. Montana
-20. Nebraska
-21. New Hampshire
-22. New Jersey
-23. New Mexico
-24. North Carolina
-25. Ohio
-26. Oklahoma
-27. Oregon
-28. Rhode Island
-29. South Carolina
-30. South Dakota
-31. Tennessee
-32. Texas
-33. Virginia
-34. West Virginia
-35. Wyoming
-"""
+#### Preamble ####
+# Purpose: Extracts the variables the project uses from the raw 2024 CES file: demographics,
+#          party identification and ideology, state, survey weights, vote validation and the
+#          2024 presidential and Senate votes.
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
+# Date: 21 October 2026 (updated 1 November 2026)
+# Contact: maggieh.huang@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: Run scripts/02-download_ces.py first, so that the 2024 CES file is saved as
+#   data/01-raw_data/ces/CCES24_Common_OUTPUT_vv_topost_final.csv (or pass the sample in
+#   data/01-raw_data/ces_sample/ as the path, with --out, to try the script without it).
+# Any other information needed? Run from the project root:
+#   python scripts/03-extract_ces.py                       <- the full file
+#   python scripts/03-extract_ces.py --inspect             <- list the columns, save nothing
+#   python scripts/03-extract_ces.py data/01-raw_data/ces_sample/CCES24_Common_OUTPUT_vv_topost_final.csv \
+#     --out data/02-analysis_data/ces_sample_extract.csv   <- the sample, without overwriting
+# Output: data/02-analysis_data/ces2024_senate_demographics.csv (60,000 rows, 42 columns), which
+#   is committed and is what every later script reads.
+# Note: the 35 states with Senate races in 2026 (33 regular and the Florida and Ohio specials):
+#   AL, AK, AR, CO, DE, FL, GA, ID, IL, IA, KS, KY, LA, ME, MA, MI, MN, MS, MT, NE, NH, NJ, NM,
+#   NC, OH, OK, OR, RI, SC, SD, TN, TX, VA, WV, WY (Ballotpedia 2026).
 
 import argparse
 from pathlib import Path
@@ -217,7 +188,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("path", nargs="?", default=str(DEFAULT_IN))
     ap.add_argument("--inspect", action="store_true")
+    ap.add_argument("--out", default=str(OUT_PATH),
+                    help="where to save the extract; use another path for the sample in "
+                         "data/01-raw_data/ces_sample/ so the real extract is not overwritten")
     a = ap.parse_args()
+    out_path = Path(a.out)
     df = load(a.path)
 
     if a.inspect:
@@ -310,11 +285,11 @@ def main():
                              .where(voted_pres))
 
 
-    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    out.to_csv(OUT_PATH, index=False)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(out_path, index=False)
 
     # ---------- sanity report ----------
-    print(f"Saved {len(out):,} rows x {out.shape[1]} cols -> {OUT_PATH}\n")
+    print(f"Saved {len(out):,} rows x {out.shape[1]} cols -> {out_path}\n")
     print("Senate vote, post-election (unweighted counts):")
     print(out["senate_vote_post"].value_counts(dropna=False).to_string(), "\n")
     m = out["validated_voter"] & out["senate_vote_post"].notna() & out["vvweight_post"].notna()

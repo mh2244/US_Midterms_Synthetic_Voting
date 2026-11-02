@@ -5,12 +5,16 @@
 # Author: Kexin (Coco) Liu
 # Date: 26 October 2026
 # License: MIT
-# Pre-requisites: Run scripts 11 (with the default --combine ivw last), 13, 13b, 15, 15b and 16 for this RUN.
+# Pre-requisites: Run scripts 11 (with the default --combine ivw last), 13, 13b, 15, 15b and 16 for this RUN;
+#   15c, 16b, 16c and 16f are copied too when their files exist.
 # Any other information needed? Run from the project root:
 #   python scripts/17-publish_latest.py            <- RUN from config / the RUN variable
 #   RUN=2026-10-29 python scripts/17-publish_latest.py --force   <- publish an older run anyway
 # Outputs:
-#   figures/latest/seat_bar.png, forecast_dotplot.png, forecast_win_probability_bar.png
+#   figures/latest/seat_bar.png, forecast_dotplot.png, forecast_win_probability_bar.png, and when present
+#     seat_distribution.png, news_effect.png, market_comparison.png
+#   data/03-results/latest/ also, when present: sensitivity.md and .csv, results_summary.md,
+#     battlegrounds.md and .csv
 #   data/03-results/latest/  headline.md, headline.json, senate_map.md, crosstabs.md, win_probabilities.md, chamber_summary.csv, win_probabilities.csv,
 #                            ivw_weights.csv, state_comparison.csv, run_info.md, run_info.json
 # WHY the checks: the page must show the headline method (inverse-variance) from a news run, and

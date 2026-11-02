@@ -6,10 +6,13 @@
 # Contact: amelia.f.feng@outlook.com
 # License: MIT
 # Pre-requisites: Python 3.10+ and system curl; no additional Python packages.
+# Run from the project root: python scripts/02d-download_polls.py
+# Outputs: data/01-raw_data/polls/pollresults/<UTC timestamp>/ (senate_polls_complete.json and
+#   senate_polls_all.csv); every download keeps its own folder.
 
 """Download the complete Senate dataset from the documented PollResults API.
 
-Run: python3 download_pollresults.py
+Run: python scripts/02d-download_polls.py
 Requires Python 3.10+ and system curl; no Python packages or API key needed.
 API documentation: https://pollresults.org/api/
 Data provider: PollResults.org, using New York Times polling data (CC BY 4.0).

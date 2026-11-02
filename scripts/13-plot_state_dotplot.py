@@ -3,7 +3,7 @@
 #          state, pooling the four models (each model's 1,000 draws count equally). Each dot is
 #          5% of the simulated outcomes (20 dots per state). The per-model numbers are in the
 #          win-probability table from script 15.
-# Author: (group)
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/11-build_forecast.py first. Needs: pip install matplotlib

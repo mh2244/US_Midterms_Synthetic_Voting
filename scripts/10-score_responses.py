@@ -4,14 +4,16 @@
 #          vote / is undecided (p_other).
 #          Design B answers (free text) are scored with Semantic Similarity Rating (SSR).
 #          Design C answers (percentages) are only parsed.
-# Author: (group)
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/09-query_models.py first (or with --mock).
-#   For the local embedder: pip install sentence-transformers   (downloads a small model once)
-#   For Gemini Embedding 2 (the paper's model): --embedder openrouter  (about $0.20 per million tokens)
+#   Default embedder (config.EMBEDDER = "openrouter"): Gemini Embedding 2 through OpenRouter,
+#     the model used for every forecast (about $0.20 per million tokens; needs the API key).
+#   --embedder local: all-MiniLM-L6-v2, used only in the pilots (pip install sentence-transformers).
 # Any other information needed? Run from the project root.
-#   python scripts/10-score_responses.py                      <- local embedding model
+#   python scripts/10-score_responses.py                      <- Gemini Embedding 2 (the default)
+#   python scripts/10-score_responses.py --embedder local     <- local MiniLM model (pilots)
 #   python scripts/10-score_responses.py --embedder mock      <- offline plumbing test only
 #
 # HOW SSR WORKS here (Maier et al. 2025; Heath & Alexander 2026):
@@ -25,8 +27,9 @@
 # lean too far one way, which is why the forecast script compares with polls.
 # LIMITS we should write in the paper:
 #   - SSR was tested on 0-100 ratings; applying it to vote choice is our adaptation.
-#   - Heath & Alexander used asymmetric embeddings (Gemini Embedding 2). Our default local
-#     model is symmetric and smaller, so scores will differ.
+#   - Heath & Alexander used Gemini Embedding 2 with asymmetric (query and document) inputs; we
+#     use the same model symmetrically, with no prefixes (EMBED_QUERY_PREFIX and EMBED_DOC_PREFIX
+#     in config.py), so scores can differ from theirs.
 #   - Embeddings capture topic closeness more than stance ("I would never vote for X" can sit
 #     close to "I will vote for X"). READ ~30 ANSWERS BY HAND next to their scores.
 #   - The anchors name the real candidates of each race; changing the anchor wording changes
