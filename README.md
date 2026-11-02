@@ -50,7 +50,7 @@ data/
   03-results/           forecasts and tables by run (run_<RUN>/), latest/, comparison/
 docs/                   rendered website served by GitHub Pages (do not edit by hand)
 figures/                figures by run, and latest/ (what the website shows)
-other/                  LLM usage notes, planning notes and website sketches
+other/                  Planning notes and website sketches
 scripts/                the pipeline, numbered in run order
 index.qmd               the website (one page); _quarto.yml and styles.css set the design
 references.bib          references cited on the website
