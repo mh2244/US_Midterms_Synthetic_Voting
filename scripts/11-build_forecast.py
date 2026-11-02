@@ -2,13 +2,15 @@
 # Purpose: Turns persona-level probabilities into a distribution of outcomes for each state and
 #          model, saves it in the same layout as the simulated forecast, and builds a table
 #          that sets the model's share beside the poll average and the 2024 presidential vote.
-# Author: (group)
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/10-score_responses.py first. Needs pyarrow for the parquet file.
 # Any other information needed? Run from the project root.
 #   python scripts/11-build_forecast.py                   <- headline: inverse-variance combination
 #   python scripts/11-build_forecast.py --combine none    <- comparison: synthetic voters only
+#   python scripts/11-build_forecast.py --bias keep       <- comparison: bias not removed (writes only
+#                                                            *_ivw_biaskept files; method table)
 #   Each run also saves labelled copies (forecast_ivw / _uncalibrated), and scripts
 #   13 and 15 draw whichever ran last, so run the headline (ivw) last.
 #

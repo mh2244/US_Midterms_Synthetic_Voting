@@ -90,17 +90,32 @@ uses seed 2026.
 | Seats not up in 2026 | Wikipedia, entered by hand | – | `data/01-raw_data/` |
 | State boundaries | public GeoJSON | `02b` | `data/01-raw_data/us-states.json` |
 
-**The raw CES file is not in the repository.** It is large and distributed under Harvard
-Dataverse's terms of use. Download it with
+**The raw CES file is not in the repository, but a sample of it is.** The 2024 CES Common
+Content is public domain (CC0 1.0 on Harvard Dataverse, doi:10.7910/DVN/X11EP6), but the file is
+184 MB, above GitHub's 100 MB limit for one file. To get it, run
 
 ```bash
 python scripts/02-download_ces.py get --file-id 12050325
 ```
 
-or by hand (2024 CES Common Content), and save it as
-`data/01-raw_data/ces/CCES24_Common_OUTPUT_vv_topost_final.csv`. Script `03` reduces it to
-`data/02-analysis_data/ces2024_senate_demographics.csv`, which is committed and is all that later
-scripts read, so the pipeline runs from script `07` without the raw file.
+or download it by hand from Dataverse, and save it as
+`data/01-raw_data/ces/CCES24_Common_OUTPUT_vv_topost_final.csv` (that folder is ignored by git).
+Script `03` reduces it to `data/02-analysis_data/ces2024_senate_demographics.csv`, which is
+committed and is all that later scripts read, so the pipeline also runs from script `07` without
+the raw file.
+
+**Sample:** `data/01-raw_data/ces_sample/CCES24_Common_OUTPUT_vv_topost_final.csv` has the same
+file name and all 694 columns of the raw file, for 1,020 real respondents (20 from each state,
+drawn at random by `scripts/02e-make_ces_sample.py`). It is only for checking that the code runs,
+not for estimates. To run the extraction on it without overwriting the real extract:
+
+```bash
+python scripts/03-extract_ces.py data/01-raw_data/ces_sample/CCES24_Common_OUTPUT_vv_topost_final.csv \
+  --out data/02-analysis_data/ces_sample_extract.csv
+```
+
+Every Senate state has between 6 and 17 eligible validated voters in the sample. Run on the full
+file, script `03` reproduces the committed extract exactly.
 
 ### Running
 
@@ -133,7 +148,7 @@ gives more detail.
 | Stage | Scripts |
 |---|---|
 | Simulated data and its tests | `00-simulate_data`, `01-test_simulated_data` |
-| Downloads | `02-download_ces`, `02b-download_map`, `02c-download_predictit`, `02d-download_polls` |
+| Downloads | `02-download_ces`, `02b-download_map`, `02c-download_predictit`, `02d-download_polls`, `02e-make_ces_sample` (the shareable CES sample) |
 | Cleaning | `03-extract_ces`, `03b-clean_polls` |
 | News | `04-collect_news` (collects and screens with `openai/gpt-4.1-nano`), `04b-assign_news` (each persona's nine paragraphs) |
 | Candidates | `05-collect_candidates`, `06-clean_candidates` |
@@ -195,8 +210,9 @@ before any paid call.
 - **Montana.** Script `06` picked the Democrat Alani Bankhead as the left candidate, but the main
   challenger is the independent Seth Bodnar (polls: Alme 42, Bodnar 31, Bankhead 16). This was
   fixed before the 31 October run. Montana's 27 and 29 October results are kept as run and are
-  left out of the news and PredictIt comparisons for those days. For the same reason the test
-  `test_prompt_names_both_candidates` fails on the 27 and 29 October prompts.
+  left out of the news and PredictIt comparisons for those days. The test
+  `test_prompt_names_both_candidates` checks those earlier prompts (and the no-news baseline)
+  against Bankhead's name and the 31 October prompts against Bodnar's.
 - **Bias correction.** A revision on 1 November rebuilt the forecasts without the bias
   correction. We kept the bias-corrected forecast of the scheduled runs as the headline; the
   other version is reproducible with `--bias keep` and reported in the method table.
@@ -244,33 +260,31 @@ written at the top of [`styles.css`](styles.css).
 ## Statement on AI usage
 
 This covers AI used to build the project; the models that generate the synthetic answers are
-part of the method and are listed above.
+part of the method and are listed above. We used AI throughout October and on 1 November 2026.
 
-**Kexin (Coco) Liu** used Claude Code, with **Claude Opus 5.5** (`claude-opus-5-5`), throughout
-October and on 1 November 2026, as a coding agent with access to the repository on her computer.
-It wrote the code in `scripts/`, which she reviewed, ran and edited: the forecast and the
-combination with polls (`11`, including the `--bias` option), the figure, map, headline, table,
-comparison, sensitivity, cost and news scripts (`13` to `17`), the test suites (`01`, `12`,
-`schemas.py`) and the shared settings and graph theme. It also wrote the GitHub Actions forecast
-workflow, the page design (`styles.css`, `_quarto.yml`) and the structure of `index.qmd`, wrote
-commit messages and pull-request descriptions for her branches, resolved merge conflicts, drafted
-this README, and explained methods we then chose between (for example inverse-variance weighting
-and the sources of uncertainty). For the website prose it provided outlines and drafted some
-paragraphs, which are marked `DRAFT (Claude)` in the source of `index.qmd`.
+**Tools.**
+- **Claude Opus 5.5** (`claude-opus-5-5`), through **Claude Code** (Anthropic's coding agent,
+  with access to the repository) and in the **Claude app**, where it generated first versions of
+  scripts.
+- **OpenAI Codex** (a coding agent with access to the repository) and **ChatGPT**; the exact
+  model names and identifiers were not recorded.
 
-**Jingxuan (Amelia) Feng** used Codex and ChatGPT throughout October and on 1 November 2026;
-the exact underlying model names and identifiers were not recorded. Codex was used as a coding
-agent with access to the repository on her computer. It helped develop and revise polling
-downloads and cleaning (`02d`, `03b`), news collection and screening (`04`), news assignment
-(`04b`) and prompt integration (`08`). It also helped troubleshoot GitHub Actions, connect
-polling inputs to forecasts, organise dated outputs, preserve paid answers after failures,
-and set up the Python environment. For the website, it helped revise `index.qmd`, `styles.css`
-and `_quarto.yml`, compare forecasting methods,
-and check consistency between figures, tables and saved results. It assisted with recalculating
-results from saved scores, updating the PredictIt comparison, resolving Git issues, and drafting
-commit messages and pull-request descriptions. ChatGPT and Codex also explained papers, SSR,
-polling combinations and uncertainty, and drafted or edited website prose, the README and
-pipeline documentation, including this AI usage statement.
+**Code.** These tools wrote first versions of most scripts in `scripts/` and later revisions of
+them: the CES, poll, news, candidate and PredictIt downloads and cleaning (`02` to `06`), the
+personas, prompts, model queries and scoring (`07` to `10`), the forecast and its combination with
+polls (`11`, including the `--bias` option), the figures, map, headline, tables and comparisons
+(`13` to `17`), the test suites (`01`, `12`, `schemas.py`), the shared settings and graph theme
+(`config.py`, `site.mplstyle`), the GitHub Actions workflows and the page design (`styles.css`,
+`_quarto.yml`, the structure of `index.qmd`). We reviewed, ran, tested and edited all of the code
+before it was merged.
 
-**Maggie Huang:** [TO COMPLETE: tools and model identifiers, dates, purposes, and whether used
-through a coding agent.]
+**Debugging and repository work.** Troubleshooting GitHub Actions and the Python environment,
+connecting the poll inputs to the forecast, keeping paid answers after failed runs, recomputing
+results from saved scores, updating the PredictIt comparison, resolving Git issues and merge
+conflicts, and drafting commit messages and pull-request descriptions.
+
+**Explanations and writing.** Explaining papers and methods we then chose between (SSR,
+inverse-variance weighting, combining polls, sources of uncertainty); checking that figures,
+tables and saved results agree; outlining website sections and drafting or editing some website
+paragraphs; and drafting this README, the pipeline notes and this statement. We reviewed and
+edited the drafted prose; the analysis decisions and their interpretation are ours.

@@ -2,7 +2,7 @@
 # Purpose: Describes who is in the persona sample: counts and shares for each persona variable,
 #          overall and by state, next to what the weighted CES pool would give, plus how many
 #          personas are repeated draws of the same respondent.
-# Author: (group)
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 25 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/06-clean_candidates.py and scripts/07-build_personas.py first

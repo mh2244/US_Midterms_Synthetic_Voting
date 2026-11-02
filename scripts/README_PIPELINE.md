@@ -89,8 +89,9 @@ python scripts/09-query_models.py --limit 4       # paid pilot; partial exit cod
 
 After changing the news pool or personas, rerun 04b and 08. If using 04b's
 `--run`, it must match config.RUN. Rebuilding prompts can require new voting
-requests. A full GitHub workflow rerun recollects news; it is not a frozen-input
-resume. Failed workflow outputs are retained for inspection, not automatically
+requests. A GitHub workflow rerun on the same day reuses that day's saved news
+(`news_context_<RUN>.csv` and `persona_news_summaries_<RUN>.csv`), so its prompts match
+the answers already saved; on a new day it collects news again. Failed workflow outputs are retained for inspection, not automatically
 certified as valid results.
 
 The workflow refreshes its own polling input, archives a copy as

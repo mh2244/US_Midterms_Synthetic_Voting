@@ -2,13 +2,14 @@
 Preamble:
 
 Purpose: Find and download 2024 Cooperative Election Study (CES) files from Harvard Dataverse.
-Authors: Maggie, Coco, Amelia
+Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 Date: 19 October 2026 (paths updated 28 October 2026)
 Contact: maggieh.huang@mail.utoronto.ca
 License: MIT
 Pre-requisites: Download the CES 2024 CSV directly by file id by running this in terminal:
     python scripts/02-download_ces.py get --file-id 12050325
-Output: data/01-raw_data/ces/ (the raw CES file is not committed; see the README)
+Output: data/01-raw_data/ces/CCES24_Common_OUTPUT_vv_topost_final.csv (184 MB, too large for GitHub,
+    so it is not committed; scripts/02e-make_ces_sample.py writes a small shareable sample; see the README)
 """
 
 # Import libraries

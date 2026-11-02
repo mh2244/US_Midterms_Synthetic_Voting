@@ -1,7 +1,7 @@
 #### Preamble ####
 # Purpose: Builds the prompt for each persona: instructions, optional news summaries, the
 #          persona description, and the voting question.
-# Author: Maggie, Coco, Amelia
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/06-clean_candidates.py and scripts/07-build_personas.py first.
@@ -19,7 +19,8 @@
 # Script 04b samples three items per source group and concatenates the nine existing
 # paragraphs without another LLM call. The same context is kept across B/C designs.
 # LIMIT: summaries are generated from titles and feed excerpts, not full articles.
-# Treat the news run as an experiment, not as the main result.
+# The headline forecast uses the latest news run; the no-news run (RUN=nonews) is the baseline
+# for the news comparison.
 
 
 #### Workspace setup ####

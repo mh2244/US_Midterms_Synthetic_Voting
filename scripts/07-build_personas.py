@@ -2,12 +2,13 @@
 # Purpose: Builds the personas ("digital twins"): for each 2026 race state, draws real CES 2024
 #          respondents with probability proportional to their survey weight, and writes a
 #          short text description of each one.
-# Author: Maggie, Coco, Amelia
+# Authors: Maggie Huang, Kexin (Coco) Liu and Jingxuan (Amelia) Feng
 # Date: 22 October 2026
 # License: MIT
 # Pre-requisites: Run scripts/03-extract_ces.py and scripts/06-clean_candidates.py first.
 # Any other information needed? Run from the project root. Set N_PER_STATE in config.py
-#   (5 for the test run). Add --n 100 for the real run.
+#   (100, the number used in every forecast run; the test run used 5, with --n 5).
+# Outputs: data/02-analysis_data/personas.parquet and personas.csv (the same table, for opening in Excel)
 #
 # WHY draws proportional to weight: the CES weights already make each state's sample match its
 # registered voters (CES guide, p. 17), so a weighted draw gives a persona sample that mirrors

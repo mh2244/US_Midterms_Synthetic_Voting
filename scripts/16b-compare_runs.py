@@ -1,6 +1,7 @@
 #### Preamble ####
-# Purpose: Compares the forecast runs with each other and with simpler methods, for the section
-#          "What the synthetic voters add" on the website. Three tables:
+# Purpose: Compares the forecast runs with each other and with simpler methods, for the website
+#          sections "Effect of the news", "Forecast by day" and "Comparing four ways of building
+#          the forecast". Three tables:
 #            1. runs.md     the headline numbers for each news day and the no-news baseline
 #            2. news.md     the synthetic voters' share before any poll correction, by model and
 #                           run (also drawn in figures/run_<RUN>/news_effect.png),
@@ -13,7 +14,9 @@
 # Author: Kexin (Coco) Liu
 # Date: 27 October 2026
 # License: MIT
-# Pre-requisites: Run scripts 11 (all three --combine versions) for each run to compare.
+# Pre-requisites: Run script 11 for each run to compare (--combine none and the headline; for the
+#   latest run also --bias keep).
+# Outputs also include comparison/method_summary.md (the paragraph under the method table).
 # Any other information needed? Run from the project root:  python scripts/16b-compare_runs.py
 #   It reads every run in data/03-results/ that is a planned news day or "nonews" and writes to
 #   data/03-results/comparison/. Runs that do not exist yet are left out, so it can run any day.
